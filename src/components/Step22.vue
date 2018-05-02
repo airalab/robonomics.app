@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import aira from '../utils/aira';
+import robonomics from '../utils/robonomics';
 
 const formatDecimals = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
@@ -63,13 +63,13 @@ export default {
   },
   methods: {
     fetchData() {
-      aira.xrt.call('balanceOf', [web3.eth.accounts[0]])
+      robonomics.xrt.call('balanceOf', [web3.eth.accounts[0]])
         .then((balanceOf) => {
           this.myBalance = `${formatDecimals(balanceOf, 9)} XRT`;
           if (balanceOf <= 0) {
             this.isFaucet = true;
           } else {
-            aira.xrt.call('allowance', [web3.eth.accounts[0], aira.address.factory])
+            robonomics.xrt.call('allowance', [web3.eth.accounts[0], robonomics.address.factory])
               .then((allowance) => {
                 if (allowance <= 0) {
                   this.approve.show = true;
@@ -86,7 +86,7 @@ export default {
         });
     },
     sendApprove() {
-      aira.xrt.send('approve', [aira.address.factory, 1000000000], { from: web3.eth.accounts[0] })
+      robonomics.xrt.send('approve', [robonomics.address.factory, 1000000000], { from: web3.eth.accounts[0] })
         .then((r) => {
           this.approve.show = true;
           this.approve.dis = true;

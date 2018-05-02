@@ -11,9 +11,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "aira-js": "^0.3.1",
     "bluebird": "^3.5.1",
     "lodash": "^4.17.5",
+    "robonomics-js": "^0.1.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

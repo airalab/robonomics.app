@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import aira from '../utils/aira';
+import robonomics from '../utils/robonomics';
 
 export default {
   name: 'Step1',
@@ -47,16 +47,16 @@ export default {
   },
   methods: {
     fetchData() {
-      aira.factory.getLighthouses()
+      robonomics.factory.getLighthouses()
         .then((lighthouses) => {
           this.lighthouses = lighthouses;
         });
     },
     sendCreateLighthouse() {
       this.create = true;
-      aira.factory.contract.createLighthouse(1000, { from: web3.eth.accounts[0] }, (e) => {
+      robonomics.factory.contract.createLighthouse(1000, { from: web3.eth.accounts[0] }, (e) => {
         if (!e) {
-          const event = aira.factory.contract.BuildedLighthouse({}, '');
+          const event = robonomics.factory.contract.BuildedLighthouse({}, '');
           event.watch((error, result) => {
             if (!error) {
               this.lighthouse = web3.toChecksumAddress(result.args.lighthouse);

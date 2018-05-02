@@ -58,7 +58,7 @@
 
 <script>
 import find from 'lodash/find';
-import aira, { getChanel } from '../utils/aira';
+import robonomics, { getChanel } from '../utils/robonomics';
 
 let chanel;
 
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     fetchData() {
-      aira.factory.watchLiability((liability, result) => {
+      robonomics.factory.watchLiability((liability, result) => {
         web3.eth.getTransaction(result.transactionHash, (e, r) => {
           if (r.to.toLowerCase() === this.lighthouse.toLowerCase()) {
             liability.getInfo()

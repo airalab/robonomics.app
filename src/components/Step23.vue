@@ -20,17 +20,17 @@
 
 <script>
 import Promise from 'bluebird';
-import aira, { getChanel } from '../utils/aira';
+import robonomics, { getChanel } from '../utils/robonomics';
 
 const signer = (account, hash) => Promise.promisify(web3.eth.sign)(account, hash);
-const message = aira.message(signer);
+const message = robonomics.message(signer);
 
 const ask = message.create({
   // model: 'auto',
   // objective: 'red',
   model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
   objective: 'Qmbdan31EbgETmJU79shwQDHcMgNoRS6RMGDNJZNp8FLCS',
-  token: aira.address.xrt,
+  token: robonomics.address.xrt,
   cost: 1,
   count: 1,
   validator: '0x0000000000000000000000000000000000000000',
@@ -41,7 +41,7 @@ const ask = message.create({
 const bid = message.create({
   // model: 'auto',
   model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
-  token: aira.address.xrt,
+  token: robonomics.address.xrt,
   cost: 1,
   count: 1,
   lighthouseFee: 0,

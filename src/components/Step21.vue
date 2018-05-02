@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import { Lighthouse } from 'aira-js';
-import aira from '../utils/aira';
+import { Lighthouse } from 'robonomics-js';
+import robonomics from '../utils/robonomics';
 
 const formatDecimals = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     fetchData() {
-      aira.xrt.call('balanceOf', [this.lighthouse])
+      robonomics.xrt.call('balanceOf', [this.lighthouse])
         .then((r) => {
           this.lighthouseBalance = `${formatDecimals(r, 9)} XRT`;
         });
