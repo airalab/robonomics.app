@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <NotWeb3 v-if="status == 'NotWeb3'" />
+    <Load v-if="status == 'Load'" />
+    <NotWeb3 v-else-if="status == 'NotWeb3'" />
     <DepNetwork v-else-if="status == 'DepNetwork'" />
     <NotAccounts v-else-if="status == 'NotAccounts'" />
     <router-view v-else />
@@ -8,9 +9,11 @@
 </template>
 
 <script>
-import NotWeb3 from './components/NotWeb3';
-import DepNetwork from './components/DepNetwork';
-import NotAccounts from './components/NotAccounts';
+import NotWeb3 from './components/web3/NotWeb3';
+import DepNetwork from './components/web3/DepNetwork';
+import NotAccounts from './components/web3/NotAccounts';
+import Load from './components/web3/Load';
+import getRobonomics from './utils/robonomics';
 
 export default {
   name: 'App',
@@ -18,10 +21,11 @@ export default {
     NotWeb3,
     DepNetwork,
     NotAccounts,
+    Load,
   },
   data() {
     return {
-      status: '',
+      status: 'Load',
     };
   },
   created() {
@@ -30,8 +34,12 @@ export default {
   methods: {
     canNetwork() {
       web3.version.getNetwork((e, r) => {
-        if (Number(r) === 42) {
-          this.status = '';
+        if (Number(r) === 1 || Number(r) === 42) {
+          this.status = 'Load';
+          const robonomics = getRobonomics();
+          robonomics.ready().then(() => {
+            this.status = '';
+          });
         } else {
           this.status = 'DepNetwork';
         }

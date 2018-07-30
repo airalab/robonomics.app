@@ -1,14 +1,17 @@
 import Promise from 'bluebird';
+import { MessageProviderAbstract } from 'robonomics-js';
 
-export default class Provider {
+export default class Provider extends MessageProviderAbstract {
   constructor(socket) {
+    super();
     this.socket = socket;
   }
 
   ready() {
-    this.socket.emit('chanel', 'chanel');
     return new Promise((resolve) => {
-      resolve();
+      this.socket.on('connect', () => {
+        resolve();
+      });
     });
   }
 

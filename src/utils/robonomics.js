@@ -1,19 +1,16 @@
 import Robonomics from 'robonomics-js';
-import has from 'lodash/has';
 import Provider from './provider';
 
-const socket = io('https://wss.pool.aira.life');
-const robonomics = new Robonomics({
-  web3,
-  provider: new Provider(socket),
-});
-
-const chanel = {};
-export const getChanel = (lighthouse) => {
-  if (!has(chanel, lighthouse)) {
-    chanel[lighthouse] = robonomics.chanel(`${lighthouse}`);
+let robonomics = null;
+const getRobonomics = () => {
+  if (robonomics === null) {
+    const socket = io('https://wss.pool.aira.life');
+    robonomics = new Robonomics({
+      web3,
+      provider: new Provider(socket),
+    });
   }
-  return chanel[lighthouse];
+  return robonomics;
 };
 
-export default robonomics;
+export default getRobonomics;

@@ -19,55 +19,54 @@
 </template>
 
 <script>
-import Promise from 'bluebird';
-import robonomics, { getChanel } from '../utils/robonomics';
+import getRobonomics from '../utils/robonomics';
+import { MARKET_MODEL, OBJECTIVE } from '../config';
 
-const signer = (account, hash) => Promise.promisify(web3.eth.sign)(account, hash);
-const message = robonomics.message(signer);
-
-const ask = message.create({
-  // model: 'auto',
-  // objective: 'red',
-  model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
-  objective: 'Qmbdan31EbgETmJU79shwQDHcMgNoRS6RMGDNJZNp8FLCS',
-  token: robonomics.address.xrt,
-  cost: 1,
-  count: 1,
-  validator: '0x0000000000000000000000000000000000000000',
-  validatorFee: 0,
-  deadline: 45646546,
-});
-
-const bid = message.create({
-  // model: 'auto',
-  model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
-  token: robonomics.address.xrt,
-  cost: 1,
-  count: 1,
-  lighthouseFee: 0,
-  deadline: 45646546,
-});
-
-let chanel;
+let robonomics;
 
 export default {
   name: 'Step23',
+  data() {
+    return {
+      market: MARKET_MODEL,
+    };
+  },
   created() {
-    chanel = getChanel(this.$route.params.lighthouse);
+    robonomics = getRobonomics();
+    robonomics.ready().then(() => {
+      console.log('ready');
+    });
   },
   methods: {
     sendMsgAsk() {
       web3.eth.getBlock('latest', (e, r) => {
-        ask.deadline = r.number + 1000;
-        message.sign(web3.eth.accounts[0], ask)
-          .then(() => chanel.push(ask));
+        const ask = {
+          objective: OBJECTIVE,
+          token: robonomics.xrt.address,
+          cost: 1,
+          validator: '0x0000000000000000000000000000000000000000',
+          validatorFee: 0,
+          deadline: r.number + 1000,
+        };
+        robonomics.postAsk(this.market, ask)
+          .then((liability) => {
+            console.log('liability ask', liability.address);
+          });
       });
     },
     sendMsgBid() {
       web3.eth.getBlock('latest', (e, r) => {
-        bid.deadline = r.number + 1000;
-        message.sign(web3.eth.accounts[0], bid)
-          .then(() => chanel.push(bid));
+        const bid = {
+          objective: OBJECTIVE,
+          token: robonomics.xrt.address,
+          cost: 1,
+          lighthouseFee: 1,
+          deadline: r.number + 1000,
+        };
+        robonomics.postBid(this.market, bid)
+          .then((liability) => {
+            console.log('liability bid', liability.address);
+          });
       });
     },
   },

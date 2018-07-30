@@ -15,7 +15,6 @@
                 <b>objective: </b>{{ item.objective }}<br/>
                 <b>token: </b>{{ item.token }}<br/>
                 <b>cost: </b>{{ item.cost }}<br/>
-                <b>count: </b>{{ item.count }}<br/>
                 <b>validatorFee: </b>{{ item.validatorFee }}<br/>
                 <b>deadline: </b>{{ item.deadline }}
               </p>
@@ -27,9 +26,9 @@
               <p class="t-break" v-for="(item, i) in bids" :key="i">
                 <b>account: </b>{{ item.account }}<br/>
                 <b>model: </b>{{ item.model }}<br/>
+                <b>objective: </b>{{ item.objective }}<br/>
                 <b>token: </b>{{ item.token }}<br/>
                 <b>cost: </b>{{ item.cost }}<br/>
-                <b>count: </b>{{ item.count }}<br/>
                 <b>lighthouseFee: </b>{{ item.lighthouseFee }}<br/>
                 <b>deadline: </b>{{ item.deadline }}
               </p>
@@ -39,14 +38,24 @@
             <h3>LIABILITIES</h3>
             <div>
               <p class="t-break" v-for="(item, i) in lis" :key="i">
-                <a :href="`https://kovan.etherscan.io/address/${item.address}`" target="_blank">{{ item.address }}</a><br/>
-                <b>lighthouse: </b><a :href="`https://kovan.etherscan.io/address/${item.lighthouse}`" target="_blank">{{ item.lighthouse }}</a><br/>
-                <b>from: </b><a :href="`https://kovan.etherscan.io/address/${item.from}`" target="_blank">{{ item.from }}</a><br/>
+                <a :href="`https://etherscan.io/address/${item.address}`" target="_blank">{{ item.address }}</a><br/>
+                <b>lighthouse: </b><a :href="`https://etherscan.io/address/${item.lighthouse}`" target="_blank">{{ item.lighthouse }}</a><br/>
+                <b>worker: </b><a :href="`https://etherscan.io/address/${item.worker}`" target="_blank">{{ item.worker }}</a><br/>
                 <b>model: </b>{{ item.model }}<br/>
                 <b>objective: </b>{{ item.objective }}<br/>
                 <b>token: </b>{{ item.token }}<br/>
+                <b>cost: </b>{{ item.cost }}<br/>
                 <b>promisee: </b>{{ item.promisee }}<br/>
-                <b>promisor: </b>{{ item.promisor }}
+                <b>promisor: </b>{{ item.promisor }}<br/>
+                <span v-if="item.promisor == account && item.result == ''">
+                  <button v-on:click="postResult(item.address)">post result</button>
+                </span>
+                <span v-if="item.result != ''">
+                  <b>Results: </b>{{ item.result }}
+                </span>
+                <span v-if="item.result == ''">
+                  <b>Results: </b>...
+                </span>
               </p>
             </div>
           </div>
@@ -58,51 +67,71 @@
 
 <script>
 import find from 'lodash/find';
-import robonomics, { getChanel } from '../utils/robonomics';
+import findIndex from 'lodash/findIndex';
+import getRobonomics from '../utils/robonomics';
+import { MARKET_MODEL, RESULT } from '../config';
 
-let chanel;
+let robonomics;
 
 export default {
   name: 'Step24',
   data() {
     return {
-      lighthouse: '',
+      account: '',
+      market: MARKET_MODEL,
       asks: [],
       bids: [],
-      lis: [],
+      lis: {},
     };
   },
   created() {
-    this.lighthouse = this.$route.params.lighthouse;
-    chanel = getChanel(this.$route.params.lighthouse);
-    this.fetchData();
+    robonomics = getRobonomics();
+    robonomics.ready().then(() => {
+      this.fetchData();
+    });
   },
   methods: {
     fetchData() {
-      robonomics.factory.watchLiability((liability, result) => {
-        web3.eth.getTransaction(result.transactionHash, (e, r) => {
-          if (r.to.toLowerCase() === this.lighthouse.toLowerCase()) {
-            liability.getInfo()
-              .then((info) => {
-                if (!find(this.lis, { address: liability.address })) {
-                  this.lis = [
-                    { lighthouse: r.to, from: r.from, address: liability.address, ...info },
-                    ...this.lis];
-                }
-              });
-          }
+      robonomics.ready().then(() => {
+        this.account = robonomics.account;
+        robonomics.getBid(this.market, (msg) => {
+          console.log(msg);
+          this.bids = [{ ...msg }, ...this.bids.slice(0, 20)];
+        });
+        robonomics.getAsk(this.market, (msg) => {
+          console.log(msg);
+          this.asks = [{ ...msg }, ...this.asks.slice(0, 20)];
+        });
+        robonomics.watchLiability(this.market, (liability) => {
+          liability.getInfo()
+            .then((info) => {
+              const item = find(this.lis, { address: liability.address });
+              if (!item) {
+                this.lis = [
+                  {
+                    address: liability.address,
+                    lighthouse: liability.lighthouse,
+                    worker: liability.worker,
+                    ...info,
+                  },
+                  ...this.lis,
+                ];
+                liability.watchResult((result) => {
+                  console.log('result', result);
+                  const i = findIndex(this.lis, { address: liability.address });
+                  this.lis[i] = { ...this.lis[i], result };
+                  this.lis = { ...this.lis };
+                });
+              }
+            });
         });
       });
-
-      chanel.asks((msg) => {
-        const acc = msg.recover();
-        this.asks = [{ ...msg, account: acc }, ...this.asks];
-      });
-
-      chanel.bids((msg) => {
-        const acc = msg.recover();
-        this.bids = [{ ...msg, account: acc }, ...this.bids];
-      });
+    },
+    postResult(liability) {
+      robonomics.postResult({ liability, result: RESULT })
+        .then(() => {
+          console.log('ok');
+        });
     },
   },
 };
