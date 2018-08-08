@@ -116,7 +116,7 @@ export default {
             robonomics.factory.stop(event);
           }
         });
-        robonomics.factory.send('createLighthouse', [1000, 25, name], { from: robonomics.web3.eth.accounts[0], gas: 3000000 })
+        robonomics.factory.send('createLighthouse', [1000, 25, name], { from: robonomics.web3.eth.accounts[0] })
           .then((tx) => {
             console.log('tx', tx);
           })
