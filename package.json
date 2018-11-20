@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "dapp robonomics.network",
   "author": "vol4tim <sas@aira.life>",
+  "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -13,10 +14,11 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "lodash": "^4.17.5",
-    "robonomics-js": "^0.2.2",
+    "robonomics-js": "^0.3.0",
     "vue": "^2.5.2",
     "vue-js-toggle-button": "^1.2.3",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-web3-check": "^1.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
