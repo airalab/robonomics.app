@@ -90,12 +90,16 @@ export default {
   methods: {
     fetchData() {
       robonomics.ready().then(() => {
-        robonomics.xrt.call('balanceOf', [web3.eth.accounts[0]])
+        robonomics.lighthouse.call('minimalFreeze')
+          .then((r) => {
+            this.minimalFreeze = Number(r);
+            return robonomics.xrt.call('balanceOf', [robonomics.account]);
+          })
           .then((balanceOf) => {
             this.balance.value = balanceOf;
             this.balance.valueStr = `${formatDecimals(balanceOf, 9)} XRT`;
             if (balanceOf > 0) {
-              robonomics.xrt.call('allowance', [web3.eth.accounts[0], robonomics.factory.address])
+              robonomics.xrt.call('allowance', [robonomics.account, robonomics.factory.address])
                 .then((allowance) => {
                   this.approveTrade.value = allowance;
                   this.approveTrade.valueStr = `${formatDecimals(allowance, 9)} XRT`;
@@ -110,7 +114,7 @@ export default {
                 });
             }
             if (balanceOf >= this.minimalFreeze) {
-              robonomics.xrt.call('allowance', [web3.eth.accounts[0], robonomics.lighthouse.address])
+              robonomics.xrt.call('allowance', [robonomics.account, robonomics.lighthouse.address])
                 .then((allowance) => {
                   this.approveWorker.value = allowance;
                   this.approveWorker.valueStr = `${formatDecimals(allowance, 9)} XRT`;
@@ -140,7 +144,7 @@ export default {
       });
     },
     sendApproveTrade() {
-      robonomics.xrt.send('approve', [robonomics.factory.address, 1000000000], { from: web3.eth.accounts[0] })
+      robonomics.xrt.send('approve', [robonomics.factory.address, 1000000000], { from: robonomics.account })
         .then((r) => {
           this.approveTrade.disabled = true;
           this.approveTrade.text = '...';
@@ -153,7 +157,7 @@ export default {
         });
     },
     sendApproveWorker() {
-      robonomics.xrt.send('approve', [robonomics.lighthouse.address, this.minimalFreeze], { from: web3.eth.accounts[0] })
+      robonomics.xrt.send('approve', [robonomics.lighthouse.address, this.minimalFreeze], { from: robonomics.account })
         .then((r) => {
           this.approveWorker.disabled = true;
           this.approveWorker.text = '...';
@@ -165,7 +169,7 @@ export default {
         });
     },
     sendRefill() {
-      robonomics.lighthouse.send('refill', [this.minimalFreeze], { from: web3.eth.accounts[0] })
+      robonomics.lighthouse.send('refill', [this.minimalFreeze], { from: robonomics.account })
         .then((r) => {
           this.refill.disabled = true;
           this.refill.text = '...';

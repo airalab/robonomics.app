@@ -5,26 +5,33 @@ export default class Provider extends MessageProviderAbstract {
   constructor(socket) {
     super();
     this.socket = socket;
+    this.topic = null;
   }
 
   ready() {
     return new Promise((resolve) => {
+      this.socket.on('reconnect', () => {
+        if (this.topic !== null) {
+          this.watch(this.topic[0], this.topic[1]);
+        }
+      });
       this.socket.on('connect', () => {
         resolve();
       });
     });
   }
 
-  push(chanel, msg) {
+  push(topic, msg) {
     return new Promise((resolve) => {
-      this.socket.emit(chanel, JSON.stringify(msg));
+      this.socket.emit(topic, JSON.stringify(msg));
       resolve();
     });
   }
 
-  watch(chanel, cb) {
-    this.socket.emit('chanel', chanel);
-    this.socket.on(chanel, (msg) => {
+  watch(topic, cb) {
+    this.topic = [topic, cb];
+    this.socket.emit('chanel', topic);
+    this.socket.on(topic, (msg) => {
       cb(msg);
     });
   }

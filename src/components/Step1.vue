@@ -77,11 +77,13 @@ export default {
       robonomics.ready().then(() => {
         robonomics.getLighthouses()
           .then((lighthouses) => {
-            this.lighthouse = lighthouses[0].name;
-            this.lighthouseAddr = lighthouses[0].addr;
-            lighthouses.forEach((item) => {
-              this.lighthouses.push(item);
-            });
+            if (lighthouses.length > 0) {
+              this.lighthouse = lighthouses[0].name;
+              this.lighthouseAddr = lighthouses[0].addr;
+              lighthouses.forEach((item) => {
+                this.lighthouses.push(item);
+              });
+            }
           });
       });
     },
@@ -116,7 +118,7 @@ export default {
             robonomics.factory.stop(event);
           }
         });
-        robonomics.factory.send('createLighthouse', [1000, 25, name], { from: robonomics.web3.eth.accounts[0] })
+        robonomics.factory.send('createLighthouse', [1000, 25, name], { from: robonomics.account })
           .then((tx) => {
             console.log('tx', tx);
           })

@@ -6,12 +6,12 @@
         <div class="d-t_cell">
           <img class="img-block" alt="" src="static/assets/i/step-2-demand.jpg"
             srcset="static/assets/i/step-2-demand@2x.jpg" />
-          <button v-on:click="sendMsgAsk">SEND A DEMAND</button>
+          <button v-on:click="sendMsgDemand">SEND A DEMAND</button>
         </div>
         <div class="d-t_cell">
           <img class="img-block" alt="" src="static/assets/i/step-2-offer.jpg"
             srcset="static/assets/i/step-2-offer@2x.jpg">
-          <button v-on:click="sendMsgBid">SEND AN OFFER</button>
+          <button v-on:click="sendMsgOffer">SEND AN OFFER</button>
         </div>
       </div>
     </section>
@@ -38,34 +38,37 @@ export default {
     });
   },
   methods: {
-    sendMsgAsk() {
+    sendMsgDemand() {
       web3.eth.getBlock('latest', (e, r) => {
-        const ask = {
+        const demand = {
           objective: OBJECTIVE,
           token: robonomics.xrt.address,
           cost: 1,
+          lighthouse: '0x0000000000000000000000000000000000000000',
           validator: '0x0000000000000000000000000000000000000000',
           validatorFee: 0,
           deadline: r.number + 1000,
         };
-        robonomics.postAsk(this.market, ask)
+        robonomics.postDemand(this.market, demand)
           .then((liability) => {
-            console.log('liability ask', liability.address);
+            console.log('liability demand', liability.address);
           });
       });
     },
-    sendMsgBid() {
+    sendMsgOffer() {
       web3.eth.getBlock('latest', (e, r) => {
-        const bid = {
+        const offer = {
           objective: OBJECTIVE,
           token: robonomics.xrt.address,
           cost: 1,
+          validator: '0x0000000000000000000000000000000000000000',
+          lighthouse: '0x0000000000000000000000000000000000000000',
           lighthouseFee: 1,
           deadline: r.number + 1000,
         };
-        robonomics.postBid(this.market, bid)
+        robonomics.postOffer(this.market, offer)
           .then((liability) => {
-            console.log('liability bid', liability.address);
+            console.log('liability offer', liability.address);
           });
       });
     },

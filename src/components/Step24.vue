@@ -9,7 +9,7 @@
           <div class="col-md-4">
             <h3>DEMAND</h3>
             <div>
-              <p class="t-break" v-for="(item, i) in asks" :key="i">
+              <p class="t-break" v-for="(item, i) in demands" :key="i">
                 <b>account: </b>{{ item.account }}<br/>
                 <b>model: </b>{{ item.model }}<br/>
                 <b>objective: </b>{{ item.objective }}<br/>
@@ -23,7 +23,7 @@
           <div class="col-md-4">
             <h3>OFFER</h3>
             <div>
-              <p class="t-break" v-for="(item, i) in bids" :key="i">
+              <p class="t-break" v-for="(item, i) in offers" :key="i">
                 <b>account: </b>{{ item.account }}<br/>
                 <b>model: </b>{{ item.model }}<br/>
                 <b>objective: </b>{{ item.objective }}<br/>
@@ -79,8 +79,8 @@ export default {
     return {
       account: '',
       market: MARKET_MODEL,
-      asks: [],
-      bids: [],
+      demands: [],
+      offers: [],
       lis: {},
     };
   },
@@ -94,13 +94,13 @@ export default {
     fetchData() {
       robonomics.ready().then(() => {
         this.account = robonomics.account;
-        robonomics.getBid(this.market, (msg) => {
+        robonomics.getOffer(this.market, (msg) => {
           console.log(msg);
-          this.bids = [{ ...msg }, ...this.bids.slice(0, 20)];
+          this.offers = [{ ...msg }, ...this.offers.slice(0, 20)];
         });
-        robonomics.getAsk(this.market, (msg) => {
+        robonomics.getDemand(this.market, (msg) => {
           console.log(msg);
-          this.asks = [{ ...msg }, ...this.asks.slice(0, 20)];
+          this.demands = [{ ...msg }, ...this.demands.slice(0, 20)];
         });
         robonomics.watchLiability(this.market, (liability) => {
           liability.getInfo()
@@ -110,7 +110,6 @@ export default {
                 this.lis = [
                   {
                     address: liability.address,
-                    lighthouse: liability.lighthouse,
                     worker: liability.worker,
                     ...info,
                   },
@@ -128,7 +127,7 @@ export default {
       });
     },
     postResult(liability) {
-      robonomics.postResult({ liability, result: RESULT })
+      robonomics.postResult({ liability, success: true, result: RESULT })
         .then(() => {
           console.log('ok');
         });
