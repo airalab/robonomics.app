@@ -1,9 +1,15 @@
-export const formatDecimals = (price, decimals) => {
+import { web3Utils } from 'robonomics-js';
+
+export const toWei = (price, decimals) => {
+  const priceNum = new web3.BigNumber(price);
+  return priceNum.shift(decimals).toNumber();
+};
+export const fromWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
   return priceNum.shift(-decimals).toNumber();
 };
 
-export const watchTx = (tx) => {
+export const watchTx = tx => {
   const transactionReceiptAsync = (resolve, reject) => {
     web3.eth.getTransactionReceipt(tx, (error, receipt) => {
       if (error) {
@@ -22,3 +28,83 @@ export const watchTx = (tx) => {
   }
   throw new Error(`Invalid Type: ${tx}`);
 };
+
+export const promisify = fn => {
+  return (args = []) =>
+    new Promise((resolve, reject) => {
+      fn(...args, (e, r) => {
+        if (e) {
+          return reject(e);
+        }
+        resolve(r);
+      });
+    });
+};
+
+export const intFormat = x => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
+
+export const floatFormat = x => {
+  var parts = x.toString().split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return parts.join('.');
+};
+
+export const recovery = (data, signature) => {
+  const message = web3Utils.utils.isHexStrict(data)
+    ? web3Utils.utils.hexToBytes(data)
+    : data;
+  const messageBuffer = Buffer.from(message);
+  const preamble = '\x19Ethereum Signed Message:\n' + message.length;
+  const preambleBuffer = Buffer.from(preamble);
+  const ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
+  const hash = web3Utils.hash.keccak256s(ethMessage);
+  return web3Utils.account.recover(hash, signature);
+};
+
+const scan = (block, accounts, lighthouse) => {
+  return new Promise(resolve => {
+    const res = { ...accounts };
+    web3.eth.getBlock(block, true, (e, r) => {
+      if (e) {
+        return resolve(res);
+      }
+      if (r === null || r.transactions === null) {
+        return resolve(res);
+      }
+      r.transactions.forEach(item => {
+        const from = web3.toChecksumAddress(item.from);
+        if (accounts.hasOwnProperty(from) && accounts[from] === null) {
+          if (web3.toChecksumAddress(item.to) === lighthouse) {
+            res[from] = item.blockNumber;
+          }
+        }
+      });
+      return resolve(res);
+    });
+  });
+};
+
+const isStop = result => {
+  for (const account in result) {
+    if (result[account] === null) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export async function findLastTx(accounts, lighthouse, to, from) {
+  let result = {};
+  accounts.forEach(account => {
+    result[account] = null;
+  });
+  for (let i = to; i > from; i--) {
+    result = await scan(i, result, lighthouse);
+    if (isStop(result)) {
+      return result;
+    }
+  }
+  return result;
+}

@@ -1,0 +1,68 @@
+<template>
+  <section class="window">
+    <div class="window-head">
+      <span>Providers</span>
+      <a class="window-head-toggle" href="#">–</a>
+    </div>
+    <div class="window-content p-0 window-content-light">
+      <table class="container-full m-t-0 m-b-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Address</th>
+            <th>Quota</th>
+            <th>Balance</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="member in members" :key="member.i">
+            <td>{{member.i}}</td>
+            <td>
+              <IconLink
+                :href="`https://etherscan.io/address/${member.address}`"
+                :text="member.address"
+                isCopy
+              />
+            </td>
+            <td>
+              <template v-if="member.i == marker">
+                <b>{{ quota }} / {{ member.quota }}</b>
+              </template>
+              <template v-else>
+                <b>{{ member.quota }}</b>
+              </template>
+            </td>
+            <td>{{ member.balance }} ETH</td>
+            <td>
+              <template v-if="member.i == marker">
+                <span v-if="quota > 0 && timeoutInBlocks < currentBlock - keepAliveBlock">Sleeping</span>
+                <span
+                  v-else-if="member.last!==null"
+                >Provider sent tx {{ currentBlock - member.last }} blocks ago</span>
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</template>
+
+<script>
+import { mapGetters, mapState } from "vuex";
+
+export default {
+  props: ["lighthouse"],
+  computed: {
+    ...mapGetters("providers", ["members"]),
+    ...mapState("providers", [
+      "quota",
+      "marker",
+      "keepAliveBlock",
+      "timeoutInBlocks",
+      "currentBlock"
+    ])
+  }
+};
+</script>

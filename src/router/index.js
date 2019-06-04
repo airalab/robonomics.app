@@ -1,21 +1,33 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Step1 from '@/components/Step1';
-import Step2 from '@/components/Step2';
+import PageAmbix from '@/components/ambix/Page';
+import PageStatus from '@/components/status/Page';
+import SelectLighthouse from '@/components/lighthouse/SelectLighthouse';
+import Lighthouse from '@/components/lighthouse/Lighthouse';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'Step1',
-      component: Step1,
+      path: '/alembic',
+      name: 'ambix',
+      component: PageAmbix
     },
     {
-      path: '/:lighthouse',
-      name: 'Step2',
-      component: Step2,
+      path: '/',
+      name: 'status',
+      component: PageStatus
     },
-  ],
+    {
+      path: '/lighthouse',
+      name: 'lighthouseSelect',
+      component: SelectLighthouse
+    },
+    {
+      path: '/lighthouse/:lighthouse',
+      name: 'lighthouse',
+      component: Lighthouse
+    }
+  ]
 });
