@@ -1,28 +1,32 @@
 <template>
   <section>
     <h1>{{ $t('header') }}</h1>
-    <div class="section-border">
-      <p>
-        <b>Dear Aira tokens holder,</b>
-      </p>
-      <p>
-        With your help, we have come all the way from the
-        <a
-          href="http://aira.life"
-          target="_blank"
-        >Aira</a> software prototype to the
-        <a
-          href="http://robonomics.network"
-          target="_blank"
-        >Robonomics platform</a>. Two years of work, more than 50 releases in
-        <a
-          href="https://github.com/airalab"
-          target="_blank"
-        >6 repositories on GitHub</a>, thousands of commits of the whole group of developers. Your support has led to the emergence of a new technology, which further aims to subdue robots to the Ethereum decentralized computer. You helped it. Thank you!
-      </p>
-      <p>It is important to understand that this is not the end of the road, but only the very beginning. We have created this new technology, now it needs to grow and also we should train the community to use Robonomics.</p>
-      <p>The token of the Robonomics platform is called XRT (Robonomics token). You have two options - go through the Civic ID procedure and wait for the Dutch auction launch, or get the XRT today in 2 steps.</p>
-      <div id="intro" style="display:none">
+    <section class="window" id="window-developletter">
+      <div class="window-head window-head--violet">
+        <span>The developers&#8217; letter</span>
+        <a class="window-head-toggle">–</a>
+      </div>
+      <div class="window-content window-content-light">
+        <p>
+          <b>Dear Aira tokens holder,</b>
+        </p>
+        <p>
+          With your help, we have come all the way from the
+          <a
+            href="http://aira.life"
+            target="_blank"
+          >Aira</a> software prototype to the
+          <a
+            href="http://robonomics.network"
+            target="_blank"
+          >Robonomics platform</a>. Two years of work, more than 50 releases in
+          <a
+            href="https://github.com/airalab"
+            target="_blank"
+          >6 repositories on GitHub</a>, thousands of commits of the whole group of developers. Your support has led to the emergence of a new technology, which further aims to subdue robots to the Ethereum decentralized computer. You helped it. Thank you!
+        </p>
+        <p>It is important to understand that this is not the end of the road, but only the very beginning. We have created this new technology, now it needs to grow and also we should train the community to use Robonomics.</p>
+        <p>The token of the Robonomics platform is called XRT (Robonomics token). You have two options - go through the KYC procedure and wait for the Dutch auction launch, or get the XRT today in 2 steps.</p>
         <p>
           <b>What is the difference between these options for the Aira tokens holder:</b>
         </p>
@@ -83,15 +87,14 @@
           </tbody>
         </table>
       </div>
-    </div>
-    <a
-      class="btn-violet container-full btn-simple"
-      href="#"
-      onclick="show(this, '#intro', '&amp;uarr; Minimize the developers&amp;#8217; letter &amp;uarr;', '&amp;darr; Expand the developers&amp;#8217; letter &amp;darr;');return false;"
-    >&darr; Expand the developers&#8217; letter &darr;</a>
+    </section>
   </section>
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    window.windowSlide();
+  }
+};
 </script>

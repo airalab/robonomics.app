@@ -3001,7 +3001,7 @@ section section {
 .section-color--highlight table td, .window-content-light table td {
   background-color: #fff;
 }
-.section-color--highlight .table-striped tbody tr:nth-child(even), .window-content-light .table-striped tbody tr:nth-child(even) {
+.section-color--highlight .table-striped tbody tr:nth-child(even) td, .window-content-light .table-striped tbody tr:nth-child(even) td {
   background-color: #f2f2f2;
 }
 
@@ -3048,6 +3048,15 @@ section section {
 .window-head .window-head-toggle {
   text-align: right;
   font-size: 21px;
+  transition: 0.2s all ease;
+}
+.window-head .window-head-toggle:hover {
+  color: #fff;
+  font-weight: 500;
+}
+
+.window-head--violet {
+  background-color: #7481b9;
 }
 
 /*====== end of Sections ======*/

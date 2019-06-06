@@ -5,11 +5,20 @@
       <input v-model="amount" class="input-line input-size--sm" type="text" placeholder>
       <span>{{fromLabel}}</span>
     </p>
-    <button
-      class="btn-green"
-      :disabled="$wait.is([actionForm, actionTx])"
-      @click="submit"
-    >{{ $t('convert') }} {{toLabel}}</button>
+    <p>
+      <button v-if="$wait.is([actionForm, actionTx])" class="btn-green" disabled>
+        <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
+        <div class="loader-ring align-vertical m-l-10"></div>
+      </button>
+      <button v-else class="btn-green" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
+    </p>
+    <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
+      Wait for
+      <a
+        :href="`https://etherscan.io/tx/${actionTx.replace('tx.', '')}`"
+        target="_blank"
+      >transaction</a> to be mined
+    </p>
   </div>
 </template>
 
