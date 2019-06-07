@@ -6,9 +6,8 @@ export default {
     passing_kyc: 'Passing Civic ID',
     pass_kyc: 'Pass Civic ID',
     pass_kyc_wait: 'Waiting Civic ID',
-    tip: 'Tip',
     tip_text:
-      'it is important to turn your Aira tokens into Aira ID as early as possible, but you do not have to turn all your Aira ID tokens into XRT. If you want to become a provider or use the network, you can use the Aira ID → XRT alembic at any time to transfer any amount of Aira ID an unlimited number of times.',
+      'It is important to turn your Aira tokens into Aira ID as early as possible, but you do not have to turn all your Aira ID tokens into XRT. If you want to become a provider or use the network, you can use the Aira ID → XRT alembic at any time to transfer any amount of Aira ID an unlimited number of times.',
     convert: 'Convert to',
     tokens_alembic: 'AIRA to XRT',
     lighthouse: 'Lighthouses',
@@ -50,9 +49,8 @@ export default {
     passing_kyc: 'Прохождение Civic ID',
     pass_kyc: 'Пройти Civic ID',
     pass_kyc_wait: 'Ожидание Civic ID',
-    tip: 'Совет',
     tip_text:
-      'важно превратить свои Aira токены в Aira ID как можно раньше, но не обязательно превращать все свои токены Aira ID в XRT. Если вы хотите стать провайдером или пользоваться сетью, вы можете пользоваться перегонным кубом Aira ID → XRT в любое время для перегонки любого количества Aira ID неограниченное количество раз.',
+      'Важно превратить свои Aira токены в Aira ID как можно раньше, но не обязательно превращать все свои токены Aira ID в XRT. Если вы хотите стать провайдером или пользоваться сетью, вы можете пользоваться перегонным кубом Aira ID → XRT в любое время для перегонки любого количества Aira ID неограниченное количество раз.',
     convert: 'Конвертировать в',
     tokens_alembic: 'Перегонный куб',
     lighthouse: 'Маяки',

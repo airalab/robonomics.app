@@ -59,8 +59,7 @@
         </div>
       </section>
       <section>
-        <b>{{ $t('tip') }}:</b>
-        {{ $t('tip_text') }}
+        <b>{{ $t('tip_text') }}</b>
       </section>
     </section>
   </div>
