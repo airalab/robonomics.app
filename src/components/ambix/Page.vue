@@ -58,7 +58,7 @@
           <Ambix :from="airkyc" :to="xrt" :ambix="ambix2" :index="0"/>
         </div>
       </section>
-      <section>
+      <section class="t-color-red">
         <b>{{ $t('tip_text') }}</b>
       </section>
     </section>
