@@ -19,7 +19,10 @@
               <IconLink :href="`https://etherscan.io/address/${address}`" :text="address"/>
             </b>
           </p>
-          <p v-if="isKyc" class="t-color-green">{{ $t('kyc_passed') }}</p>
+          <template v-if="isKyc">
+            <p v-if="isWhite" class="t-color-green">{{ $t('kyc_white') }}</p>
+            <p v-else class="t-color-green">{{ $t('kyc_passed') }}</p>
+          </template>
           <template v-else>
             <button
               v-if="loadingKyc"
@@ -86,7 +89,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("kyc", ["isKyc", "loadingKyc"]),
+    ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
     ...mapState("token", ["air", "airkyc", "xrt"])
   },
   mounted() {

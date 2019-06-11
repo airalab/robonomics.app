@@ -8,6 +8,7 @@ const civicSip = new civic.sip({ appId: config.CIVIC_APP_ID });
 const state = {
   run: false,
   isKyc: false,
+  isWhite: false,
   loadingKyc: false
 };
 
@@ -19,7 +20,11 @@ const actions = {
   async check({ commit, dispatch }, address) {
     axios.get(config.API_KYC + '/check/' + address).then(r => {
       if (_has(r.data, 'result')) {
-        commit('isKyc', Boolean(r.data.result));
+        commit(
+          'isKyc',
+          Boolean(r.data.result.check) || Boolean(r.data.result.white)
+        );
+        commit('isWhite', Boolean(r.data.result.white));
         dispatch('civicInit', address);
       }
     });
@@ -68,6 +73,9 @@ const mutations = {
   },
   isKyc(state, data) {
     state.isKyc = data;
+  },
+  isWhite(state, data) {
+    state.isWhite = data;
   },
   loadingKyc(state, data) {
     state.loadingKyc = data;
