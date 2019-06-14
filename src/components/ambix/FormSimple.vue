@@ -24,12 +24,9 @@
 </template>
 
 <script>
-import axios from "axios";
-import _has from "lodash/has";
 import { toWei, fromWei } from "../../utils/utils";
 import TokenABI from "../../abi/Token.json";
-import AmbixABI from "../../abi/Ambix.json";
-import config from "../../config";
+import AmbixSimpleABI from "../../abi/AmbixSimple.json";
 
 export default {
   props: [
@@ -71,8 +68,6 @@ export default {
       if (!value) {
         if (/^approve/.test(this.actionForm)) {
           this.run();
-        } else if (/^unapprove/.test(this.actionForm)) {
-          this.submit();
         }
       }
     }
@@ -89,15 +84,12 @@ export default {
           } else {
             this.error = "Error: max " + fromWei(this.balance, this.decimals);
           }
-        } else if (value > this.current) {
+        } else {
           if (value <= this.balance) {
-            this.approve(value - this.current);
+            this.approve(value);
           } else {
             this.error = "Error: max " + fromWei(this.balance, this.decimals);
           }
-        } else {
-          // a < this.current
-          this.unapprove();
         }
       }
       return false;
@@ -123,12 +115,12 @@ export default {
         }
       );
     },
-    unapprove() {
-      this.actionForm = "unapprove." + this.token + this.ambix;
+    run() {
+      this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = web3.eth.contract(TokenABI).at(this.token);
-      contract.unapprove(this.ambix, { from: web3.eth.accounts[0] }, (e, r) => {
+      const ambix = web3.eth.contract(AmbixSimpleABI).at(this.ambix);
+      ambix.run(this.index, { from: web3.eth.accounts[0] }, (e, r) => {
         if (e) {
           this.$wait.end(this.actionForm);
           return;
@@ -138,41 +130,6 @@ export default {
         this.actionTx = "tx." + this.tx;
         this.$wait.start(this.actionTx);
       });
-    },
-    run() {
-      this.actionForm = "ambix." + this.ambix;
-      this.$wait.start(this.actionForm);
-      this.actionTx = "";
-      const ambix = web3.eth.contract(AmbixABI).at(this.ambix);
-      axios
-        .get(
-          config.API_KYC + "/sign/" + this.ambix + "/" + web3.eth.accounts[0]
-        )
-        .then(r => {
-          if (_has(r.data, "result")) {
-            const signature = r.data.result;
-            ambix.run(
-              this.index,
-              signature,
-              { from: web3.eth.accounts[0] },
-              (e, r) => {
-                if (e) {
-                  this.$wait.end(this.actionForm);
-                  return;
-                }
-                this.$wait.end(this.actionForm);
-                this.tx = r;
-                this.actionTx = "tx." + this.tx;
-                this.$wait.start(this.actionTx);
-              }
-            );
-          } else {
-            this.$wait.end(this.actionForm);
-          }
-        })
-        .catch(() => {
-          this.$wait.end(this.actionForm);
-        });
     }
   }
 };

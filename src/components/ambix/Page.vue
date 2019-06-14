@@ -34,7 +34,7 @@
         </div>
         <div
           class="d-table--cell section-color section-color--highlight section-shade"
-          :class="{ 'section-disabled': !isKyc }"
+          :class="{ 'section-disabled': !isKyc || air.balance <= 0 }"
         >
           <h3>2. Aira → Aira ID</h3>
           <img
@@ -48,7 +48,7 @@
         </div>
         <div
           class="d-table--cell section-color section-color--highlight section-shade"
-          :class="{ 'section-disabled': !isKyc }"
+          :class="{ 'section-disabled': !isKyc || airkyc.balance <= 0 }"
         >
           <h3>3. Aira ID → XRT</h3>
           <img
