@@ -10,6 +10,9 @@ const getIpfs = () => {
   }
   const init = (resolve, reject) => {
     ipfs = new Ipfs(config.IPFS_CONFIG);
+    ipfs.on('error', error => {
+      console.log(error.message);
+    });
     ipfs.once('ready', () =>
       ipfs.id((err, info) => {
         if (err) {
