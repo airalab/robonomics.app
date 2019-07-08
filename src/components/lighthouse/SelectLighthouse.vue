@@ -176,7 +176,7 @@ export default {
     },
     selectLighthouse(name) {
       this.lighthouse = name;
-      this.searchLighthouse();
+      return this.searchLighthouse();
     },
     async sendCreateLighthouse() {
       if (!(this.form.minimalStake > 0)) {
