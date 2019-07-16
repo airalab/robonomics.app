@@ -1,8 +1,8 @@
 <template>
   <fragment>
     <a v-if="text" :href="href" target="_blank" class="align-vertical m-r-10">
-      <img v-if="isIcon" :src="icon()" class="avatar-small align-vertical m-r-10" alt>
-      {{ text.slice(0, 6) + '...' + text.slice(-4) }}
+      <img v-if="isIcon" :src="icon()" class="avatar-small align-vertical m-r-10" alt />
+      <b>{{ text.slice(0, 6) + '...' + text.slice(-4) }}</b>
     </a>
     <a v-if="isCopy" @click="copy()" class="align-vertical" href="#">
       <i class="i-copy d-block"></i>

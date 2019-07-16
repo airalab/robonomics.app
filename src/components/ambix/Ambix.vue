@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <fragment>
     <Form
       v-if="ambix === ambix1"
       :token="from.address"
@@ -22,7 +22,7 @@
       :ambix="ambix"
       :index="index"
     />
-  </div>
+  </fragment>
 </template>
 
 <script>

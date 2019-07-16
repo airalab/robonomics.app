@@ -1,20 +1,18 @@
 <template>
   <div class="container-basic">
-    <section class="t-align--center">
+    <section class="loading-container">
       <div class="loading-logo">
-        <img alt="dApp logo" src="assets/i/logo-dapp-2.svg" style="width: 150px;">
+        <img alt="dApp logo" src="assets/i/logo-dapp-2.svg" style="width: 150px;" />
       </div>
-      <div class="loading-title title-pale">robonomics.network</div>
-    </section>
-    <div class="msg-error msg-icon">
-      <div class="msg-title">No access to account</div>
-      <p>
-        <b>
+      <div class="t-uppercase t-lg tcolor-violet">robonomics.network</div>
+      <section class="msg-error msg-icon">
+        <div class="msg-title">No access to account</div>
+        <p>
           Try to refresh browser page or
           <button @click="requestAccount">request account</button>.
-        </b>
-      </p>
-    </div>
+        </p>
+      </section>
+    </section>
   </div>
 </template>
 

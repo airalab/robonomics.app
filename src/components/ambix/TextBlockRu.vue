@@ -1,12 +1,12 @@
 <template>
-  <section>
+  <div>
     <h1>{{ $t('header') }}</h1>
-    <section class="window" id="window-developletter">
+    <section class="section-light window" id="window-developletter">
       <div class="window-head window-head--violet">
-        <span>Письмо разработчиков</span>
-        <a class="window-head-toggle">–</a>
+        <span>Письмо разработчиков&#8217; letter</span>
+        <a class="window-head-toggle" href="#">–</a>
       </div>
-      <div class="window-content window-content-light">
+      <div class="window-content">
         <p>
           <b>Держатель токенов Aira!</b>
         </p>
@@ -27,7 +27,7 @@
         <p>
           <b>В чем разница этих вариантов для держателя Aira токенов:</b>
         </p>
-        <table class="table-striped table-responsive">
+        <table class="table-hover table-responsive">
           <thead>
             <tr>
               <th>Aira → Aira ID</th>
@@ -85,7 +85,7 @@
         </table>
       </div>
     </section>
-  </section>
+  </div>
 </template>
 
 <script>

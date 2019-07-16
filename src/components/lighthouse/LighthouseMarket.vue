@@ -6,17 +6,13 @@
         <div class="window">
           <div class="window-head">
             <span>Demand</span>
-            <button v-on:click="sendMsgDemand" class="btn-green input-sm">Test</button>
+            <button v-on:click="sendMsgDemand" class="btn-green input-sm" style="width:100%">Test</button>
           </div>
           <div class="window-content">
-            <div
-              v-for="(item, i) in demands"
-              :key="i"
-              class="section-color section-color--highlight m-t-10"
-            >
+            <div v-for="(item, i) in demands" :key="i" class="section-light m-t-10">
               <p>
                 <span class="t-sm">Sent from account:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.sender}`"
                   :text="item.sender"
@@ -24,7 +20,7 @@
               </p>
               <p>
                 <span class="t-sm">Demand program description:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.model}`"
                   :text="item.model"
@@ -33,7 +29,7 @@
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.objective}`"
                   :text="item.objective"
@@ -47,17 +43,17 @@
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
-                <br>
+                <br />
                 <b>{{ item.cost }}</b>
               </p>
               <p>
                 <span class="t-sm">Valid before:</span>
-                <br>
+                <br />
                 <b>{{ item.deadline }} block</b>
               </p>
               <p>
                 <span class="t-sm">Status:</span>
-                <br>
+                <br />
                 <b>Without observing network</b>
               </p>
             </div>
@@ -68,17 +64,13 @@
         <div class="window">
           <div class="window-head">
             <span>Offer</span>
-            <button v-on:click="sendMsgOffer" class="btn-green input-sm">Test</button>
+            <button v-on:click="sendMsgOffer" class="btn-green input-sm" style="width:100%">Test</button>
           </div>
           <div class="window-content">
-            <div
-              v-for="(item, i) in offers"
-              :key="i"
-              class="section-color section-color--highlight m-t-10"
-            >
+            <div v-for="(item, i) in offers" :key="i" class="section-light m-t-10">
               <p>
                 <span class="t-sm">Sent from account:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.sender}`"
                   :text="item.sender"
@@ -86,7 +78,7 @@
               </p>
               <p>
                 <span class="t-sm">Demand program description:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.model}`"
                   :text="item.model"
@@ -95,7 +87,7 @@
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.objective}`"
                   :text="item.objective"
@@ -109,17 +101,17 @@
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
-                <br>
+                <br />
                 <b>{{ item.cost }}</b>
               </p>
               <p>
                 <span class="t-sm">Valid before:</span>
-                <br>
+                <br />
                 <b>{{ item.deadline }} block</b>
               </p>
               <p>
                 <span class="t-sm">Status:</span>
-                <br>
+                <br />
                 <b>Without observing network</b>
               </p>
             </div>
@@ -132,14 +124,10 @@
             <span>Liabilities</span>
           </div>
           <div class="window-content">
-            <div
-              v-for="(item, i) in lis"
-              :key="i"
-              class="section-color section-color--highlight m-t-10"
-            >
+            <div v-for="(item, i) in lis" :key="i" class="section-light m-t-10">
               <p>
                 <span class="t-sm">Liability:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.address}`"
                   :text="item.address"
@@ -147,7 +135,7 @@
               </p>
               <p>
                 <span class="t-sm">Provider address:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.worker}`"
                   :text="item.worker"
@@ -155,7 +143,7 @@
               </p>
               <p>
                 <span class="t-sm">Program description:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.model}`"
                   :text="item.model"
@@ -164,7 +152,7 @@
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://ipfs.io/ipfs/${item.objective}`"
                   :text="item.objective"
@@ -178,12 +166,12 @@
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
-                <br>
+                <br />
                 <b>{{ item.cost }}</b>
               </p>
               <p>
                 <span class="t-sm">Promisee:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.promisee}`"
                   :text="item.promisee"
@@ -191,7 +179,7 @@
               </p>
               <p>
                 <span class="t-sm">Promisor:</span>
-                <br>
+                <br />
                 <IconLink
                   :href="`https://etherscan.io/address/${item.promisor}`"
                   :text="item.promisor"

@@ -1,11 +1,7 @@
 <template>
-  <section :class="{ 'section-disabled': Object.values(nodes).length===0 }">
+  <section class="section-light">
     <h2>Robonomics Telemetry</h2>
-    <p v-if="Object.values(nodes).length===0">
-      <span class="loader-ring align-vertical m-r-15"></span>
-      <b class="align-vertical t-uppercase">{{ $t('waiting') }}</b>
-    </p>
-    <table class="container-full table-striped">
+    <table class="container-full table-hover">
       <thead>
         <tr>
           <th>ipns</th>

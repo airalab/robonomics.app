@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <fragment>
     <section>
       <h2>Connect to lighthouse</h2>
       <div class="input-size--lg">
@@ -56,7 +56,7 @@
       >Create lighthouse and connect to the network</button>
       <span v-if="createMsg">{{ createMsg }}</span>
     </div>
-  </section>
+  </fragment>
 </template>
 
 <script>

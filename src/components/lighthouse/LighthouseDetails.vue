@@ -1,37 +1,38 @@
 <template>
-  <section class="window">
+  <section class="section-light window" id="window-developletter">
     <div class="window-head">
       <span>Lighthouse details</span>
+      <!-- a.window-head-toggle(href="#") –-->
     </div>
-    <div class="window-content window-content-light">
+    <div class="window-content">
       <p>
         <span class="t-sm">Lighthouse contract address:</span>
-        <br>
-        <IconLink :href="`https://etherscan.io/address/${lighthouse}`" :text="lighthouse" isCopy/>
+        <br />
+        <IconLink :href="`https://etherscan.io/address/${lighthouse}`" :text="lighthouse" isCopy />
       </p>
-      <hr>
+      <hr />
       <p>
         <span class="t-sm">Lighthouse status:</span>
-        <br>
+        <br />
         <b v-if="timeoutInBlocks < currentBlock - keepAliveBlock">Sleeping</b>
         <b v-else>Active</b>
       </p>
-      <hr>
+      <hr />
       <p>
         <span class="t-sm">Balance:</span>
-        <br>
+        <br />
         <b>{{ lighthouseBalance | fromWei(9, 'XRT') }}</b>
       </p>
-      <hr>
+      <hr />
       <p>
         <span class="t-sm">Minimal stake per quote:</span>
-        <br>
+        <br />
         <b>{{ minimalStake | fromWei(9, 'XRT') }}</b>
       </p>
-      <hr>
-      <WorkerForm/>
-      <hr>
-      <TradeForm/>
+      <hr />
+      <WorkerForm />
+      <hr />
+      <TradeForm />
     </div>
   </section>
 </template>

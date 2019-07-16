@@ -1,17 +1,21 @@
 <template>
-  <div>
+  <form class="content">
     <div v-if="$wait.is('log')">...</div>
-    <p>
-      <input v-model="amount" class="input-line input-size--sm" type="text" placeholder>
-      <span>{{fromLabel}}</span>
-    </p>
-    <p>
-      <button v-if="$wait.is([actionForm, actionTx])" class="btn-green" disabled>
-        <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
-        <div class="loader-ring align-vertical m-l-10"></div>
-      </button>
-      <button v-else class="btn-green" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
-    </p>
+    <div class="input-measured container-full">
+      <input
+        v-model="amount"
+        class="container-full"
+        type="text"
+        placeholder
+        :disabled="$wait.is([actionForm, actionTx])"
+      />
+      <span class="input-measure">{{fromLabel}}</span>
+    </div>
+    <button v-if="$wait.is([actionForm, actionTx])" class="container-full" disabled>
+      <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
+      <div class="loader-ring align-vertical m-l-10"></div>
+    </button>
+    <button v-else class="container-full" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
@@ -20,7 +24,7 @@
       >transaction</a> to be mined
     </p>
     <p v-if="error!==''" class="t-sm">{{error}}</p>
-  </div>
+  </form>
 </template>
 
 <script>

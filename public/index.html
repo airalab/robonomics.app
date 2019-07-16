@@ -11,21 +11,19 @@
     <meta name="keywords" content="" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,900&amp;amp;subset=cyrillic,cyrillic-ext"
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&amp;amp;subset=cyrillic,cyrillic-ext"
       type="text/css"
       media="all"
     />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.20.0/slimselect.min.css"
+      href="<%= BASE_URL %>assets/css/robonomics.min.css?v=6"
       rel="stylesheet"
     />
-    <link
-      href="<%= BASE_URL %>assets/css/robonomics_website.min.css?v=5"
-      rel="stylesheet"
-    />
-    <script src="<%= BASE_URL %>assets/js/robonomics_plugins.min.js?v=5"></script>
+    <script src="<%= BASE_URL %>assets/js/robonomics-html.min.js?v=6"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.20.0/slimselect.min.js"></script>
-    <script src="<%= BASE_URL %>assets/js/robonomics_website.js?v=5"></script>
+    <script src="https://unpkg.com/popper.js"></script>
+    <script src="https://unpkg.com/tooltip.js"></script>
+    <script src="<%= BASE_URL %>assets/js/robonomics-html-init.js?v=6"></script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon" />
     <link
       rel="shortcut icon"
@@ -51,13 +49,7 @@
     <script src="<%= BASE_URL %>ipfs.min.js"></script>
     <script src="<%= BASE_URL %>socket.io.js"></script>
   </head>
-  <body class="wrap-flexsols">
-    <noscript>
-      <strong
-        >We're sorry but dapp-ambix doesn't work properly without JavaScript
-        enabled. Please enable it to continue.</strong
-      >
-    </noscript>
+  <body class="flexcols theme-light">
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
