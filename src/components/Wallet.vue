@@ -1,7 +1,7 @@
 <template>
   <div class="panel-top section-light">
     <div class="panel-top--cell">
-      <IconLink :href="`https://etherscan.io/address/${account}`" :text="account" />
+      <LinkExplorer :text="account" />
     </div>
     <div class="panel-top--cell js-tooltip" data-tooltip="Not available for Sidechain">
       <b>{{air.balance | fromWei(air.decimals)}}</b>

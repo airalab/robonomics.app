@@ -8,7 +8,7 @@ import Web3Check, { ACTIONS } from 'vue-web3-check';
 import router from './router';
 import store from './store';
 import App from './App';
-import IconLink from './components/IconLink';
+import LinkExplorer from './components/LinkExplorer';
 import messages from './messages';
 import config from './config';
 import * as filters from './utils/filters';
@@ -20,6 +20,8 @@ Vue.use(VueI18n);
 Vue.use(Plugin);
 
 Vue.filter('fromWei', filters.fromWei);
+Vue.filter('urlExplorer', filters.urlExplorer);
+Vue.filter('urlIpfs', filters.urlIpfs);
 
 Web3Check.store.on('update', data => {
   if (
@@ -46,7 +48,7 @@ const i18n = new VueI18n({
   fallbackLocale: 'en',
   messages
 });
-Vue.component('IconLink', IconLink);
+Vue.component('LinkExplorer', LinkExplorer);
 
 new Vue({
   router,

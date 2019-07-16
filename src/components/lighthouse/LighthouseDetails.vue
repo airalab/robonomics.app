@@ -8,7 +8,7 @@
       <p>
         <span class="t-sm">Lighthouse contract address:</span>
         <br />
-        <IconLink :href="`https://etherscan.io/address/${lighthouse}`" :text="lighthouse" isCopy />
+        <LinkExplorer :text="lighthouse" />
       </p>
       <hr />
       <p>

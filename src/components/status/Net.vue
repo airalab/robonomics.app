@@ -17,12 +17,12 @@
         <td v-if="Object.values(nodes).length===0" colspan="7">{{ $t('no_data') }}</td>
         <tr v-else v-for="item in Object.values(nodes)" :key="item.id">
           <td>
-            <a :href="`https://ipfs.io/ipns/${item.id}`" target="_blank">{{item.id}}</a>
+            <a :href="item.id | urlIpfs('ipns')" target="_blank">{{item.id}}</a>
           </td>
           <td>
             <a
               v-if="item.address"
-              :href="`http://etherscan.io/address/${item.address}`"
+              :href="item.address | urlExplorer()"
               target="_blank"
             >{{item.address}}</a>
             <span v-else>-</span>

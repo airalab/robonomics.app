@@ -13,33 +13,22 @@
               <p>
                 <span class="t-sm">Sent from account:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.sender}`"
-                  :text="item.sender"
-                />
+                <LinkExplorer :text="item.sender" />
               </p>
               <p>
                 <span class="t-sm">Demand program description:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.model}`"
-                  :text="item.model"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.model" />
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.objective}`"
-                  :text="item.objective"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.objective" />
               </p>
               <p>
                 <a
                   class="t-sm"
-                  :href="`https://etherscan.io/token/${item.token}`"
+                  :href="item.token | urlExplorer('token')"
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
@@ -71,33 +60,22 @@
               <p>
                 <span class="t-sm">Sent from account:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.sender}`"
-                  :text="item.sender"
-                />
+                <LinkExplorer :text="item.sender" />
               </p>
               <p>
                 <span class="t-sm">Demand program description:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.model}`"
-                  :text="item.model"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.model" />
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.objective}`"
-                  :text="item.objective"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.objective" />
               </p>
               <p>
                 <a
                   class="t-sm"
-                  :href="`https://etherscan.io/token/${item.token}`"
+                  :href="item.token | urlExplorer('token')"
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
@@ -128,41 +106,27 @@
               <p>
                 <span class="t-sm">Liability:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.address}`"
-                  :text="item.address"
-                />
+                <LinkExplorer :text="item.address" />
               </p>
               <p>
                 <span class="t-sm">Provider address:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.worker}`"
-                  :text="item.worker"
-                />
+                <LinkExplorer :text="item.worker" />
               </p>
               <p>
                 <span class="t-sm">Program description:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.model}`"
-                  :text="item.model"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.model" />
               </p>
               <p>
                 <span class="t-sm">Data for program execution:</span>
                 <br />
-                <IconLink
-                  :href="`https://ipfs.io/ipfs/${item.objective}`"
-                  :text="item.objective"
-                  :isIcon="false"
-                />
+                <LinkExplorer type="ipfs" :text="item.objective" />
               </p>
               <p>
                 <a
                   class="t-sm"
-                  :href="`https://etherscan.io/token/${item.token}`"
+                  :href="item.token | urlExplorer('token')"
                   target="_blank"
                 >Payment token</a>&nbsp;
                 <span class="t-sm">cost:</span>
@@ -172,18 +136,12 @@
               <p>
                 <span class="t-sm">Promisee:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.promisee}`"
-                  :text="item.promisee"
-                />
+                <LinkExplorer :text="item.promisee" />
               </p>
               <p>
                 <span class="t-sm">Promisor:</span>
                 <br />
-                <IconLink
-                  :href="`https://etherscan.io/address/${item.promisor}`"
-                  :text="item.promisor"
-                />
+                <LinkExplorer :text="item.promisor" />
               </p>
               <button
                 v-if="item.promisor == account && item.result == ''"
@@ -193,11 +151,7 @@
               <div style="margin: 20px 0px;" v-if="item.result != ''">
                 <div class="t-small">Results:</div>
                 <b class="code-overflow-line">
-                  <IconLink
-                    :href="`https://ipfs.io/ipfs/${item.result}`"
-                    :text="item.result"
-                    :isIcon="false"
-                  />
+                  <LinkExplorer type="ipfs" :text="item.result" />
                 </b>
               </div>
               <div style="margin: 20px 0px;" v-if="item.result == ''">

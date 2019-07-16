@@ -19,11 +19,7 @@
           <tr v-for="member in members" :key="member.i">
             <td>{{member.i}}</td>
             <td>
-              <IconLink
-                :href="`https://etherscan.io/address/${member.address}`"
-                :text="member.address"
-                isCopy
-              />
+              <LinkExplorer :text="member.address" />
             </td>
             <td>
               <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>

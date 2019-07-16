@@ -19,7 +19,7 @@
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
-        :href="`https://etherscan.io/tx/${actionTx.replace('tx.', '')}`"
+        :href="actionTx.replace('tx.', '') | urlExplorer('tx')"
         target="_blank"
       >transaction</a> to be mined
     </p>

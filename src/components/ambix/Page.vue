@@ -10,7 +10,7 @@
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t('passing_kyc') }}</h3>
           <div class="content">
-            <IconLink :href="`https://etherscan.io/address/${address}`" :text="address" />
+            <LinkExplorer :text="address" />
             <button v-if="isKyc" class="container-full btn-green" disabled>{{ $t('kyc_passed') }}</button>
             <template v-else>
               <button

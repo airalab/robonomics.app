@@ -108,7 +108,7 @@
         <div class="col-md-4">
           <section>
             <b>{{ $t('token_addr') }}:</b>
-            <IconLink :href="`https://etherscan.io/token/${xrt.address}`" :text="xrt.address" />
+            <LinkExplorer :text="xrt.address" category="token" />
           </section>
           <table class="container-full table-hover">
             <caption>{{ $t('token_stat') }}</caption>
