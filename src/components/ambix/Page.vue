@@ -24,19 +24,19 @@
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || air.balance <= 0 }"
+          :class="{ 'disabled': !isKyc || tokens.air.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-2.png" />
           <h3>Aira → Aira ID</h3>
-          <Ambix :from="air" :to="airkyc" :ambix="ambix1" :index="0" />
+          <Ambix :from="tokens.air" :to="tokens.airkyc" :ambix="ambix1" :index="0" />
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || airkyc.balance <= 0 }"
+          :class="{ 'disabled': !isKyc || tokens.airkyc.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-3.png" />
           <h3>Aira ID → XRT</h3>
-          <Ambix :from="airkyc" :to="xrt" :ambix="ambix2" :index="0" />
+          <Ambix :from="tokens.airkyc" :to="tokens.xrt" :ambix="ambix2" :index="0" />
         </div>
       </section>
 
@@ -49,6 +49,7 @@
 
 <script>
 import { mapState } from "vuex";
+import Web3Check from 'vue-web3-check';
 import TextBlockEn from "./TextBlockEn";
 import TextBlockRu from "./TextBlockRu";
 import Ambix from "./Ambix";
@@ -63,16 +64,19 @@ export default {
   data() {
     return {
       address: "",
-      ambix1: config.AMBIX.AMBIX1,
-      ambix2: config.AMBIX.AMBIX2
+      ambix1: config.AMBIX1,
+      ambix2: config.AMBIX2
     };
   },
   computed: {
     ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
-    ...mapState("token", ["air", "airkyc", "xrt"])
+    ...mapState("token", ["tokens"])
   },
   mounted() {
-    this.address = web3.eth.accounts[0];
+    if (Web3Check.store.state.networkId !== 1) {
+      this.$router.push({ path: '/' })
+    }
+    this.address = this.$robonomics.account.address;
     this.$store.dispatch("kyc/check", this.address);
   },
   methods: {

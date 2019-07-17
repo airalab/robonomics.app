@@ -28,6 +28,7 @@ export default new Router({
       path: '/lighthouse/:lighthouse',
       name: 'lighthouse',
       component: Lighthouse
-    }
+    },
+    { path: '*', redirect: '/' }
   ]
 });

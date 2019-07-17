@@ -17,27 +17,7 @@ const getApproveToken = async (account, to, address) => {
 // initial state
 const state = {
   run: false,
-  air: {
-    address: config.AMBIX.AIR,
-    label: 'AIRA',
-    decimals: config.AMBIX.AIR_DECIMALS,
-    balance: 0,
-    approve: 0
-  },
-  airkyc: {
-    address: config.AMBIX.AIR_KYC,
-    label: 'AIRA ID',
-    decimals: config.AMBIX.AIR_KYC_DECIMALS,
-    balance: 0,
-    approve: 0
-  },
-  xrt: {
-    address: config.AMBIX.XRT,
-    label: 'XRT',
-    decimals: config.AMBIX.XRT_DECIMALS,
-    balance: 0,
-    approve: 0
-  }
+  tokens: {}
 };
 
 // getters
@@ -45,60 +25,51 @@ const getters = {};
 
 // actions
 const actions = {
-  async init({ commit, state, dispatch, rootGetters }, account) {
+  async init({ commit, state, dispatch, rootGetters }, { account, networkId }) {
     if (state.run) {
       return;
     }
     commit('run');
-    const contract = web3.eth.contract(ABI_TOKEN);
-    const token1 = contract.at(config.AMBIX.AIR);
-    const events1 = token1.allEvents({});
-    events1.watch((error, result) => {
-      if (result) {
-        dispatch('getBalance', account);
-        if (rootGetters['wait/is']('tx.' + result.transactionHash)) {
-          dispatch('wait/end', 'tx.' + result.transactionHash, { root: true });
+    dispatch('setTokens', networkId);
+    dispatch('getBalance', account);
+    Object.values(state.tokens).forEach(item => {
+      const contract = web3.eth.contract(ABI_TOKEN);
+      const token = contract.at(item.address);
+      const events = token.allEvents({});
+      events.watch((error, result) => {
+        if (result) {
+          dispatch('getBalance', account);
+          dispatch('getApprove', account);
+          if (rootGetters['wait/is']('tx.' + result.transactionHash)) {
+            dispatch('wait/end', 'tx.' + result.transactionHash, {
+              root: true
+            });
+          }
         }
-      }
-    });
-
-    const token2 = contract.at(config.AMBIX.AIR_KYC);
-    const events2 = token2.allEvents({});
-    events2.watch((error, result) => {
-      if (result) {
-        dispatch('getBalance', account);
-        if (rootGetters['wait/is']('tx.' + result.transactionHash)) {
-          dispatch('wait/end', 'tx.' + result.transactionHash, { root: true });
-        }
-      }
-    });
-
-    const token3 = contract.at(config.AMBIX.XRT);
-    const events3 = token3.allEvents({});
-    events3.watch((error, result) => {
-      if (result) {
-        dispatch('getBalance', account);
-        if (rootGetters['wait/is']('tx.' + result.transactionHash)) {
-          dispatch('wait/end', 'tx.' + result.transactionHash, { root: true });
-        }
-      }
+      });
     });
   },
-  async getBalance({ commit, dispatch }, account) {
-    commit('air', await getBalanceToken(account, config.AMBIX.AIR));
-    commit('airkyc', await getBalanceToken(account, config.AMBIX.AIR_KYC));
-    commit('xrt', await getBalanceToken(account, config.AMBIX.XRT));
-    dispatch('getApprove', account);
+  setTokens({ commit }, networkId) {
+    const chain = config.chain(networkId);
+    Object.keys(chain.TOKEN).forEach(name => {
+      commit('setToken', { name, data: chain.TOKEN[name] });
+    });
   },
-  async getApprove({ commit }, account) {
-    commit(
-      'approveAir',
-      await getApproveToken(account, config.AMBIX.AMBIX1, config.AMBIX.AIR)
-    );
-    commit(
-      'approveAirkyc',
-      await getApproveToken(account, config.AMBIX.AMBIX2, config.AMBIX.AIR_KYC)
-    );
+  getBalance({ commit, state }, account) {
+    Object.keys(state.tokens).forEach(async name => {
+      commit('balance', {
+        name,
+        balance: await getBalanceToken(account, state.tokens[name].address)
+      });
+    });
+  },
+  getApprove({ commit, state }, account) {
+    Object.keys(state.tokens).forEach(async name => {
+      commit('approve', {
+        name,
+        approve: await getApproveToken(account, state.tokens[name].address)
+      });
+    });
   }
 };
 
@@ -107,23 +78,18 @@ const mutations = {
   run(state) {
     state.run = true;
   },
-  air(state, data) {
-    state.air.balance = data;
+  setToken(state, { name, data }) {
+    state.tokens[name] = {
+      ...data,
+      balance: 0,
+      approve: 0
+    };
   },
-  airkyc(state, data) {
-    state.airkyc.balance = data;
+  balance(state, { name, balance }) {
+    state.tokens[name].balance = balance;
   },
-  xrt(state, data) {
-    state.xrt.balance = data;
-  },
-  approveAir(state, data) {
-    state.air.approve = data;
-  },
-  approveAirkyc(state, data) {
-    state.airkyc.approve = data;
-  },
-  approveXrt(state, data) {
-    state.xrt.approve = data;
+  approve(state, { name, approve }) {
+    state.tokens[name].approve = approve;
   }
 };
 

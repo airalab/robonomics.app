@@ -102,11 +102,11 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = web3.eth.contract(TokenABI).at(this.token);
+      const contract = this.$robonomics.web3.eth.contract(TokenABI).at(this.token);
       contract.approve(
         this.ambix,
         toWei(value, this.decimals),
-        { from: web3.eth.accounts[0] },
+        { from: this.$robonomics.account.address },
         (e, r) => {
           if (e) {
             this.$wait.end(this.actionForm);
@@ -123,8 +123,8 @@ export default {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = web3.eth.contract(AmbixSimpleABI).at(this.ambix);
-      ambix.run(this.index, { from: web3.eth.accounts[0] }, (e, r) => {
+      const ambix = this.$robonomics.web3.eth.contract(AmbixSimpleABI).at(this.ambix);
+      ambix.run(this.index, { from: this.$robonomics.account.address }, (e, r) => {
         if (e) {
           this.$wait.end(this.actionForm);
           return;

@@ -110,11 +110,11 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = web3.eth.contract(TokenABI).at(this.token);
+      const contract = this.$robonomics.web3.eth.contract(TokenABI).at(this.token);
       contract.approve(
         this.ambix,
         toWei(value, this.decimals),
-        { from: web3.eth.accounts[0] },
+        { from: this.$robonomics.account.address },
         (e, r) => {
           if (e) {
             this.$wait.end(this.actionForm);
@@ -131,8 +131,8 @@ export default {
       this.actionForm = "unapprove." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = web3.eth.contract(TokenABI).at(this.token);
-      contract.unapprove(this.ambix, { from: web3.eth.accounts[0] }, (e, r) => {
+      const contract = this.$robonomics.web3.eth.contract(TokenABI).at(this.token);
+      contract.unapprove(this.ambix, { from: this.$robonomics.account.address }, (e, r) => {
         if (e) {
           this.$wait.end(this.actionForm);
           return;
@@ -147,10 +147,10 @@ export default {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = web3.eth.contract(AmbixABI).at(this.ambix);
+      const ambix = this.$robonomics.web3.eth.contract(AmbixABI).at(this.ambix);
       axios
         .get(
-          config.API_KYC + "/sign/" + this.ambix + "/" + web3.eth.accounts[0]
+          config.API_KYC + "/sign/" + this.ambix + "/" + this.$robonomics.account.address
         )
         .then(r => {
           if (_has(r.data, "result")) {
@@ -158,7 +158,7 @@ export default {
             ambix.run(
               this.index,
               signature,
-              { from: web3.eth.accounts[0] },
+              { from: this.$robonomics.account.address },
               (e, r) => {
                 if (e) {
                   this.$wait.end(this.actionForm);

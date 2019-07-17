@@ -43,7 +43,7 @@
               <span class="i-lighthouse align-vertical"></span>
               <span class="align-vertical">{{ $t('lighthouse') }}</span>
             </router-link>
-            <router-link to="/alembic" active-class="active" exact>
+            <router-link v-if="networkId === 1" to="/alembic" active-class="active" exact>
               <span class="i-transfer align-vertical"></span>
               <span class="align-vertical">{{ $t('tokens_alembic') }}</span>
             </router-link>
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import Web3Check from 'vue-web3-check';
 import LangSwitcher from "./LangSwitcher";
 
 export default {
@@ -109,8 +110,14 @@ export default {
   components: {
     LangSwitcher
   },
+  data() {
+    return {
+      networkId: 0
+    };
+  },
   mounted() {
     window.init();
+    this.networkId = Web3Check.store.state.networkId;
   }
 };
 </script>

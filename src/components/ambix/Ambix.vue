@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      ambix1: config.AMBIX.AMBIX1
+      ambix1: config.AMBIX1
     };
   }
 };

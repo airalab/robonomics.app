@@ -1,5 +1,5 @@
 import Robonomics, { MessageProviderIpfs } from 'robonomics-js';
-import config, { VERSION } from '../config';
+import config from '../config';
 
 let robonomics = null;
 export const initRobonomics = (ipfs, network) => {
@@ -9,9 +9,9 @@ export const initRobonomics = (ipfs, network) => {
       address: web3.eth.accounts[0]
     },
     ens: {
-      address: config.ROBONOMICS.chains[Number(network)].ens,
-      suffix: config.ROBONOMICS.chains[Number(network)].ensSuffix,
-      version: VERSION
+      address: config.chain(network).ROBONOMICS.ens,
+      suffix: config.chain(network).ROBONOMICS.ensSuffix,
+      version: config.ROBONOMICS.version
     },
     messageProvider: new MessageProviderIpfs(ipfs)
   });

@@ -32,13 +32,9 @@ Web3Check.store.on('update', data => {
     window.location.reload(false);
   }
 });
-Web3Check.store.on('load', state => {
-  store.dispatch('token/init', state.account);
-  store.dispatch('token/getBalance', state.account);
-});
 Vue.use(Web3Check, {
   Web3: Web3,
-  networks: [config.NETWORK],
+  networks: config.CHAINS,
   requireAccount: true
 });
 

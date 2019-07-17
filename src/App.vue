@@ -50,12 +50,18 @@ export default {
   },
   mounted() {
     Web3Check.store.on("load", state => {
-      getIpfs().then(ipfs => {
-        Vue.prototype.$robonomics = initRobonomics(ipfs, state.networkId);
-        this.$robonomics.ready().then(() => {
-          this.isReadyRobonomics = true;
+      this.$store
+        .dispatch("token/init", {
+          account: state.account,
+          networkId: state.networkId
+        })
+        .then(() => getIpfs())
+        .then(ipfs => {
+          Vue.prototype.$robonomics = initRobonomics(ipfs, state.networkId);
+          this.$robonomics.ready().then(() => {
+            this.isReadyRobonomics = true;
+          });
         });
-      });
     });
   },
   components: {

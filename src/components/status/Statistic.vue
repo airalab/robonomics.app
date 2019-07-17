@@ -108,7 +108,7 @@
         <div class="col-md-4">
           <section>
             <b>{{ $t('token_addr') }}:</b>
-            <LinkExplorer :text="xrt.address" category="token" />
+            <LinkExplorer :text="tokens.xrt.address" category="token" />
           </section>
           <table class="container-full table-hover">
             <caption>{{ $t('token_stat') }}</caption>
@@ -137,20 +137,11 @@
 
 <script>
 import { mapState } from "vuex";
-import config from "../../config";
 
 export default {
-  data() {
-    return {
-      xrt: config.XRT
-    };
-  },
-  computed: mapState("statistics", [
-    "connected",
-    "totalSupply",
-    "wn",
-    "gas",
-    "li"
-  ])
+  computed: {
+    ...mapState("token", ["tokens"]),
+    ...mapState("statistics", ["connected", "totalSupply", "wn", "gas", "li"])
+  }
 };
 </script>
