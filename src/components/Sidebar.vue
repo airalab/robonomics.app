@@ -16,9 +16,9 @@
             href="javascript:;"
             on-toggle="#sidebar-lang"
           >{{$i18n.locale.toUpperCase()}}</a>
-          <!-- <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-theme">
+          <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-theme">
             <i class="i-day"></i>
-          </a> -->
+          </a>
         </section>
         <section class="sidebar-col--bottom">
           <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-info">?</a>
@@ -62,11 +62,19 @@
       <div class="sidebar-col-in">
         <section>
           <nav class="nav-vertical">
-            <a class="active" href="#">
+            <a
+              :class="{active: theme === 'light'}"
+              href="#"
+              @click="$store.dispatch('theme/setTheme', 'light')"
+            >
               <span class="i-day align-vertical"></span>
               <span class="align-vertical">Light</span>
             </a>
-            <a href="#">
+            <a
+              :class="{active: theme === 'dark'}"
+              href="#"
+              @click="$store.dispatch('theme/setTheme', 'dark')"
+            >
               <span class="i-night align-vertical"></span>
               <span class="align-vertical">Dark</span>
             </a>
@@ -102,7 +110,8 @@
 </template>
 
 <script>
-import Web3Check from 'vue-web3-check';
+import { mapState } from "vuex";
+import Web3Check from "vue-web3-check";
 import LangSwitcher from "./LangSwitcher";
 
 export default {
@@ -114,6 +123,9 @@ export default {
     return {
       networkId: 0
     };
+  },
+  computed: {
+    ...mapState("theme", ["theme"])
   },
   mounted() {
     window.init();

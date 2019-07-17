@@ -49,6 +49,7 @@ export default {
     };
   },
   mounted() {
+    this.$store.dispatch("theme/init");
     Web3Check.store.on("load", state => {
       this.$store
         .dispatch("token/init", {
