@@ -6,7 +6,7 @@
       </div>
       <div class="t-uppercase t-lg tcolor-violet">robonomics.network</div>
       <section class="msg-error msg-icon">
-        <div class="msg-title">Dapp only works on the main network</div>
+        <div class="msg-title">Dapp only works on the main network and sidechain</div>
         <p>
           <b>For work, you need to switch the network.</b>
         </p>

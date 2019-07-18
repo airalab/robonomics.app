@@ -75,7 +75,7 @@ const scan = (block, accounts, lighthouse) => {
       }
       r.transactions.forEach(item => {
         const from = web3.toChecksumAddress(item.from);
-        if (accounts.hasOwnProperty(from) && accounts[from] === null) {
+        if (Object.prototype.hasOwnProperty.call(accounts, from) && accounts[from] === null) {
           if (web3.toChecksumAddress(item.to) === lighthouse) {
             res[from] = item.blockNumber;
           }
@@ -97,9 +97,9 @@ const isStop = result => {
 
 export async function findLastTx(accounts, lighthouse, to, from) {
   let result = {};
-  accounts.forEach(account => {
-    result[account] = null;
-  });
+  for (let i = 0; i < accounts.length; i++) {
+    result[accounts[i]] = null;
+  }
   for (let i = to; i > from; i--) {
     result = await scan(i, result, lighthouse);
     if (isStop(result)) {
