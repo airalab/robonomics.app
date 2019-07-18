@@ -1,29 +1,16 @@
 <template>
-  <div class="dropdown dropdown-color">
-    <a class="a-noline" href="javascript:;">
-      <span
-        :class="[($i18n.locale == 'en') ? 'sprite-basic-flag-en' : 'sprite-basic-flag-ru']"
-        class="d-block"
-      ></span>
-    </a>
-    <div class="dropdown-content">
-      <div class="inside">
-        <nav>
-          <a class="a-noline" @click="changeLang(($i18n.locale == 'en') ? 'ru' : 'en')">
-            <i :class="[($i18n.locale == 'en') ? 'sprite-basic-flag-ru' : 'sprite-basic-flag-en']"></i>
-          </a>
-        </nav>
-      </div>
-    </div>
-  </div>
+  <nav class="nav-vertical">
+    <a href="#" :class="{ active: $i18n.locale == 'en' }" @click="changeLang('en')">EN - English</a>
+    <a href="#" :class="{ active: $i18n.locale == 'ru' }" @click="changeLang('ru')">RU - Русский</a>
+  </nav>
 </template>
 
 <script>
 export default {
-  props: ["loader"],
+  props: ["loadContent"],
   methods: {
     changeLang(local) {
-      this.loader();
+      this.loadContent();
       window.localStorage.lang = local;
       this.$i18n.locale = local;
     }

@@ -15,7 +15,7 @@
     "axios": "^0.19.0",
     "dateformat": "^3.0.3",
     "ethereum-blockies-base64": "^1.0.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "robonomics-js": "^0.5.2",
     "vue": "^2.6.6",
     "vue-fragment": "^1.5.1",

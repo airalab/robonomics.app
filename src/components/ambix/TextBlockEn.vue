@@ -1,12 +1,12 @@
 <template>
-  <section>
+  <div>
     <h1>{{ $t('header') }}</h1>
-    <section class="window" id="window-developletter">
-      <div class="window-head window-head--violet">
+    <section class="section-light window" id="window-developletter">
+      <div class="window-head">
         <span>The developers&#8217; letter</span>
-        <a class="window-head-toggle">–</a>
+        <a class="window-head-toggle" href="#">–</a>
       </div>
-      <div class="window-content window-content-light">
+      <div class="window-content">
         <p>
           <b>Dear Aira tokens holder,</b>
         </p>
@@ -30,7 +30,7 @@
         <p>
           <b>What is the difference between these options for the Aira tokens holder:</b>
         </p>
-        <table class="table-striped table-responsive">
+        <table class="table-hover table-responsive">
           <thead>
             <tr>
               <th>Aira → Aira ID</th>
@@ -88,7 +88,7 @@
         </table>
       </div>
     </section>
-  </section>
+  </div>
 </template>
 
 <script>

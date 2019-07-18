@@ -1,26 +1,30 @@
 <template>
-  <div>
+  <form class="content">
     <div v-if="$wait.is('log')">...</div>
-    <p>
-      <input v-model="amount" class="input-line input-size--sm" type="text" placeholder>
-      <span>{{fromLabel}}</span>
-    </p>
-    <p>
-      <button v-if="$wait.is([actionForm, actionTx])" class="btn-green" disabled>
-        <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
-        <div class="loader-ring align-vertical m-l-10"></div>
-      </button>
-      <button v-else class="btn-green" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
-    </p>
+    <div class="input-measured container-full">
+      <input
+        v-model="amount"
+        class="container-full"
+        type="text"
+        placeholder
+        :disabled="$wait.is([actionForm, actionTx])"
+      />
+      <span class="input-measure">{{fromLabel}}</span>
+    </div>
+    <button v-if="$wait.is([actionForm, actionTx])" class="container-full" disabled>
+      <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
+      <div class="loader-ring align-vertical m-l-10"></div>
+    </button>
+    <button v-else class="container-full" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
-        :href="`https://etherscan.io/tx/${actionTx.replace('tx.', '')}`"
+        :href="actionTx.replace('tx.', '') | urlExplorer('tx')"
         target="_blank"
       >transaction</a> to be mined
     </p>
     <p v-if="error!==''" class="t-sm">{{error}}</p>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -98,11 +102,11 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = web3.eth.contract(TokenABI).at(this.token);
+      const contract = this.$robonomics.web3.eth.contract(TokenABI).at(this.token);
       contract.approve(
         this.ambix,
         toWei(value, this.decimals),
-        { from: web3.eth.accounts[0] },
+        { from: this.$robonomics.account.address },
         (e, r) => {
           if (e) {
             this.$wait.end(this.actionForm);
@@ -119,8 +123,8 @@ export default {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = web3.eth.contract(AmbixSimpleABI).at(this.ambix);
-      ambix.run(this.index, { from: web3.eth.accounts[0] }, (e, r) => {
+      const ambix = this.$robonomics.web3.eth.contract(AmbixSimpleABI).at(this.ambix);
+      ambix.run(this.index, { from: this.$robonomics.account.address }, (e, r) => {
         if (e) {
           this.$wait.end(this.actionForm);
           return;

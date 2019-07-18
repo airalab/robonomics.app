@@ -1,18 +1,20 @@
 <template>
   <section>
     <h2>
-      <router-link to="/lighthouse" class="align-vertical m-r-10 i-back"></router-link>
+      <router-link to="/lighthouse" class="align-vertical m-r-20" title="Back to choose lighthouse">
+        <i class="i-arrow-left"></i>
+      </router-link>
       <span class="align-vertical m-r-20 breakwords">{{ this.$route.params.lighthouse }}</span>
     </h2>
     <div class="row" v-if="lighthouse">
       <div class="col-lg-4 col-md-5 order-md-last">
         <section>
-          <LighthouseDetails :lighthouse="lighthouse"/>
+          <LighthouseDetails :lighthouse="lighthouse" />
         </section>
       </div>
       <div class="col-lg-8 col-md-7">
-        <Providers :lighthouse="lighthouse"/>
-        <LighthouseMarket/>
+        <Providers :lighthouse="lighthouse" />
+        <LighthouseMarket />
       </div>
     </div>
   </section>

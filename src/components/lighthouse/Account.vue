@@ -9,12 +9,7 @@
               <p>Your address:</p>
               <p class="code-overflow-line">
                 <b>
-                  <IconLink
-                    v-if="address!=''"
-                    :href="`https://etherscan.io/address/${address}`"
-                    :text="address"
-                    isCopy
-                  />
+                  <LinkExplorer :text="address" />
                 </b>
               </p>
             </section>

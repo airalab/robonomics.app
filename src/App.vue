@@ -1,28 +1,31 @@
 <template>
-  <fragment>
-    <Sidebar/>
-    <div class="content">
-      <div class="content-in">
-        <web3-check>
-          <template v-slot:error="props">
-            <DepNetwork v-if="props.error.type === 'network'"/>
-            <NotAccounts v-else-if="props.error.type === 'account'"/>
-            <NotWeb3 v-else/>
-          </template>
-          <template slot="load">
-            <Load/>
-          </template>
-          <fragment>
-            <fragment v-if="ready">
-              <Wallet :loader="loader"/>
-              <router-view/>
-            </fragment>
-            <Load v-else/>
-          </fragment>
-        </web3-check>
-      </div>
-    </div>
-  </fragment>
+  <web3-check>
+    <template v-slot:error="props">
+      <DepNetwork v-if="props.error.type === 'network'" />
+      <NotAccounts v-else-if="props.error.type === 'account'" />
+      <NotWeb3 v-else />
+    </template>
+    <template slot="load">
+      <Load />
+    </template>
+    <template>
+      <template v-if="isReadyRobonomics">
+        <Sidebar :loadContent="loadContent" />
+        <div class="content">
+          <Wallet />
+          <div class="content-in">
+            <router-view v-if="isReadyContent" />
+            <section v-else>
+              <div class="loader">
+                <div class="loader-ring align-vertical m-r-15"></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </template>
+      <Load v-else />
+    </template>
+  </web3-check>
 </template>
 
 <script>
@@ -41,17 +44,25 @@ export default {
   name: "app",
   data() {
     return {
-      ready: false
+      isReadyRobonomics: false,
+      isReadyContent: true
     };
   },
   mounted() {
+    this.$store.dispatch("theme/init");
     Web3Check.store.on("load", state => {
-      getIpfs().then(ipfs => {
-        Vue.prototype.$robonomics = initRobonomics(ipfs, state.networkId);
-        this.$robonomics.ready().then(() => {
-          this.ready = true;
+      this.$store
+        .dispatch("token/init", {
+          account: state.account,
+          networkId: state.networkId
+        })
+        .then(() => getIpfs())
+        .then(ipfs => {
+          Vue.prototype.$robonomics = initRobonomics(ipfs, state.networkId);
+          this.$robonomics.ready().then(() => {
+            this.isReadyRobonomics = true;
+          });
         });
-      });
     });
   },
   components: {
@@ -66,10 +77,10 @@ export default {
     requestAccount() {
       Web3Check.access();
     },
-    loader() {
-      this.ready = false;
+    loadContent() {
+      this.isReadyContent = false;
       setTimeout(() => {
-        this.ready = true;
+        this.isReadyContent = true;
       }, 2000);
     }
   }

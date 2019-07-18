@@ -1,13 +1,24 @@
 <template>
-  <section class="row" :class="{ 'section-disabled': !connected }">
-    <div class="col-md-4">
-      <div class="section-border">
-        <div class="t-align--center">
-          <h3 class="t-color-violet">{{ $t('robotics_ethereum_control') }}</h3>
-          <div class="t-gt">{{li.create.a}}</div>
-        </div>
-        <div class="expand-statistic-1" style="display:none">
-          <table class="container-full table-striped">
+  <section class="section-light">
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="m-b-0">{{ $t('robotics_ethereum_control') }}</h3>
+        <b class="t-gt">{{li.create.a}}</b>
+      </div>
+      <div class="col-md-4">
+        <h3 class="m-b-0">{{ $t('amount_gas') }}</h3>
+        <b class="t-gt">{{gas.full.a}}</b>
+      </div>
+      <div class="col-md-4">
+        <h3 class="m-b-0">{{ $t('robo_token') }}, XRT</h3>
+        <b class="t-gt">{{wn}}</b>
+      </div>
+    </div>
+    <hr />
+    <div id="statistic" style="display:none">
+      <div class="row">
+        <div class="col-md-4">
+          <table class="container-full table-hover table-full">
             <caption>{{ $t('total_contracts') }}</caption>
             <tbody>
               <tr>
@@ -28,7 +39,7 @@
               </tr>
             </tbody>
           </table>
-          <table class="container-full table-striped">
+          <table class="container-full table-hover table-full">
             <caption>{{ $t('fin_contarcts') }}</caption>
             <tbody>
               <tr>
@@ -50,21 +61,8 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <a
-        class="btn-violet container-full btn-simple"
-        href="#"
-        :onclick="`show(this, '.expand-statistic-1', '&amp;uarr; ${$t('minimize')} &amp;uarr;', '&amp;darr; ${$t('expand')} &amp;darr;');return false;`"
-      >&darr; {{ $t('expand') }} &darr;</a>
-    </div>
-    <div class="col-md-4">
-      <div class="section-border">
-        <div class="t-align--center">
-          <h3 class="t-color-violet">{{ $t('amount_gas') }}</h3>
-          <div class="t-gt">{{gas.full.a}}</div>
-        </div>
-        <div class="expand-statistic-2" style="display:none">
-          <table class="container-full table-striped">
+        <div class="col-md-4">
+          <table class="container-full table-hover table-full">
             <caption>{{ $t('total_gas') }}</caption>
             <tbody>
               <tr>
@@ -85,7 +83,7 @@
               </tr>
             </tbody>
           </table>
-          <table class="container-full table-striped">
+          <table class="container-full table-hover table-full">
             <caption>{{ $t('fin_gas') }}</caption>
             <tbody>
               <tr>
@@ -107,27 +105,12 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <a
-        class="btn-violet container-full btn-simple"
-        href="#"
-        :onclick="`show(this, '.expand-statistic-2', '&amp;uarr; ${$t('minimize')} &amp;uarr;', '&amp;darr; ${$t('expand')} &amp;darr;');return false;`"
-      >&darr; {{ $t('expand') }} &darr;</a>
-    </div>
-    <div class="col-md-4">
-      <div class="section-border">
-        <div class="t-align--center">
-          <h3 class="t-color-violet">{{ $t('robo_token') }}, XRT</h3>
-          <div class="t-gt">{{wn}}</div>
-        </div>
-        <div class="expand-statistic-3" style="display:none">
+        <div class="col-md-4">
           <section>
             <b>{{ $t('token_addr') }}:</b>
-            <br>
-            <IconLink :href="`https://etherscan.io/token/${xrt.address}`" :text="xrt.address"/>
+            <LinkExplorer :text="tokens.xrt.address" category="token" />
           </section>
-
-          <table class="container-full table-striped">
+          <table class="container-full table-hover">
             <caption>{{ $t('token_stat') }}</caption>
             <tbody>
               <tr>
@@ -142,31 +125,23 @@
           </table>
         </div>
       </div>
-      <a
-        class="btn-violet container-full btn-simple"
-        href="#"
-        :onclick="`show(this, '.expand-statistic-3', '&amp;uarr; ${$t('minimize')} &amp;uarr;', '&amp;darr; ${$t('expand')} &amp;darr;');return false;`"
-      >&darr; {{ $t('expand') }} &darr;</a>
     </div>
+    <section class="t-align--center m-b-0">
+      <a
+        href="#"
+        onclick="show(this, '#statistic', '&amp;uarr; Minimize &amp;uarr;', '&amp;darr; Expand &amp;darr;');return false;"
+      >&darr; Expand &darr;</a>
+    </section>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import config from "../../config";
 
 export default {
-  data() {
-    return {
-      xrt: config.XRT
-    };
-  },
-  computed: mapState("statistics", [
-    "connected",
-    "totalSupply",
-    "wn",
-    "gas",
-    "li"
-  ])
+  computed: {
+    ...mapState("token", ["tokens"]),
+    ...mapState("statistics", ["connected", "totalSupply", "wn", "gas", "li"])
+  }
 };
 </script>

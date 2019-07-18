@@ -1,15 +1,18 @@
 <template>
-  <div>
+  <fragment>
     <section>
       <h1>
         <span class="d-block">{{ $t('statistics_header') }}</span>
-        <span class="t-label--green t-sm align-top" v-if="connected">{{ $t('сonnected') }}</span>
-        <span class="t-label--orange t-sm align-top" v-else>{{ $t('no_сonnected') }}</span>
+        <span class="label label-green t-sm align-top" v-if="connected">{{ $t('сonnected') }}</span>
+        <span class="label label-orange t-sm align-top" v-else>{{ $t('no_сonnected') }}</span>
+        <p class="m-b-0 t-sm" v-if="Object.values(nodes).length===0">
+          <i>{{ $t('waiting') }}</i>
+        </p>
       </h1>
     </section>
-    <Statistic/>
-    <Net/>
-  </div>
+    <Statistic />
+    <Net />
+  </fragment>
 </template>
 
 <script>
@@ -22,7 +25,10 @@ export default {
     Statistic,
     Net
   },
-  computed: mapState("statistics", ["connected"]),
+  computed: mapState({
+    connected: state => state.statistics.connected,
+    nodes: state => state.net.nodes
+  }),
   created() {
     this.$store.dispatch("statistics/init");
     this.$store.dispatch("net/init");

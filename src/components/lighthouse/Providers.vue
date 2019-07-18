@@ -1,11 +1,11 @@
 <template>
-  <section class="window">
+  <section class="section-light window" id="window-developletter">
     <div class="window-head">
       <span>Providers</span>
       <a class="window-head-toggle" href="#">–</a>
     </div>
-    <div class="window-content p-0 window-content-light">
-      <table class="container-full m-t-0 m-b-0">
+    <div class="window-content">
+      <table class="container-full table-hover">
         <thead>
           <tr>
             <th>#</th>
@@ -19,19 +19,11 @@
           <tr v-for="member in members" :key="member.i">
             <td>{{member.i}}</td>
             <td>
-              <IconLink
-                :href="`https://etherscan.io/address/${member.address}`"
-                :text="member.address"
-                isCopy
-              />
+              <LinkExplorer :text="member.address" />
             </td>
             <td>
-              <template v-if="member.i == marker">
-                <b>{{ quota }} / {{ member.quota }}</b>
-              </template>
-              <template v-else>
-                <b>{{ member.quota }}</b>
-              </template>
+              <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
+              <template v-else>{{ member.quota }}</template>
             </td>
             <td>{{ member.balance }} ETH</td>
             <td>
