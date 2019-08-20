@@ -22,7 +22,7 @@ var visibleY = function(el){
       do {
         rect = el.getBoundingClientRect();
         if (top <= rect.bottom === false) return false;
-
+        
         // Check if the element is out of view due to a container scrolling
         if ((top + height) <= rect.top) return false;
         el = el.parentNode;
@@ -59,7 +59,7 @@ var show = function(link, block, textShow, textHide){
 			if(textShow) link.innerHTML = textShow;
 		}
 	}
-
+	
 }
 var showSorted = function(tag, tagLink, tagSec, active){
 
@@ -97,7 +97,7 @@ var sort = function(tagLink, tagSec, active){
 		});
 	}
 
-
+	
 }
 /*
 	Dependencies
@@ -107,7 +107,7 @@ var sort = function(tagLink, tagSec, active){
 window.addEventListener('load', function(){
 
 	function IfInView(){
-		var
+		var 
 			el = document.querySelectorAll('.js-checkInView'),
 			classview = 'isInView';
 
@@ -122,7 +122,7 @@ window.addEventListener('load', function(){
 	document.addEventListener('resize', IfInView);
 
 }, false);
-var
+var 
 	selector = 'on-toggle',
 	onclose  = 'on-close',
 	classOpen = 'open',
@@ -238,7 +238,7 @@ function windowSlide(){
 			  	else{ hide = false; }
 
 			  	windowSlideAct(this, hide);
-
+			  	
 			});
 		}
 	}

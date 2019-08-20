@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="39.3px" height="40px" viewBox="0 0 39.3 40" style="enable-background:new 0 0 39.3 40;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#667CB7;}
+</style>
+<g>
+	<path class="st0" d="M18.4,37.7C8.2,37.7,0,29.2,0,18.8S8.2,0,18.4,0c10.1,0,18.4,8.5,18.4,18.8S28.5,37.7,18.4,37.7z M18.4,1.2
+		C8.9,1.2,1.2,9.1,1.2,18.8s7.7,17.6,17.1,17.6s17.1-7.9,17.1-17.6S27.8,1.2,18.4,1.2z"/>
+	<path class="st0" d="M18.4,37.3c-10,0-18.1-8.3-18.1-18.5S8.4,0.3,18.4,0.3s18,8.3,18,18.5S28.3,37.3,18.4,37.3z M18.4,0.9
+		C8.8,0.9,1,8.9,1,18.8s7.8,17.9,17.4,17.9s17.4-8,17.4-17.9S27.9,0.9,18.4,0.9z"/>
+	<g id="planet-earth" transform="translate(60.191 60.191)">
+		<circle id="Ellipse_16" class="st0" cx="-41.7" cy="-41.4" r="10"/>
+	</g>
+	<ellipse id="Ellipse_13_6_" class="st0" cx="35.9" cy="21.5" rx="3.4" ry="3.4"/>
+	<ellipse id="Ellipse_13_5_" class="st0" cx="19.9" cy="36.6" rx="3.4" ry="3.4"/>
+	<ellipse id="Ellipse_15_2_" class="st0" cx="7.7" cy="3.8" rx="2.6" ry="2.6"/>
+</g>
+</svg>

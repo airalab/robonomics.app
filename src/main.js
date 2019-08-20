@@ -8,7 +8,7 @@ import Web3Check, { ACTIONS } from 'vue-web3-check';
 import router from './router';
 import store from './store';
 import App from './App';
-import LinkExplorer from './components/LinkExplorer';
+import LinkExplorer from './components/common/LinkExplorer';
 import messages from './messages';
 import config from './config';
 import * as filters from './utils/filters';

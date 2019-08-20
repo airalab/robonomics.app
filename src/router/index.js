@@ -4,6 +4,7 @@ import PageAmbix from '@/components/ambix/Page';
 import PageStatus from '@/components/status/Page';
 import SelectLighthouse from '@/components/lighthouse/SelectLighthouse';
 import Lighthouse from '@/components/lighthouse/Lighthouse';
+import PageServices from '@/components/services/Page';
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/lighthouse/:lighthouse',
       name: 'lighthouse',
       component: Lighthouse
+    },
+    {
+      path: '/services',
+      name: 'services',
+      component: PageServices
     },
     { path: '*', redirect: '/' }
   ]

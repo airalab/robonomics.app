@@ -16,11 +16,17 @@
             href="javascript:;"
             on-toggle="#sidebar-lang"
           >{{$i18n.locale.toUpperCase()}}</a>
-          <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-theme">
-            <i class="i-day"></i>
-          </a>
+          <div id="themeMode">
+            <a class="sidebar-i--lg" href="javascript:;" @click="toggleTheme()">
+              <i class="i-day" v-show="theme === 'light'"></i>
+              <i class="i-night" v-show="theme === 'dark'"></i>
+            </a>
+          </div>
         </section>
         <section class="sidebar-col--bottom">
+          <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-user">
+            <i class="i-user"></i>
+          </a>
           <a class="sidebar-i--lg js-sidebar-link" href="javascript:;" on-toggle="#sidebar-info">?</a>
         </section>
       </div>
@@ -47,6 +53,10 @@
               <span class="i-transfer align-vertical"></span>
               <span class="align-vertical">{{ $t('tokens_alembic') }}</span>
             </router-link>
+            <router-link to="/services" active-class="active">
+              <span class="i-app align-vertical"></span>
+              <span class="align-vertical">{{ $t('services') }}</span>
+            </router-link>
           </nav>
         </section>
       </div>
@@ -58,29 +68,8 @@
         </section>
       </div>
     </div>
-    <div class="sidebar-col sidebar-col-padding js-sidebar-content" id="sidebar-theme">
-      <div class="sidebar-col-in">
-        <section>
-          <nav class="nav-vertical">
-            <a
-              :class="{active: theme === 'light'}"
-              href="#"
-              @click="$store.dispatch('theme/setTheme', 'light')"
-            >
-              <span class="i-day align-vertical"></span>
-              <span class="align-vertical">Light</span>
-            </a>
-            <a
-              :class="{active: theme === 'dark'}"
-              href="#"
-              @click="$store.dispatch('theme/setTheme', 'dark')"
-            >
-              <span class="i-night align-vertical"></span>
-              <span class="align-vertical">Dark</span>
-            </a>
-          </nav>
-        </section>
-      </div>
+    <div class="sidebar-col sidebar-col-padding js-sidebar-content" id="sidebar-user">
+      <Wallet />
     </div>
     <div class="sidebar-col sidebar-col-padding js-sidebar-content" id="sidebar-info">
       <div class="sidebar-col-in">
@@ -113,11 +102,13 @@
 import { mapState } from "vuex";
 import Web3Check from "vue-web3-check";
 import LangSwitcher from "./LangSwitcher";
+import Wallet from "./Wallet";
 
 export default {
   props: ["loadContent"],
   components: {
-    LangSwitcher
+    LangSwitcher,
+    Wallet
   },
   data() {
     return {
@@ -130,6 +121,15 @@ export default {
   mounted() {
     window.init();
     this.networkId = Web3Check.store.state.networkId;
+  },
+  methods: {
+    toggleTheme() {
+      if (this.theme === "light") {
+        this.$store.dispatch("theme/setTheme", "dark");
+      } else {
+        this.$store.dispatch("theme/setTheme", "light");
+      }
+    }
   }
 };
 </script>

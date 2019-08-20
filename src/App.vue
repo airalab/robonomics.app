@@ -12,7 +12,6 @@
       <template v-if="isReadyRobonomics">
         <Sidebar :loadContent="loadContent" />
         <div class="content">
-          <Wallet />
           <div class="content-in">
             <router-view v-if="isReadyContent" />
             <section v-else>
@@ -31,8 +30,7 @@
 <script>
 import Vue from "vue";
 import Web3Check from "vue-web3-check";
-import Sidebar from "./components/Sidebar";
-import Wallet from "./components/Wallet";
+import Sidebar from "./components/common/Sidebar";
 import NotWeb3 from "./components/web3/NotWeb3";
 import DepNetwork from "./components/web3/DepNetwork";
 import NotAccounts from "./components/web3/NotAccounts";
@@ -67,7 +65,6 @@ export default {
   },
   components: {
     Sidebar,
-    Wallet,
     NotWeb3,
     DepNetwork,
     NotAccounts,
