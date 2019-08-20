@@ -2998,6 +2998,10 @@ body {
   display: block;
 }
 
+table.container-full {
+  display: table;
+}
+
 .container-padding {
   padding-left: 20px;
   padding-right: 20px;
