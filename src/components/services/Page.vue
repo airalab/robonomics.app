@@ -2,7 +2,12 @@
   <fragment>
     <h1>Сервисы для роботов</h1>
     <section class="flex-grid">
-      <div v-for="(service, index) in services" :key="index" class="section-light item">
+      <div
+        v-for="(service, index) in services"
+        :key="index"
+        class="section-light item"
+        :class="{disabled: service.disabled}"
+      >
         <a class="item-img" :href="service.link" target="_blank">
           <img class="i-block" alt :src="service.img" />
         </a>
@@ -31,28 +36,30 @@ export default {
   data() {
     return {
       services: [
-        // {
-        //   name: "Gaka-chu",
-        //   link: "#",
-        //   img: "assets/i/services/gaka-chu.png",
-        //   desc:
-        //     "Купите мысль робота на холсте с цифровой меткой права в публичном блокчейне.",
-        //   by: {
-        //     link: "#",
-        //     label: "Airalab"
-        //   }
-        // },
-        // {
-        //   name: "Smart building offsetting",
-        //   link: "#",
-        //   img: "assets/i/services/smart-buildings.png",
-        //   desc:
-        //     "Сервис погашения углеродного следа умных зданий на основе информации о геолокации и потреблении электроэнергии.",
-        //   by: {
-        //     link: "#",
-        //     label: "DAO IPCI IoT connection"
-        //   }
-        // },
+        {
+          name: "Gaka-chu",
+          link: "#",
+          img: "assets/i/services/gaka-chu.png",
+          desc:
+            "Купите мысль робота на холсте с цифровой меткой права в публичном блокчейне.",
+          by: {
+            link: "#",
+            label: "Airalab"
+          },
+          disabled: true
+        },
+        {
+          name: "Smart building offsetting",
+          link: "#",
+          img: "assets/i/services/smart-buildings.png",
+          desc:
+            "Сервис погашения углеродного следа умных зданий на основе информации о геолокации и потреблении электроэнергии.",
+          by: {
+            link: "#",
+            label: "DAO IPCI IoT connection"
+          },
+          disabled: true
+        },
         {
           name: "Environmental assets tokenization",
           link: "https://new.dapp.ipci.io/#/tokenization",
@@ -62,7 +69,8 @@ export default {
           by: {
             link: "#",
             label: "DAO IPCI IoT connection"
-          }
+          },
+          disabled: false
         },
         {
           name: "Drone passport registration",
@@ -72,18 +80,20 @@ export default {
           by: {
             link: "#",
             label: "Distributed sky"
-          }
+          },
+          disabled: false
+        },
+        {
+          name: "Drone flight report",
+          link: "#",
+          img: "assets/i/services/drone-route.png",
+          desc: "Сервис публичных отчетов о выполненных полетах дронов.",
+          by: {
+            link: "#",
+            label: "Distributed sky"
+          },
+          disabled: true
         }
-        // {
-        //   name: "Drone flight report",
-        //   link: "#",
-        //   img: "assets/i/services/drone-route.png",
-        //   desc: "Сервис публичных отчетов о выполненных полетах дронов.",
-        //   by: {
-        //     link: "#",
-        //     label: "Distributed sky"
-        //   }
-        // }
       ]
     };
   }
