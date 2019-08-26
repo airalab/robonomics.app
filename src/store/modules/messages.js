@@ -2,13 +2,14 @@ import Vue from 'vue';
 import _find from 'lodash/find';
 import _findIndex from 'lodash/findIndex';
 import getRobonomics from '../../utils/robonomics';
-import config from '../../config';
+import getIpfs from '../../utils/ipfs';
 
 let robonomics;
 
 // initial state
 const state = {
   run: false,
+  model: null,
   offers: [],
   demands: [],
   lis: []
@@ -31,13 +32,20 @@ const actions = {
     commit('clear');
     robonomics = getRobonomics();
     robonomics.ready().then(() => {
-      dispatch('onOffer');
-      dispatch('onDemand');
-      dispatch('onLiability');
+      getIpfs().then(ipfs => {
+        ipfs.id((err, info) => {
+          commit('model', info.id);
+          dispatch('onOffer');
+          dispatch('onDemand');
+          dispatch('onLiability');
+        });
+      });
+
     });
   },
   onOffer({ commit, state }) {
-    robonomics.onOffer(config.ROBONOMICS.model, msg => {
+    robonomics.onOffer(state.model, msg => {
+      console.log('offer', msg);
       const item = _find(state.offers, { signature: msg.signature });
       if (!item) {
         commit('addOffer', msg);
@@ -45,7 +53,8 @@ const actions = {
     });
   },
   onDemand({ commit, state }) {
-    robonomics.onDemand(config.ROBONOMICS.model, msg => {
+    robonomics.onDemand(state.model, msg => {
+      console.log('demand', msg);
       const item = _find(state.demands, { signature: msg.signature });
       if (!item) {
         commit('addDemand', msg);
@@ -80,6 +89,9 @@ const actions = {
 const mutations = {
   run(state) {
     state.run = true;
+  },
+  model(state, model) {
+    state.model = model;
   },
   clear(state) {
     state.offers = [];

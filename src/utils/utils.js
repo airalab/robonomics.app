@@ -1,4 +1,6 @@
+import axios from 'axios';
 import { web3Utils } from 'robonomics-js';
+import getIpfs from './ipfs';
 
 export const toWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
@@ -7,6 +9,23 @@ export const toWei = (price, decimals) => {
 export const fromWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
   return priceNum.shift(-decimals).toNumber();
+};
+export const genObjective = data => {
+  let hash;
+  return getIpfs()
+    .then(ipfs => {
+      return ipfs.add(Buffer.from(''+data));
+    })
+    .then(r => {
+      hash = r[0].hash;
+      return axios.get(`https://ipfs.robonomics.network/ipfs/${hash}`);
+    })
+    .then(() => {
+      return hash;
+    })
+    .catch(e => {
+      console.log(e);
+    });
 };
 
 export const watchTx = tx => {

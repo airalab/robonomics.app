@@ -169,21 +169,32 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import config from "../../config";
-
-const intervals = {};
+import getIpfs from "../../utils/ipfs";
+import { genObjective } from "../../utils/utils";
 
 export default {
   data() {
     return {
       account: "",
+      model: null,
       nonce: null
     };
   },
   computed: {
+    ...mapGetters("sender", [
+      "getLastObjectiveDemand",
+      "getLastObjectiveOffer"
+    ]),
     ...mapGetters("messages", ["offers", "demands"]),
     ...mapState("messages", ["lis"])
   },
   mounted() {
+    getIpfs().then(ipfs => {
+      ipfs.id((err, info) => {
+        this.model = info.id;
+      });
+    });
+
     this.account = this.$robonomics.account.address;
     return this.$robonomics.factory.call
       .nonceOf(this.$robonomics.account.address)
@@ -204,10 +215,13 @@ export default {
         });
     },
     sendMsgDemand() {
+      if (!this.model) {
+        return;
+      }
       this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
         const demand = {
-          model: config.ROBONOMICS.model,
-          objective: config.ROBONOMICS.objective,
+          model: this.model,
+          objective: this.getLastObjectiveOffer,
           token: this.$robonomics.xrt.address,
           cost: 0,
           lighthouse: this.$robonomics.lighthouse.address,
@@ -216,26 +230,28 @@ export default {
           deadline: r.number + 1000,
           nonce: this.nonce
         };
-        this.nonce++;
-        this.$robonomics
-          .sendDemand(demand, true, msg => {
-            intervals[msg.getHash()] = setInterval(() => {
-              this.$robonomics.messenger.channel.send(msg.encode());
-            }, 5000);
-          })
-          .then(liability => {
-            console.log("liability demand", liability.address);
-            liability.getInfo().then(info => {
-              clearInterval(intervals[info.demandHash]);
+        if (demand.objective === null) {
+          genObjective(Math.random()).then(r => {
+            demand.objective = r;
+            this.$store.dispatch("sender/sendDemand", demand).then(() => {
+              this.nonce++;
             });
           });
+        } else {
+          this.$store.dispatch("sender/sendDemand", demand).then(() => {
+            this.nonce++;
+          });
+        }
       });
     },
     sendMsgOffer() {
+      if (!this.model) {
+        return;
+      }
       this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
         const offer = {
-          model: config.ROBONOMICS.model,
-          objective: config.ROBONOMICS.objective,
+          model: this.model,
+          objective: this.getLastObjectiveDemand,
           token: this.$robonomics.xrt.address,
           cost: 0,
           validator: "0x0000000000000000000000000000000000000000",
@@ -244,19 +260,18 @@ export default {
           deadline: r.number + 1000,
           nonce: this.nonce
         };
-        this.nonce++;
-        this.$robonomics
-          .sendOffer(offer, true, msg => {
-            intervals[msg.getHash()] = setInterval(() => {
-              this.$robonomics.messenger.channel.send(msg.encode());
-            }, 5000);
-          })
-          .then(liability => {
-            console.log("liability offer", liability.address);
-            liability.getInfo().then(info => {
-              clearInterval(intervals[info.offerHash]);
+        if (offer.objective === null) {
+          genObjective(Math.random()).then(r => {
+            offer.objective = r;
+            this.$store.dispatch("sender/sendOffer", offer).then(() => {
+              this.nonce++;
             });
           });
+        } else {
+          this.$store.dispatch("sender/sendOffer", offer).then(() => {
+            this.nonce++;
+          });
+        }
       });
     }
   }

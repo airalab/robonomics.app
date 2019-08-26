@@ -8,6 +8,7 @@ import statistics from './modules/statistics';
 import net from './modules/net';
 import messages from './modules/messages';
 import providers from './modules/providers';
+import sender from './modules/sender';
 
 Vue.use(Vuex);
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     statistics,
     net,
     messages,
-    providers
+    providers,
+    sender
   },
   strict: true, // debug,
   plugins: debug ? [createLogger()] : []
