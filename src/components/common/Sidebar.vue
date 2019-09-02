@@ -43,19 +43,19 @@
           <nav class="nav-vertical">
             <router-link to="/" active-class="active" exact>
               <span class="i-piechart align-vertical"></span>
-              <span class="align-vertical">{{ $t('net_stats') }}</span>
+              <span class="align-vertical">{{ $t('menu.net_stats') }}</span>
             </router-link>
             <router-link to="/lighthouse" active-class="active">
               <span class="i-lighthouse align-vertical"></span>
-              <span class="align-vertical">{{ $t('lighthouse') }}</span>
+              <span class="align-vertical">{{ $t('menu.lighthouse') }}</span>
             </router-link>
             <router-link v-if="networkId === 1" to="/alembic" active-class="active" exact>
               <span class="i-transfer align-vertical"></span>
-              <span class="align-vertical">{{ $t('tokens_alembic') }}</span>
+              <span class="align-vertical">{{ $t('menu.tokens_alembic') }}</span>
             </router-link>
             <router-link to="/services" active-class="active">
               <span class="i-app align-vertical"></span>
-              <span class="align-vertical">{{ $t('services') }}</span>
+              <span class="align-vertical">{{ $t('menu.services') }}</span>
             </router-link>
           </nav>
         </section>

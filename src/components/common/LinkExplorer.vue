@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <a :href="href" target="_blank" class="align-vertical m-r-10" :title="text">
+    <a :href="href" target="_blank" :class="classStyle" :title="text">
       <img v-if="type === 'chain'" :src="icon()" class="avatar-small align-vertical m-r-10" alt />
       {{ label }}
     </a>
@@ -27,6 +27,10 @@ export default {
     category: {
       type: String,
       default: ""
+    },
+    classStyle: {
+      type: String,
+      default: "align-vertical m-r-10"
     },
     isSlice: {
       type: Boolean,

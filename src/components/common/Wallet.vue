@@ -2,7 +2,10 @@
   <div class="sidebar-col-in">
     <section>
       <LinkExplorer :text="account" classStyle="nowrap" />
-      <div class="m-t-10 label label-violet">{{nameChain}}</div>
+      <div
+        class="m-t-10 label"
+        :class="networkId === 1 ? 'label-green' : 'label-violet'"
+      >{{nameChain}}</div>
     </section>
     <section>
       <div

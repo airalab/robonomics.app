@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded',function(){
   
 
 	//popper.js, tooltip.js
-  	var reference = document.querySelectorAll('.js-tooltip');
+  	var
+      reference = document.querySelectorAll('.js-tooltip');
+      // parser = new DOMParser();
 
   	if ( reference )
   		{
@@ -10,6 +12,7 @@ document.addEventListener('DOMContentLoaded',function(){
   				new Tooltip(
 				  	e,
 				  	{
+              // title: parser.parseFromString(e.getAttribute('data-tooltip'), "text/xml"),
 					    title: e.getAttribute('data-tooltip'),
 					    placement: 'auto',
               container: 'body'
