@@ -2,20 +2,20 @@
   <fragment>
     <p>
       <span class="t-sm">Available for work at the lighthouse:</span>
-      <br>
+      <br />
       <b>{{ approveWorker.value | fromWei(9, 'XRT') }}</b>
     </p>
-    <hr>
+    <hr />
     <p>
       <span class="t-sm">Available for work:</span>
-      <br>
+      <br />
       <input
         class="input-size--sm m-r-10 input-sm"
         type="text"
         v-model="count"
-        @input="count = Number($event.target.value);asd()"
+        @input="count = Number($event.target.value);validate()"
         min="1"
-      >
+      />
       <button
         v-on:click="sendApproveWorker"
         v-if="approveWorker.show"
@@ -57,7 +57,7 @@ export default {
     return this.fetchData();
   },
   methods: {
-    asd() {
+    validate() {
       if (this.approveWorker.value >= this.minimalStake * this.count) {
         this.refill.show = true;
         this.approveWorker.show = false;

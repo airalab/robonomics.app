@@ -32,6 +32,8 @@
       <hr />
       <WorkerForm />
       <hr />
+      <WithdrawForm />
+      <hr />
       <TradeForm />
     </div>
   </section>
@@ -42,13 +44,15 @@ import { mapState } from "vuex";
 // import Account from "./Account";
 import WorkerForm from "./WorkerForm";
 import TradeForm from "./TradeForm";
+import WithdrawForm from "./WithdrawForm";
 
 export default {
   props: ["lighthouse"],
   components: {
     // Account,
     WorkerForm,
-    TradeForm
+    TradeForm,
+    WithdrawForm
   },
   data() {
     return {

@@ -91,7 +91,7 @@ export default {
             desc:
               "Сервис эмиссии углеродных единиц и зеленых сертификатов на основе данных от возобновляемого источника электроэнергии."
           },
-          link: "https://new.dapp.ipci.io/#/tokenization",
+          link: "https://new.dapp.ipci.io/#/issuing",
           img: "assets/i/services/smart-assets.png",
           by: {
             link: "#",
