@@ -112,7 +112,12 @@ const actions = {
       }
     ];
     const li = new web3Static.eth.Contract(abi, lighthouseAddr);
-    const provider = await li.methods.indexOf(address).call();
+    let provider = 0
+    try {
+      provider = await li.methods.indexOf(address).call();
+    } catch (error) {
+      console.log(error.message);
+    }
 
     commit('update', {
       hash,
