@@ -56,9 +56,19 @@ export default {
         })
         .then(() => getIpfs())
         .then(ipfs => {
+          const boot = function() {
+            ipfs.swarm.connect(
+              "/dns4/pubsub.devcon50.aira.life/tcp/443/wss/ipfs/QmToTQ5VEUWRmxN1zpefn5g3cQ8jqc49QVs5Fqap2n4DjC"
+            );
+          };
+
           Vue.prototype.$robonomics = initRobonomics(ipfs, state.networkId);
           this.$robonomics.ready().then(() => {
             this.isReadyRobonomics = true;
+            boot();
+            setInterval(() => {
+              boot();
+            }, 5000);
           });
         });
     });
