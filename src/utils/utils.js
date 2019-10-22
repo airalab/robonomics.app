@@ -1,5 +1,6 @@
+import crypto from 'crypto';
 import axios from 'axios';
-import { web3Utils } from 'robonomics-js';
+import { web3Utils, utils } from 'robonomics-js';
 import getIpfs from './ipfs';
 
 export const toWei = (price, decimals) => {
@@ -27,7 +28,20 @@ export const genObjective = data => {
       console.log(e);
     });
 };
-
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+}
+export const randomObjective = () => {
+  const data = getRandomInt(0, 100000).toString()
+  const hashFunction = Buffer.from('12', 'hex')
+  const digest = crypto.createHash('sha256').update(data).digest()
+  const digestSize = Buffer.from(digest.byteLength.toString(16), 'hex')
+  const combined = Buffer.concat([hashFunction, digestSize, digest])
+  const multihash = utils.base58.encode(combined)
+  return multihash.toString()
+};
 export const watchTx = tx => {
   const transactionReceiptAsync = (resolve, reject) => {
     web3.eth.getTransactionReceipt(tx, (error, receipt) => {

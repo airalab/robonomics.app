@@ -8,13 +8,14 @@ document.addEventListener('DOMContentLoaded',function(){
 
   	if ( reference )
   		{
+
   			reference.forEach(function(e){
   				new Tooltip(
 				  	e,
 				  	{
               // title: parser.parseFromString(e.getAttribute('data-tooltip'), "text/xml"),
 					    title: e.getAttribute('data-tooltip'),
-					    placement: 'auto',
+					    placement: e.getAttribute('data-placement') || 'auto',
               container: 'body'
 				  	});
   			});

@@ -58,6 +58,7 @@
       "Ipfs": true,
       "io": true,
       "civic": true,
+      "Tooltip": true,
       "SlimSelect": true
     }
   },

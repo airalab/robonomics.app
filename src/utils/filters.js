@@ -32,3 +32,7 @@ export const urlIpfs = (hash, type = 'ipfs') => {
   }
   return `https://${domain}/${type}/${hash}`;
 };
+
+export const labelAddress = text => {
+  return text.slice(0, 6) + '...' + text.slice(-4);
+};

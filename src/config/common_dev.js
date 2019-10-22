@@ -35,15 +35,16 @@ export default {
         '/dns4/1.pubsub.aira.life/tcp/443/wss/ipfs/QmdfQmbmXt6sqjZyowxPUsmvBsgSGQjm4VXrV7WGy62dv8',
         '/dns4/2.pubsub.aira.life/tcp/443/wss/ipfs/QmPTFt7GJ2MfDuVYwJJTULr6EnsQtGVp8ahYn9NSyoxmd9',
         '/dns4/3.pubsub.aira.life/tcp/443/wss/ipfs/QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw',
-        '/dns4/pubsub.devcon50.aira.life/tcp/443/wss/ipfs/QmToTQ5VEUWRmxN1zpefn5g3cQ8jqc49QVs5Fqap2n4DjC'
+        '/dns4/pubsub.devcon50.aira.life/tcp/443/wss/ipfs/QmToTQ5VEUWRmxN1zpefn5g3cQ8jqc49QVs5Fqap2n4DjC',
+        '/ip4/127.0.0.1/tcp/4002/ws/ipfs/QmZ7rFH5NodLFJCg18Ji6ur3wC3o5roFEeoQMffo3poXo6'
       ]
     }
   },
-  CHAINS: [1, 4451],
+  CHAINS: [1, 4451, 4],
   ROBONOMICS: {
     version: 5,
-    model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
-    objective: 'Qmbm3o2wkqseSEi5F69CPAuDrsKnrwTJ3HN5FVLPgLHKUm',
+    // model: 'QmfCcLKrTCuXsf6bHbVupVv4zsbs6kjqTQ7DRftGqMLjdW',
+    // objective: 'Qmbm3o2wkqseSEi5F69CPAuDrsKnrwTJ3HN5FVLPgLHKUm',
     result: 'QmRnbvYL4ehmVnuXQbB54ZvSzrrWRxVsBBx1gKbDKLd6dK'
   }
 };

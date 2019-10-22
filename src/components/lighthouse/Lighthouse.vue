@@ -1,11 +1,14 @@
 <template>
   <section>
-    <h2>
-      <router-link to="/lighthouse" class="align-vertical m-r-20" title="Back to choose lighthouse">
-        <i class="i-arrow-left"></i>
+    <h2 class="breadcrumbs m-b-0">
+      <router-link to="/lighthouse">
+        <span class="i-lighthouse"></span>
+        <span>Lighthouses</span>
       </router-link>
-      <span class="align-vertical m-r-20 breakwords">{{ this.$route.params.lighthouse }}</span>
+      <i>/</i>
+      <span>{{ this.$route.params.lighthouse }}</span>
     </h2>
+    <SelectLighthouse :isCreate="false" :selectedLighthouse="lighthouseName" />
     <div class="row" v-if="lighthouse">
       <div class="col-lg-4 col-md-5 order-md-last">
         <section>
@@ -13,20 +16,22 @@
         </section>
       </div>
       <div class="col-lg-8 col-md-7">
-        <Providers :lighthouse="lighthouse" />
         <LighthouseMarket />
+        <Providers :lighthouse="lighthouse" />
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import SelectLighthouse from "./SelectLighthouse";
 import LighthouseDetails from "./LighthouseDetails";
 import LighthouseMarket from "./LighthouseMarket";
 import Providers from "./Providers";
 
 export default {
   components: {
+    SelectLighthouse,
     LighthouseDetails,
     LighthouseMarket,
     Providers
@@ -34,6 +39,7 @@ export default {
   data() {
     return {
       lighthouse: "",
+      lighthouseName: "",
       showApprove: false
     };
   },
@@ -45,16 +51,16 @@ export default {
   },
   methods: {
     async fetchData() {
-      const lighthouseName = this.$route.params.lighthouse;
+      this.lighthouseName = this.$route.params.lighthouse;
       let lighthouseAddr = await this.$robonomics.ens.addrLighthouse(
-        lighthouseName
+        this.lighthouseName
       );
       lighthouseAddr = this.$robonomics.web3.toChecksumAddress(lighthouseAddr);
       if (
         this.$robonomics.lighthouse === null ||
         lighthouseAddr !== this.$robonomics.lighthouse.address
       ) {
-        this.$robonomics.initLighthouse(lighthouseName).then(() => {
+        this.$robonomics.initLighthouse(this.lighthouseName).then(() => {
           this.lighthouse = lighthouseAddr;
           this.$store.dispatch("providers/init");
           this.$store.dispatch("messages/init");

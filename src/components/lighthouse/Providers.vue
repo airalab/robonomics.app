@@ -1,5 +1,5 @@
 <template>
-  <section class="section-light window" id="window-developletter">
+  <section class="section-light window" id="window-lighthouse-providers">
     <div class="window-head">
       <span>Providers</span>
       <a class="window-head-toggle" href="#">–</a>

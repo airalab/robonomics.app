@@ -9,6 +9,7 @@ import router from './router';
 import store from './store';
 import App from './App';
 import LinkExplorer from './components/common/LinkExplorer';
+import Avatar from './components/common/Avatar';
 import messages from './messages';
 import config from './config';
 import * as filters from './utils/filters';
@@ -22,6 +23,7 @@ Vue.use(Plugin);
 Vue.filter('fromWei', filters.fromWei);
 Vue.filter('urlExplorer', filters.urlExplorer);
 Vue.filter('urlIpfs', filters.urlIpfs);
+Vue.filter('labelAddress', filters.labelAddress);
 
 Web3Check.store.on('update', data => {
   if (
@@ -45,6 +47,7 @@ const i18n = new VueI18n({
   messages
 });
 Vue.component('LinkExplorer', LinkExplorer);
+Vue.component('Avatar', Avatar);
 
 new Vue({
   router,

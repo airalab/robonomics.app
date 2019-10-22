@@ -1,62 +1,47 @@
 <template>
-  <fragment>
-    <section>
-      <h2>Connect to lighthouse</h2>
-      <div class="input-size--lg">
-        <select id="select-lighthouseConnect"></select>
-      </div>
-    </section>
-    <section id="lighthouse-connection"></section>
-    <button
-      v-if="!createForm"
-      class="btn-green"
-      v-on:click="connect"
-      :disabled="
-              lighthouseAddr.length == 0 ||
-              lighthouseAddr == '0x0000000000000000000000000000000000000000'
-            "
-    >Connect</button>
-
-    <div v-show="createForm">
+  <div class="input-size--lg">
+    <select id="select-lighthouseConnect"></select>
+    <div v-if="createForm" class="m-t-5">
       <p>
         <label class="t-sm">Name of the lighthouse</label>
-        <br>
+        <br />
         <input
           type="text"
           v-model="form.name"
           @input="form.name = $event.target.value.toLowerCase().split('.')[0]"
           class="input-size--lg"
-        >
+        />
       </p>
       <p>
         <label class="t-sm">Minimal stake to get one quota (XRT)</label>
-        <br>
+        <br />
         <input
           type="number"
           v-model="form.minimalStake"
           @input="form.minimalStake = Number($event.target.value)"
           class="input-size--md"
-        >
+        />
       </p>
       <p>
         <label class="t-sm">Silence timeout for provider in blocks</label>
-        <br>
+        <br />
         <input
           type="number"
           v-model="form.timeoutInBlocks"
           @input="form.timeoutInBlocks = Number($event.target.value)"
           class="input-size--sm"
-        >
+        />
       </p>
-      <button class="btn-green" disabled v-if="create">Create lighthouse and connect to the network</button>
-      <button
-        class="btn-green"
-        v-on:click="sendCreateLighthouse"
-        v-else
-      >Create lighthouse and connect to the network</button>
-      <span v-if="createMsg">{{ createMsg }}</span>
+      <button class="btn-green" disabled v-if="create">Create and connect</button>
+      <button class="btn-green" v-on:click="sendCreateLighthouse" v-else>Create and connect</button>
+      <a href="javascript:;" class="m-l-20" v-on:click="reset">Cancel</a>
+      <div v-if="createMsg">{{ createMsg }}</div>
     </div>
-  </fragment>
+    <div v-if="isBtnConnect" class="m-t-5">
+      <button v-on:click="connect">Connect</button>
+      <a href="javascript:;" class="m-l-20" v-on:click="reset">Cancel</a>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -65,6 +50,16 @@ import { toWei } from "../../utils/utils";
 let slim;
 
 export default {
+  props: {
+    isCreate: {
+      type: Boolean,
+      default: true
+    },
+    selectedLighthouse: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       lighthouse: "",
@@ -78,7 +73,8 @@ export default {
       createForm: false,
       create: false,
       created: false,
-      createMsg: ""
+      createMsg: "",
+      isBtnConnect: false
     };
   },
   mounted() {
@@ -89,56 +85,69 @@ export default {
     slim() {
       slim = new SlimSelect({
         select: "#select-lighthouseConnect",
-        valuesUseText: false, // Use text instead of innerHTML for selected values - default false
-        data: [
-          { placeholder: true, text: "Choose lighthouse" },
-          {
-            innerHTML: "<b>New lighthouse</b>",
-            text: "create new lighthouse",
-            value: "new",
-            class: "type-new"
-          }
-        ],
+        data: [{ placeholder: true, text: "Choose lighthouse", value: "" }],
         onChange: info => {
+          this.createForm = false;
+          this.isBtnConnect = false;
           if (info.class == "type-new") {
             this.createForm = true;
-            document.querySelectorAll("#lighthouse-connection")[0].innerHTML =
-              "";
           } else {
-            this.createForm = false;
+            this.isBtnConnect = true;
             this.selectLighthouse(info.value);
-            document.querySelectorAll("#lighthouse-connection")[0].innerHTML =
-              info.innerHTML;
           }
         }
       });
     },
+    reset() {
+      slim.set("");
+      this.createForm = false;
+      this.isBtnConnect = false;
+    },
     fetchData() {
       this.getLighthouses().then(lighthouses => {
         if (lighthouses.length > 0) {
-          this.lighthouse = lighthouses[0].name;
-          this.lighthouseAddr = lighthouses[0].addr;
+          // this.lighthouse = lighthouses[0].name;
+          // this.lighthouseAddr = lighthouses[0].addr;
+          this.selectLighthouse(lighthouses[0].name);
           const navData = [{ placeholder: true, text: "Choose lighthouse" }];
           lighthouses.forEach(item => {
             this.lighthouses.push(item);
             navData.push({
-              text: item.name,
-              value: item.name,
-              innerHTML:
-                "<b>" +
-                item.name +
-                '</b>&nbsp;<br/><span class="t-small">' +
-                item.addr +
-                "</span>"
+              label: item.name,
+              options: [
+                {
+                  innerHTML: item.addr,
+                  text: item.addr,
+                  value: item.name,
+                  selected: false
+                }
+              ]
             });
           });
-          navData.push({
-            innerHTML: "<b>New lighthouse</b>",
-            text: "create new lighthouse",
-            value: "new",
-            class: "type-new"
-          });
+          if (this.isCreate) {
+            navData.push({
+              label: "New lighthouse",
+              options: [
+                {
+                  innerHTML: "create new lighthouse",
+                  text: "create new lighthouse",
+                  value: "new",
+                  class: "type-new"
+                }
+              ]
+            });
+          }
           slim.setData(navData);
+
+          slim.set(
+            this.selectedLighthouse
+              ? this.selectedLighthouse
+              : lighthouses[0].name
+          );
+          if (this.selectedLighthouse) {
+            this.createForm = false;
+            this.isBtnConnect = false;
+          }
         }
       });
     },
@@ -244,6 +253,7 @@ export default {
     connect() {
       if (this.lighthouse !== "") {
         this.$router.push({ path: `/lighthouse/${this.lighthouse}` });
+        this.$router.go();
       }
     }
   }

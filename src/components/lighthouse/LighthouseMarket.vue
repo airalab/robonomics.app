@@ -1,94 +1,92 @@
 <template>
-  <section class="m-t-40">
+  <fragment>
     <section class="section-light">
-      <h3>Send message to to Robonomics.network:</h3>
       <form>
-        <section>
+        <h3>Send message to the Robonomics.network</h3>
+        <div class="form-item form-line-label">
+          <label for="inputdata-model">
+            <span>The program's model</span>
+            <a
+              class="js-tooltip m-l-10"
+              href="javascript:;"
+              data-tooltip="'The CPSs behavioral model, or program, which takes into account the technical and economic parameters of its communication' - from Robonomics White Paper, 4 Liability of the machine"
+            >
+              <i class="i-info"></i>
+            </a>
+          </label>
+          <input
+            v-model="form.fields.model.value"
+            class="container-full"
+            :class="{ error: form.fields.model.error }"
+            type="text"
+            placeholder="Hash from IPFS"
+            required
+          />
+        </div>
+
+        <div class="form-item">
           <div class="form-item form-line-label">
-            <label for="inputdata-model">
-              Paste programm model *
-              <span
-                v-if="form.fields.model.error"
-                class="input-msg"
-              >Check if data correct, please.</span>
+            <label for="input3">
+              <span>Robot ID</span>
             </label>
             <input
-              v-model="form.fields.model.value"
+              v-model="form.fields.objective.value"
               class="container-full"
-              :class="{ error: form.fields.model.error }"
+              :class="{ error: form.fields.objective.error }"
               type="text"
+              placeholder="Hash from IPFS"
               required
             />
           </div>
-          <div id="more-form" style="margin-bottom: 24px;display:none">
-            <div class="form-item form-line-label">
-              <label for="inputdata-model">
-                Paste programm objective *
-                <span
-                  v-if="form.fields.objective.error"
-                  class="input-msg"
-                >Check if data correct, please.</span>
-              </label>
-              <input
-                v-model="form.fields.objective.value"
-                class="container-full"
-                :class="{ error: form.fields.objective.error }"
-                type="text"
-                required
-              />
-            </div>
-            <!-- <div class="form-item form-line-label">
-              <label for="inputdata-model">
-                Paste token *
-                <span
-                  v-if="form.fields.token.error"
-                  class="input-msg"
-                >Check if data correct, please.</span>
-              </label>
-              <input
-                v-model="form.fields.token.value"
-                class="container-full"
-                :class="{ error: form.fields.token.error }"
-                type="text"
-                required
-              />
-            </div>
-            <div class="form-item form-line-label">
-              <label for="inputdata-model">
-                Paste cost *
-                <span
-                  v-if="form.fields.cost.error"
-                  class="input-msg"
-                >Check if data correct, please.</span>
-              </label>
-              <input
-                v-model="form.fields.cost.value"
-                class="container-full"
-                :class="{ error: form.fields.cost.error }"
-                type="text"
-                required
-              />
-            </div>-->
-          </div>
-          <a href="#" onclick="show(this, '#more-form', 'Minimize', 'Expand');return false;">Expand</a>
-        </section>
+        </div>
+        <!-- <div class="form-item form-line-label">
+          <a
+            class="a-dashed"
+            href="javascript:;"
+            onclick="show(this, '#moreopts', 'Minimize', 'More options');return false;"
+          >More options</a>
+        </div>-->
       </form>
-      <div v-if="form.error">Check if data correct, please.</div>
-      <button v-on:click="sendMsgDemand" class="btn-green input-sm">Broadcast signal to network</button>
+      <section class="m-b-0">
+        <div v-if="form.error" style="margin: 5px 0;">Check if data correct, please.</div>
+        <button v-on:click="sendMsgDemand" :disabled="watch" class="btn-green">
+          <div class="loader-ring" v-if="watch"></div>&nbsp;Broadcast signal to the network
+        </button>
+      </section>
     </section>
-    <section class="section-light">
-      <h3>Messages from Robonomics network:</h3>
-      <div v-for="(item, i) in log" :key="i" style="margin: 5px 0">
-        [{{item.date.toLocaleString()}}] New {{item.type}} from
-        <span
-          v-if="item.type == 'demand'"
-        >dapp account</span>
-        <span v-else>Aira</span>&nbsp;
-        <LinkExplorer :text="item.sender" />
+
+    <section class="section-light window" id="window-lighthouse-messages">
+      <div class="window-head">
+        <span>Messages from the Robonomics.network</span>
+        <a class="window-head-toggle" href="#">–</a>
       </div>
-      <!-- <div>[21:55:32] Provider 0x2e...5041b7 sent tx to Ethereum network</div>-->
+      <div class="window-content">
+        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
+          <template v-if="item.type == 'liability'">
+            <Avatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <b>[{{item.date.toLocaleString()}}]</b>
+            New {{item.type}}&nbsp;
+            <a
+              :href="item.address | urlExplorer"
+              target="_blank"
+            >{{ item.address | labelAddress }}</a>
+          </template>
+          <template v-else>
+            <Avatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
+            <b>[{{item.date.toLocaleString()}}]</b>
+            New {{item.type}} from
+            <span v-if="item.type == 'demand'">dapp account</span>
+            <span v-else>Aira</span>&nbsp;
+            <a
+              :href="item.sender | urlExplorer"
+              target="_blank"
+            >{{ item.sender | labelAddress }}</a>
+          </template>
+          <hr />
+        </div>
+      </div>
     </section>
-  </section>
+  </fragment>
 </template>
 
 <script>
@@ -100,12 +98,12 @@ export default {
       form: {
         fields: {
           model: {
-            value: "QmZQKV8E3hjyxnEQGq1d4XCmeUDfzkAhryoJG3pcBkoUE6",
+            value: "",
             rules: ["require", "hash"],
             error: false
           },
           objective: {
-            value: "QmewrYzhpr6fgXQ83LXHcF4mu2otXvAeZVadRXEz7xF5UN",
+            value: "",
             rules: ["require", "hash"],
             error: false
           },
@@ -124,7 +122,8 @@ export default {
       },
       account: "",
       messages: {},
-      nonce: null
+      nonce: null,
+      id: null
     };
   },
   computed: {
@@ -140,6 +139,21 @@ export default {
           return 0;
         })
         .slice(0, 10);
+    },
+    demand() {
+      return this.$store.getters["sender/demandById"](this.id);
+    },
+    watch() {
+      return this.demand && this.demand.status > 0 && this.demand.status < 6
+        ? true
+        : false;
+    }
+  },
+  watch: {
+    demand: function(newStatus) {
+      if (newStatus.status === 6) {
+        this.setNonce();
+      }
     }
   },
   mounted() {
@@ -165,14 +179,50 @@ export default {
         });
       }
     });
+    this.$robonomics.onLiability((err, liability) => {
+      if (
+        this.demand &&
+        this.id &&
+        liability.address &&
+        this.demand.sender === this.$robonomics.account.address
+      ) {
+        this.$store.dispatch("sender/setContract", {
+          id: this.id,
+          address: liability.address
+        });
+      }
+      if (!this.messages[liability.address]) {
+        Vue.set(this.messages, liability.address, {
+          date: new Date(),
+          type: "liability",
+          address: liability.address
+        });
+      }
+    });
+    this.tooltip();
 
-    return this.$robonomics.factory.call
-      .nonceOf(this.$robonomics.account.address)
-      .then(r => {
-        this.nonce = Number(r);
-      });
+    return this.setNonce();
   },
   methods: {
+    setNonce() {
+      this.$robonomics.factory.call
+        .nonceOf(this.$robonomics.account.address)
+        .then(r => {
+          this.nonce = Number(r);
+        });
+    },
+    tooltip() {
+      const reference = document.querySelectorAll(".js-tooltip");
+      if (reference) {
+        reference.forEach(function(elem) {
+          new Tooltip(elem, {
+            title: elem.getAttribute("data-tooltip"),
+            placement: elem.getAttribute("data-placement") || "auto",
+            container: "body"
+          });
+        });
+      }
+    },
     validateForm() {
       this.form.error = false;
       for (let field in this.form.fields) {
@@ -192,8 +242,7 @@ export default {
             this.form.error = true;
           } else if (
             rule === "hash" &&
-            (this.form.fields[field].value.length !== 46 ||
-              this.form.fields[field].value.substr(0, 2) !== "Qm")
+            this.form.fields[field].value.length !== 46
           ) {
             this.form.fields[field].error = true;
             this.form.error = true;
@@ -222,8 +271,8 @@ export default {
             deadline: r.number + 1000,
             nonce: this.nonce
           };
-          this.$store.dispatch("sender/sendDemand", demand).then(() => {
-            this.nonce++;
+          this.$store.dispatch("sender/sendDemand", demand).then(id => {
+            this.id = id;
           });
         });
       }
