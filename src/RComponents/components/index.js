@@ -14,6 +14,7 @@ export { default as Loader } from './Loader';
 export { default as Label } from './Label';
 export { default as Avatar } from './Avatar';
 export { default as LinkExplorer } from './LinkExplorer';
+export { default as FieldItem } from './form/FieldItem';
 export { default as Field } from './form/Field';
 export { default as InputText } from './form/InputText';
 export { default as Textarea } from './form/Textarea';

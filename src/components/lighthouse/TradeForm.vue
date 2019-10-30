@@ -1,7 +1,7 @@
 <template>
   <form>
     <h3>Send message to the Robonomics.network</h3>
-    <div class="form-item form-line-label">
+    <RFieldItem>
       <label for="inputdata-model">
         <span>The program's model</span>
         <a
@@ -11,61 +11,28 @@
         >
           <i class="i-info"></i>
         </a>
+        <span v-if="fields.model.error" class="input-msg">Check if data correct, please.</span>
       </label>
-      <input
+      <RInputText
         v-model="fields.model.value"
-        class="container-full"
-        :class="{ error: fields.model.error }"
-        type="text"
+        :isError="fields.model.error"
         placeholder="Hash from IPFS"
-        required
       />
-    </div>
-
-    <div class="form-item">
-      <div class="form-item form-line-label">
-        <label for="input3">
-          <span>Robot ID</span>
-        </label>
-        <input
-          v-model="fields.objective.value"
-          class="container-full"
-          :class="{ error: fields.objective.error }"
-          type="text"
-          placeholder="Hash from IPFS"
-          required
-        />
-      </div>
-    </div>
+    </RFieldItem>
+    <RField label="Robot ID" :isError="fields.objective.error">
+      <RInputText
+        v-model="fields.objective.value"
+        :isError="fields.objective.error"
+        placeholder="Hash from IPFS"
+      />
+    </RField>
     <div class="form-item" id="moreopts" style="display:none">
-      <div class="form-item">
-        <div class="form-item form-line-label">
-          <label for="input3">
-            <span>Token</span>
-          </label>
-          <input
-            v-model="fields.token.value"
-            class="container-full"
-            :class="{ error: fields.token.error }"
-            type="text"
-            required
-          />
-        </div>
-      </div>
-      <div class="form-item">
-        <div class="form-item form-line-label">
-          <label for="input3">
-            <span>Cost</span>
-          </label>
-          <input
-            v-model="fields.cost.value"
-            class="container-full"
-            :class="{ error: fields.cost.error }"
-            type="text"
-            required
-          />
-        </div>
-      </div>
+      <RField label="Token" :isError="fields.token.error">
+        <RInputText v-model="fields.token.value" :isError="fields.token.error" />
+      </RField>
+      <RField label="Cost" :isError="fields.cost.error">
+        <RInputText v-model="fields.cost.value" :isError="fields.cost.error" />
+      </RField>
     </div>
     <div class="form-item form-line-label">
       <a
@@ -78,17 +45,10 @@
 </template>
 
 <script>
-import validator from "../../RComponents/tools/validator";
+import { mixins } from "../../RComponents";
 
 export default {
-  props: {
-    onSubmit: {
-      type: Function
-    },
-    onChange: {
-      type: Function
-    }
-  },
+  mixins: [mixins.form],
   data() {
     return {
       fields: {
@@ -108,40 +68,12 @@ export default {
           error: false
         },
         cost: {
-          value: 0,
+          value: "0",
           rules: ["require", "number"],
           error: false
         }
-      },
-      error: false
+      }
     };
-  },
-  created() {
-    this.onChange(this.fields);
-  },
-  updated() {
-    this.onChange(this.fields);
-  },
-  methods: {
-    validate() {
-      this.error = false;
-      for (let field in this.fields) {
-        this.fields[field].error = false;
-        this.fields[field].rules.forEach(rule => {
-          if (!validator[rule](this.fields[field].value)) {
-            this.fields[field].error = true;
-            this.error = true;
-          }
-        });
-      }
-      return !this.error;
-    },
-    submit() {
-      this.validate();
-      if (this.onSubmit) {
-        this.onSubmit(this.error, this.fields);
-      }
-    }
   }
 };
 </script>

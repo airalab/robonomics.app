@@ -1,10 +1,11 @@
 import * as components from './components';
+import * as mixins from './mixins';
 import * as filters from './tools/filters';
 import initIpfs, * as ipfs from './tools/ipfs';
 import initRobonomics, * as robonomics from './tools/robonomics';
 import { setConfig } from './config';
 
-export { components, filters, initIpfs, ipfs, initRobonomics, robonomics };
+export { components, mixins, filters, initIpfs, ipfs, initRobonomics, robonomics };
 
 export default {
   install(Vue, options) {
