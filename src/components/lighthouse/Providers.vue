@@ -1,5 +1,5 @@
 <template>
-  <section class="section-light window" id="window-lighthouse-providers">
+  <RCard class="window" id="window-lighthouse-providers">
     <div class="window-head">
       <span>Providers</span>
       <a class="window-head-toggle" href="#">–</a>
@@ -19,7 +19,7 @@
           <tr v-for="member in members" :key="member.i">
             <td>{{member.i}}</td>
             <td>
-              <LinkExplorer :text="member.address" />
+              <RLinkExplorer :text="member.address" />
             </td>
             <td>
               <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
@@ -38,7 +38,7 @@
         </tbody>
       </table>
     </div>
-  </section>
+  </RCard>
 </template>
 
 <script>

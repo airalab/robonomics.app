@@ -11,11 +11,11 @@
       />
       <span class="input-measure">{{fromLabel}}</span>
     </div>
-    <button v-if="$wait.is([actionForm, actionTx])" class="container-full" disabled>
+    <RButton v-if="$wait.is([actionForm, actionTx])" full disabled>
       <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
-    </button>
-    <button v-else class="container-full" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
+    </RButton>
+    <RButton v-else full @click.native="submit">{{ $t('convert') }} {{toLabel}}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a :href="actionTx.replace('tx.', '') | urlExplorer('tx')" target="_blank">transaction</a> to be mined

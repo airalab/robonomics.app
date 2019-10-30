@@ -1,6 +1,11 @@
 const chains = {
   1: {
     STATISTICS_API: 'https://devjs-01.corp.aira.life:3004',
+    ROBONOMICS: {
+      ens: '',
+      ensSuffix: 'eth',
+      lighthouse: null // 'chainm.lighthouse.5.robonomics.eth'
+    },
     TOKEN: {
       air: {
         address: '0xA2f4FCb0FDe2dD59f7a1873e121bc5623e3164Eb',
@@ -18,24 +23,35 @@ const chains = {
         label: 'XRT'
       }
     },
-    ROBONOMICS: {
-      ens: '',
-      ensSuffix: 'eth'
-    }
   },
   4451: {
     STATISTICS_API: 'https://devjs-01.corp.aira.life:3007',
+    ROBONOMICS: {
+      ens: '0xaC4Ac4801b50b74aa3222B5Ba282FF54407B3941',
+      ensSuffix: 'sid',
+      lighthouse: null // 'airalab.lighthouse.5.robonomics.sid'
+    },
     TOKEN: {
       xrt: {
         address: '0x966EbbFD7ECbCF44b1e05341976e0652CFA01360',
         decimals: 9,
         label: 'XRT'
       }
-    },
-    ROBONOMICS: {
-      ens: '0xaC4Ac4801b50b74aa3222B5Ba282FF54407B3941',
-      ensSuffix: 'sid'
     }
+  },
+  4: {
+    STATISTICS_API: 'https://devjs-01.corp.aira.life:3007',
+    ROBONOMICS: {
+      ens: '0x9D70a7ecf0834ca14969f676e54834F12eaE5E10',
+      ensSuffix: 'eth'
+    },
+    TOKEN: {
+      xrt: {
+        address: '0x8a978C2eD9313091eE88E4c29527A4fA0EcEbDbe',
+        decimals: 9,
+        label: 'XRT'
+      }
+    },
   }
 };
 

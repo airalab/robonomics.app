@@ -11,17 +11,14 @@
       />
       <span class="input-measure">{{fromLabel}}</span>
     </div>
-    <button v-if="$wait.is([actionForm, actionTx])" class="container-full" disabled>
+    <RButton v-if="$wait.is([actionForm, actionTx])" full disabled>
       <span class="align-vertical">{{ $t('convert') }} {{toLabel}}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
-    </button>
-    <button v-else class="container-full" @click="submit">{{ $t('convert') }} {{toLabel}}</button>
+    </RButton>
+    <RButton v-else full @click.native="submit">{{ $t('convert') }} {{toLabel}}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
-      <a
-        :href="actionTx.replace('tx.', '') | urlExplorer('tx')"
-        target="_blank"
-      >transaction</a> to be mined
+      <a :href="actionTx.replace('tx.', '') | urlExplorer('tx')" target="_blank">transaction</a> to be mined
     </p>
     <p v-if="error!==''" class="t-sm">{{error}}</p>
   </form>
@@ -102,7 +99,9 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = this.$robonomics.web3.eth.contract(TokenABI).at(this.token);
+      const contract = this.$robonomics.web3.eth
+        .contract(TokenABI)
+        .at(this.token);
       contract.approve(
         this.ambix,
         toWei(value, this.decimals),
@@ -123,17 +122,23 @@ export default {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = this.$robonomics.web3.eth.contract(AmbixSimpleABI).at(this.ambix);
-      ambix.run(this.index, { from: this.$robonomics.account.address }, (e, r) => {
-        if (e) {
+      const ambix = this.$robonomics.web3.eth
+        .contract(AmbixSimpleABI)
+        .at(this.ambix);
+      ambix.run(
+        this.index,
+        { from: this.$robonomics.account.address },
+        (e, r) => {
+          if (e) {
+            this.$wait.end(this.actionForm);
+            return;
+          }
           this.$wait.end(this.actionForm);
-          return;
+          this.tx = r;
+          this.actionTx = "tx." + this.tx;
+          this.$wait.start(this.actionTx);
         }
-        this.$wait.end(this.actionForm);
-        this.tx = r;
-        this.actionTx = "tx." + this.tx;
-        this.$wait.start(this.actionTx);
-      });
+      );
     }
   }
 };
