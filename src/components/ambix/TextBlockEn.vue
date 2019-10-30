@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('header') }}</h1>
-    <section class="section-light window" id="window-developletter">
+    <RCard class="window" id="window-developletter">
       <div class="window-head">
         <span>The developers&#8217; letter</span>
         <a class="window-head-toggle" href="#">–</a>
@@ -87,7 +87,7 @@
           </tbody>
         </table>
       </div>
-    </section>
+    </RCard>
   </div>
 </template>
 

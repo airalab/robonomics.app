@@ -9,11 +9,11 @@
       @input="count = Number($event.target.value);validate()"
       min="1"
     />
-    <button
-      v-on:click="sendWithdraw"
+    <RButton
+      @click.native="sendWithdraw"
       :disabled="withdraw.disabled"
       class="btn-blue input-sm"
-    >{{ withdraw.text }}</button>
+    >{{ withdraw.text }}</RButton>
   </p>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
-  <section class="section-light">
-    <h2>Robonomics Telemetry</h2>
+  <RCard>
+    <RCardTitle>Robonomics Telemetry</RCardTitle>
     <table class="container-full table-hover">
       <thead>
         <tr>
@@ -50,7 +50,7 @@
         </tr>
       </tbody>
     </table>
-  </section>
+  </RCard>
 </template>
 
 <script>

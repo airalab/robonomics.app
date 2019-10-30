@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import axios from 'axios';
 import { web3Utils, utils } from 'robonomics-js';
-import getIpfs from './ipfs';
+import getIpfs from '../RComponents/tools/ipfs';
 
 export const toWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
@@ -11,12 +11,10 @@ export const fromWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
   return priceNum.shift(-decimals).toNumber();
 };
-export const genObjective = data => {
+export const genObjective = data => { // -
   let hash;
-  return getIpfs()
-    .then(ipfs => {
-      return ipfs.add(Buffer.from(''+data));
-    })
+  const ipfs = getIpfs()
+  ipfs.add(Buffer.from(''+data))
     .then(r => {
       hash = r[0].hash;
       return axios.get(`https://ipfs.robonomics.network/ipfs/${hash}`);
@@ -28,12 +26,12 @@ export const genObjective = data => {
       console.log(e);
     });
 };
-function getRandomInt(min, max) {
+function getRandomInt(min, max) { // -
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
 }
-export const randomObjective = () => {
+export const randomObjective = () => { // -
   const data = getRandomInt(0, 100000).toString()
   const hashFunction = Buffer.from('12', 'hex')
   const digest = crypto.createHash('sha256').update(data).digest()
@@ -42,7 +40,7 @@ export const randomObjective = () => {
   const multihash = utils.base58.encode(combined)
   return multihash.toString()
 };
-export const watchTx = tx => {
+export const watchTx = tx => { // -
   const transactionReceiptAsync = (resolve, reject) => {
     web3.eth.getTransactionReceipt(tx, (error, receipt) => {
       if (error) {
@@ -141,3 +139,21 @@ export async function findLastTx(accounts, lighthouse, to, from) {
   }
   return result;
 }
+
+const requestsIpns = new Set();
+export const getDataByIpns = (hash, force = true) => {
+  if (requestsIpns.has(hash) || force === false) {
+    return Promise.resolve(false);
+  }
+  requestsIpns.add(hash);
+  return axios
+    .get(`https://ipfs.io/ipns/${hash}`)
+    .then(r => {
+      requestsIpns.delete(hash);
+      return r.data;
+    })
+    .catch(() => {
+      requestsIpns.delete(hash);
+      return false;
+    });
+};

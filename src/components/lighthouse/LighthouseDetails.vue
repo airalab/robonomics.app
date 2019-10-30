@@ -1,5 +1,5 @@
 <template>
-  <section class="section-light window" id="window-developletter">
+  <RCard class="window" id="window-developletter">
     <div class="window-head">
       <span>Lighthouse details</span>
       <!-- a.window-head-toggle(href="#") –-->
@@ -8,7 +8,7 @@
       <p>
         <span class="t-sm">Lighthouse contract address:</span>
         <br />
-        <LinkExplorer :text="lighthouse" />
+        <RLinkExplorer :text="lighthouse" />
       </p>
       <hr />
       <p>
@@ -33,25 +33,19 @@
       <WorkerForm />
       <hr />
       <WithdrawForm />
-      <hr />
-      <TradeForm />
     </div>
-  </section>
+  </RCard>
 </template>
 
 <script>
 import { mapState } from "vuex";
-// import Account from "./Account";
 import WorkerForm from "./WorkerForm";
-import TradeForm from "./TradeForm";
 import WithdrawForm from "./WithdrawForm";
 
 export default {
   props: ["lighthouse"],
   components: {
-    // Account,
     WorkerForm,
-    TradeForm,
     WithdrawForm
   },
   data() {

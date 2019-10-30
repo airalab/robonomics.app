@@ -1,5 +1,5 @@
 <template>
-  <section class="section-light">
+  <RCard>
     <div class="row">
       <div class="col-md-4">
         <h3 class="m-b-0">{{ $t('robotics_ethereum_control') }}</h3>
@@ -108,7 +108,7 @@
         <div class="col-md-4">
           <section>
             <b>{{ $t('token_addr') }}:</b>
-            <LinkExplorer :text="tokens.xrt.address" category="token" />
+            <RLinkExplorer :text="tokens.xrt.address" category="token" />
           </section>
           <table class="container-full table-hover">
             <caption>{{ $t('token_stat') }}</caption>
@@ -132,7 +132,7 @@
         onclick="show(this, '#statistic', '&amp;uarr; Minimize &amp;uarr;', '&amp;darr; Expand &amp;darr;');return false;"
       >&darr; Expand &darr;</a>
     </section>
-  </section>
+  </RCard>
 </template>
 
 <script>

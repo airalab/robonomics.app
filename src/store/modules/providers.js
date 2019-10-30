@@ -3,7 +3,7 @@ import _sortBy from 'lodash/sortBy';
 import _values from 'lodash/values';
 import _mapValues from 'lodash/mapValues';
 import Promise from 'bluebird';
-import getRobonomics from '../../utils/robonomics';
+import getRobonomics from '../../RComponents/tools/robonomics';
 import { findLastTx } from '../../utils/utils';
 
 let robonomics;

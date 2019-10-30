@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import _has from 'lodash/has';
 import dateFormat from 'dateformat';
-import getIpfs, { getDataByIpns } from '../../utils/ipfs';
-import { recovery } from '../../utils/utils';
+import getIpfs from '../../RComponents/tools/ipfs';
+import { recovery, getDataByIpns } from '../../utils/utils';
 import config from '../../config';
 
 const web3Static = new Web3('wss://mainnet.infura.io/ws');
@@ -18,12 +18,12 @@ const getters = {};
 
 // actions
 const actions = {
-  async init({ commit, dispatch, state }) {
+  init({ commit, dispatch, state }) {
     if (state.run) {
       return;
     }
     commit('run');
-    const ipfs = await getIpfs();
+    const ipfs = getIpfs();
 
     config.NET_TOPICS.forEach(topic => {
       const suffix = topic.split('.');

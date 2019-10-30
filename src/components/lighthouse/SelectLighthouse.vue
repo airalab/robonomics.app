@@ -32,14 +32,14 @@
           class="input-size--sm"
         />
       </p>
-      <button class="btn-green" disabled v-if="create">Create and connect</button>
-      <button class="btn-green" v-on:click="sendCreateLighthouse" v-else>Create and connect</button>
-      <a href="javascript:;" class="m-l-20" v-on:click="reset">Cancel</a>
+      <RButton green disabled v-if="create">Create and connect</RButton>
+      <RButton green @click.native="sendCreateLighthouse" v-else>Create and connect</RButton>
+      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
-      <button v-on:click="connect">Connect</button>
-      <a href="javascript:;" class="m-l-20" v-on:click="reset">Cancel</a>
+      <RButton @click.native="connect">Connect</RButton>
+      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
     </div>
   </div>
 </template>

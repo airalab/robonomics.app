@@ -16,18 +16,18 @@
         @input="count = Number($event.target.value);validate()"
         min="1"
       />
-      <button
-        v-on:click="sendApproveWorker"
+      <RButton
+        @click.native="sendApproveWorker"
         v-if="approveWorker.show"
         :disabled="approveWorker.disabled"
         class="btn-blue input-sm"
-      >{{ approveWorker.text }}</button>
-      <button
-        v-on:click="sendRefill"
+      >{{ approveWorker.text }}</RButton>
+      <RButton
+        @click.native="sendRefill"
         v-if="refill.show"
         :disabled="refill.disabled"
         class="btn-blue input-sm"
-      >{{ refill.text }}</button>
+      >{{ refill.text }}</RButton>
     </p>
   </fragment>
 </template>

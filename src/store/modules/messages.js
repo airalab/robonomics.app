@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import _find from 'lodash/find';
 import _findIndex from 'lodash/findIndex';
-import getRobonomics from '../../utils/robonomics';
-import getIpfs from '../../utils/ipfs';
+import getRobonomics from '../../RComponents/tools/robonomics';
+import getIpfs from '../../RComponents/tools/ipfs';
 
 let robonomics;
 
@@ -32,15 +32,13 @@ const actions = {
     commit('clear');
     robonomics = getRobonomics();
     robonomics.ready().then(() => {
-      getIpfs().then(ipfs => {
-        ipfs.id((err, info) => {
-          commit('model', info.id);
-          dispatch('onOffer');
-          dispatch('onDemand');
-          dispatch('onLiability');
-        });
+      const ipfs = getIpfs()
+      ipfs.id((err, info) => {
+        commit('model', info.id);
+        dispatch('onOffer');
+        dispatch('onDemand');
+        dispatch('onLiability');
       });
-
     });
   },
   onOffer({ commit, state }) {

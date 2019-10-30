@@ -1,61 +1,29 @@
 <template>
   <fragment>
-    <section class="section-light">
-      <form>
-        <h3>Send message to the Robonomics.network</h3>
-        <div class="form-item form-line-label">
-          <label for="inputdata-model">
-            <span>The program's model</span>
-            <a
-              class="js-tooltip m-l-10"
-              href="javascript:;"
-              data-tooltip="'The CPSs behavioral model, or program, which takes into account the technical and economic parameters of its communication' - from Robonomics White Paper, 4 Liability of the machine"
-            >
-              <i class="i-info"></i>
-            </a>
-          </label>
-          <input
-            v-model="form.fields.model.value"
-            class="container-full"
-            :class="{ error: form.fields.model.error }"
-            type="text"
-            placeholder="Hash from IPFS"
-            required
-          />
-        </div>
+    <RCard>
+      <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
-        <div class="form-item">
-          <div class="form-item form-line-label">
-            <label for="input3">
-              <span>Robot ID</span>
-            </label>
-            <input
-              v-model="form.fields.objective.value"
-              class="container-full"
-              :class="{ error: form.fields.objective.error }"
-              type="text"
-              placeholder="Hash from IPFS"
-              required
-            />
-          </div>
-        </div>
-        <!-- <div class="form-item form-line-label">
-          <a
-            class="a-dashed"
-            href="javascript:;"
-            onclick="show(this, '#moreopts', 'Minimize', 'More options');return false;"
-          >More options</a>
-        </div>-->
-      </form>
       <section class="m-b-0">
-        <div v-if="form.error" style="margin: 5px 0;">Check if data correct, please.</div>
-        <button v-on:click="sendMsgDemand" :disabled="watch" class="btn-green">
+        <div v-if="error" style="margin: 5px 0;">Check if data correct, please.</div>
+        <Approve
+          v-if="cost > 0 && token"
+          :address="token"
+          :cost="cost | toWei(decimals)"
+          :onInitToken="onInitToken"
+          :onFetch="onAllowance"
+        />
+        <RButton
+          v-else-if="allowance >= cost"
+          @click.native="sendMsgDemand"
+          :disabled="watch"
+          green
+        >
           <div class="loader-ring" v-if="watch"></div>&nbsp;Broadcast signal to the network
-        </button>
+        </RButton>
       </section>
-    </section>
+    </RCard>
 
-    <section class="section-light window" id="window-lighthouse-messages">
+    <RCard class="window" id="window-lighthouse-messages">
       <div class="window-head">
         <span>Messages from the Robonomics.network</span>
         <a class="window-head-toggle" href="#">–</a>
@@ -63,7 +31,7 @@
       <div class="window-content">
         <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
           <template v-if="item.type == 'liability'">
-            <Avatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
             <b>[{{item.date.toLocaleString()}}]</b>
             New {{item.type}}&nbsp;
             <a
@@ -72,7 +40,7 @@
             >{{ item.address | labelAddress }}</a>
           </template>
           <template v-else>
-            <Avatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
+            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
             <b>[{{item.date.toLocaleString()}}]</b>
             New {{item.type}} from
             <span v-if="item.type == 'demand'">dapp account</span>
@@ -85,45 +53,32 @@
           <hr />
         </div>
       </div>
-    </section>
+    </RCard>
   </fragment>
 </template>
 
 <script>
 import Vue from "vue";
+import TradeForm from "./TradeForm";
+import Approve from "@/components/approve/Main";
+import { number } from "../../RComponents/tools/filters";
 
 export default {
+  components: {
+    TradeForm,
+    Approve
+  },
   data() {
     return {
-      form: {
-        fields: {
-          model: {
-            value: "",
-            rules: ["require", "hash"],
-            error: false
-          },
-          objective: {
-            value: "",
-            rules: ["require", "hash"],
-            error: false
-          },
-          token: {
-            value: "",
-            rules: ["require", "address"],
-            error: false
-          },
-          cost: {
-            value: 0,
-            rules: ["require", "number"],
-            error: false
-          }
-        },
-        error: false
-      },
       account: "",
       messages: {},
       nonce: null,
-      id: null
+      id: null,
+      token: null,
+      cost: null,
+      decimals: 0,
+      allowance: 0,
+      error: false
     };
   },
   computed: {
@@ -158,7 +113,7 @@ export default {
   },
   mounted() {
     this.account = this.$robonomics.account.address;
-    this.form.fields.token.value = this.$robonomics.xrt.address;
+    this.$refs.form.fields.token.value = this.$robonomics.xrt.address;
     this.$robonomics.onDemand(null, msg => {
       const hash = msg.getHash();
       if (!this.messages[hash]) {
@@ -204,6 +159,40 @@ export default {
     return this.setNonce();
   },
   methods: {
+    sendMsgDemand() {
+      this.$refs.form.submit();
+    },
+    onChange(fields) {
+      this.token = fields.token.value;
+      this.cost = fields.cost.value;
+    },
+    onSubmit(e, fields) {
+      this.error = e;
+      if (!e) {
+        this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
+          const demand = {
+            model: fields.model.value,
+            objective: fields.objective.value,
+            token: fields.token.value,
+            cost: number.toWei(fields.cost.value, this.decimals),
+            lighthouse: this.$robonomics.lighthouse.address,
+            validator: "0x0000000000000000000000000000000000000000",
+            validatorFee: 0,
+            deadline: r.number + 1000,
+            nonce: this.nonce
+          };
+          this.$store.dispatch("sender/sendDemand", demand).then(id => {
+            this.id = id;
+          });
+        });
+      }
+    },
+    onInitToken({ decimals }) {
+      this.decimals = decimals;
+    },
+    onAllowance({ allowance }) {
+      this.allowance = number.fromWei(allowance, this.decimals);
+    },
     setNonce() {
       this.$robonomics.factory.call
         .nonceOf(this.$robonomics.account.address)
@@ -219,60 +208,6 @@ export default {
             title: elem.getAttribute("data-tooltip"),
             placement: elem.getAttribute("data-placement") || "auto",
             container: "body"
-          });
-        });
-      }
-    },
-    validateForm() {
-      this.form.error = false;
-      for (let field in this.form.fields) {
-        this.form.fields[field].error = false;
-        this.form.fields[field].rules.forEach(rule => {
-          if (
-            rule === "require" &&
-            this.form.fields[field].value.length === 0
-          ) {
-            this.form.fields[field].error = true;
-            this.form.error = true;
-          } else if (
-            rule === "number" &&
-            !(Number(this.form.fields[field].value) >= 0)
-          ) {
-            this.form.fields[field].error = true;
-            this.form.error = true;
-          } else if (
-            rule === "hash" &&
-            this.form.fields[field].value.length !== 46
-          ) {
-            this.form.fields[field].error = true;
-            this.form.error = true;
-          } else if (
-            rule === "address" &&
-            !this.$robonomics.web3.isAddress(this.form.fields[field].value)
-          ) {
-            this.form.fields[field].error = true;
-            this.form.error = true;
-          }
-        });
-      }
-      return !this.form.error;
-    },
-    sendMsgDemand() {
-      if (this.validateForm()) {
-        this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
-          const demand = {
-            model: this.form.fields.model.value,
-            objective: this.form.fields.objective.value,
-            token: this.form.fields.token.value,
-            cost: Number(this.form.fields.cost.value),
-            lighthouse: this.$robonomics.lighthouse.address,
-            validator: "0x0000000000000000000000000000000000000000",
-            validatorFee: 0,
-            deadline: r.number + 1000,
-            nonce: this.nonce
-          };
-          this.$store.dispatch("sender/sendDemand", demand).then(id => {
-            this.id = id;
           });
         });
       }
