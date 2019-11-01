@@ -27,7 +27,7 @@
 <script>
 import axios from "axios";
 import _has from "lodash/has";
-import { toWei, fromWei } from "../../utils/utils";
+import { number } from "../../RComponents/tools/filters";
 import TokenABI from "../../abi/Token.json";
 import AmbixABI from "../../abi/Ambix.json";
 import config from "../../config";
@@ -56,7 +56,7 @@ export default {
   },
   mounted() {
     if (this.current > 0) {
-      this.amount = fromWei(this.current, this.decimals);
+      this.amount = number.fromWei(this.current, this.decimals);
     }
   },
   computed: {
@@ -68,6 +68,11 @@ export default {
     }
   },
   watch: {
+    current: function(newVal) {
+      if (newVal > 0) {
+        this.amount = number.fromWei(newVal, this.decimals);
+      }
+    },
     watchTx(value) {
       if (!value) {
         if (/^approve/.test(this.actionForm)) {
@@ -83,23 +88,25 @@ export default {
       this.error = "";
       this.success = "";
       if (this.amount > 0) {
-        const value = Number(toWei(this.amount, this.decimals));
-        if (this.current > this.balance) {
+        const value = Number(number.toWei(this.amount, this.decimals));
+        const approve = Number(this.current);
+        const balance = Number(this.balance);
+        if (approve > balance) {
           this.unapprove();
-        } else if (value === this.current) {
-          if (value <= this.balance) {
+        } else if (value === approve) {
+          if (value <= balance) {
             this.run();
           } else {
-            this.error = "Error: max " + fromWei(this.balance, this.decimals);
+            this.error = "Error: max " + number.fromWei(balance, this.decimals);
           }
-        } else if (value > this.current) {
-          if (value <= this.balance) {
-            this.approve(value - this.current);
+        } else if (value > approve) {
+          if (value <= balance) {
+            this.approve(value - approve);
           } else {
-            this.error = "Error: max " + fromWei(this.balance, this.decimals);
+            this.error = "Error: max " + number.fromWei(balance, this.decimals);
           }
         } else {
-          // a < this.current
+          // a < approve
           this.unapprove();
         }
       }
@@ -114,7 +121,7 @@ export default {
         .at(this.token);
       contract.approve(
         this.ambix,
-        toWei(value, this.decimals),
+        value,
         { from: this.$robonomics.account.address },
         (e, r) => {
           if (e) {

@@ -108,7 +108,7 @@
         <div class="col-md-4">
           <section>
             <b>{{ $t('token_addr') }}:</b>
-            <RLinkExplorer :text="tokens.xrt.address" category="token" />
+            <RLinkExplorer :text="token" category="token" />
           </section>
           <table class="container-full table-hover">
             <caption>{{ $t('token_stat') }}</caption>
@@ -139,9 +139,16 @@
 import { mapState } from "vuex";
 
 export default {
+  data() {
+    return {
+      token: ""
+    };
+  },
   computed: {
-    ...mapState("token", ["tokens"]),
     ...mapState("statistics", ["connected", "totalSupply", "wn", "gas", "li"])
+  },
+  mounted() {
+    this.token = this.$robonomics.xrt.address;
   }
 };
 </script>

@@ -38,20 +38,6 @@ const chains = {
         label: 'XRT'
       }
     }
-  },
-  4: {
-    STATISTICS_API: 'https://devjs-01.corp.aira.life:3007',
-    ROBONOMICS: {
-      ens: '0x9D70a7ecf0834ca14969f676e54834F12eaE5E10',
-      ensSuffix: 'eth'
-    },
-    TOKEN: {
-      xrt: {
-        address: '0x8a978C2eD9313091eE88E4c29527A4fA0EcEbDbe',
-        decimals: 9,
-        label: 'XRT'
-      }
-    },
   }
 };
 

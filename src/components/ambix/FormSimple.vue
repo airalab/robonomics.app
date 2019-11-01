@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { toWei, fromWei } from "../../utils/utils";
+import { number } from "../../RComponents/tools/filters";
 import TokenABI from "../../abi/Token.json";
 import AmbixSimpleABI from "../../abi/AmbixSimple.json";
 
@@ -53,7 +53,7 @@ export default {
   },
   mounted() {
     if (this.current > 0) {
-      this.amount = fromWei(this.current, this.decimals);
+      this.amount = number.fromWei(this.current, this.decimals);
     }
   },
   computed: {
@@ -65,6 +65,11 @@ export default {
     }
   },
   watch: {
+    current: function(newVal) {
+      if (newVal > 0) {
+        this.amount = number.fromWei(newVal, this.decimals);
+      }
+    },
     watchTx(value) {
       if (!value) {
         if (/^approve/.test(this.actionForm)) {
@@ -78,18 +83,20 @@ export default {
       this.error = "";
       this.success = "";
       if (this.amount > 0) {
-        const value = Number(toWei(this.amount, this.decimals));
-        if (value === this.current) {
-          if (value <= this.balance) {
+        const value = Number(number.toWei(this.amount, this.decimals));
+        const approve = Number(this.current);
+        const balance = Number(this.balance);
+        if (value === approve) {
+          if (value <= balance) {
             this.run();
           } else {
-            this.error = "Error: max " + fromWei(this.balance, this.decimals);
+            this.error = "Error: max " + number.fromWei(balance, this.decimals);
           }
         } else {
-          if (value <= this.balance) {
+          if (value <= balance) {
             this.approve(value);
           } else {
-            this.error = "Error: max " + fromWei(this.balance, this.decimals);
+            this.error = "Error: max " + number.fromWei(balance, this.decimals);
           }
         }
       }
@@ -104,7 +111,7 @@ export default {
         .at(this.token);
       contract.approve(
         this.ambix,
-        toWei(value, this.decimals),
+        value,
         { from: this.$robonomics.account.address },
         (e, r) => {
           if (e) {

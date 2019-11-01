@@ -49,8 +49,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import Web3Check from "vue-web3-check";
+import config from "../config";
 
 export default {
   data() {
@@ -60,16 +61,35 @@ export default {
     };
   },
   computed: {
-    ...mapState("token", ["tokens"]),
-    balances: function() {
-      return Object.values(this.tokens).map(item => {
-        return { amount: item.balance, symbol: item.label };
+    ...mapGetters("tokens", ["balance", "token"]),
+    balances() {
+      const chain = config.chain(this.networkId);
+      const balances = [];
+      Object.values(chain.TOKEN).forEach(item => {
+        const info = this.token(item.address);
+        const amount = this.$options.filters.fromWei(
+          this.balance(item.address, this.$robonomics.account.address),
+          info ? info.decimals : 0
+        );
+        balances.push({
+          amount: amount,
+          symbol: info ? info.symbol : ""
+        });
       });
+      return balances;
     }
   },
   created() {
     this.account = this.$robonomics.account.address;
     this.networkId = Web3Check.store.state.networkId;
+    const chain = config.chain(this.networkId);
+    Object.values(chain.TOKEN).forEach(item => {
+      this.$store.dispatch("tokens/add", item.address);
+      this.$store.dispatch("tokens/watchBalance", {
+        token: item.address,
+        account: this.$robonomics.account.address
+      });
+    });
   }
 };
 </script>

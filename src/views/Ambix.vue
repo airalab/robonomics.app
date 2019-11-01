@@ -20,19 +20,19 @@
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || tokens.air.balance <= 0 }"
+          :class="{ 'disabled': !isKyc || air.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-2.png" />
           <h3>Aira → Aira ID</h3>
-          <Ambix :from="tokens.air" :to="tokens.airkyc" :ambix="ambix1" :index="0" />
+          <Ambix :from="air" :to="airkyc" :ambix="ambix1" :index="0" />
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || tokens.airkyc.balance <= 0 }"
+          :class="{ 'disabled': !isKyc || airkyc.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-3.png" />
           <h3>Aira ID → XRT</h3>
-          <Ambix :from="tokens.airkyc" :to="tokens.xrt" :ambix="ambix2" :index="0" />
+          <Ambix :from="airkyc" :to="xrt" :ambix="ambix2" :index="0" />
         </div>
       </section>
 
@@ -45,7 +45,7 @@
 
 <script>
 import Page from "../components/Page";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import Web3Check from "vue-web3-check";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";
@@ -68,7 +68,54 @@ export default {
   },
   computed: {
     ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
-    ...mapState("token", ["tokens"])
+    ...mapGetters("tokens", ["balance", "allowance"]),
+    air() {
+      const chain = config.chain(Web3Check.store.state.networkId);
+      return {
+        address: chain.TOKEN.air.address,
+        decimals: chain.TOKEN.air.decimals,
+        label: chain.TOKEN.air.label,
+        balance: this.balance(
+          chain.TOKEN.air.address,
+          this.$robonomics.account.address
+        ),
+        approve: this.allowance(
+          chain.TOKEN.air.address,
+          this.$robonomics.account.address,
+          config.AMBIX1
+        )
+      };
+    },
+    airkyc() {
+      const chain = config.chain(Web3Check.store.state.networkId);
+      return {
+        address: chain.TOKEN.airkyc.address,
+        decimals: chain.TOKEN.airkyc.decimals,
+        label: chain.TOKEN.airkyc.label,
+        balance: this.balance(
+          chain.TOKEN.airkyc.address,
+          this.$robonomics.account.address
+        ),
+        approve: this.allowance(
+          chain.TOKEN.airkyc.address,
+          this.$robonomics.account.address,
+          config.AMBIX2
+        )
+      };
+    },
+    xrt() {
+      const chain = config.chain(Web3Check.store.state.networkId);
+      return {
+        address: chain.TOKEN.xrt.address,
+        decimals: chain.TOKEN.xrt.decimals,
+        label: chain.TOKEN.xrt.label,
+        balance: this.balance(
+          chain.TOKEN.xrt.address,
+          this.$robonomics.account.address
+        ),
+        approve: 0
+      };
+    }
   },
   mounted() {
     if (Web3Check.store.state.networkId !== 1) {
@@ -76,6 +123,18 @@ export default {
     } else {
       this.address = this.$robonomics.account.address;
       this.$store.dispatch("kyc/check", this.address);
+
+      const chain = config.chain(Web3Check.store.state.networkId);
+      this.$store.dispatch("tokens/watchAllowance", {
+        token: chain.TOKEN.air.address,
+        from: this.$robonomics.account.address,
+        to: config.AMBIX1
+      });
+      this.$store.dispatch("tokens/watchAllowance", {
+        token: chain.TOKEN.airkyc.address,
+        from: this.$robonomics.account.address,
+        to: config.AMBIX2
+      });
     }
   },
   methods: {

@@ -5,7 +5,7 @@ export default {
   CIVIC_APP_ID: 'WUja346hS',
   START_NODES: [],
   NET_TOPICS: ['graph.5.robonomics.eth', 'graph.5.robonomics.sid'],
-  CHAINS: [1, 4451, 4],
+  CHAINS: [1, 4451],
   GATEWAY: 'https://ipfs.ipci.io/ipfs/',
   ROBONOMICS: {
     version: 5,
