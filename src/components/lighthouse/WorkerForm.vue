@@ -3,7 +3,7 @@
     <p>
       <span class="t-sm">Available for work at the lighthouse:</span>
       <br />
-      <b>{{ approveWorker.value | fromWei(9, 'XRT') }}</b>
+      <b>{{ approveWorker.value | fromWei(9, "XRT") }}</b>
     </p>
     <hr />
     <p>
@@ -13,7 +13,10 @@
         class="input-size--sm m-r-10 input-sm"
         type="text"
         v-model="count"
-        @input="count = Number($event.target.value);validate()"
+        @input="
+          count = Number($event.target.value);
+          validate();
+        "
         min="1"
       />
       <RButton
@@ -21,13 +24,15 @@
         v-if="approveWorker.show"
         :disabled="approveWorker.disabled"
         class="btn-blue input-sm"
-      >{{ approveWorker.text }}</RButton>
+        >{{ approveWorker.text }}</RButton
+      >
       <RButton
         @click.native="sendRefill"
         v-if="refill.show"
         :disabled="refill.disabled"
         class="btn-blue input-sm"
-      >{{ refill.text }}</RButton>
+        >{{ refill.text }}</RButton
+      >
     </p>
   </fragment>
 </template>
@@ -69,23 +74,25 @@ export default {
       }
     },
     fetchData() {
-      return this.$robonomics.lighthouse.call
+      return this.$robonomics.lighthouse.methods
         .minimalStake()
+        .call()
         .then(r => {
           this.minimalStake = Number(r);
-          return this.$robonomics.xrt.call.balanceOf(
-            this.$robonomics.account.address
-          );
+          return this.$robonomics.xrt.methods
+            .balanceOf(this.$robonomics.account.address)
+            .call();
         })
         .then(balanceOf => {
           const calls = [];
           if (balanceOf >= this.minimalStake * this.count) {
             calls.push(
-              this.$robonomics.xrt.call
+              this.$robonomics.xrt.methods
                 .allowance(
                   this.$robonomics.account.address,
                   this.$robonomics.lighthouse.address
                 )
+                .call()
                 .then(allowance => {
                   this.approveWorker.value = allowance;
                   this.count = Math.floor(
@@ -120,14 +127,14 @@ export default {
     sendApproveWorker() {
       this.approveWorker.disabled = true;
       this.approveWorker.text = "...";
-      return this.$robonomics.xrt.send
+      return this.$robonomics.xrt.methods
         .approve(
           this.$robonomics.lighthouse.address,
-          this.minimalStake * this.count,
-          {
-            from: this.$robonomics.account.address
-          }
+          this.minimalStake * this.count
         )
+        .send({
+          from: this.$robonomics.account.address
+        })
         .then(() => {
           this.approveWorker.text = "Approved";
           this.approveWorker.false = true;
@@ -141,8 +148,9 @@ export default {
     sendRefill() {
       this.refill.disabled = true;
       this.refill.text = "...";
-      return this.$robonomics.lighthouse.send
-        .refill(this.minimalStake * this.count, {
+      return this.$robonomics.lighthouse.methods
+        .refill(this.minimalStake * this.count)
+        .send({
           from: this.$robonomics.account.address
         })
         .then(() => {

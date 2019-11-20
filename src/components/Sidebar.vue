@@ -7,17 +7,23 @@
     </template>
     <RItem icon="i-menu">
       <RNavigation>
-        <RNavigationLink :to="{name: 'status'}" icon="i-piechart">{{ $t('menu.net_stats') }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'status' }" icon="i-piechart">{{
+          $t("menu.net_stats")
+        }}</RNavigationLink>
         <RNavigationLink
-          :to="{name: 'lighthouseSelect'}"
+          :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
-        >{{ $t('menu.lighthouse') }}</RNavigationLink>
+          >{{ $t("menu.lighthouse") }}</RNavigationLink
+        >
         <RNavigationLink
           v-if="networkId == 1"
-          :to="{name: 'ambix'}"
+          :to="{ name: 'ambix' }"
           icon="i-transfer"
-        >{{ $t('menu.tokens_alembic') }}</RNavigationLink>
-        <RNavigationLink :to="{name: 'services'}" icon="i-app">{{ $t('menu.services') }}</RNavigationLink>
+          >{{ $t("menu.tokens_alembic") }}</RNavigationLink
+        >
+        <RNavigationLink :to="{ name: 'services' }" icon="i-app">{{
+          $t("menu.services")
+        }}</RNavigationLink>
       </RNavigation>
     </RItem>
     <RItem bottom icon="i-user">
@@ -51,7 +57,7 @@
 <script>
 import { mapGetters } from "vuex";
 import Web3Check from "vue-web3-check";
-import config from "../config";
+import config from "~config";
 
 export default {
   data() {

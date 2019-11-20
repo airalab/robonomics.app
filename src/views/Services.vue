@@ -1,27 +1,32 @@
 <template>
   <Page>
-    <h1>{{ $t('services.title') }}</h1>
+    <h1>{{ $t("services.title") }}</h1>
     <section class="flex-grid">
       <RCard
-        v-for="(service, index)  in services"
+        v-for="(service, index) in services"
         :key="index"
         class="item"
-        :class="{disabled: service.disabled}"
+        :class="{ disabled: service.disabled }"
       >
         <RImgHover :src="service.img" :href="service.link" />
         <div class="item-content">
           <h2>
-            <a :href="service.link" target="_blank">{{service[$i18n.locale].name}}</a>
+            <a :href="service.link" target="_blank">{{
+              service[$i18n.locale].name
+            }}</a>
           </h2>
-          <div class="t-hyphen">{{service[$i18n.locale].desc}}</div>
+          <div class="t-hyphen">{{ service[$i18n.locale].desc }}</div>
           <div class="item-bottom">
             <div class="item-bottom--line">
               <span>Provider:</span>
-              <span class="item-bottom--info">{{service.by.label}}</span>
+              <span class="item-bottom--info">{{ service.by.label }}</span>
             </div>
-            <div v-if="service.token && service.token.name" class="item-bottom--line">
+            <div
+              v-if="service.token && service.token.name"
+              class="item-bottom--line"
+            >
               <span>Payment token:</span>
-              <span class="item-bottom--info">{{service.token.name}}</span>
+              <span class="item-bottom--info">{{ service.token.name }}</span>
             </div>
           </div>
         </div>
@@ -152,8 +157,8 @@ export default {
               this.$robonomics.web3,
               this.services[i].token
             );
-            const name = await token.call.name();
-            const symbol = await token.call.symbol();
+            const name = await token.methods.name().call();
+            const symbol = await token.methods.symbol().call();
             this.services[i].token = {
               address: this.services[i].token,
               name: `${name} (${symbol})`

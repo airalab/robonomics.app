@@ -4,7 +4,9 @@
       <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">Check if data correct, please.</div>
+        <div v-if="error" style="margin: 5px 0;">
+          Check if data correct, please.
+        </div>
         <Approve
           v-if="cost > 0 && token"
           :address="token"
@@ -18,7 +20,8 @@
           :disabled="watch"
           green
         >
-          <div class="loader-ring" v-if="watch"></div>&nbsp;Broadcast signal to the network
+          <div class="loader-ring" v-if="watch"></div>
+          &nbsp;Broadcast signal to the network
         </RButton>
       </section>
     </RCard>
@@ -29,26 +32,34 @@
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
-        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
+        <div
+          v-for="(item, i) in log"
+          :key="`${i}-${item.date}`"
+          style="margin: 5px 0"
+        >
           <template v-if="item.type == 'liability'">
-            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
-            <b>[{{item.date.toLocaleString()}}]</b>
-            New {{item.type}}&nbsp;
-            <a
-              :href="item.address | urlExplorer"
-              target="_blank"
-            >{{ item.address | labelAddress }}</a>
+            <RAvatar
+              :address="item.address"
+              class="avatar-small align-vertical m-r-10"
+            />
+            <b>[{{ item.date.toLocaleString() }}]</b>
+            New {{ item.type }}&nbsp;
+            <a :href="item.address | urlExplorer" target="_blank">{{
+              item.address | labelAddress
+            }}</a>
           </template>
           <template v-else>
-            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
-            <b>[{{item.date.toLocaleString()}}]</b>
-            New {{item.type}} from
+            <RAvatar
+              :address="item.sender"
+              class="avatar-small align-vertical m-r-10"
+            />
+            <b>[{{ item.date.toLocaleString() }}]</b>
+            New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
-            <a
-              :href="item.sender | urlExplorer"
-              target="_blank"
-            >{{ item.sender | labelAddress }}</a>
+            <a :href="item.sender | urlExplorer" target="_blank">{{
+              item.sender | labelAddress
+            }}</a>
           </template>
           <hr />
         </div>
@@ -194,8 +205,9 @@ export default {
       this.allowance = number.fromWei(allowance, this.decimals);
     },
     setNonce() {
-      this.$robonomics.factory.call
+      this.$robonomics.factory.methods
         .nonceOf(this.$robonomics.account.address)
+        .call()
         .then(r => {
           this.nonce = Number(r);
         });

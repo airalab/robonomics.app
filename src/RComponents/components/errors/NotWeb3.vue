@@ -9,7 +9,8 @@
               class="t-style_uppercase"
               href="https://metamask.io/"
               target="_blank"
-            >Metamask</a>
+              >Metamask</a
+            >
           </b>
         </p>
       </slot>

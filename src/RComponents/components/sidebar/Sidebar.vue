@@ -34,11 +34,18 @@
         </section>
       </div>
     </div>
-    <div class="sidebar-col sidebar-col-padding" :class="{open: !!block}" v-show="!!block">
+    <div
+      class="sidebar-col sidebar-col-padding"
+      :class="{ open: !!block }"
+      v-show="!!block"
+    >
       <div class="sidebar-col-in">
         <LangSwitcher v-if="isLanguage" v-show="block == 'lang'" />
         <div
-          v-for="(item, k) in [...Object.values(blocks.top), ...Object.values(blocks.bottom)]"
+          v-for="(item, k) in [
+            ...Object.values(blocks.top),
+            ...Object.values(blocks.bottom)
+          ]"
           :key="`block-${k}`"
           v-show="block == item.id"
         >
@@ -90,7 +97,10 @@ export default {
     items() {
       const slots = this.$slots.default || [];
       slots.forEach((item, i) => {
-        const type = item.data.attrs.hasOwnProperty("bottom")
+        const type = Object.prototype.hasOwnProperty.call(
+          item.data.attrs,
+          "bottom"
+        )
           ? "bottom"
           : "top";
         this.blocks[type][type + "-" + i] = {

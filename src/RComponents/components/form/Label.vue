@@ -1,7 +1,7 @@
 <template>
   <label>
-    {{label}}:
-    <span v-if="isError" class="input-msg">{{msgError}}</span>
+    {{ label }}:
+    <span v-if="isError" class="input-msg">{{ msgError }}</span>
   </label>
 </template>
 

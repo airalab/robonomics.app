@@ -55,7 +55,9 @@ export default {
       let lighthouseAddr = await this.$robonomics.ens.addrLighthouse(
         this.lighthouseName
       );
-      lighthouseAddr = this.$robonomics.web3.toChecksumAddress(lighthouseAddr);
+      lighthouseAddr = this.$robonomics.web3.utils.toChecksumAddress(
+        lighthouseAddr
+      );
       if (
         this.$robonomics.lighthouse === null ||
         lighthouseAddr !== this.$robonomics.lighthouse.address

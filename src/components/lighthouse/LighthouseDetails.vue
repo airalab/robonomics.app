@@ -21,13 +21,13 @@
       <p>
         <span class="t-sm">Balance:</span>
         <br />
-        <b>{{ lighthouseBalance | fromWei(9, 'XRT') }}</b>
+        <b>{{ lighthouseBalance | fromWei(9, "XRT") }}</b>
       </p>
       <hr />
       <p>
         <span class="t-sm">Minimal stake per quote:</span>
         <br />
-        <b>{{ minimalStake | fromWei(9, 'XRT') }}</b>
+        <b>{{ minimalStake | fromWei(9, "XRT") }}</b>
       </p>
       <hr />
       <WorkerForm />

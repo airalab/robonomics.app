@@ -17,21 +17,29 @@
         </thead>
         <tbody>
           <tr v-for="member in members" :key="member.i">
-            <td>{{member.i}}</td>
+            <td>{{ member.i }}</td>
             <td>
               <RLinkExplorer :text="member.address" />
             </td>
             <td>
-              <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
+              <template v-if="member.i == marker"
+                >{{ quota }} / {{ member.quota }}</template
+              >
               <template v-else>{{ member.quota }}</template>
             </td>
             <td>{{ member.balance }} ETH</td>
             <td>
               <template v-if="member.i == marker">
-                <span v-if="quota > 0 && timeoutInBlocks < currentBlock - keepAliveBlock">Sleeping</span>
                 <span
-                  v-else-if="member.last!==null"
-                >Provider sent tx {{ currentBlock - member.last }} blocks ago</span>
+                  v-if="
+                    quota > 0 && timeoutInBlocks < currentBlock - keepAliveBlock
+                  "
+                  >Sleeping</span
+                >
+                <span v-else-if="member.last !== null"
+                  >Provider sent tx {{ currentBlock - member.last }} blocks
+                  ago</span
+                >
               </template>
             </td>
           </tr>

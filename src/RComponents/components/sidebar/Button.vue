@@ -1,7 +1,12 @@
 <template>
-  <a href="javascript:;" class="sidebar-i--lg" :class="{active: isActive}" @click="$emit('toggle')">
+  <a
+    href="javascript:;"
+    class="sidebar-i--lg"
+    :class="{ active: isActive }"
+    @click="$emit('toggle')"
+  >
     <i v-if="icon" :class="icon"></i>
-    <span v-else>{{label}}</span>
+    <span v-else>{{ label }}</span>
   </a>
 </template>
 

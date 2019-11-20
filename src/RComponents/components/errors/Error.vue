@@ -1,6 +1,6 @@
 <template>
   <section class="msg-error msg-icon">
-    <div class="msg-title">{{title}}</div>
+    <div class="msg-title">{{ title }}</div>
     <slot />
   </section>
 </template>

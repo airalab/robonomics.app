@@ -1,27 +1,27 @@
-export function urlExplorer(address, type = 'address', chainid = 1) {
-  let domain = 'etherscan.io';
-  if (type === '') {
-    type = 'address';
+export function urlExplorer(address, type = "address", chainid = 1) {
+  let domain = "etherscan.io";
+  if (type === "") {
+    type = "address";
   }
   if (chainid === 4451) {
-    domain = 'explorer.aira.life';
-    if (type === 'address') {
-      type = 'addr';
+    domain = "explorer.aira.life";
+    if (type === "address") {
+      type = "addr";
     }
   } else {
-    let chain = '';
+    let chain = "";
     if (chainid === 4) {
-      chain = 'rinkeby.';
+      chain = "rinkeby.";
     }
     domain = chain + domain;
   }
   return `https://${domain}/${type}/${address}`;
 }
 
-export function urlIpfs(hash, type = 'ipfs') {
-  const domain = 'ipfs.io';
-  if (type === '') {
-    type = 'ipfs';
+export function urlIpfs(hash, type = "ipfs") {
+  const domain = "ipfs.io";
+  if (type === "") {
+    type = "ipfs";
   }
   return `https://${domain}/${type}/${hash}`;
 }
@@ -41,9 +41,9 @@ export const number = {
   }
 };
 
-export function fromWei(amount, decimals, currency = '') {
+export function fromWei(amount, decimals, currency = "") {
   return `${number.fromWeiStr(amount, decimals)}${
-    currency ? ' ' : ''
+    currency ? " " : ""
   }${currency}`;
 }
 
@@ -52,5 +52,5 @@ export function toWei(amount, decimals) {
 }
 
 export const labelAddress = text => {
-  return text.slice(0, 6) + '...' + text.slice(-4);
+  return text.slice(0, 6) + "..." + text.slice(-4);
 };

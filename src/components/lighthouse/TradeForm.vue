@@ -11,7 +11,9 @@
         >
           <i class="i-info"></i>
         </a>
-        <span v-if="fields.model.error" class="input-msg">Check if data correct, please.</span>
+        <span v-if="fields.model.error" class="input-msg"
+          >Check if data correct, please.</span
+        >
       </label>
       <RInputText
         v-model="fields.model.value"
@@ -28,7 +30,10 @@
     </RField>
     <div class="form-item" id="moreopts" style="display:none">
       <RField label="Token" :isError="fields.token.error">
-        <RInputText v-model="fields.token.value" :isError="fields.token.error" />
+        <RInputText
+          v-model="fields.token.value"
+          :isError="fields.token.error"
+        />
       </RField>
       <RField label="Cost" :isError="fields.cost.error">
         <RInputText v-model="fields.cost.value" :isError="fields.cost.error" />
@@ -39,7 +44,8 @@
         class="a-dashed"
         href="javascript:;"
         onclick="show(this, '#moreopts', 'Minimize', 'More options');return false;"
-      >More options</a>
+        >More options</a
+      >
     </div>
   </form>
 </template>

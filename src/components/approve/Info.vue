@@ -1,8 +1,8 @@
 <template>
   <div>
-    {{$t('approve.cost')}}: {{cost | fromWei(decimals, symbol)}} |
-    {{$t('approve.balance')}}: {{balance | fromWei(decimals, symbol)}} |
-    {{$t('approve.allowance')}}: {{allowance | fromWei(decimals, symbol)}}
+    {{ $t("approve.cost") }}: {{ cost | fromWei(decimals, symbol) }} |
+    {{ $t("approve.balance") }}: {{ balance | fromWei(decimals, symbol) }} |
+    {{ $t("approve.allowance") }}: {{ allowance | fromWei(decimals, symbol) }}
   </div>
 </template>
 

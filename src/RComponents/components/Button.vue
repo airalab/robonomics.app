@@ -1,5 +1,7 @@
 <template>
-  <button :class="{'container-full': full, 'btn-big': big, 'btn-green': green}">
+  <button
+    :class="{ 'container-full': full, 'btn-big': big, 'btn-green': green }"
+  >
     <slot />
   </button>
 </template>

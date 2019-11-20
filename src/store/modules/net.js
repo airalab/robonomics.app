@@ -1,11 +1,10 @@
-import Web3 from 'web3';
-import _has from 'lodash/has';
-import dateFormat from 'dateformat';
-import getIpfs from '../../RComponents/tools/ipfs';
-import { recovery, getDataByIpns } from '../../utils/utils';
-import config from '../../config';
-
-const web3Static = new Web3('wss://mainnet.infura.io/ws');
+import _has from "lodash/has";
+import dateFormat from "dateformat";
+import { Lighthouse } from "robonomics-js";
+import getRobonomics from "../../RComponents/tools/robonomics";
+import getIpfs from "../../RComponents/tools/ipfs";
+import { recovery, getDataByIpns } from "../../utils/utils";
+import config from "~config";
 
 // initial state
 const state = {
@@ -22,21 +21,21 @@ const actions = {
     if (state.run) {
       return;
     }
-    commit('run');
+    commit("run");
     const ipfs = getIpfs();
 
     config.NET_TOPICS.forEach(topic => {
-      const suffix = topic.split('.');
+      const suffix = topic.split(".");
       const network =
-        suffix[suffix.length - 1] === 'eth' ? 'mainnet' : 'sidechain';
+        suffix[suffix.length - 1] === "eth" ? "mainnet" : "sidechain";
       ipfs.pubsub.subscribe(
         topic,
         r => {
           const hash = r.data
             .toString()
             .trim()
-            .replace(new RegExp('"', 'g'), '');
-          dispatch('add', { hash, network });
+            .replace(new RegExp('"', "g"), "");
+          dispatch("add", { hash, network });
         },
         { discover: true }
       );
@@ -44,9 +43,9 @@ const actions = {
   },
   add({ commit, dispatch, state }, { hash, network }) {
     if (!_has(state.nodes, hash)) {
-      commit('add', { hash, network });
+      commit("add", { hash, network });
     }
-    dispatch('update', hash);
+    dispatch("update", hash);
   },
   async update({ commit, dispatch }, hash) {
     const ipnsContent = await getDataByIpns(hash);
@@ -54,7 +53,7 @@ const actions = {
       return;
     }
 
-    const data = ipnsContent.split('---');
+    const data = ipnsContent.split("---");
 
     let info;
     try {
@@ -65,61 +64,40 @@ const actions = {
       return;
     }
 
-    let address = '';
-    if (_has(info, 'address')) {
+    let address = "";
+    if (_has(info, "address")) {
       address = info.address.toLowerCase();
     } else if (data.length === 2) {
       address = recovery(data[0].trim(), data[1].trim()).toLowerCase();
     }
 
-    commit('update', {
+    commit("update", {
       hash,
       data: {
         ...info,
         address,
-        date: dateFormat(new Date(info.timestamp * 1000), 'dd.mm.yyyy HH:MM:ss')
+        date: dateFormat(new Date(info.timestamp * 1000), "dd.mm.yyyy HH:MM:ss")
       }
     });
 
-    dispatch('provider', {
+    dispatch("provider", {
       hash,
       lighthouse: info.lighthouse,
       address
     });
   },
   async provider({ commit }, { hash, lighthouse, address }) {
-    const lighthouseAddr = await web3Static.eth.ens.getAddress(lighthouse);
-    const abi = [
-      {
-        constant: true,
-        inputs: [
-          {
-            name: '',
-            type: 'address'
-          }
-        ],
-        name: 'indexOf',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256'
-          }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-        signature: '0xfd6aad25'
-      }
-    ];
-    const li = new web3Static.eth.Contract(abi, lighthouseAddr);
-    let provider = 0
+    const robonomics = getRobonomics();
+    const lighthouseAddr = await robonomics.ens.addrLighthouse(lighthouse);
+    const li = new Lighthouse(robonomics.web3, lighthouseAddr, "");
+    let provider = 0;
     try {
       provider = await li.methods.indexOf(address).call();
     } catch (error) {
       console.log(error.message);
     }
 
-    commit('update', {
+    commit("update", {
       hash,
       data: {
         provider: provider > 0 ? true : false
