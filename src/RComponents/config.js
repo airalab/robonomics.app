@@ -45,8 +45,7 @@ let config = {
       'swarm.peers',
       'swarm.connect'
     ]
-  },
-  robonomics: null
+  }
 };
 
 export function setConfig({ ipfs, robonomics }) {
@@ -55,7 +54,9 @@ export function setConfig({ ipfs, robonomics }) {
       ...config.ipfs,
       ...ipfs
     },
-    robonomics: robonomics || config.robonomics
+    robonomics: robonomics || function () {
+      throw new Error('bad config')
+    },
   };
 }
 

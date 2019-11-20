@@ -63,9 +63,8 @@ export default {
   computed: {
     ...mapGetters("tokens", ["balance", "token"]),
     balances() {
-      const chain = config.chain(this.networkId);
       const balances = [];
-      Object.values(chain.TOKEN).forEach(item => {
+      Object.values(config.chain.get().TOKEN).forEach(item => {
         const info = this.token(item.address);
         const amount = this.$options.filters.fromWei(
           this.balance(item.address, this.$robonomics.account.address),
@@ -82,8 +81,7 @@ export default {
   created() {
     this.account = this.$robonomics.account.address;
     this.networkId = Web3Check.store.state.networkId;
-    const chain = config.chain(this.networkId);
-    Object.values(chain.TOKEN).forEach(item => {
+    Object.values(config.chain.get().TOKEN).forEach(item => {
       this.$store.dispatch("tokens/add", item.address);
       this.$store.dispatch("tokens/watchBalance", {
         token: item.address,

@@ -70,49 +70,40 @@ export default {
     ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
     ...mapGetters("tokens", ["balance", "allowance"]),
     air() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.air;
       return {
-        address: chain.TOKEN.air.address,
-        decimals: chain.TOKEN.air.decimals,
-        label: chain.TOKEN.air.label,
-        balance: this.balance(
-          chain.TOKEN.air.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: this.allowance(
-          chain.TOKEN.air.address,
+          token.address,
           this.$robonomics.account.address,
           config.AMBIX1
         )
       };
     },
     airkyc() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.airkyc;
       return {
-        address: chain.TOKEN.airkyc.address,
-        decimals: chain.TOKEN.airkyc.decimals,
-        label: chain.TOKEN.airkyc.label,
-        balance: this.balance(
-          chain.TOKEN.airkyc.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: this.allowance(
-          chain.TOKEN.airkyc.address,
+          token.address,
           this.$robonomics.account.address,
           config.AMBIX2
         )
       };
     },
     xrt() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.xrt;
       return {
-        address: chain.TOKEN.xrt.address,
-        decimals: chain.TOKEN.xrt.decimals,
-        label: chain.TOKEN.xrt.label,
-        balance: this.balance(
-          chain.TOKEN.xrt.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: 0
       };
     }
@@ -124,14 +115,14 @@ export default {
       this.address = this.$robonomics.account.address;
       this.$store.dispatch("kyc/check", this.address);
 
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const tokens = config.chain.get().TOKEN;
       this.$store.dispatch("tokens/watchAllowance", {
-        token: chain.TOKEN.air.address,
+        token: tokens.air.address,
         from: this.$robonomics.account.address,
         to: config.AMBIX1
       });
       this.$store.dispatch("tokens/watchAllowance", {
-        token: chain.TOKEN.airkyc.address,
+        token: tokens.airkyc.address,
         from: this.$robonomics.account.address,
         to: config.AMBIX2
       });

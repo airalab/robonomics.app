@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Web3Check from 'vue-web3-check';
 import { floatFormat, intFormat } from '../../utils/utils';
 import config from '../../config';
 
@@ -51,8 +50,8 @@ const actions = {
       return;
     }
     commit('run');
-    const chain = config.chain(Web3Check.store.state.networkId);
-    axios.get(chain.STATISTICS_API + '/start').then(r => {
+    const api = config.chain.get().STATISTICS_API;
+    axios.get(api + '/start').then(r => {
       commit('connected', r.data.result.connected);
       commit('lastBlock', r.data.result.lastBlock);
       commit('totalSupply', r.data.result.totalSupply);
@@ -62,7 +61,7 @@ const actions = {
       commit('contracts', r.data.result.liability);
     });
 
-    const socket = io(chain.STATISTICS_API);
+    const socket = io(api);
     socket.on('lastBlock', r => {
       commit('lastBlock', r);
     });

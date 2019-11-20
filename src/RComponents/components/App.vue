@@ -34,6 +34,8 @@ export default {
   created() {
     Web3Check.store.on("load", async state => {
       const config = getConfig();
+      const robonomics = config.robonomics(state.networkId);
+
       Vue.prototype.$ipfs = await initIpfs(config.ipfs);
       this.$ipfs.id((e, r) => {
         if (/go/i.test(r.agentVersion)) {
@@ -47,11 +49,11 @@ export default {
             address: state.account
           },
           ens: {
-            address: config.robonomics.chain(state.networkId).ens,
-            suffix: config.robonomics.chain(state.networkId).ensSuffix,
-            version: config.robonomics.version
+            address: robonomics.ens,
+            suffix: robonomics.ensSuffix,
+            version: robonomics.version
           },
-          lighthouse: config.robonomics.chain(state.networkId).lighthouse
+          lighthouse: robonomics.lighthouse
         },
         state.web3,
         this.$ipfs

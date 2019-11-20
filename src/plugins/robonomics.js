@@ -12,8 +12,11 @@ Vue.use(RComponents, {
   ipfs: {
     cdn: 'ipfs.min.js'
   },
-  robonomics: {
-    version: 5,
-    chain: networkId => config.chain(networkId).ROBONOMICS
+  robonomics: networkId => {
+    config.chain.set(networkId)
+    return {
+      version: 5,
+      ...config.chain.get().ROBONOMICS
+    }
   }
 });
