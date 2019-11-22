@@ -29,8 +29,8 @@ let config = {
           "/dns4/node1.preload.ipfs.io/tcp/443/wss/ipfs/Qmbut9Ywz9YEDrz8ySBSgWyJk41Uvm2QJPhwDJzJyGFsD6",
           "/dns4/1.pubsub.aira.life/tcp/443/wss/ipfs/QmdfQmbmXt6sqjZyowxPUsmvBsgSGQjm4VXrV7WGy62dv8",
           "/dns4/2.pubsub.aira.life/tcp/443/wss/ipfs/QmPTFt7GJ2MfDuVYwJJTULr6EnsQtGVp8ahYn9NSyoxmd9",
-          "/dns4/3.pubsub.aira.life/tcp/443/wss/ipfs/QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw",
-          "/ip4/127.0.0.1/tcp/4002/ws/ipfs/QmZ7rFH5NodLFJCg18Ji6ur3wC3o5roFEeoQMffo3poXo6"
+          "/dns4/3.pubsub.aira.life/tcp/443/wss/ipfs/QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw"
+          // "/ip4/127.0.0.1/tcp/4002/ws/ipfs/QmZ7rFH5NodLFJCg18Ji6ur3wC3o5roFEeoQMffo3poXo6"
         ]
       }
     },
