@@ -105,7 +105,26 @@ export default {
           });
         });
       } else {
-        this.log = history.getData(this.storeKey);
+        const data = history.getData(this.storeKey);
+        this.log = data;
+        data.forEach((item, index) => {
+          this.parseResult(item.resultHash).then(result => {
+            Vue.set(this.log, index, {
+              ...this.log[index],
+              status: 3,
+              result: result
+            });
+            history.addItem(
+              this.storeKey,
+              {
+                ...this.log[index],
+                status: 3,
+                result: result
+              },
+              index
+            );
+          });
+        });
       }
 
       this.$robonomics.onDemand(this.model, msg => {
@@ -125,15 +144,11 @@ export default {
             status: 2,
             resultHash: msg.result
           });
-          // history.addItem(
-          //   this.storeKey,
-          //   {
-          //     ...this.log[index],
-          //     status: 2,
-          //     resultHash: msg.result
-          //   },
-          //   index
-          // );
+          history.addItem(this.storeKey, {
+            ...this.log[index],
+            status: 2,
+            resultHash: msg.result
+          });
 
           this.parseResult(msg.result).then(result => {
             Vue.set(this.log, index, {
@@ -147,8 +162,8 @@ export default {
                 ...this.log[index],
                 status: 3,
                 result: result
-              }
-              // index
+              },
+              index
             );
           });
         }
