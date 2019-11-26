@@ -256,8 +256,7 @@ export default {
     },
     connect() {
       if (this.lighthouse !== "") {
-        this.$router.push({ path: `/lighthouse/${this.lighthouse}` });
-        this.$router.go();
+        this.$emit("connect", this.lighthouse);
       }
     }
   }
