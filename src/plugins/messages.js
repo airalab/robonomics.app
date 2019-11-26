@@ -59,14 +59,15 @@ export default {
       title: "Sensor networks",
       statusAgent: "Status IoT-agent",
       notStatusAgent: "need to request data from the network",
+      yesStatusAgent: "онлайн, последнее обновление",
       requested: "Requested",
       isRequest: "Request current values",
       requests: "Your requests",
       requestAt: "Request at",
       status1: "Waiting for a response from the agent",
       status21: "Received response from agent",
-      status22: "We are requesting JSON data",
-      status31: "Received response from agent",
+      status22: "Looking data in IPFS network",
+      status31: "Data found in IPFS",
       status32: "JSON received"
     }
   },
@@ -130,14 +131,15 @@ export default {
       title: "Сенсорные сети",
       statusAgent: "Статус IoT-агента",
       notStatusAgent: "требуется запросить данные из сети",
+      yesStatusAgent: "онлайн, последнее обновление",
       requested: "Запрошено",
       isRequest: "Запросить текущие значения",
       requests: "Ваши запросы",
       requestAt: "Запрос от",
       status1: "Ждём ответа от агента",
       status21: "Получен ответ от агента",
-      status22: "Запрашиваем JSON данные",
-      status31: "Получен ответ от агента",
+      status22: "Запрашиваем данные из IPFS",
+      status31: "Получен ответ из IPFS",
       status32: "JSON данные получены"
     }
   }
