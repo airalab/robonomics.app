@@ -54,6 +54,20 @@ export default {
       approve: "Approve",
       cost: "Cost",
       balance: "Balance"
+    },
+    sensors: {
+      title: "Sensor networks",
+      statusAgent: "Status IoT-agent",
+      notStatusAgent: "need to request data from the network",
+      requested: "Requested",
+      isRequest: "Request current values",
+      requests: "Your requests",
+      requestAt: "Request at",
+      status1: "Waiting for a response from the agent",
+      status21: "Received response from agent",
+      status22: "We are requesting JSON data",
+      status31: "Received response from agent",
+      status32: "JSON received"
     }
   },
   ru: {
@@ -111,6 +125,20 @@ export default {
       approve: "Одобрить",
       cost: "Стоимость",
       balance: "Баланс"
+    },
+    sensors: {
+      title: "Сенсорные сети",
+      statusAgent: "Статус IoT-агента",
+      notStatusAgent: "требуется запросить данные из сети",
+      requested: "Запрошено",
+      isRequest: "Запросить текущие значения",
+      requests: "Ваши запросы",
+      requestAt: "Запрос от",
+      status1: "Ждём ответа от агента",
+      status21: "Получен ответ от агента",
+      status22: "Запрашиваем JSON данные",
+      status31: "Получен ответ от агента",
+      status32: "JSON данные получены"
     }
   }
 };

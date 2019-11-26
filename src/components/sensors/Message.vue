@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h3 v-if="item.time">Request at {{ item.time }}</h3>
+    <h3 v-if="item.time">{{ $t("sensors.requestAt") }} {{ item.time }}</h3>
     <div v-if="item.status === 1" class="animation-fadein">
       <p>
         <span class="loader-ring align-vertical m-r-15"></span>
-        <b class="align-vertical">1. Waiting for a response from the agent</b>
+        <b class="align-vertical">1. {{ $t("sensors.status1") }}</b>
       </p>
     </div>
     <div v-else-if="item.status === 2">
       <p>
-        <b class="align-vertical">1. Received response from agent</b>
+        <b class="align-vertical">1. {{ $t("sensors.status21") }}</b>
         <br />
         <span>IPFS data hash:</span>
         <br />
@@ -27,7 +27,7 @@
       </p>
       <p>
         <span class="loader-ring align-vertical m-r-15"></span>
-        <b class="align-vertical">2. We are requesting JSON data</b>
+        <b class="align-vertical">2. {{ $t("sensors.status22") }}</b>
       </p>
       <p class="icons-line">
         <a
@@ -45,7 +45,7 @@
     </div>
     <div v-else-if="item.status === 3">
       <p>
-        <b class="align-vertical">1. Received response from agent</b>
+        <b class="align-vertical">1. {{ $t("sensors.status31") }}</b>
         <br />
         <span>IPFS data hash:</span>
         <br />
@@ -62,7 +62,7 @@
         ></a>
       </p>
       <p>
-        <b class="align-vertical">2. JSON received</b>
+        <b class="align-vertical">2. {{ $t("sensors.status21") }}</b>
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"

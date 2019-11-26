@@ -1,37 +1,48 @@
 <template>
-  <div v-if="ready">
-    <section>
-      <div class="input-size--md">
-        <RButton v-if="isRequest" full green>Requested</RButton>
-        <RButton v-else @click.native="sendMsgDemand" full
-          >Request current values</RButton
-        >
-      </div>
-    </section>
-    <section
-      v-if="log.length > 0"
-      class="section-light window"
-      id="window-sensornetwork-requests"
-    >
-      <div class="window-head">
-        <span>Your requests</span>
-        <a class="window-head-toggle" href="#">–</a>
-      </div>
-      <div class="window-content">
-        <section
-          class="section-light"
-          v-for="(item, key) in log.slice().reverse()"
-          :key="key"
-        >
-          <Message
-            :item="item"
-            :lighthouse="lighthouse"
-            :model="model"
-            :agent="agent"
-          />
-        </section>
-      </div>
-    </section>
+  <div>
+    <div v-if="ready">
+      <h4>
+        {{ $t("sensors.statusAgent") }}:
+        <template v-if="log.length === 0">
+          {{ $t("sensors.notStatusAgent") }}
+        </template>
+        <template v-else>{{ log[log.length - 1].time }}</template>
+      </h4>
+      <section>
+        <div class="input-size--md">
+          <RButton v-if="isRequest" full green>{{
+            $t("sensors.requested")
+          }}</RButton>
+          <RButton v-else @click.native="sendMsgDemand" full>{{
+            $t("sensors.isRequest")
+          }}</RButton>
+        </div>
+      </section>
+      <section
+        v-if="log.length > 0"
+        class="section-light window"
+        id="window-sensornetwork-requests"
+      >
+        <div class="window-head">
+          <span>{{ $t("sensors.requests") }}</span>
+          <a class="window-head-toggle" href="#">–</a>
+        </div>
+        <div class="window-content">
+          <section
+            class="section-light"
+            v-for="(item, key) in log.slice().reverse()"
+            :key="key"
+          >
+            <Message
+              :item="item"
+              :lighthouse="lighthouse"
+              :model="model"
+              :agent="agent"
+            />
+          </section>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -71,7 +82,7 @@ export default {
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
 
-    this.$robonomics.initLighthouse(this.lighthouseName).then(() => {
+    this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
 
       Vue.nextTick(function() {
@@ -112,15 +123,15 @@ export default {
             status: 2,
             resultHash: msg.result
           });
-          history.addItem(
-            this.storeKey,
-            {
-              ...this.log[index],
-              status: 2,
-              resultHash: msg.result
-            },
-            index
-          );
+          // history.addItem(
+          //   this.storeKey,
+          //   {
+          //     ...this.log[index],
+          //     status: 2,
+          //     resultHash: msg.result
+          //   },
+          //   index
+          // );
 
           this.parseResult(msg.result).then(result => {
             Vue.set(this.log, index, {
@@ -134,8 +145,8 @@ export default {
                 ...this.log[index],
                 status: 3,
                 result: result
-              },
-              index
+              }
+              // index
             );
           });
         }
@@ -185,7 +196,7 @@ export default {
               time: new Date().toLocaleString()
             };
             this.log.push(item);
-            history.addItem(this.storeKey, item);
+            // history.addItem(this.storeKey, item);
           })
           .catch(e => {
             this.isRequest = false;
