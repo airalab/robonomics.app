@@ -14,7 +14,8 @@ export default {
       tokens_alembic: "AIRA to XRT",
       lighthouse: "Lighthouses",
       net_stats: "Statistics",
-      services: "Services"
+      services: "Services",
+      sensors: "Sensor networks"
     },
 
     waiting: "Waiting for IPFS data",
@@ -53,6 +54,21 @@ export default {
       approve: "Approve",
       cost: "Cost",
       balance: "Balance"
+    },
+    sensors: {
+      title: "Sensor networks",
+      statusAgent: "Status IoT-agent",
+      notStatusAgent: "need to request data from the network",
+      yesStatusAgent: "online, last updated",
+      requested: "Requested",
+      isRequest: "Request current values",
+      requests: "Your requests",
+      requestAt: "Request at",
+      status1: "Waiting for a response from the agent",
+      status21: "Received response from agent",
+      status22: "Looking data in IPFS network",
+      status31: "Data found in IPFS",
+      status32: "JSON received"
     }
   },
   ru: {
@@ -70,7 +86,8 @@ export default {
       tokens_alembic: "Перегонный куб",
       lighthouse: "Маяки",
       net_stats: "Статистика",
-      services: "Сервисы"
+      services: "Сервисы",
+      sensors: "Сенсорные сети"
     },
 
     waiting: "Ожидание данных IPFS",
@@ -109,6 +126,21 @@ export default {
       approve: "Одобрить",
       cost: "Стоимость",
       balance: "Баланс"
+    },
+    sensors: {
+      title: "Сенсорные сети",
+      statusAgent: "Статус IoT-агента",
+      notStatusAgent: "требуется запросить данные из сети",
+      yesStatusAgent: "онлайн, последнее обновление",
+      requested: "Запрошено",
+      isRequest: "Запросить текущие значения",
+      requests: "Ваши запросы",
+      requestAt: "Запрос от",
+      status1: "Ждём ответа от агента",
+      status21: "Получен ответ от агента",
+      status22: "Запрашиваем данные из IPFS",
+      status31: "Получен ответ из IPFS",
+      status32: "JSON данные получены"
     }
   }
 };

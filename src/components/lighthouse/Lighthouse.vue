@@ -8,7 +8,16 @@
       <i>/</i>
       <span>{{ this.$route.params.lighthouse }}</span>
     </h2>
-    <SelectLighthouse :isCreate="false" :selectedLighthouse="lighthouseName" />
+    <SelectLighthouse
+      :isCreate="false"
+      :selectedLighthouse="lighthouseName"
+      @connect="
+        lighthouse => {
+          $router.push({ path: `/lighthouse/${lighthouse}` });
+          $router.go();
+        }
+      "
+    />
     <div class="row" v-if="lighthouse">
       <div class="col-lg-4 col-md-5 order-md-last">
         <section>

@@ -2078,6 +2078,37 @@ table caption {
   .table-responsive td:before {
     display: inline-block;
   }
+  .table-responsive td:first-child {
+    margin-top: 48px;
+  }
+  .table-responsive tr:first-child td:first-child {
+    margin-top: 0;
+  }
+}
+
+.table-responsive-wide td:before {
+  content: attr(data-th) ": ";
+  font-weight: 500;
+  margin-right: 30px;
+  display: none;
+}
+@media (max-width: 920px) {
+  .table-responsive-wide th {
+    display: none;
+  }
+  .table-responsive-wide td {
+    display: block;
+    background-color: transparent !important;
+  }
+  .table-responsive-wide td:before {
+    display: inline-block;
+  }
+  .table-responsive-wide td:first-child {
+    margin-top: 48px;
+  }
+  .table-responsive-wide tr:first-child td:first-child {
+    margin-top: 0;
+  }
 }
 
 .table-space--10 {
@@ -2323,10 +2354,10 @@ table caption {
 }
 
 .code-overflow-line {
-  max-width: 100%;
   overflow-x: auto;
   display: inline-block;
   white-space: nowrap;
+  max-width: 150px;
 }
 
 .label {
@@ -2350,6 +2381,26 @@ table caption {
   vertical-align: middle;
 }
 
+.icons-line {
+  font-size: 24px;
+}
+.icons-line a {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 20px;
+}
+.icons-line a:first-child {
+  margin-left: 0;
+}
+
+.statuscircle {
+  display: inline-block;
+  vertical-align: middle;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+
 @keyframes FadeOut {
   0% {
     visibility: visible;
@@ -2368,14 +2419,10 @@ table caption {
   0% {
     visibility: hidden;
     opacity: 0;
-    width: 0;
-    height: 0;
   }
   100% {
     visibility: visible;
     opacity: 1;
-    width: auto;
-    height: auto;
   }
 }
 @keyframes ScaleIn {
@@ -2405,6 +2452,44 @@ table caption {
     background-position: 125% 50%;
   }
 }
+@keyframes GlitchFade {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  20% {
+    visibility: visible;
+    opacity: 1;
+  }
+  40% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  60% {
+    visibility: visible;
+    opacity: 1;
+  }
+  80% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+.animation-glitchfade {
+  visibility: hidden;
+  opacity: 0;
+  animation: 0.8s 0.2s ease GlitchFade forwards;
+}
+
+.animation-fadein {
+  opacity: 0;
+  visibility: hidden;
+  animation: 0.4s 0.8s FadeIn ease-in forwards;
+}
+
 /* Icons */
 @font-face {
   font-family: 'iconfont';
@@ -2413,7 +2498,7 @@ table caption {
   font-weight: normal;
   font-style: normal;
 }
-.i-arrow-left, .i-arrow-right, .i-copy, .i-cursor, .i-github, .i-reddit, .i-lighthouse, .i-piechart, .i-transfer, .i-day, .i-night, .i-menu, .i-app, .i-arrowhead, .i-check, .i-stop, .i-file, .i-user, .i-alert, .i-info, .i-devcon5-construction, .i-devcon5-life, .i-devcon5-beer, input[type="checkbox"], .ss-main .ss-single-selected .ss-arrow span {
+.i-arrow-left, .i-arrow-right, .i-copy, .i-cursor, .i-github, .i-reddit, .i-lighthouse, .i-piechart, .i-transfer, .i-day, .i-night, .i-menu, .i-app, .i-arrowhead, .i-check, .i-stop, .i-file, .i-user, .i-alert, .i-info, .i-devcon5-construction, .i-devcon5-life, .i-devcon5-beer, .i-signal, .i-favorite, .i-share, .i-twitter, input[type="checkbox"], .ss-main .ss-single-selected .ss-arrow span {
   font-family: 'iconfont' !important;
   speak: none;
   font-size: 100%;
@@ -2559,6 +2644,30 @@ table caption {
 
 .i-devcon5-beer:before {
   content: "󪀢";
+  display: block;
+  line-height: 1;
+}
+
+.i-signal:before {
+  content: "󪀣";
+  display: block;
+  line-height: 1;
+}
+
+.i-favorite:before {
+  content: "󪀤";
+  display: block;
+  line-height: 1;
+}
+
+.i-share:before {
+  content: "󪀥";
+  display: block;
+  line-height: 1;
+}
+
+.i-twitter:before {
+  content: "󪀦";
   display: block;
   line-height: 1;
 }
@@ -2814,6 +2923,12 @@ section section {
   margin-top: 36px;
 }
 
+.avatar-micro {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+
 .avatar-small {
   width: 25px;
   height: 25px;
@@ -2851,6 +2966,35 @@ section section {
   margin-right: 0;
 }
 
+.content-in {
+  padding: 40px 20px;
+}
+
+.sidebar-col .sidebar-col-in {
+  padding: 40px 20px;
+}
+
+.sidebar-col-padding {
+  padding-top: 123px;
+}
+
+@media screen and (max-width: 768px) {
+  .content-in {
+    padding: 40px 10px;
+  }
+
+  .sidebar-col .sidebar-col-in {
+    padding: 40px 10px;
+  }
+
+  .sidebar-col-padding {
+    padding-top: 123px;
+  }
+
+  .dapplogo-sign img {
+    max-width: 100%;
+  }
+}
 .sidebar {
   height: 100vh;
 }
@@ -2869,18 +3013,11 @@ section section {
   width: 100%;
 }
 
-.content-in {
-  padding: 40px 20px;
-}
-
 .sidebar-col {
   transition: opacity .4s ease-out;
   position: relative;
   border-width: 0 1px 0 0;
   border-style: solid;
-}
-.sidebar-col .sidebar-col-in {
-  padding: 40px 20px;
 }
 .sidebar-col section:first-child {
   margin-top: 0;
@@ -2891,9 +3028,6 @@ section section {
   bottom: 0;
 }
 
-.sidebar-col-padding {
-  padding-top: 123px;
-}
 .sidebar-col-padding section:first-child {
   padding-top: 0;
 }
@@ -3105,6 +3239,7 @@ h1 .status-connected, h1 .status-disconnected {
 html, body {
   position: relative;
   height: 100%;
+  height: auto;
 }
 
 body {
@@ -3255,6 +3390,10 @@ table.container-full {
   pointer-events: none;
 }
 
+.ss-main.disabled * {
+  opacity: 1;
+}
+
 .loading-logo {
   position: relative;
   padding-top: 16px;
@@ -3389,11 +3528,11 @@ table.container-full {
 .theme-light .icon-alert {
   background-color: #E84004;
 }
-.theme-light .status-connected {
+.theme-light .connected {
   background-color: #54CE63;
 }
-.theme-light .status-disconnected {
-  background-color: #E84004;
+.theme-light .disconnected {
+  background-color: #656d76;
 }
 .theme-light .progress-line {
   background-color: rgba(101, 109, 118, 0.3);
@@ -3656,11 +3795,11 @@ table.container-full {
 .theme-dark .icon-alert {
   background-color: #b63203;
 }
-.theme-dark .status-connected {
+.theme-dark .connected {
   background-color: #30a63e;
 }
-.theme-dark .status-disconnected {
-  background-color: #b63203;
+.theme-dark .disconnected {
+  background-color: #eaeaea;
 }
 .theme-dark .progress-line {
   background-color: rgba(234, 234, 234, 0.3);
