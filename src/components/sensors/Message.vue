@@ -62,7 +62,7 @@
         ></a>
       </p>
       <p>
-        <b class="align-vertical">2. {{ $t("sensors.status21") }}</b>
+        <b class="align-vertical">2. {{ $t("sensors.status32") }}</b>
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"

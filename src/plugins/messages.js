@@ -59,7 +59,7 @@ export default {
       title: "Sensor networks",
       statusAgent: "Status IoT-agent",
       notStatusAgent: "need to request data from the network",
-      yesStatusAgent: "онлайн, последнее обновление",
+      yesStatusAgent: "online, last updated",
       requested: "Requested",
       isRequest: "Request current values",
       requests: "Your requests",

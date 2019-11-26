@@ -6,7 +6,9 @@
         <template v-if="log.length === 0">
           {{ $t("sensors.notStatusAgent") }}
         </template>
-        <template v-else>{{ log[log.length - 1].time }}</template>
+        <template v-else>
+          {{ $t("sensors.yesStatusAgent") }} {{ log[log.length - 1].time }}
+        </template>
       </h4>
       <section>
         <div class="input-size--md">
