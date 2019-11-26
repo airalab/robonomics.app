@@ -14,7 +14,8 @@ export default {
       tokens_alembic: "AIRA to XRT",
       lighthouse: "Lighthouses",
       net_stats: "Statistics",
-      services: "Services"
+      services: "Services",
+      sensors: "Sensor networks"
     },
 
     waiting: "Waiting for IPFS data",
@@ -70,7 +71,8 @@ export default {
       tokens_alembic: "Перегонный куб",
       lighthouse: "Маяки",
       net_stats: "Статистика",
-      services: "Сервисы"
+      services: "Сервисы",
+      sensors: "Сенсорные сети"
     },
 
     waiting: "Ожидание данных IPFS",

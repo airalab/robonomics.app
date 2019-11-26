@@ -5,6 +5,7 @@ import SelectLighthouse from "@/views/SelectLighthouse";
 import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
+import Sensors from "@/views/Sensors";
 
 Vue.use(Router);
 
@@ -34,6 +35,12 @@ export default new Router({
       path: "/services",
       name: "services",
       component: Services
+    },
+    {
+      path: "/sensors/:lighthouse/:model/:agent/:result?",
+      name: "sensors",
+      component: Sensors,
+      props: true
     },
     { path: "*", redirect: "/" }
   ]
