@@ -1,10 +1,10 @@
-import _find from 'lodash/find';
-import _sortBy from 'lodash/sortBy';
-import _values from 'lodash/values';
-import _mapValues from 'lodash/mapValues';
-import Promise from 'bluebird';
-import getRobonomics from '../../RComponents/tools/robonomics';
-import { findLastTx } from '../../utils/utils';
+import _find from "lodash/find";
+import _sortBy from "lodash/sortBy";
+import _values from "lodash/values";
+import _mapValues from "lodash/mapValues";
+import Promise from "bluebird";
+import getRobonomics from "../../RComponents/tools/robonomics";
+import { findLastTx } from "../../utils/utils";
 
 let robonomics;
 
@@ -26,41 +26,59 @@ const state = {
 // getters
 const getters = {
   members: state => {
-    return _sortBy(state.members, 'i');
+    return _sortBy(state.members, "i");
   }
 };
 
 // actions
 const actions = {
   async init({ commit, dispatch }) {
-    commit('run');
-    commit('clear');
+    commit("run");
+    commit("clear");
     robonomics = getRobonomics();
     robonomics.ready().then(() => {
-      dispatch('fetchData');
-      dispatch('watchBlock');
+      dispatch("fetchData");
+      dispatch("watchBlock");
     });
   },
   fetchData({ commit, dispatch }) {
-    robonomics.xrt.call.balanceOf(robonomics.lighthouse.address).then(r => {
-      commit('setLighthouseBalance', Number(r));
-    });
-    robonomics.lighthouse.call.minimalStake().then(r => {
-      commit('setMinimalStake', Number(r));
-    });
-    robonomics.lighthouse.call.quota().then(r => {
-      commit('setQuota', Number(r));
-    });
-    robonomics.lighthouse.call.marker().then(r => {
-      commit('setMarker', Number(r));
-    });
-    robonomics.lighthouse.call.keepAliveBlock().then(r => {
-      commit('setKeepAliveBlock', Number(r));
-    });
-    robonomics.lighthouse.call.timeoutInBlocks().then(r => {
-      commit('setTimeoutInBlocks', Number(r));
-    });
-    dispatch('getProviders');
+    robonomics.xrt.methods
+      .balanceOf(robonomics.lighthouse.address)
+      .call()
+      .then(r => {
+        commit("setLighthouseBalance", Number(r));
+      });
+    robonomics.lighthouse.methods
+      .minimalStake()
+      .call()
+      .then(r => {
+        commit("setMinimalStake", Number(r));
+      });
+    robonomics.lighthouse.methods
+      .quota()
+      .call()
+      .then(r => {
+        commit("setQuota", Number(r));
+      });
+    robonomics.lighthouse.methods
+      .marker()
+      .call()
+      .then(r => {
+        commit("setMarker", Number(r));
+      });
+    robonomics.lighthouse.methods
+      .keepAliveBlock()
+      .call()
+      .then(r => {
+        commit("setKeepAliveBlock", Number(r));
+      });
+    robonomics.lighthouse.methods
+      .timeoutInBlocks()
+      .call()
+      .then(r => {
+        commit("setTimeoutInBlocks", Number(r));
+      });
+    dispatch("getProviders");
   },
   getProviders({ commit, dispatch }) {
     robonomics.lighthouse.getProviders().then(result => {
@@ -75,7 +93,7 @@ const actions = {
           balance: 0,
           last: null
         });
-        quotas.push(robonomics.lighthouse.call.quotaOf(member));
+        quotas.push(robonomics.lighthouse.methods.quotaOf(member).call());
         balances.push(
           Promise.promisify(robonomics.web3.eth.getBalance)(member)
         );
@@ -90,7 +108,7 @@ const actions = {
         .then(res => {
           res.forEach((balance, i) => {
             members[i].balance = Number(
-              robonomics.web3.fromWei(balance)
+              robonomics.web3.utils.fromWei(balance)
             ).toFixed(3);
           });
           members.forEach((item, i) => {
@@ -100,15 +118,15 @@ const actions = {
             }
           });
 
-          commit('members', members);
-          dispatch('providerLastBlock');
+          commit("members", members);
+          dispatch("providerLastBlock");
         });
     });
   },
   providerLastBlock({ commit, state }) {
     robonomics.web3.eth.getBlockNumber((e, lastBlock) => {
       findLastTx(
-        _values(_mapValues(state.members, 'address')),
+        _values(_mapValues(state.members, "address")),
         robonomics.lighthouse.address,
         lastBlock,
         state.lastUpdFind === 0
@@ -126,23 +144,23 @@ const actions = {
                 : state.members[i].last
           });
         }
-        commit('members', newMembers);
-        commit('setLastUpdFind', lastBlock);
+        commit("members", newMembers);
+        commit("setLastUpdFind", lastBlock);
       });
     });
   },
   watchBlock({ commit, state, dispatch }) {
     const setCurrentBlock = () => {
       robonomics.web3.eth.getBlockNumber((e, r) => {
-        commit('setCurrentBlock', r);
+        commit("setCurrentBlock", r);
         setTimeout(setCurrentBlock, 5000);
       });
     };
     setCurrentBlock();
     const updData = () => {
       if (state.currentBlock - state.lastUpd >= 1) {
-        dispatch('fetchData');
-        commit('setLastUpd', state.currentBlock);
+        dispatch("fetchData");
+        commit("setLastUpd", state.currentBlock);
       }
       setTimeout(updData, 5000);
     };

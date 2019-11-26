@@ -1,6 +1,6 @@
 <template>
   <textarea
-    :class="{'container-full': full, error: isError}"
+    :class="{ 'container-full': full, error: isError }"
     :value="value"
     :placeholder="placeholder"
     @input="$emit('input', $event.target.value)"

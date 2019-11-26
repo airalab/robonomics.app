@@ -6,14 +6,18 @@
       class="input-size--sm m-r-10 input-sm"
       type="text"
       v-model="count"
-      @input="count = Number($event.target.value);validate()"
+      @input="
+        count = Number($event.target.value);
+        validate();
+      "
       min="1"
     />
     <RButton
       @click.native="sendWithdraw"
       :disabled="withdraw.disabled"
       class="btn-blue input-sm"
-    >{{ withdraw.text }}</RButton>
+      >{{ withdraw.text }}</RButton
+    >
   </p>
 </template>
 
@@ -31,9 +35,12 @@ export default {
     };
   },
   mounted() {
-    this.$robonomics.lighthouse.call.minimalStake().then(r => {
-      this.minimalStake = Number(r);
-    });
+    this.$robonomics.lighthouse.methods
+      .minimalStake()
+      .call()
+      .then(r => {
+        this.minimalStake = Number(r);
+      });
     return this.fetchData();
   },
   methods: {
@@ -45,8 +52,9 @@ export default {
       }
     },
     fetchData() {
-      return this.$robonomics.lighthouse.call
+      return this.$robonomics.lighthouse.methods
         .stakes(this.$robonomics.account.address)
+        .call()
         .then(stake => {
           if (stake > 0) {
             this.countMax = Number(stake) / this.minimalStake;
@@ -61,8 +69,9 @@ export default {
     sendWithdraw() {
       this.withdraw.disabled = true;
       this.withdraw.text = "...";
-      return this.$robonomics.lighthouse.send
-        .withdraw(this.minimalStake * this.count, {
+      return this.$robonomics.lighthouse.methods
+        .withdraw(this.minimalStake * this.count)
+        .send({
           from: this.$robonomics.account.address
         })
         .then(() => {

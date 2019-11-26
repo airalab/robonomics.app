@@ -28,7 +28,7 @@
 <script>
 import Form from "./Form";
 import FormSimple from "./FormSimple";
-import config from "../../config";
+import config from "~config";
 
 export default {
   props: ["from", "to", "ambix", "index"],

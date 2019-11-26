@@ -1,4 +1,4 @@
-import getRobonomics from '../../RComponents/tools/robonomics';
+import getRobonomics from "../../RComponents/tools/robonomics";
 
 const STATUS = {
   EMPTY: 0,
@@ -31,18 +31,18 @@ const actions = {
   sendDemand({ state, commit, getters }, demand) {
     const robonomics = getRobonomics();
     const id = Object.keys(state.demands).length + 1;
-    commit('msg', { id, type: 'demands', msg: demand });
-    commit('status', { id, type: 'demands', status: STATUS.BTN });
+    commit("msg", { id, type: "demands", msg: demand });
+    commit("status", { id, type: "demands", status: STATUS.BTN });
 
     robonomics
       .sendDemand(demand, true, msg => {
         if (timeout > 0) {
-          commit('msg', { id, type: 'demands', msg: msg.toObject() });
-          commit('status', { id, type: 'demands', status: STATUS.BROADCAST });
+          commit("msg", { id, type: "demands", msg: msg.toObject() });
+          commit("status", { id, type: "demands", status: STATUS.BROADCAST });
           const intervalSend = setInterval(() => {
             robonomics.messenger.channel.send(msg.encode());
           }, timeout);
-          commit('broadcast', { id, type: 'demands', broadcast: intervalSend });
+          commit("broadcast", { id, type: "demands", broadcast: intervalSend });
 
           let offerListener = robonomics.onOffer(demand.model, offer => {
             if (
@@ -51,12 +51,12 @@ const actions = {
               offer.token.toLowerCase() == demand.token.toLowerCase() &&
               offer.cost == demand.cost
             ) {
-              console.log('offer ok');
+              console.log("offer ok");
               robonomics.messenger.off(offerListener);
               offerListener = null;
             }
           });
-          commit('offerListener', { id, type: 'demands', offerListener });
+          commit("offerListener", { id, type: "demands", offerListener });
 
           let feedbackListener = robonomics.onFeedback(feedback => {
             if (feedback.order === msg.getHash()) {
@@ -65,25 +65,24 @@ const actions = {
               feedbackListener = null;
             }
           });
-          commit('feedbackListener', { id, type: 'demands', feedbackListener });
+          commit("feedbackListener", { id, type: "demands", feedbackListener });
 
           const intervalAccepted = setInterval(() => {
             // console.log(offerListener, feedbackListener);
             if (offerListener === null && feedbackListener === null) {
-              console.log('accepted');
-              commit('status', { id, type: 'demands', status: STATUS.OFFER });
+              console.log("accepted");
+              commit("status", { id, type: "demands", status: STATUS.OFFER });
               clearInterval(intervalSend);
               clearInterval(intervalAccepted);
             }
           }, 3000);
-          commit('intervalAccepted', { id, type: 'demands', intervalAccepted });
-
+          commit("intervalAccepted", { id, type: "demands", intervalAccepted });
         } else {
-          commit('status', { id, type: 'demands', status: STATUS.SEND });
+          commit("status", { id, type: "demands", status: STATUS.SEND });
         }
       })
       .then(liability => {
-        console.log('liability demand', liability.address);
+        console.log("liability demand", liability.address);
         const demand = getters.demandById(id);
 
         clearInterval(demand.broadcast);
@@ -95,42 +94,42 @@ const actions = {
           robonomics.messenger.off(demand.feedbackListener);
         }
 
-        commit('liability', { id, type: 'demands', liability: liability.address });
-        commit('status', { id, type: 'demands', status: STATUS.CONTRACT });
+        commit("liability", {
+          id,
+          type: "demands",
+          liability: liability.address
+        });
+        commit("status", { id, type: "demands", status: STATUS.CONTRACT });
         const interval = setInterval(() => {
-          liability.contract.result((e, r) => {
-            if (e) {
+          liability.result().then(r => {
+            if (r) {
               clearInterval(interval);
-              return;
-            }
-            if (r && r !== '0x') {
-              clearInterval(interval);
-              console.log('result fallback');
+              console.log("result fallback");
               // console.log("r", hexToStr(r));
-              commit('status', { id, type: 'demands', status: STATUS.RESULT });
+              commit("status", { id, type: "demands", status: STATUS.RESULT });
             }
           });
         }, 1000);
-        commit('fallback', { id, type: 'demands', fallback: interval });
+        commit("fallback", { id, type: "demands", fallback: interval });
         return liability.onResult();
       })
       .then(result => {
         const demand = getters.demandById(id);
         clearInterval(demand.fallback);
-        console.log('result', result);
-        commit('status', { id, type: 'demands', status: STATUS.RESULT });
+        console.log("result", result);
+        commit("status", { id, type: "demands", status: STATUS.RESULT });
       })
       .catch(e => {
         console.log(e);
-        commit('status', { id, type: 'demands', status: STATUS.EMPTY });
+        commit("status", { id, type: "demands", status: STATUS.EMPTY });
       });
 
     return id;
   },
   setContract({ commit }, { id, address }) {
     // console.log(id, address);
-    commit('liability', { id, type: 'demands', liability: address });
-    commit('status', { id, type: 'demands', status: STATUS.CONTRACT });
+    commit("liability", { id, type: "demands", liability: address });
+    commit("status", { id, type: "demands", status: STATUS.CONTRACT });
   }
 };
 

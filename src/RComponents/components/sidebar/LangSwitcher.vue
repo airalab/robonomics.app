@@ -4,12 +4,14 @@
       href="javascript:;"
       :class="{ active: $i18n.locale == 'en' }"
       @click="changeLang('en')"
-    >EN - English</a>
+      >EN - English</a
+    >
     <a
       href="javascript:;"
       :class="{ active: $i18n.locale == 'ru' }"
       @click="changeLang('ru')"
-    >RU - Русский</a>
+      >RU - Русский</a
+    >
   </nav>
 </template>
 

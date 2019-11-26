@@ -1,5 +1,13 @@
-import Vue from 'vue';
-import { getContract, watchToken, getInfo, getBalance, watchBalance, getAllowance, watchAllowance } from '../../utils/token';
+import Vue from "vue";
+import {
+  getContract,
+  watchToken,
+  getInfo,
+  getBalance,
+  watchBalance,
+  getAllowance,
+  watchAllowance
+} from "../../utils/token";
 
 // initial state
 const state = {
@@ -12,15 +20,15 @@ const state = {
 const getters = {
   token: state => token => {
     if (!state.list[token]) {
-      return null
+      return null;
     }
-    return state.list[token]
+    return state.list[token];
   },
   balance: state => (token, account) => {
     if (!state.balance[token] || !state.balance[token][account]) {
-      return 0
+      return 0;
     }
-    return state.balance[token][account]
+    return state.balance[token][account];
   },
   balanceFormat: (state, getters) => (token, account) => {
     const balance = getters.balance(token, account);
@@ -32,10 +40,14 @@ const getters = {
     );
   },
   allowance: state => (token, from, to) => {
-    if (!state.allowance[token] || !state.allowance[token][from] || !state.allowance[token][from][to]) {
-      return 0
+    if (
+      !state.allowance[token] ||
+      !state.allowance[token][from] ||
+      !state.allowance[token][from][to]
+    ) {
+      return 0;
     }
-    return state.allowance[token][from][to]
+    return state.allowance[token][from][to];
   },
   allowanceFormat: (state, getters) => (token, from, to) => {
     const allowance = getters.allowance(token, from, to);
@@ -52,52 +64,61 @@ const getters = {
 const actions = {
   add({ commit, dispatch, state, rootGetters }, address) {
     if (state.list[address]) {
-      return
+      return;
     }
-    commit('add', address);
-    const token = getContract(address)
-    watchToken(token, (result) => {
-      if (rootGetters['wait/is']('tx.' + result.transactionHash)) {
-        dispatch('wait/end', 'tx.' + result.transactionHash, {
-          root: true
-        });
+    commit("add", address);
+    const token = getContract(address);
+    watchToken(
+      token,
+      result => {
+        if (rootGetters["wait/is"]("tx." + result.transactionHash)) {
+          dispatch("wait/end", "tx." + result.transactionHash, {
+            root: true
+          });
+        }
+      },
+      (_, account, value) => {
+        dispatch("setBalance", { token: address, account, value });
+      },
+      (_, from, to, value) => {
+        dispatch("setAllowance", { token: address, from, to, value });
       }
-    }, (_, account, value) => {
-      dispatch('setBalance', { token: address, account, value });
-    }, (_, from, to, value) => {
-      dispatch('setAllowance', { token: address, from, to, value });
-    })
+    );
     getInfo(token).then(info => {
-      dispatch('setInfo', { address, info })
-    })
+      dispatch("setInfo", { address, info });
+    });
   },
   setInfo({ commit }, { address, info }) {
-    commit('info', { address, info });
+    commit("info", { address, info });
   },
   watchBalance({ dispatch, state }, { token, account }) {
     if (state.balance[token] && state.balance[token][account]) {
-      return
+      return;
     }
-    watchBalance(token, account)
-    getBalance(getContract(token), account).then((value) => {
-      dispatch('setBalance', { token, account, value });
+    watchBalance(token, account);
+    getBalance(getContract(token), account).then(value => {
+      dispatch("setBalance", { token, account, value });
     });
   },
   watchAllowance({ dispatch, state }, { token, from, to }) {
-    if (state.balance[token] && state.balance[token][from] && state.balance[token][from][to]) {
-      return
+    if (
+      state.balance[token] &&
+      state.balance[token][from] &&
+      state.balance[token][from][to]
+    ) {
+      return;
     }
-    watchAllowance(token, from, to)
-    getAllowance(getContract(token), from, to).then((value) => {
-      dispatch('setAllowance', { token, from, to, value });
+    watchAllowance(token, from, to);
+    getAllowance(getContract(token), from, to).then(value => {
+      dispatch("setAllowance", { token, from, to, value });
     });
   },
   setBalance({ commit }, { token, account, value }) {
-    commit('balance', { token, account, value });
+    commit("balance", { token, account, value });
   },
   setAllowance({ commit }, { token, from, to, value }) {
-    commit('allowance', { token, from, to, value });
-  },
+    commit("allowance", { token, from, to, value });
+  }
 };
 
 // mutations
@@ -125,7 +146,7 @@ const mutations = {
         ...state.balance[token],
         [account]: value
       }
-    }
+    };
   },
   allowance(state, { token, from, to, value }) {
     state.allowance = {
@@ -136,7 +157,7 @@ const mutations = {
           [to]: value
         }
       }
-    }
+    };
   }
 };
 

@@ -3,24 +3,35 @@
     <TextBlockEn v-if="$i18n.locale == 'en'" />
     <TextBlockRu v-else />
     <RCard>
-      <h3>{{ $t('action') }}</h3>
+      <h3>{{ $t("action") }}</h3>
 
-      <section class="t-align--center d-table container-full table-space--10 table-fixed">
-        <div v-if="!isWhite" class="d-table--cell section-mid page-alembic--actionblock">
+      <section
+        class="t-align--center d-table container-full table-space--10 table-fixed"
+      >
+        <div
+          v-if="!isWhite"
+          class="d-table--cell section-mid page-alembic--actionblock"
+        >
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
-          <h3>{{ $t('passing_kyc') }}</h3>
+          <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
             <RLinkExplorer :text="address" />
-            <RButton v-if="isKyc" full green disabled>{{ $t('kyc_passed') }}</RButton>
+            <RButton v-if="isKyc" full green disabled>{{
+              $t("kyc_passed")
+            }}</RButton>
             <template v-else>
-              <RButton v-if="loadingKyc" full :disabled="loadingKyc">{{ $t('pass_kyc_wait') }}</RButton>
-              <RButton v-else full @click.native="setKyc">{{ $t('pass_kyc') }}</RButton>
+              <RButton v-if="loadingKyc" full :disabled="loadingKyc">{{
+                $t("pass_kyc_wait")
+              }}</RButton>
+              <RButton v-else full @click.native="setKyc">{{
+                $t("pass_kyc")
+              }}</RButton>
             </template>
           </div>
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || air.balance <= 0 }"
+          :class="{ disabled: !isKyc || air.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-2.png" />
           <h3>Aira → Aira ID</h3>
@@ -28,7 +39,7 @@
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ 'disabled': !isKyc || airkyc.balance <= 0 }"
+          :class="{ disabled: !isKyc || airkyc.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-3.png" />
           <h3>Aira ID → XRT</h3>
@@ -37,7 +48,7 @@
       </section>
 
       <section>
-        <b>{{ $t('tip_text') }}</b>
+        <b>{{ $t("tip_text") }}</b>
       </section>
     </RCard>
   </Page>
@@ -50,7 +61,7 @@ import Web3Check from "vue-web3-check";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";
 import Ambix from "../components/ambix/Ambix";
-import config from "../config";
+import config from "~config";
 
 export default {
   components: {
@@ -70,49 +81,40 @@ export default {
     ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
     ...mapGetters("tokens", ["balance", "allowance"]),
     air() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.air;
       return {
-        address: chain.TOKEN.air.address,
-        decimals: chain.TOKEN.air.decimals,
-        label: chain.TOKEN.air.label,
-        balance: this.balance(
-          chain.TOKEN.air.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: this.allowance(
-          chain.TOKEN.air.address,
+          token.address,
           this.$robonomics.account.address,
           config.AMBIX1
         )
       };
     },
     airkyc() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.airkyc;
       return {
-        address: chain.TOKEN.airkyc.address,
-        decimals: chain.TOKEN.airkyc.decimals,
-        label: chain.TOKEN.airkyc.label,
-        balance: this.balance(
-          chain.TOKEN.airkyc.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: this.allowance(
-          chain.TOKEN.airkyc.address,
+          token.address,
           this.$robonomics.account.address,
           config.AMBIX2
         )
       };
     },
     xrt() {
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const token = config.chain.get().TOKEN.xrt;
       return {
-        address: chain.TOKEN.xrt.address,
-        decimals: chain.TOKEN.xrt.decimals,
-        label: chain.TOKEN.xrt.label,
-        balance: this.balance(
-          chain.TOKEN.xrt.address,
-          this.$robonomics.account.address
-        ),
+        address: token.address,
+        decimals: token.decimals,
+        label: token.label,
+        balance: this.balance(token.address, this.$robonomics.account.address),
         approve: 0
       };
     }
@@ -124,14 +126,14 @@ export default {
       this.address = this.$robonomics.account.address;
       this.$store.dispatch("kyc/check", this.address);
 
-      const chain = config.chain(Web3Check.store.state.networkId);
+      const tokens = config.chain.get().TOKEN;
       this.$store.dispatch("tokens/watchAllowance", {
-        token: chain.TOKEN.air.address,
+        token: tokens.air.address,
         from: this.$robonomics.account.address,
         to: config.AMBIX1
       });
       this.$store.dispatch("tokens/watchAllowance", {
-        token: chain.TOKEN.airkyc.address,
+        token: tokens.airkyc.address,
         from: this.$robonomics.account.address,
         to: config.AMBIX2
       });

@@ -1,7 +1,8 @@
-import crypto from 'crypto';
-import axios from 'axios';
-import { web3Utils, utils } from 'robonomics-js';
-import getIpfs from '../RComponents/tools/ipfs';
+import crypto from "crypto";
+import axios from "axios";
+import { utils } from "robonomics-js";
+import getRobonomics from "../RComponents/tools/robonomics";
+import getIpfs from "../RComponents/tools/ipfs";
 
 export const toWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
@@ -11,10 +12,12 @@ export const fromWei = (price, decimals) => {
   const priceNum = new web3.BigNumber(price);
   return priceNum.shift(-decimals).toNumber();
 };
-export const genObjective = data => { // -
+export const genObjective = data => {
+  // -
   let hash;
-  const ipfs = getIpfs()
-  ipfs.add(Buffer.from(''+data))
+  const ipfs = getIpfs();
+  ipfs
+    .add(Buffer.from("" + data))
     .then(r => {
       hash = r[0].hash;
       return axios.get(`https://ipfs.robonomics.network/ipfs/${hash}`);
@@ -26,21 +29,27 @@ export const genObjective = data => { // -
       console.log(e);
     });
 };
-function getRandomInt(min, max) { // -
+function getRandomInt(min, max) {
+  // -
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
 }
-export const randomObjective = () => { // -
-  const data = getRandomInt(0, 100000).toString()
-  const hashFunction = Buffer.from('12', 'hex')
-  const digest = crypto.createHash('sha256').update(data).digest()
-  const digestSize = Buffer.from(digest.byteLength.toString(16), 'hex')
-  const combined = Buffer.concat([hashFunction, digestSize, digest])
-  const multihash = utils.base58.encode(combined)
-  return multihash.toString()
+export const randomObjective = () => {
+  // -
+  const data = getRandomInt(0, 100000).toString();
+  const hashFunction = Buffer.from("12", "hex");
+  const digest = crypto
+    .createHash("sha256")
+    .update(data)
+    .digest();
+  const digestSize = Buffer.from(digest.byteLength.toString(16), "hex");
+  const combined = Buffer.concat([hashFunction, digestSize, digest]);
+  const multihash = utils.base58.encode(combined);
+  return multihash.toString();
 };
-export const watchTx = tx => { // -
+export const watchTx = tx => {
+  // -
   const transactionReceiptAsync = (resolve, reject) => {
     web3.eth.getTransactionReceipt(tx, (error, receipt) => {
       if (error) {
@@ -54,7 +63,7 @@ export const watchTx = tx => { // -
   };
   if (Array.isArray(tx)) {
     return Promise.all(tx.map(oneTx => watchTx(oneTx)));
-  } else if (typeof tx === 'string') {
+  } else if (typeof tx === "string") {
     return new Promise(transactionReceiptAsync);
   }
   throw new Error(`Invalid Type: ${tx}`);
@@ -73,31 +82,35 @@ export const promisify = fn => {
 };
 
 export const intFormat = x => {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
 export const floatFormat = x => {
-  var parts = x.toString().split('.');
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  return parts.join('.');
+  var parts = x.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return parts.join(".");
 };
 
 export const recovery = (data, signature) => {
-  const message = web3Utils.utils.isHexStrict(data)
-    ? web3Utils.utils.hexToBytes(data)
+  const robonomics = getRobonomics();
+  const message = robonomics.web3.utils.isHexStrict(data)
+    ? robonomics.web3.utils.hexToBytes(data)
     : data;
   const messageBuffer = Buffer.from(message);
-  const preamble = '\x19Ethereum Signed Message:\n' + message.length;
+  const preamble = "\x19Ethereum Signed Message:\n" + message.length;
   const preambleBuffer = Buffer.from(preamble);
   const ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
-  const hash = web3Utils.hash.keccak256s(ethMessage);
-  return web3Utils.account.recover(hash, signature);
+  const hash = robonomics.web3.utils.sha3._Hash.keccak256s(ethMessage);
+  return robonomics.web3.eth.accounts.recover(hash, signature, true);
+  // import account from "eth-lib/lib/account";
+  // return account.recover(hash, signature);
 };
 
 const scan = (block, accounts, lighthouse) => {
+  const robonomics = getRobonomics();
   return new Promise(resolve => {
     const res = { ...accounts };
-    web3.eth.getBlock(block, true, (e, r) => {
+    robonomics.web3.eth.getBlock(block, true, (e, r) => {
       if (e) {
         return resolve(res);
       }
@@ -105,9 +118,12 @@ const scan = (block, accounts, lighthouse) => {
         return resolve(res);
       }
       r.transactions.forEach(item => {
-        const from = web3.toChecksumAddress(item.from);
-        if (Object.prototype.hasOwnProperty.call(accounts, from) && accounts[from] === null) {
-          if (web3.toChecksumAddress(item.to) === lighthouse) {
+        const from = robonomics.web3.utils.toChecksumAddress(item.from);
+        if (
+          Object.prototype.hasOwnProperty.call(accounts, from) &&
+          accounts[from] === null
+        ) {
+          if (robonomics.web3.utils.toChecksumAddress(item.to) === lighthouse) {
             res[from] = item.blockNumber;
           }
         }

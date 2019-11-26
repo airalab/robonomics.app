@@ -33,7 +33,9 @@
         />
       </p>
       <RButton green disabled v-if="create">Create and connect</RButton>
-      <RButton green @click.native="sendCreateLighthouse" v-else>Create and connect</RButton>
+      <RButton green @click.native="sendCreateLighthouse" v-else
+        >Create and connect</RButton
+      >
       <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
@@ -153,25 +155,27 @@ export default {
     },
     getLighthouses(options = { fromBlock: 0, toBlock: "latest" }) {
       return new Promise((resolve, reject) => {
-        this.$robonomics.factory.contract
-          .NewLighthouse({}, options)
-          .get((error, result) => {
+        this.$robonomics.factory.getPastEvents(
+          "NewLighthouse",
+          options,
+          (error, result) => {
             if (!error) {
               const lighthouses = [];
               result.forEach(item => {
                 lighthouses.push({
                   name: this.$robonomics.ens.getUrl(
-                    item.args.name,
+                    item.returnValues.name,
                     "lighthouse"
                   ),
-                  addr: item.args.lighthouse
+                  addr: item.returnValues.lighthouse
                 });
               });
               resolve(lighthouses);
             } else {
               reject(error);
             }
-          });
+          }
+        );
       });
     },
     async searchLighthouse() {
@@ -217,7 +221,7 @@ export default {
                   lighthouse.name,
                   "lighthouse"
                 ),
-                addr: this.$robonomics.web3.toChecksumAddress(
+                addr: this.$robonomics.web3.utils.toChecksumAddress(
                   lighthouse.address
                 )
               });
@@ -226,21 +230,21 @@ export default {
               this.selectLighthouse(
                 this.$robonomics.ens.getUrl(lighthouse.name, "lighthouse")
               ).then(() => {
-                watcher.stopWatching();
+                watcher.unsubscribe();
                 this.connect();
               });
             }
           }
         );
-        this.$robonomics.factory.send
+        this.$robonomics.factory.methods
           .createLighthouse(
             toWei(this.form.minimalStake, 9),
             this.form.timeoutInBlocks,
-            this.form.name,
-            {
-              from: this.$robonomics.account.address
-            }
+            this.form.name
           )
+          .send({
+            from: this.$robonomics.account.address
+          })
           .then(tx => {
             console.log("tx", tx);
           })

@@ -1,17 +1,26 @@
 <template>
   <fragment>
     <section>
-      <LinkExplorer v-if="account" :text="account" classStyle="nowrap" :chainid="networkId" />
+      <LinkExplorer
+        v-if="account"
+        :text="account"
+        classStyle="nowrap"
+        :chainid="networkId"
+      />
       <div v-if="networkId" class="m-t-10">
-        <Label class="align-top" :color="networkId === 1 ? 'green' : 'violet'">{{nameChain}}</Label>
+        <Label
+          class="align-top"
+          :color="networkId === 1 ? 'green' : 'violet'"
+          >{{ nameChain }}</Label
+        >
       </div>
     </section>
 
     <section>
       <template v-for="(token, i) in tokens">
         <div :key="i" class="js-tooltip">
-          <b class="m-r-10">{{token.amount}}</b>
-          <span class="t-sm">{{token.symbol}}</span>
+          <b class="m-r-10">{{ token.amount }}</b>
+          <span class="t-sm">{{ token.symbol }}</span>
         </div>
         <hr v-if="i < tokens.length - 1" :key="`h-${i}`" />
       </template>

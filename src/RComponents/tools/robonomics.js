@@ -1,4 +1,4 @@
-import Robonomics, { MessageProviderIpfs } from 'robonomics-js';
+import Robonomics, { MessageProviderIpfs } from "robonomics-js";
 
 let robonomics = null;
 export function init(config, web3, ipfs) {
@@ -12,7 +12,7 @@ export function init(config, web3, ipfs) {
 
 export default function() {
   if (robonomics === null) {
-    throw new Error('Robonomics not init');
+    throw new Error("Robonomics not init");
   }
   return robonomics;
 }

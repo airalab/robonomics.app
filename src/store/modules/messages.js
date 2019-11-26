@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import _find from 'lodash/find';
-import _findIndex from 'lodash/findIndex';
-import getRobonomics from '../../RComponents/tools/robonomics';
-import getIpfs from '../../RComponents/tools/ipfs';
+import Vue from "vue";
+import _find from "lodash/find";
+import _findIndex from "lodash/findIndex";
+import getRobonomics from "../../RComponents/tools/robonomics";
+import getIpfs from "../../RComponents/tools/ipfs";
 
 let robonomics;
 
@@ -28,34 +28,34 @@ const getters = {
 // actions
 const actions = {
   async init({ commit, dispatch }) {
-    commit('run');
-    commit('clear');
+    commit("run");
+    commit("clear");
     robonomics = getRobonomics();
     robonomics.ready().then(() => {
-      const ipfs = getIpfs()
+      const ipfs = getIpfs();
       ipfs.id((err, info) => {
-        commit('model', info.id);
-        dispatch('onOffer');
-        dispatch('onDemand');
-        dispatch('onLiability');
+        commit("model", info.id);
+        dispatch("onOffer");
+        dispatch("onDemand");
+        dispatch("onLiability");
       });
     });
   },
   onOffer({ commit, state }) {
     robonomics.onOffer(state.model, msg => {
-      console.log('offer', msg);
+      console.log("offer", msg);
       const item = _find(state.offers, { signature: msg.signature });
       if (!item) {
-        commit('addOffer', msg);
+        commit("addOffer", msg);
       }
     });
   },
   onDemand({ commit, state }) {
     robonomics.onDemand(state.model, msg => {
-      console.log('demand', msg);
+      console.log("demand", msg);
       const item = _find(state.demands, { signature: msg.signature });
       if (!item) {
-        commit('addDemand', msg);
+        commit("addDemand", msg);
       }
     });
   },
@@ -64,21 +64,21 @@ const actions = {
       liability.getInfo().then(info => {
         const item = _find(state.lis, { address: liability.address });
         if (!item) {
-          commit('addLiability', {
+          commit("addLiability", {
             address: liability.address,
             worker: liability.worker,
             ...info
           });
-          commit('stopWatchDemand', info.demandHash);
-          commit('stopWatchOffer', info.offerHash);
-          dispatch('onResult', liability);
+          commit("stopWatchDemand", info.demandHash);
+          commit("stopWatchOffer", info.offerHash);
+          dispatch("onResult", liability);
         }
       });
     });
   },
   onResult({ commit }, liability) {
     liability.onResult().then(result => {
-      commit('setLiabilityResult', { address: liability.address, result });
+      commit("setLiabilityResult", { address: liability.address, result });
     });
   }
 };

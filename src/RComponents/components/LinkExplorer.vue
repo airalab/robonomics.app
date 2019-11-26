@@ -1,6 +1,10 @@
 <template>
   <a :href="href" target="_blank" :class="classStyle" :title="text">
-    <Avatar v-if="type === 'chain'" :address="text" class="avatar-small align-vertical m-r-10" />
+    <Avatar
+      v-if="type === 'chain'"
+      :address="text"
+      class="avatar-small align-vertical m-r-10"
+    />
     <b>{{ label }}</b>
   </a>
 </template>

@@ -1,6 +1,6 @@
-import axios from 'axios';
-import _has from 'lodash/has';
-import config from '../../config';
+import axios from "axios";
+import _has from "lodash/has";
+import config from "~config";
 
 const civicSip = new civic.sip({ appId: config.CIVIC_APP_ID });
 
@@ -18,14 +18,14 @@ const getters = {};
 // actions
 const actions = {
   async check({ commit, dispatch }, address) {
-    axios.get(config.API_KYC + '/check/' + address).then(r => {
-      if (_has(r.data, 'result')) {
+    axios.get(config.API_KYC + "/check/" + address).then(r => {
+      if (_has(r.data, "result")) {
         commit(
-          'isKyc',
+          "isKyc",
           Boolean(r.data.result.check) || Boolean(r.data.result.white)
         );
-        commit('isWhite', Boolean(r.data.result.white));
-        dispatch('civicInit', address);
+        commit("isWhite", Boolean(r.data.result.white));
+        dispatch("civicInit", address);
       }
     });
   },
@@ -33,34 +33,34 @@ const actions = {
     if (state.run) {
       return;
     }
-    commit('run');
-    civicSip.on('auth-code-received', event => {
+    commit("run");
+    civicSip.on("auth-code-received", event => {
       const jwtToken = event.response;
       axios
-        .get(config.API_KYC + '/civic/' + address + '/' + jwtToken)
+        .get(config.API_KYC + "/civic/" + address + "/" + jwtToken)
         .then(r => {
-          commit('isKyc', Boolean(r.data.result));
-          commit('loadingKyc', false);
+          commit("isKyc", Boolean(r.data.result));
+          commit("loadingKyc", false);
         })
         .catch(() => {
-          commit('loadingKyc', false);
+          commit("loadingKyc", false);
         });
     });
-    civicSip.on('civic-sip-error', error => {
+    civicSip.on("civic-sip-error", error => {
       // eslint-disable-next-line no-console
-      console.log('   Error type = ' + error.type);
+      console.log("   Error type = " + error.type);
       // eslint-disable-next-line no-console
-      console.log('   Error message = ' + error.message);
-      commit('loadingKyc', false);
+      console.log("   Error message = " + error.message);
+      commit("loadingKyc", false);
     });
-    civicSip.on('user-cancelled', () => {
-      commit('loadingKyc', false);
+    civicSip.on("user-cancelled", () => {
+      commit("loadingKyc", false);
     });
   },
   setKyc({ commit }) {
-    commit('loadingKyc', true);
+    commit("loadingKyc", true);
     civicSip.signup({
-      style: 'popup',
+      style: "popup",
       scopeRequest: civicSip.ScopeRequests.PROOF_OF_IDENTITY
     });
   }

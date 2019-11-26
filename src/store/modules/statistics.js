@@ -1,7 +1,6 @@
-import axios from 'axios';
-import Web3Check from 'vue-web3-check';
-import { floatFormat, intFormat } from '../../utils/utils';
-import config from '../../config';
+import axios from "axios";
+import { floatFormat, intFormat } from "../../utils/utils";
+import config from "~config";
 
 // initial state
 const state = {
@@ -50,29 +49,29 @@ const actions = {
     if (state.run) {
       return;
     }
-    commit('run');
-    const chain = config.chain(Web3Check.store.state.networkId);
-    axios.get(chain.STATISTICS_API + '/start').then(r => {
-      commit('connected', r.data.result.connected);
-      commit('lastBlock', r.data.result.lastBlock);
-      commit('totalSupply', r.data.result.totalSupply);
-      commit('wn', r.data.result.wn);
-      commit('gas', r.data.result.gas);
-      commit('li', r.data.result.li);
-      commit('contracts', r.data.result.liability);
+    commit("run");
+    const api = config.chain.get().STATISTICS_API;
+    axios.get(api + "/start").then(r => {
+      commit("connected", r.data.result.connected);
+      commit("lastBlock", r.data.result.lastBlock);
+      commit("totalSupply", r.data.result.totalSupply);
+      commit("wn", r.data.result.wn);
+      commit("gas", r.data.result.gas);
+      commit("li", r.data.result.li);
+      commit("contracts", r.data.result.liability);
     });
 
-    const socket = io(chain.STATISTICS_API);
-    socket.on('lastBlock', r => {
-      commit('lastBlock', r);
+    const socket = io(api);
+    socket.on("lastBlock", r => {
+      commit("lastBlock", r);
     });
-    socket.on('data', r => {
-      commit('connected', r.connected);
-      commit('totalSupply', r.totalSupply);
-      commit('wn', r.wn);
-      commit('gas', r.gas);
-      commit('li', r.li);
-      commit('contracts', r.liability);
+    socket.on("data", r => {
+      commit("connected", r.connected);
+      commit("totalSupply", r.totalSupply);
+      commit("wn", r.wn);
+      commit("gas", r.gas);
+      commit("li", r.li);
+      commit("contracts", r.liability);
     });
   }
 };
