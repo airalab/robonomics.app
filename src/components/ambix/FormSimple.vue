@@ -111,46 +111,43 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = this.$robonomics.web3.eth
-        .contract(TokenABI)
-        .at(this.token);
-      contract.approve(
-        this.ambix,
-        value,
-        { from: this.$robonomics.account.address },
-        (e, r) => {
-          if (e) {
-            this.$wait.end(this.actionForm);
-            return;
-          }
+      const contract = new this.$robonomics.web3.eth.Contract(
+        TokenABI,
+        this.token
+      );
+      contract.methods
+        .approve(this.ambix, value)
+        .send({ from: this.$robonomics.account.address })
+        .then(r => {
           this.$wait.end(this.actionForm);
-          this.tx = r;
+          this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
           this.$wait.start(this.actionTx);
-        }
-      );
+        })
+        .catch(() => {
+          this.$wait.end(this.actionForm);
+        });
     },
     run() {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = this.$robonomics.web3.eth
-        .contract(AmbixSimpleABI)
-        .at(this.ambix);
-      ambix.run(
-        this.index,
-        { from: this.$robonomics.account.address },
-        (e, r) => {
-          if (e) {
-            this.$wait.end(this.actionForm);
-            return;
-          }
+      const ambix = new this.$robonomics.web3.eth.Contract(
+        AmbixSimpleABI,
+        this.ambix
+      );
+      ambix.methods
+        .run(this.index)
+        .send({ from: this.$robonomics.account.address })
+        .then(r => {
           this.$wait.end(this.actionForm);
-          this.tx = r;
+          this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
           this.$wait.start(this.actionTx);
-        }
-      );
+        })
+        .catch(() => {
+          this.$wait.end(this.actionForm);
+        });
     }
   }
 };

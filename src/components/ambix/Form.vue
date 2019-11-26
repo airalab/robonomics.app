@@ -121,52 +121,52 @@ export default {
       this.actionForm = "approve." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = this.$robonomics.web3.eth
-        .contract(TokenABI)
-        .at(this.token);
-      contract.approve(
-        this.ambix,
-        value,
-        { from: this.$robonomics.account.address },
-        (e, r) => {
-          if (e) {
-            this.$wait.end(this.actionForm);
-            return;
-          }
+      const contract = new this.$robonomics.web3.eth.Contract(
+        TokenABI,
+        this.token
+      );
+      contract.methods
+        .approve(this.ambix, value)
+        .send({ from: this.$robonomics.account.address })
+        .then(r => {
           this.$wait.end(this.actionForm);
-          this.tx = r;
+          this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
           this.$wait.start(this.actionTx);
-        }
-      );
+        })
+        .catch(() => {
+          this.$wait.end(this.actionForm);
+        });
     },
     unapprove() {
       this.actionForm = "unapprove." + this.token + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const contract = this.$robonomics.web3.eth
-        .contract(TokenABI)
-        .at(this.token);
-      contract.unapprove(
-        this.ambix,
-        { from: this.$robonomics.account.address },
-        (e, r) => {
-          if (e) {
-            this.$wait.end(this.actionForm);
-            return;
-          }
+      const contract = new this.$robonomics.web3.eth.Contract(
+        TokenABI,
+        this.token
+      );
+      contract.methods
+        .unapprove(this.ambix)
+        .send({ from: this.$robonomics.account.address })
+        .then(r => {
           this.$wait.end(this.actionForm);
-          this.tx = r;
+          this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
           this.$wait.start(this.actionTx);
-        }
-      );
+        })
+        .catch(() => {
+          this.$wait.end(this.actionForm);
+        });
     },
     run() {
       this.actionForm = "ambix." + this.ambix;
       this.$wait.start(this.actionForm);
       this.actionTx = "";
-      const ambix = this.$robonomics.web3.eth.contract(AmbixABI).at(this.ambix);
+      const ambix = new this.$robonomics.web3.eth.Contract(
+        AmbixABI,
+        this.ambix
+      );
       axios
         .get(
           config.API_KYC +
@@ -178,21 +178,18 @@ export default {
         .then(r => {
           if (_has(r.data, "result")) {
             const signature = r.data.result;
-            ambix.run(
-              this.index,
-              signature,
-              { from: this.$robonomics.account.address },
-              (e, r) => {
-                if (e) {
-                  this.$wait.end(this.actionForm);
-                  return;
-                }
+            ambix.methods
+              .run(this.index, signature)
+              .send({ from: this.$robonomics.account.address })
+              .then(r => {
                 this.$wait.end(this.actionForm);
-                this.tx = r;
+                this.tx = r.transactionHash;
                 this.actionTx = "tx." + this.tx;
                 this.$wait.start(this.actionTx);
-              }
-            );
+              })
+              .catch(() => {
+                this.$wait.end(this.actionForm);
+              });
           } else {
             this.$wait.end(this.actionForm);
           }
