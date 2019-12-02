@@ -1,73 +1,65 @@
-import crypto from "crypto";
 import axios from "axios";
-import { utils } from "robonomics-js";
 import getRobonomics from "../RComponents/tools/robonomics";
-import getIpfs from "../RComponents/tools/ipfs";
+// import crypto from "crypto";
+// import { utils } from "robonomics-js";
+// import getIpfs from "../RComponents/tools/ipfs";
 
-export const toWei = (price, decimals) => {
-  const priceNum = new web3.BigNumber(price);
-  return priceNum.shift(decimals).toNumber();
-};
-export const fromWei = (price, decimals) => {
-  const priceNum = new web3.BigNumber(price);
-  return priceNum.shift(-decimals).toNumber();
-};
-export const genObjective = data => {
-  // -
-  let hash;
-  const ipfs = getIpfs();
-  ipfs
-    .add(Buffer.from("" + data))
-    .then(r => {
-      hash = r[0].hash;
-      return axios.get(`https://ipfs.robonomics.network/ipfs/${hash}`);
-    })
-    .then(() => {
-      return hash;
-    })
-    .catch(e => {
-      console.log(e);
-    });
-};
-function getRandomInt(min, max) {
-  // -
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
-}
-export const randomObjective = () => {
-  // -
-  const data = getRandomInt(0, 100000).toString();
-  const hashFunction = Buffer.from("12", "hex");
-  const digest = crypto
-    .createHash("sha256")
-    .update(data)
-    .digest();
-  const digestSize = Buffer.from(digest.byteLength.toString(16), "hex");
-  const combined = Buffer.concat([hashFunction, digestSize, digest]);
-  const multihash = utils.base58.encode(combined);
-  return multihash.toString();
-};
-export const watchTx = tx => {
-  // -
-  const transactionReceiptAsync = (resolve, reject) => {
-    web3.eth.getTransactionReceipt(tx, (error, receipt) => {
-      if (error) {
-        reject(error);
-      } else if (receipt === null) {
-        setTimeout(() => transactionReceiptAsync(resolve, reject), 5000);
-      } else {
-        resolve(receipt);
-      }
-    });
-  };
-  if (Array.isArray(tx)) {
-    return Promise.all(tx.map(oneTx => watchTx(oneTx)));
-  } else if (typeof tx === "string") {
-    return new Promise(transactionReceiptAsync);
-  }
-  throw new Error(`Invalid Type: ${tx}`);
-};
+// export const genObjective = data => {
+//   // -
+//   let hash;
+//   const ipfs = getIpfs();
+//   ipfs
+//     .add(Buffer.from("" + data))
+//     .then(r => {
+//       hash = r[0].hash;
+//       return axios.get(`https://ipfs.robonomics.network/ipfs/${hash}`);
+//     })
+//     .then(() => {
+//       return hash;
+//     })
+//     .catch(e => {
+//       console.log(e);
+//     });
+// };
+// function getRandomInt(min, max) {
+//   // -
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+// }
+// export const randomObjective = () => {
+//   // -
+//   const data = getRandomInt(0, 100000).toString();
+//   const hashFunction = Buffer.from("12", "hex");
+//   const digest = crypto
+//     .createHash("sha256")
+//     .update(data)
+//     .digest();
+//   const digestSize = Buffer.from(digest.byteLength.toString(16), "hex");
+//   const combined = Buffer.concat([hashFunction, digestSize, digest]);
+//   const multihash = utils.base58.encode(combined);
+//   return multihash.toString();
+// };
+// export const watchTx = tx => {
+//   // -
+//   const transactionReceiptAsync = (resolve, reject) => {
+//     web3.eth.getTransactionReceipt(tx, (error, receipt) => {
+//       if (error) {
+//         reject(error);
+//       } else if (receipt === null) {
+//         setTimeout(() => transactionReceiptAsync(resolve, reject), 5000);
+//       } else {
+//         resolve(receipt);
+//       }
+//     });
+//   };
+//   if (Array.isArray(tx)) {
+//     return Promise.all(tx.map(oneTx => watchTx(oneTx)));
+//   } else if (typeof tx === "string") {
+//     return new Promise(transactionReceiptAsync);
+//   }
+//   throw new Error(`Invalid Type: ${tx}`);
+// };
 
 export const promisify = fn => {
   return (args = []) =>

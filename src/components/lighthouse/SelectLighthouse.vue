@@ -33,9 +33,7 @@
         />
       </p>
       <RButton green disabled v-if="create">Create and connect</RButton>
-      <RButton green @click.native="sendCreateLighthouse" v-else
-        >Create and connect</RButton
-      >
+      <RButton green @click.native="sendCreateLighthouse" v-else>Create and connect</RButton>
       <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
@@ -47,7 +45,7 @@
 </template>
 
 <script>
-import { toWei } from "../../utils/utils";
+import { number } from "../../RComponents/tools/utils";
 
 let slim;
 
@@ -238,7 +236,7 @@ export default {
         );
         this.$robonomics.factory.methods
           .createLighthouse(
-            toWei(this.form.minimalStake, 9),
+            number.toWei(this.form.minimalStake, 9),
             this.form.timeoutInBlocks,
             this.form.name
           )

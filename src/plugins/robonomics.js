@@ -5,7 +5,6 @@ import config from "~config";
 Vue.filter("urlExplorer", filters.urlExplorer);
 Vue.filter("urlIpfs", filters.urlIpfs);
 Vue.filter("fromWei", filters.fromWei);
-Vue.filter("toWei", filters.toWei);
 Vue.filter("labelAddress", filters.labelAddress);
 
 Vue.use(RComponents, {

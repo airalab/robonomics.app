@@ -4,13 +4,11 @@
       <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">
-          Check if data correct, please.
-        </div>
+        <div v-if="error" style="margin: 5px 0;">Check if data correct, please.</div>
         <Approve
           v-if="cost > 0 && token"
           :address="token"
-          :cost="cost | toWei(decimals)"
+          :cost="costWei"
           :onInitToken="onInitToken"
           :onFetch="onAllowance"
         />
@@ -20,8 +18,7 @@
           :disabled="watch"
           green
         >
-          <div class="loader-ring" v-if="watch"></div>
-          &nbsp;Broadcast signal to the network
+          <div class="loader-ring" v-if="watch"></div>&nbsp;Broadcast signal to the network
         </RButton>
       </section>
     </RCard>
@@ -32,34 +29,31 @@
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
-        <div
-          v-for="(item, i) in log"
-          :key="`${i}-${item.date}`"
-          style="margin: 5px 0"
-        >
+        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
           <template v-if="item.type == 'liability'">
-            <RAvatar
-              :address="item.address"
-              class="avatar-small align-vertical m-r-10"
-            />
+            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a :href="item.address | urlExplorer" target="_blank">{{
+            <a
+              :href="item.address | urlExplorer"
+              target="_blank"
+            >
+              {{
               item.address | labelAddress
-            }}</a>
+              }}
+            </a>
           </template>
           <template v-else>
-            <RAvatar
-              :address="item.sender"
-              class="avatar-small align-vertical m-r-10"
-            />
+            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
-            <a :href="item.sender | urlExplorer" target="_blank">{{
+            <a :href="item.sender | urlExplorer" target="_blank">
+              {{
               item.sender | labelAddress
-            }}</a>
+              }}
+            </a>
           </template>
           <hr />
         </div>
@@ -72,7 +66,7 @@
 import Vue from "vue";
 import TradeForm from "./TradeForm";
 import Approve from "@/components/approve/Main";
-import { number } from "../../RComponents/tools/filters";
+import { number } from "../../RComponents/tools/utils";
 
 export default {
   components: {
@@ -105,6 +99,9 @@ export default {
           return 0;
         })
         .slice(0, 10);
+    },
+    costWei() {
+      return number.toWei(this.cost, this.decimals);
     },
     demand() {
       return this.$store.getters["sender/demandById"](this.id);
@@ -202,7 +199,7 @@ export default {
       this.decimals = decimals;
     },
     onAllowance({ allowance }) {
-      this.allowance = number.fromWei(allowance, this.decimals);
+      this.allowance = Number(number.fromWei(allowance, this.decimals));
     },
     setNonce() {
       this.$robonomics.factory.methods

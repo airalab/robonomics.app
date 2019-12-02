@@ -15,14 +15,10 @@
       <span class="align-vertical">{{ $t("convert") }} {{ toLabel }}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
     </RButton>
-    <RButton v-else full @click.native="submit"
-      >{{ $t("convert") }} {{ toLabel }}</RButton
-    >
+    <RButton v-else full @click.native="submit">{{ $t("convert") }} {{ toLabel }}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
-      <a :href="actionTx.replace('tx.', '') | urlExplorer('tx')" target="_blank"
-        >transaction</a
-      >
+      <a :href="actionTx.replace('tx.', '') | urlExplorer('tx')" target="_blank">transaction</a>
       to be mined
     </p>
     <p v-if="error !== ''" class="t-sm">{{ error }}</p>
@@ -30,7 +26,7 @@
 </template>
 
 <script>
-import { number } from "../../RComponents/tools/filters";
+import { number } from "../../RComponents/tools/utils";
 import TokenABI from "../../abi/Token.json";
 import AmbixSimpleABI from "../../abi/AmbixSimple.json";
 
@@ -58,7 +54,7 @@ export default {
   },
   mounted() {
     if (this.current > 0) {
-      this.amount = number.fromWei(this.current, this.decimals);
+      this.amount = Number(number.fromWei(this.current, this.decimals));
     }
   },
   computed: {
@@ -72,7 +68,7 @@ export default {
   watch: {
     current: function(newVal) {
       if (newVal > 0) {
-        this.amount = number.fromWei(newVal, this.decimals);
+        this.amount = Number(number.fromWei(newVal, this.decimals));
       }
     },
     watchTx(value) {

@@ -1,3 +1,5 @@
+import { number } from "./utils";
+
 export function urlExplorer(address, type = "address", chainid = 1) {
   let domain = "etherscan.io";
   if (type === "") {
@@ -26,29 +28,8 @@ export function urlIpfs(hash, type = "ipfs") {
   return `https://${domain}/${type}/${hash}`;
 }
 
-export const number = {
-  toWei(price, decimals) {
-    const priceNum = new web3.BigNumber(price);
-    return priceNum.shift(decimals).toNumber();
-  },
-  fromWei(price, decimals) {
-    const priceNum = new web3.BigNumber(price);
-    return priceNum.shift(-decimals).toNumber();
-  },
-  fromWeiStr(price, decimals) {
-    const priceNum = new web3.BigNumber(price);
-    return priceNum.shift(-decimals).toString(10);
-  }
-};
-
 export function fromWei(amount, decimals, currency = "") {
-  return `${number.fromWeiStr(amount, decimals)}${
-    currency ? " " : ""
-  }${currency}`;
-}
-
-export function toWei(amount, decimals) {
-  return number.toWei(amount, decimals);
+  return `${number.fromWei(amount, decimals)}${currency ? " " : ""}${currency}`;
 }
 
 export const labelAddress = text => {

@@ -1,6 +1,7 @@
 import * as components from "./components";
 import * as mixins from "./mixins";
 import * as filters from "./tools/filters";
+import * as utils from "./tools/utils";
 import initIpfs, * as ipfs from "./tools/ipfs";
 import initRobonomics, * as robonomics from "./tools/robonomics";
 import { setConfig } from "./config";
@@ -9,6 +10,7 @@ export {
   components,
   mixins,
   filters,
+  utils,
   initIpfs,
   ipfs,
   initRobonomics,
