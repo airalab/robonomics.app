@@ -9234,10 +9234,10 @@ vue-wait@^1.4.8:
   resolved "https://registry.yarnpkg.com/vue-wait/-/vue-wait-1.4.8.tgz#495b2ef996544c91f8ea14b1fe8d5abe94872655"
   integrity sha512-R76ZfqyUqUu/xWFnY6fUV1nDYEublac+cTIeHdZ/+F+XhpxK/kDqIyZPZkNcahXPWs0ZUfLAPWyc/IbxPod6Vg==
 
-vue-web3-check@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/vue-web3-check/-/vue-web3-check-1.5.0.tgz#80ce518530c495424c77d671f368b3935bdeb5d1"
-  integrity sha512-8j0iG23coJgap8p0LhTmZe1H+OG28c2KgWX4DUmD+qBqCY2DTbY9t1SNXafeAsXFkCJlxlxrBDMXtrWsD9CzRw==
+vue-web3-check@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/vue-web3-check/-/vue-web3-check-1.5.1.tgz#23cf71ef349231ed7c05a75970b0ae802fb4bdac"
+  integrity sha512-lapRdBoQbOfpsujeSOfkFrxlKVuyfEi4pKLXQIktHY17ZfYFz/eZxfxE7qtfkEEgANm4ZQQdeVuj3KLvM1x/EQ==
 
 vue@^2.6.10:
   version "2.6.10"
