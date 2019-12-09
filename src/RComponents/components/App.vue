@@ -23,6 +23,7 @@ import Vue from "vue";
 import Web3Check from "vue-web3-check";
 import { init as initRobonomics } from "../tools/robonomics";
 import { init as initIpfs } from "../tools/ipfs";
+import { statusPeers } from "../tools/utils";
 import getConfig from "../config";
 
 export default {
@@ -63,6 +64,11 @@ export default {
 
       await this.$robonomics.ready();
       this.isReadyRobonomics = true;
+
+      window.statusPeers = (timeout = 0) => {
+        console.log("Peers search", config.statusPeers);
+        statusPeers(this.$ipfs, this.$robonomics, config.statusPeers, timeout);
+      };
     });
   },
   methods: {
