@@ -8,6 +8,7 @@ export { default as Wallet } from "./sidebar/Wallet";
 export { default as Item } from "./sidebar/Item";
 export { default as Card } from "./card/Card";
 export { default as CardTitle } from "./card/CardTitle";
+export { default as Window } from "./Window";
 export { default as Button } from "./Button";
 export { default as ImgHover } from "./ImgHover";
 export { default as Loader } from "./Loader";
