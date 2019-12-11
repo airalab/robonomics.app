@@ -3,8 +3,9 @@ import getRobonomics from "./robonomics";
 export const number = {
   toWei(amount, decimals) {
     const r = getRobonomics();
-    const decimalsBN = r.web3.utils.toBN(decimals);
-    const base = r.web3.utils.toBN(10).pow(decimalsBN);
+    const BN = r.web3.utils.BN;
+    const decimalsBN = new BN(decimals);
+    const base = new BN(10).pow(decimalsBN);
     const baseLength = base.toString(10).length - 1 || 1;
     const comps = amount.toString().split(".");
     let beforeDecimal = comps[0];
@@ -18,22 +19,25 @@ export const number = {
     while (afterDecimal.length < baseLength) {
       afterDecimal += "0";
     }
-    beforeDecimal = r.web3.utils.toBN(beforeDecimal);
-    afterDecimal = r.web3.utils.toBN(afterDecimal);
+    beforeDecimal = new BN(beforeDecimal);
+    afterDecimal = new BN(afterDecimal);
     const wei = beforeDecimal.mul(base).add(afterDecimal);
     return wei.toString(10);
   },
-  fromWei(wei, decimals) {
+  fromWei(weiInput, decimals) {
     const r = getRobonomics();
-    const weiBN = r.web3.utils.toBN(wei);
-    const decimalsBN = r.web3.utils.toBN(decimals);
-    const divisor = r.web3.utils.toBN(10).pow(decimalsBN);
-    const beforeDecimal = weiBN.div(divisor).toString(10);
-    const afterDecimal = weiBN
-      .mod(divisor)
-      .toString(10)
-      .match(/^([0-9]*[1-9]|0)(0*)/)[1];
-    return `${beforeDecimal}${afterDecimal == "0" ? "" : `.${afterDecimal}`}`;
+    const BN = r.web3.utils.BN;
+    const wei = new BN(weiInput);
+    const decimalsBN = new BN(decimals);
+    const base = new BN(10).pow(decimalsBN);
+    const baseLength = base.toString(10).length - 1 || 1;
+    let fraction = wei.mod(base).toString(10);
+    while (fraction.length < baseLength) {
+      fraction = `0${fraction}`;
+    }
+    fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
+    const whole = wei.div(base).toString(10);
+    return `${whole}${fraction == "0" ? "" : `.${fraction}`}`;
   }
 };
 
