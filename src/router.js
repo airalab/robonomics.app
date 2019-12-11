@@ -6,6 +6,7 @@ import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
+import Sensor from "@/views/Sensor";
 
 Vue.use(Router);
 
@@ -37,10 +38,29 @@ export default new Router({
       component: Services
     },
     {
-      path: "/sensors/:lighthouse/:model/:agent/:result?",
+      path: "/sensors/:lighthouse?",
       name: "sensors",
       component: Sensors,
       props: true
+    },
+    {
+      path: "/sensors/:lighthouse/:model/:agent",
+      component: Sensor,
+      props: true,
+      children: [
+        {
+          path: "",
+          name: "sensor"
+        },
+        {
+          path: "token/:token/cost/:cost",
+          name: "sensor-cost"
+        },
+        {
+          path: "result/:result",
+          name: "sensor-result"
+        }
+      ]
     },
     { path: "*", redirect: "/" }
   ]

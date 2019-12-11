@@ -6,15 +6,18 @@
           <span class="i-signal m-r-10"></span>
           <span>{{ $t("sensors.title") }}</span>
         </span>
-        <i>/</i>
-        <span>{{ nameModel }} {{ miniAddrAgent }}</span>
       </h2>
-      <Sensors
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :result="result"
+      <SelectLighthouse
+        :isCreate="false"
+        :selectedLighthouse="lighthouseNameFull"
+        @connect="
+          lighthouse => {
+            $router.push({ path: `/sensors/${lighthouse.split('.')[0]}` });
+            $router.go();
+          }
+        "
       />
+      <Sensors v-if="lighthouse" :lighthouse="lighthouse" />
     </section>
   </Page>
 </template>
@@ -22,34 +25,26 @@
 <script>
 import Page from "../components/Page";
 import Sensors from "../components/sensors/Sensors";
-
-const namesModels = {
-  Qmd6bn2JGW26hSx7g5gVCmfgB7uigRPrhAukJn77ee3bMM: "Теплица"
-};
+import SelectLighthouse from "../components/lighthouse/SelectLighthouse";
 
 export default {
-  props: ["lighthouse", "model", "agent", "result"],
+  props: ["lighthouse"],
   components: {
     Page,
-    Sensors
+    Sensors,
+    SelectLighthouse
+  },
+  computed: {
+    lighthouseNameFull: function() {
+      return this.lighthouse
+        ? this.$robonomics.ens.getUrl(this.lighthouse, "lighthouse")
+        : "";
+    }
   },
   data() {
     return {
-      ready: false,
-      isRequest: false,
-      log: [],
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}`
+      ready: false
     };
-  },
-  computed: {
-    miniAddrAgent: function() {
-      return this.agent.slice(0, 6) + "..." + this.agent.slice(-4);
-    },
-    nameModel: function() {
-      return Object.prototype.hasOwnProperty.call(namesModels, this.model)
-        ? namesModels[this.model]
-        : "unknown";
-    }
   }
 };
 </script>

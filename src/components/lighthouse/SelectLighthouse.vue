@@ -34,12 +34,12 @@
       </p>
       <RButton green disabled v-if="create">Create and connect</RButton>
       <RButton green @click.native="sendCreateLighthouse" v-else>Create and connect</RButton>
-      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
+      <a href="javascript:;" class="m-l-20" @click="reset">Cancel</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
       <RButton @click.native="connect">Connect</RButton>
-      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
+      <a href="javascript:;" class="m-l-20" @click="reset">Cancel</a>
     </div>
   </div>
 </template>
@@ -85,9 +85,9 @@ export default {
     slim() {
       slim = new SlimSelect({
         select: "#select-lighthouseConnect",
-        data: [{ placeholder: true, text: "Choose lighthouse", value: "" }],
+        data: [{ placeholder: true, text: "Choose lighthouse" }],
         onChange: info => {
-          this.createForm = false;
+          this.old = this.createForm = false;
           this.isBtnConnect = false;
           if (info.class == "type-new") {
             this.createForm = true;
@@ -99,7 +99,7 @@ export default {
       });
     },
     reset() {
-      slim.set("");
+      slim.set(this.selectedLighthouse);
       this.createForm = false;
       this.isBtnConnect = false;
     },
@@ -109,7 +109,12 @@ export default {
           // this.lighthouse = lighthouses[0].name;
           // this.lighthouseAddr = lighthouses[0].addr;
           this.selectLighthouse(lighthouses[0].name);
-          const navData = [{ placeholder: true, text: "Choose lighthouse" }];
+          const navData = [
+            {
+              placeholder: true,
+              text: "Choose lighthouse"
+            }
+          ];
           lighthouses.forEach(item => {
             this.lighthouses.push(item);
             navData.push({
