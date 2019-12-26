@@ -35,9 +35,14 @@
             >{{ $t("sensor.clear") }}</RButton>
           </span>
         </template>
-        <RCard v-for="(item, key) in log.slice().reverse()" :key="key">
-          <Message :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
-        </RCard>
+
+        <Pagination :listData="log.slice().reverse()">
+          <template v-slot:default="props">
+            <RCard>
+              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+            </RCard>
+          </template>
+        </Pagination>
       </RWindow>
     </div>
   </div>
@@ -45,6 +50,7 @@
 
 <script>
 import Vue from "vue";
+import Pagination from "./Pagination";
 import Message from "./MessageFree";
 import history from "./historyStore";
 import { parseResult, loadScript } from "./utils";
@@ -53,6 +59,7 @@ import config from "~config";
 export default {
   props: ["lighthouse", "model", "agent"],
   components: {
+    Pagination,
     Message
   },
   data() {
@@ -97,9 +104,20 @@ export default {
         console.log("open", msg);
         // const sender = msg.recovery();
         const sender = this.$robonomics.account.recoveryMessage(msg);
+
+        if (msg.liability === "0x0000000000000000000000000000000000000000") {
+          const item = {
+            status: 1,
+            time: new Date().toLocaleString()
+          };
+          this.log.push(item);
+        }
+
         if (
           this.log.length > 0 &&
-          sender.toLowerCase() === this.agent.toLowerCase()
+          sender.toLowerCase() === this.agent.toLowerCase() &&
+          (msg.liability === "0x0000000000000000000000000000000000000000" ||
+            msg.liability === this.$robonomics.account.address)
         ) {
           const index = this.log.findIndex(item => item.status === 1);
           Vue.set(this.log, index, {

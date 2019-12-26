@@ -41,9 +41,14 @@
             >{{ $t("sensor.clear") }}</RButton>
           </span>
         </template>
-        <RCard v-for="(item, key) in log.slice().reverse()" :key="key">
-          <Message :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
-        </RCard>
+
+        <Pagination :listData="log.slice().reverse()">
+          <template v-slot:default="props">
+            <RCard>
+              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+            </RCard>
+          </template>
+        </Pagination>
       </RWindow>
     </div>
   </div>
@@ -53,6 +58,7 @@
 import Vue from "vue";
 import { Liability } from "robonomics-js";
 import Approve from "@/components/approve/Main";
+import Pagination from "./Pagination";
 import Message from "./MessageCost";
 import history from "./historyStore";
 import { parseResult, loadScript } from "./utils";
@@ -61,6 +67,7 @@ import config from "~config";
 export default {
   props: ["lighthouse", "model", "agent", "token", "cost"],
   components: {
+    Pagination,
     Message,
     Approve
   },
