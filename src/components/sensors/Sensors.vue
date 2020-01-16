@@ -12,10 +12,10 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>model</th>
-              <th>sender</th>
-              <th>token / cost</th>
-              <th>view</th>
+              <th>{{ $t("sensors.table.model") }}</th>
+              <th>{{ $t("sensors.table.sender") }}</th>
+              <th>{{ $t("sensors.table.token") }}</th>
+              <th>{{ $t("sensors.table.view") }}</th>
             </tr>
           </thead>
           <tbody>
@@ -34,18 +34,18 @@
                   <b>{{item.cost}}</b>
                 </template>
                 <template v-else>
-                  <b>free</b>
+                  <b>{{ $t("sensors.table.free") }}</b>
                 </template>
               </td>
               <td>
                 <router-link
                   v-if="item.cost > 0"
                   :to="{name:'sensor-cost',params:{lighthouse: lighthouse, model: item.model, agent: item.sender, token: item.token, cost: item.cost }}"
-                >view</router-link>
+                >{{ $t("sensors.table.view") }}</router-link>
                 <router-link
                   v-else
                   :to="{name:'sensor',params:{lighthouse: lighthouse, model: item.model, agent: item.sender }}"
-                >view</router-link>
+                >{{ $t("sensors.table.view") }}</router-link>
               </td>
             </tr>
           </tbody>

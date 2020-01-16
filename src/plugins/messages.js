@@ -20,6 +20,7 @@ export default {
 
     waiting: "Waiting for IPFS data",
     no_data: "No data available",
+    lighthouse_title: "Robonomics Telemetry",
     lighthouse_h: "lighthouse",
     provider: "provider",
     peers: "peers",
@@ -70,6 +71,13 @@ export default {
       requests: "Your requests",
       requestAt: "Request at",
       result: "Result",
+      table: {
+        model: "model",
+        sender: "sender",
+        token: "token / cost",
+        view: "view",
+        free: "free"
+      },
       free: {
         status1: "Waiting for a response from the agent",
         status21: "Received response from agent",
@@ -84,9 +92,72 @@ export default {
         status31: "Contract finalize",
         status32: "Looking data in IPFS network",
         status41: "Data found in IPFS",
-        status42: "JSON received"
+        status42: "JSON received",
+        address: "Contract address",
+        hash: "IPFS data hash"
       },
       clear: "clear"
+    },
+    lighthouse: {
+      title: "Lighthouses",
+      details: {
+        title: "Lighthouse details",
+        contract: "Lighthouse contract address",
+        status: "Lighthouse status",
+        sleeping: "Sleeping",
+        active: "Active",
+        balance: "Balance",
+        stake: "Minimal stake per quote"
+      },
+      market: {
+        error: "Check if data correct, please.",
+        broadcast: "Broadcast signal to the network",
+        messages: "Messages from the Robonomics.network"
+      },
+      providers: {
+        title: "Providers",
+        address: "Address",
+        quota: "Quota",
+        balance: "Balance",
+        status: "Status",
+        sleeping: "Sleeping",
+        last: "Provider sent tx {blocks} blocks ago"
+      },
+      trade: {
+        title: "Send message to the Robonomics.network",
+        correct: "Check if data correct, please.",
+        more: "More options"
+      },
+      withdraw: {
+        from: "Withdraw from lighthouse",
+        text: "Withdraw"
+      },
+      approve: {
+        value: "Available for work at the lighthouse",
+        count: "Available for work",
+        quotes: "Approve quotes",
+        approved: "Approved",
+        refill: "Refill"
+      },
+      select: {
+        new: {
+          new: "New lighthouse",
+          desc: "create new lighthouse",
+          name: "Name of the lighthouse",
+          stake: "Minimal stake to get one quota (XRT)",
+          blocks: "Silence timeout for provider in blocks",
+          create: "Create and connect"
+        },
+        error: {
+          stake: "Error: Minimal stake value 1",
+          timeout: "Error: Minimal timeout value 1",
+          name: "Error: Require name lighthouse",
+          exist: "Error: Exist name lighthouse"
+        },
+        connect: "Connect",
+        cancel: "Cancel",
+        choose: "Choose lighthouse"
+      }
     }
   },
   ru: {
@@ -110,6 +181,7 @@ export default {
 
     waiting: "Ожидание данных IPFS",
     no_data: "Данные отсутствуют",
+    lighthouse_title: "Robonomics Телеметрия",
     lighthouse_h: "маяк",
     provider: "провайдер",
     peers: "пиры",
@@ -160,6 +232,13 @@ export default {
       requests: "Ваши запросы",
       requestAt: "Запрос от",
       result: "Результат",
+      table: {
+        model: "модель",
+        sender: "отправитель",
+        token: "токен / стоимость",
+        view: "просмотр",
+        free: "свободно"
+      },
       free: {
         status1: "Ждём ответа от агента",
         status21: "Получен ответ от агента",
@@ -174,9 +253,72 @@ export default {
         status31: "Контракта исполнен",
         status32: "Запрашиваем данные из IPFS",
         status41: "Получен ответ из IPFS",
-        status42: "JSON данные получены"
+        status42: "JSON данные получены",
+        address: "Адрес контракта",
+        hash: "IPFS data hash"
       },
       clear: "очистить"
+    },
+    lighthouse: {
+      title: "Маяки",
+      details: {
+        title: "О маяке",
+        contract: "Адрес контракта маяка",
+        status: "Статус маяка",
+        sleeping: "Спит",
+        active: "Активен",
+        balance: "Баланс",
+        stake: "Минимальная ставка за квоту"
+      },
+      market: {
+        error: "Проверьте правильность данных, пожалуйста.",
+        broadcast: "Трансляция сигнала в сеть",
+        messages: "Сообщения из сети Robonomics.network"
+      },
+      providers: {
+        title: "Провайдеры",
+        address: "Адрес",
+        quota: "Квота",
+        balance: "Баланс",
+        status: "Статус",
+        sleeping: "Спит",
+        last: "Провайдер отправил tx {blocks} блоков назад"
+      },
+      trade: {
+        title: "Отправить сообщение в сеть Robonomics.network",
+        correct: "Проверьте правильность данных, пожалуйста.",
+        more: "Больше опций"
+      },
+      withdraw: {
+        from: "Выйти из маяка",
+        text: "Выйти"
+      },
+      approve: {
+        value: "Доступно для работы на маяке",
+        count: "Доступно для работы",
+        quotes: "Одобрить квоты",
+        approved: "Одобренный",
+        refill: "Вывести"
+      },
+      select: {
+        new: {
+          new: "Новый маяк",
+          desc: "создать новый маяк",
+          name: "Наименование маяка",
+          stake: "Минимальная ставка для получения одной квоты (XRT)",
+          blocks: "Тайм-аут для провайдера в блоках",
+          create: "Создать и подключить"
+        },
+        error: {
+          stake: "Ошибка: минимальное значение ставки 1",
+          timeout: "Ошибка: минимальное значение тайм-аута 1",
+          name: "Ошибка: требуется название маяка",
+          exist: "Ошибка: существует имя маяка"
+        },
+        connect: "Подключиться",
+        cancel: "Отмена",
+        choose: "Выберите маяк"
+      }
     }
   }
 };

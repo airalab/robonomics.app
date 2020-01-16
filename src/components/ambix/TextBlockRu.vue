@@ -3,7 +3,7 @@
     <h1>{{ $t("header") }}</h1>
     <RCard class="window" id="window-developletter">
       <div class="window-head window-head--violet">
-        <span>Письмо разработчиков&#8217; letter</span>
+        <span>Письмо разработчиков</span>
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
@@ -13,13 +13,15 @@
         <p>
           С твоей помощью мы проделали путь от прототипа программного
           обеспечения
-          <a href="http://aira.life" target="_blank">Aira</a> до
-          <a href="http://robonomics.network" target="_blank"
-            >платформы Робономика</a
-          >. Два года работы, более 50 релизов в
-          <a href="https://github.com/airalab" target="_blank"
-            >6 репозиториях на GitHub</a
-          >, тысячи коммитов целой группы разработчиков. Твоя поддержка привела
+          <a
+            href="http://aira.life"
+            target="_blank"
+          >Aira</a> до
+          <a href="http://robonomics.network" target="_blank">платформы Робономика</a>. Два года работы, более 50 релизов в
+          <a
+            href="https://github.com/airalab"
+            target="_blank"
+          >6 репозиториях на GitHub</a>, тысячи коммитов целой группы разработчиков. Твоя поддержка привела
           к появлению новой технологии, которая в дальнейшем призвана подчинить
           роботов децентрализованному компьютеру Ethereum. Ты помог этому.
           Спасибо!
@@ -51,9 +53,7 @@
                 разработчиков, отправив транзакцию к перегонному кубу Aira ID →
                 XRT
               </td>
-              <td data-th="Aira → Aira ID → XRT">
-                Обратно перегнать токены XRT в Aira ID не получится
-              </td>
+              <td data-th="Aira → Aira ID → XRT">Обратно перегнать токены XRT в Aira ID не получится</td>
             </tr>
             <tr>
               <td data-th="Aira → Aira ID">
@@ -66,9 +66,9 @@
               </td>
             </tr>
             <tr>
-              <td data-th="Aira → Aira ID">
-                Aira ID нельзя использовать, чтобы стать провайдером Робономики
-              </td>
+              <td
+                data-th="Aira → Aira ID"
+              >Aira ID нельзя использовать, чтобы стать провайдером Робономики</td>
               <td data-th="Aira → Aira ID → XRT">
                 XRT может использоваться для обеспечения квоты на маяке
                 Робономики

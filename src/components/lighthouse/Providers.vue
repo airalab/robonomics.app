@@ -1,7 +1,7 @@
 <template>
   <RCard class="window" id="window-lighthouse-providers">
     <div class="window-head">
-      <span>Providers</span>
+      <span>{{ $t("lighthouse.providers.title") }}</span>
       <a class="window-head-toggle" href="#">–</a>
     </div>
     <div class="window-content">
@@ -9,10 +9,10 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Address</th>
-            <th>Quota</th>
-            <th>Balance</th>
-            <th>Status</th>
+            <th>{{ $t("lighthouse.providers.address") }}</th>
+            <th>{{ $t("lighthouse.providers.quota") }}</th>
+            <th>{{ $t("lighthouse.providers.balance") }}</th>
+            <th>{{ $t("lighthouse.providers.status") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -22,9 +22,7 @@
               <RLinkExplorer :text="member.address" />
             </td>
             <td>
-              <template v-if="member.i == marker"
-                >{{ quota }} / {{ member.quota }}</template
-              >
+              <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
               <template v-else>{{ member.quota }}</template>
             </td>
             <td>{{ member.balance }} ETH</td>
@@ -34,12 +32,10 @@
                   v-if="
                     quota > 0 && timeoutInBlocks < currentBlock - keepAliveBlock
                   "
-                  >Sleeping</span
-                >
-                <span v-else-if="member.last !== null"
-                  >Provider sent tx {{ currentBlock - member.last }} blocks
-                  ago</span
-                >
+                >{{ $t("lighthouse.providers.sleeping") }}</span>
+                <span
+                  v-else-if="member.last !== null"
+                >{{ $t("lighthouse.providers.last", { blocks: currentBlock - member.last }) }}</span>
               </template>
             </td>
           </tr>

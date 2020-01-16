@@ -4,7 +4,7 @@
       <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">Check if data correct, please.</div>
+        <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
         <Approve
           v-if="cost > 0 && token"
           :address="token"
@@ -18,14 +18,15 @@
           :disabled="watch"
           green
         >
-          <div class="loader-ring" v-if="watch"></div>&nbsp;Broadcast signal to the network
+          <div class="loader-ring" v-if="watch"></div>
+          &nbsp;{{ $t("lighthouse.market.broadcast") }}
         </RButton>
       </section>
     </RCard>
 
     <RCard class="window" id="window-lighthouse-messages">
       <div class="window-head">
-        <span>Messages from the Robonomics.network</span>
+        <span>{{ $t("lighthouse.market.messages") }}</span>
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">

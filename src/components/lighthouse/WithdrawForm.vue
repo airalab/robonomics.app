@@ -1,6 +1,6 @@
 <template>
   <p>
-    <span class="t-sm">Withdraw from lighthouse:</span>
+    <span class="t-sm">{{ $t("lighthouse.withdraw.from") }}:</span>
     <br />
     <input
       class="input-size--sm m-r-10 input-sm"
@@ -16,8 +16,7 @@
       @click.native="sendWithdraw"
       :disabled="withdraw.disabled"
       class="btn-blue input-sm"
-      >{{ withdraw.text }}</RButton
-    >
+    >{{ withdraw.text }}</RButton>
   </p>
 </template>
 
@@ -30,7 +29,7 @@ export default {
       count: 0,
       withdraw: {
         disabled: true,
-        text: "Withdraw"
+        text: this.$t("lighthouse.withdraw.text")
       }
     };
   },
@@ -81,7 +80,7 @@ export default {
         })
         .then(() => this.fetchData())
         .catch(() => {
-          this.withdraw.text = "Withdraw";
+          this.withdraw.text = this.$t("lighthouse.withdraw.text");
           this.withdraw.disabled = false;
         });
     }

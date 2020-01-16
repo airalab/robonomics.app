@@ -11,7 +11,7 @@
       <p>
         <b class="align-vertical">1. {{ $t("sensor.cost.status21") }}</b>
         <br />
-        <span>Адрес контракта:</span>
+        <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
         <a
@@ -30,7 +30,7 @@
       <p>
         <b class="align-vertical">1. {{ $t("sensor.cost.status21") }}</b>
         <br />
-        <span>Адрес контракта:</span>
+        <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
         <a
@@ -43,7 +43,7 @@
       <p>
         <b class="align-vertical">2. {{ $t("sensor.cost.status31") }}</b>
         <br />
-        <span>IPFS data hash:</span>
+        <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
         <a
@@ -71,7 +71,7 @@
       <p>
         <b class="align-vertical">1. {{ $t("sensor.cost.status21") }}</b>
         <br />
-        <span>Адрес контракта:</span>
+        <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
         <a
@@ -84,7 +84,7 @@
       <p>
         <b class="align-vertical">2. {{ $t("sensor.cost.status41") }}</b>
         <br />
-        <span>IPFS data hash:</span>
+        <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
         <a

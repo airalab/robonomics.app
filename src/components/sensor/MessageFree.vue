@@ -11,7 +11,7 @@
       <p>
         <b class="align-vertical">1. {{ $t("sensor.free.status21") }}</b>
         <br />
-        <span>IPFS data hash:</span>
+        <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
         <a
@@ -39,7 +39,7 @@
       <p>
         <b class="align-vertical">1. {{ $t("sensor.free.status31") }}</b>
         <br />
-        <span>IPFS data hash:</span>
+        <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
         <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
         <a

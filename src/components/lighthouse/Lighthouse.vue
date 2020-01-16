@@ -3,7 +3,7 @@
     <h2 class="breadcrumbs m-b-0">
       <router-link to="/lighthouse">
         <span class="i-lighthouse"></span>
-        <span>Lighthouses</span>
+        <span>{{ $t("lighthouse.title") }}</span>
       </router-link>
       <i>/</i>
       <span>{{ this.$route.params.lighthouse }}</span>

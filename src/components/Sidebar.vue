@@ -42,7 +42,7 @@
           </a>
           <a href="https://robonomics.network/" target="_blank">
             <span class="i-cursor align-vertical"></span>
-            <span class="align-vertical">robonomomics.network</span>
+            <span class="align-vertical">robonomics.network</span>
           </a>
           <a href="https://aira.life/" target="_blank">
             <span class="i-cursor align-vertical"></span>

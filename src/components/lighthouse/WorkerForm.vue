@@ -1,13 +1,13 @@
 <template>
   <fragment>
     <p>
-      <span class="t-sm">Available for work at the lighthouse:</span>
+      <span class="t-sm">{{ $t("lighthouse.approve.value") }}:</span>
       <br />
       <b>{{ approveWorker.value | fromWei(9, "XRT") }}</b>
     </p>
     <hr />
     <p>
-      <span class="t-sm">Available for work:</span>
+      <span class="t-sm">{{ $t("lighthouse.approve.count") }}:</span>
       <br />
       <input
         class="input-size--sm m-r-10 input-sm"
@@ -24,15 +24,13 @@
         v-if="approveWorker.show"
         :disabled="approveWorker.disabled"
         class="btn-blue input-sm"
-        >{{ approveWorker.text }}</RButton
-      >
+      >{{ approveWorker.text }}</RButton>
       <RButton
         @click.native="sendRefill"
         v-if="refill.show"
         :disabled="refill.disabled"
         class="btn-blue input-sm"
-        >{{ refill.text }}</RButton
-      >
+      >{{ refill.text }}</RButton>
     </p>
   </fragment>
 </template>
@@ -49,12 +47,12 @@ export default {
         value: 0,
         show: true,
         disabled: true,
-        text: "Approve quotes"
+        text: this.$t("lighthouse.approve.quotes")
       },
       refill: {
         show: false,
         disabled: false,
-        text: "Refill"
+        text: this.$t("lighthouse.approve.refill")
       }
     };
   },
@@ -70,7 +68,7 @@ export default {
         this.refill.show = false;
         this.approveWorker.show = true;
         this.approveWorker.disabled = false;
-        this.approveWorker.text = "Approve quotes";
+        this.approveWorker.text = this.$t("lighthouse.approve.quotes");
       }
     },
     fetchData() {
@@ -101,25 +99,29 @@ export default {
                   if (allowance >= this.minimalStake * this.count) {
                     this.approveWorker.show = false;
                     this.approveWorker.disabled = true;
-                    this.approveWorker.text = "Approved";
+                    this.approveWorker.text = this.$t(
+                      "lighthouse.approve.approved"
+                    );
 
                     this.refill.show = true;
                     this.refill.disabled = false;
-                    this.refill.text = "Refill";
+                    this.refill.text = this.$t("lighthouse.approve.refill");
                   } else {
                     this.approveWorker.show = true;
                     this.approveWorker.disabled = false;
-                    this.approveWorker.text = "Approve quotes";
+                    this.approveWorker.text = this.$t(
+                      "lighthouse.approve.quotes"
+                    );
 
                     this.refill.show = false;
                     this.refill.disabled = true;
-                    this.refill.text = "Refill";
+                    this.refill.text = this.$t("lighthouse.approve.refill");
                   }
                 })
             );
           } else {
             this.approveWorker.disabled = true;
-            this.approveWorker.text = "Approve quotes";
+            this.approveWorker.text = this.$t("lighthouse.approve.quotes");
           }
           return Promise.all(calls);
         });
@@ -136,12 +138,12 @@ export default {
           from: this.$robonomics.account.address
         })
         .then(() => {
-          this.approveWorker.text = "Approved";
+          this.approveWorker.text = this.$t("lighthouse.approve.approved");
           this.approveWorker.false = true;
           return this.fetchData();
         })
         .catch(() => {
-          this.approveWorker.text = "Approve quotes";
+          this.approveWorker.text = this.$t("lighthouse.approve.quotes");
           this.approveWorker.false = true;
         });
     },
@@ -160,7 +162,7 @@ export default {
         })
         .then(() => this.fetchData())
         .catch(() => {
-          this.refill.text = "Refill";
+          this.refill.text = this.$t("lighthouse.approve.refill");
           this.refill.disabled = false;
         });
     }
