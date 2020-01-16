@@ -45,15 +45,22 @@ let config = {
       "swarm.peers",
       "swarm.connect"
     ]
-  }
+  },
+  statusPeers: [
+    "QmdfQmbmXt6sqjZyowxPUsmvBsgSGQjm4VXrV7WGy62dv8",
+    "QmPTFt7GJ2MfDuVYwJJTULr6EnsQtGVp8ahYn9NSyoxmd9",
+    "QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw"
+    // "QmZ7rFH5NodLFJCg18Ji6ur3wC3o5roFEeoQMffo3poXo6"
+  ]
 };
 
-export function setConfig({ ipfs, robonomics }) {
+export function setConfig({ ipfs, robonomics, statusPeers }) {
   config = {
     ipfs: {
       ...config.ipfs,
       ...ipfs
     },
+    statusPeers: statusPeers || config.statusPeers,
     robonomics:
       robonomics ||
       function() {

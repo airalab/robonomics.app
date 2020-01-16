@@ -3,7 +3,7 @@
     <select id="select-lighthouseConnect"></select>
     <div v-if="createForm" class="m-t-5">
       <p>
-        <label class="t-sm">Name of the lighthouse</label>
+        <label class="t-sm">{{ $t("lighthouse.select.new.name") }}</label>
         <br />
         <input
           type="text"
@@ -13,7 +13,7 @@
         />
       </p>
       <p>
-        <label class="t-sm">Minimal stake to get one quota (XRT)</label>
+        <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
         <br />
         <input
           type="number"
@@ -23,7 +23,7 @@
         />
       </p>
       <p>
-        <label class="t-sm">Silence timeout for provider in blocks</label>
+        <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
         <br />
         <input
           type="number"
@@ -32,14 +32,18 @@
           class="input-size--sm"
         />
       </p>
-      <RButton green disabled v-if="create">Create and connect</RButton>
-      <RButton green @click.native="sendCreateLighthouse" v-else>Create and connect</RButton>
-      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
+      <RButton green disabled v-if="create">{{ $t("lighthouse.select.new.create") }}</RButton>
+      <RButton
+        green
+        @click.native="sendCreateLighthouse"
+        v-else
+      >{{ $t("lighthouse.select.new.create") }}</RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">{{ $t("lighthouse.select.cancel") }}</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
-      <RButton @click.native="connect">Connect</RButton>
-      <a href="javascript:;" class="m-l-20" @click.native="reset">Cancel</a>
+      <RButton @click.native="connect">{{ $t("lighthouse.select.connect") }}</RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">{{ $t("lighthouse.select.cancel") }}</a>
     </div>
   </div>
 </template>
@@ -85,9 +89,11 @@ export default {
     slim() {
       slim = new SlimSelect({
         select: "#select-lighthouseConnect",
-        data: [{ placeholder: true, text: "Choose lighthouse", value: "" }],
+        data: [
+          { placeholder: true, text: this.$t("lighthouse.select.choose") }
+        ],
         onChange: info => {
-          this.createForm = false;
+          this.old = this.createForm = false;
           this.isBtnConnect = false;
           if (info.class == "type-new") {
             this.createForm = true;
@@ -99,7 +105,7 @@ export default {
       });
     },
     reset() {
-      slim.set("");
+      slim.set(this.selectedLighthouse);
       this.createForm = false;
       this.isBtnConnect = false;
     },
@@ -109,7 +115,12 @@ export default {
           // this.lighthouse = lighthouses[0].name;
           // this.lighthouseAddr = lighthouses[0].addr;
           this.selectLighthouse(lighthouses[0].name);
-          const navData = [{ placeholder: true, text: "Choose lighthouse" }];
+          const navData = [
+            {
+              placeholder: true,
+              text: this.$t("lighthouse.select.choose")
+            }
+          ];
           lighthouses.forEach(item => {
             this.lighthouses.push(item);
             navData.push({
@@ -126,11 +137,11 @@ export default {
           });
           if (this.isCreate) {
             navData.push({
-              label: "New lighthouse",
+              label: this.$t("lighthouse.select.new.new"),
               options: [
                 {
-                  innerHTML: "create new lighthouse",
-                  text: "create new lighthouse",
+                  innerHTML: this.$t("lighthouse.select.new.desc"),
+                  text: this.$t("lighthouse.select.new.desc"),
                   value: "new",
                   class: "type-new"
                 }
@@ -191,11 +202,11 @@ export default {
     },
     async sendCreateLighthouse() {
       if (!(this.form.minimalStake > 0)) {
-        this.createMsg = "Error: Minimal stake value 1";
+        this.createMsg = this.$t("lighthouse.select.error.stake");
         return;
       }
       if (!(this.form.timeoutInBlocks > 0)) {
-        this.createMsg = "Error: Minimal timeout value 1";
+        this.createMsg = this.$t("lighthouse.select.error.timeout");
         return;
       }
       const existLighthouseAddr = await this.$robonomics.ens.addrLighthouse(
@@ -203,11 +214,11 @@ export default {
       );
       this.createMsg = "";
       if (this.form.name === "") {
-        this.createMsg = "Error: Require name lighthouse";
+        this.createMsg = this.$t("lighthouse.select.error.name");
       } else if (
         existLighthouseAddr !== "0x0000000000000000000000000000000000000000"
       ) {
-        this.createMsg = "Error: Exist name lighthouse";
+        this.createMsg = this.$t("lighthouse.select.error.exist");
       } else {
         this.create = true;
         const watcher = this.$robonomics.factory.onLighthouse(

@@ -1,6 +1,6 @@
 <template>
   <RCard>
-    <RCardTitle>Robonomics Telemetry</RCardTitle>
+    <RCardTitle>{{ $t("lighthouse_title") }}</RCardTitle>
     <table class="container-full table-hover">
       <thead>
         <tr>
@@ -14,22 +14,21 @@
         </tr>
       </thead>
       <tbody>
-        <td v-if="Object.values(nodes).length === 0" colspan="7">
-          {{ $t("no_data") }}
-        </td>
+        <td v-if="Object.values(nodes).length === 0" colspan="7">{{ $t("no_data") }}</td>
         <tr v-else v-for="item in Object.values(nodes)" :key="item.id">
           <a>
-            <a :href="item.id | urlIpfs('ipns')" target="_blank">{{
+            <a :href="item.id | urlIpfs('ipns')" target="_blank">
+              {{
               item.id
-            }}</a>
+              }}
+            </a>
           </a>
           <td>
             <a
               v-if="item.address"
               :href="item.address | urlExplorer()"
               target="_blank"
-              >{{ item.address }}</a
-            >
+            >{{ item.address }}</a>
             <span v-else>-</span>
           </td>
           <td>

@@ -1,203 +1,96 @@
 <template>
   <div>
     <div v-if="ready">
-      <h4>
-        {{ $t("sensors.statusAgent") }}:
-        <template v-if="log.length === 0">
-          {{ $t("sensors.notStatusAgent") }}
-        </template>
-        <template v-else>
-          {{ $t("sensors.yesStatusAgent") }} {{ log[log.length - 1].time }}
-        </template>
-      </h4>
       <section>
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green>{{
-            $t("sensors.requested")
-          }}</RButton>
-          <RButton v-else @click.native="sendMsgDemand" full>{{
-            $t("sensors.isRequest")
-          }}</RButton>
+          <RButton v-if="isRequest" full green>{{ $t("sensors.requested") }}</RButton>
+          <RButton v-else @click.native="sendMsgDemand" full>{{ $t("sensors.isRequest") }}</RButton>
         </div>
       </section>
-      <section
-        v-if="log.length > 0"
-        class="section-light window"
-        id="window-sensornetwork-requests"
-      >
-        <div class="window-head">
-          <span>{{ $t("sensors.requests") }}</span>
-          <a class="window-head-toggle" href="#">–</a>
-        </div>
-        <div class="window-content">
-          <section
-            class="section-light"
-            v-for="(item, key) in log.slice().reverse()"
-            :key="key"
-          >
-            <Message
-              :item="item"
-              :lighthouse="lighthouse"
-              :model="model"
-              :agent="agent"
-            />
-          </section>
-        </div>
-      </section>
+      <RCard v-if="log.length > 0">
+        <table class="container-full table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ $t("sensors.table.model") }}</th>
+              <th>{{ $t("sensors.table.sender") }}</th>
+              <th>{{ $t("sensors.table.token") }}</th>
+              <th>{{ $t("sensors.table.view") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, key) in log" :key="key">
+              <td>{{key+1}}</td>
+              <td>
+                <b>{{getTypeByModel(item.model)}}</b>&nbsp;
+                <RLinkExplorer type="ipfs" :text="item.model" />
+              </td>
+              <td>
+                <RLinkExplorer :text="item.sender" />
+              </td>
+              <td>
+                <template v-if="item.cost > 0">
+                  <RLinkExplorer :text="item.token" category="token" />/
+                  <b>{{item.cost}}</b>
+                </template>
+                <template v-else>
+                  <b>{{ $t("sensors.table.free") }}</b>
+                </template>
+              </td>
+              <td>
+                <router-link
+                  v-if="item.cost > 0"
+                  :to="{name:'sensor-cost',params:{lighthouse: lighthouse, model: item.model, agent: item.sender, token: item.token, cost: item.cost }}"
+                >{{ $t("sensors.table.view") }}</router-link>
+                <router-link
+                  v-else
+                  :to="{name:'sensor',params:{lighthouse: lighthouse, model: item.model, agent: item.sender }}"
+                >{{ $t("sensors.table.view") }}</router-link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </RCard>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import axios from "axios";
-import { cat as ipfsCat } from "../../RComponents/tools/ipfs";
-import rosBag from "../../utils/rosBag";
-import Message from "./Message";
-import history from "./historyStore";
-import config from "../../config";
-
-const OBJECTIVE = "QmVAFgUxBitKqtV2sjaYcHkKfcAPVy3GswhaE5n5bcgLkf";
-function loadScript(src) {
-  return new Promise(function(resolve, reject) {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.body.appendChild(script);
-  });
-}
+import config from "~config";
 
 export default {
-  props: ["lighthouse", "model", "agent", "result"],
-  components: {
-    Message
-  },
+  props: ["lighthouse"],
   data() {
     return {
       ready: false,
       isRequest: false,
-      log: [],
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}`
+      log: []
     };
   },
   mounted() {
-    loadScript("https://platform.twitter.com/widgets.js");
-
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
-
-      Vue.nextTick(function() {
-        window.windowSlide();
-      });
-
-      if (this.result) {
-        this.log.push({
-          status: 2,
-          resultHash: this.result
-        });
-        const index = this.log.length - 1;
-        this.parseResult(this.result).then(result => {
-          Vue.set(this.log, index, {
-            ...this.log[index],
-            status: 3,
-            result: result
-          });
-        });
-      } else {
-        const data = history.getData(this.storeKey);
-        this.log = data;
-        data.forEach((item, index) => {
-          this.parseResult(item.resultHash).then(result => {
-            Vue.set(this.log, index, {
-              ...this.log[index],
-              status: 3,
-              result: result
-            });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
-                status: 3,
-                result: result
-              },
-              index
-            );
-          });
-        });
-      }
-
-      this.$robonomics.onDemand(this.model, msg => {
+      this.$robonomics.onDemand(config.DEFAULT_MODEL, msg => {
         console.log("demand", msg);
       });
-      this.$robonomics.onResult(msg => {
-        console.log("open", msg);
-        // const sender = msg.recovery();
-        const sender = this.$robonomics.account.recoveryMessage(msg);
-        if (
-          this.log.length > 0 &&
-          sender.toLowerCase() === this.agent.toLowerCase()
-        ) {
-          const index = this.log.findIndex(item => item.status === 1);
-          Vue.set(this.log, index, {
-            ...this.log[index],
-            status: 2,
-            resultHash: msg.result
-          });
-          history.addItem(this.storeKey, {
-            ...this.log[index],
-            status: 2,
-            resultHash: msg.result
-          });
-
-          this.parseResult(msg.result).then(result => {
-            Vue.set(this.log, index, {
-              ...this.log[index],
-              status: 3,
-              result: result
-            });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
-                status: 3,
-                result: result
-              },
-              index
-            );
-          });
+      this.$robonomics.onOffer(null, msg => {
+        console.log("offer", msg);
+        if (hasOwnProperty.call(config.CATEGORY_MODELS, msg.model)) {
+          this.log.push(msg.toObject());
         }
       });
     });
   },
   methods: {
-    parseResult(result) {
-      let message = {};
-      axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
-        console.log("result ipfs hash resolved");
-      });
-      return ipfsCat(result).then(r => {
-        return rosBag(
-          new Blob([r]),
-          bag => {
-            try {
-              message = JSON.parse(bag.message.data);
-            } catch (error) {
-              console.log(error);
-            }
-          },
-          { topics: ["/data"] }
-        ).then(() => {
-          return message;
-        });
-      });
+    getTypeByModel(model) {
+      return config.CATEGORY_MODELS[model];
     },
     sendMsgDemand() {
       this.isRequest = true;
       this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
         const demand = {
-          model: this.model,
-          objective: OBJECTIVE,
+          model: config.DEFAULT_MODEL,
+          objective: config.DEFAULT_OBJECTIVE,
           token: this.$robonomics.xrt.address,
           cost: 0,
           lighthouse: this.$robonomics.lighthouse.address,
@@ -208,12 +101,6 @@ export default {
         this.$robonomics
           .sendDemand(demand, false, () => {
             this.isRequest = false;
-            const item = {
-              status: 1,
-              time: new Date().toLocaleString()
-            };
-            this.log.push(item);
-            // history.addItem(this.storeKey, item);
           })
           .catch(e => {
             this.isRequest = false;

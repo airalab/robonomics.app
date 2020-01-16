@@ -1,31 +1,33 @@
 <template>
   <RCard class="window" id="window-developletter">
     <div class="window-head">
-      <span>Lighthouse details</span>
+      <span>{{ $t("lighthouse.details.title") }}</span>
       <!-- a.window-head-toggle(href="#") –-->
     </div>
     <div class="window-content">
       <p>
-        <span class="t-sm">Lighthouse contract address:</span>
+        <span class="t-sm">{{ $t("lighthouse.details.contract") }}:</span>
         <br />
         <RLinkExplorer :text="lighthouse" />
       </p>
       <hr />
       <p>
-        <span class="t-sm">Lighthouse status:</span>
+        <span class="t-sm">{{ $t("lighthouse.details.status") }}:</span>
         <br />
-        <b v-if="timeoutInBlocks < currentBlock - keepAliveBlock">Sleeping</b>
-        <b v-else>Active</b>
+        <b
+          v-if="timeoutInBlocks < currentBlock - keepAliveBlock"
+        >{{ $t("lighthouse.details.sleeping") }}</b>
+        <b v-else>{{ $t("lighthouse.details.active") }}</b>
       </p>
       <hr />
       <p>
-        <span class="t-sm">Balance:</span>
+        <span class="t-sm">{{ $t("lighthouse.details.balance") }}:</span>
         <br />
         <b>{{ lighthouseBalance | fromWei(9, "XRT") }}</b>
       </p>
       <hr />
       <p>
-        <span class="t-sm">Minimal stake per quote:</span>
+        <span class="t-sm">{{ $t("lighthouse.details.stake") }}:</span>
         <br />
         <b>{{ minimalStake | fromWei(9, "XRT") }}</b>
       </p>

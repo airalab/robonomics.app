@@ -20,9 +20,13 @@ function addItem(key, item, index = null) {
   data = data.slice(-20);
   setData(key, data);
 }
+function removeItem(key) {
+  localStorage.removeItem(key);
+}
 
 export default {
   getData,
   setData,
-  addItem
+  addItem,
+  removeItem
 };
