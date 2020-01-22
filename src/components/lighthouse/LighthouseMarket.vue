@@ -8,7 +8,9 @@
         <Approve
           v-if="Number(cost) > 0 && token"
           :address="token"
-          :cost="costWei"
+          :toAddress="$robonomics.factory.address"
+          :initAmountWei="costWei"
+          :alwaysShow="false"
           :onInitToken="onInitToken"
           :onFetch="onAllowance"
         />

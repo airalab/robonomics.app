@@ -15,7 +15,9 @@
         <Approve
           v-if="Number(cost) > 0 && token"
           :address="token"
-          :cost="Number(cost)"
+          :toAddress="$robonomics.factory.address"
+          :initAmountWei="cost"
+          :alwaysShow="false"
           :onFetch="onAllowance"
         />
         <div v-if="allowance >= Number(cost)" class="input-size--md">
