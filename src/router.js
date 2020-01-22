@@ -8,6 +8,7 @@ import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
 import Sensor from "@/views/Sensor";
 import Passport from "@/views/Passport";
+import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 
 Vue.use(Router);
@@ -78,6 +79,12 @@ export default new Router({
           name: "passport-view"
         }
       ]
+    },
+    {
+      path: "/liability/:liability",
+      name: "liability",
+      component: Liability,
+      props: true
     },
     {
       path: "/approve",
