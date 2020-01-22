@@ -1,0 +1,122 @@
+<template>
+  <section>
+    <div class="form-item form-line-label">
+      <label for="inputdata-amount">
+        Amount *
+        <span
+          v-if="form.fields.amount.error"
+          class="input-msg"
+        >Check if data correct, please.</span>
+      </label>
+      <input
+        v-model="form.fields.amount.value"
+        class="container-full"
+        :class="{ error: form.fields.amount.error }"
+        type="text"
+        required
+      />
+    </div>
+  </section>
+</template>
+
+<script>
+import { number } from "../../RComponents/tools/utils";
+
+export default {
+  props: {
+    onSubmit: {
+      type: Function
+    },
+    onChange: {
+      type: Function
+    },
+    initAmountWei: {
+      type: String,
+      default: "0"
+    },
+    maxAmount: {
+      type: String,
+      default: "0"
+    },
+    decimals: {
+      type: String,
+      default: "0"
+    }
+  },
+  watch: {
+    "form.fields.amount.value": {
+      handler(value, oldValue) {
+        if (value !== oldValue) {
+          if (this.onChange) {
+            this.onChange(this.form.fields);
+          }
+        }
+      },
+      deep: true
+    },
+    decimals: function(newValue, old) {
+      if (newValue !== old) {
+        this.form.fields.amount.value = number.fromWei(
+          this.initAmountWei,
+          this.decimals
+        );
+      }
+    }
+  },
+  data() {
+    return {
+      form: {
+        fields: {
+          amount: {
+            value: number.fromWei(this.initAmountWei, this.decimals),
+            rules: ["require", "number", "min", "max"],
+            error: false
+          }
+        },
+        error: false
+      }
+    };
+  },
+  methods: {
+    validate() {
+      this.form.error = false;
+      for (let field in this.form.fields) {
+        this.form.fields[field].error = false;
+        this.form.fields[field].rules.forEach(rule => {
+          if (rule === "require" && !this.form.fields[field].value) {
+            this.form.fields[field].error = true;
+            this.form.error = true;
+          } else if (
+            rule === "number" &&
+            isNaN(Number(this.form.fields[field].value))
+          ) {
+            this.form.fields[field].error = true;
+            this.form.error = true;
+          } else if (
+            rule === "min" &&
+            Number(number.toWei(this.form.fields[field].value, this.decimals)) <
+              1
+          ) {
+            this.form.fields[field].error = true;
+            this.form.error = true;
+          } else if (
+            rule === "max" &&
+            Number(number.toWei(this.form.fields[field].value, this.decimals)) >
+              Number(this.maxAmount)
+          ) {
+            this.form.fields[field].error = true;
+            this.form.error = true;
+          }
+        });
+      }
+      return !this.form.error;
+    },
+    submit() {
+      this.validate();
+      if (this.onSubmit) {
+        this.onSubmit(this.form.error, this.form.fields);
+      }
+    }
+  }
+};
+</script>

@@ -2,69 +2,86 @@
   <fragment>
     <section>
       <Info
-        v-if="Number(cost) > 0"
         style="margin-bottom:10px"
-        :cost="cost"
+        :cost="initAmountWei"
         :balance="balance"
         :allowance="allowance"
         :decimals="decimals"
         :symbol="symbol"
       />
     </section>
-    <Button
-      v-if="Number(allowance) < Number(cost)"
-      :address="address"
-      :cost="cost"
-      :onInitToken="init"
-      :onFetch="fetch"
-    />
+    <template v-if="alwaysShow || Number(initAmountWei) > Number(allowance)">
+      <form v-on:submit.prevent="submit">
+        <Input
+          ref="form"
+          :onSubmit="onSubmit"
+          :onChange="onChange"
+          :initAmountWei="initAmountWei"
+          :maxAmount="balance"
+          :decimals="decimals"
+        />
+      </form>
+      <button
+        class="container-full btn-big"
+        :disabled="loadingApprove || Number(amount) == Number(allowance)"
+        @click="submit"
+      >
+        <div class="loader-ring" v-if="loadingApprove"></div>
+        &nbsp;{{ $t("approve.approve") }}
+      </button>
+    </template>
   </fragment>
 </template>
 
 <script>
-import Button from "./Button";
+import Input from "./Input";
 import Info from "./Info";
+import token from "./token";
+import { number } from "../../RComponents/tools/utils";
 
 export default {
-  props: ["address", "cost", "onInitToken", "onFetch"],
+  mixins: [token],
+  props: {
+    initAmountWei: {
+      type: String,
+      default: "0"
+    },
+    alwaysShow: {
+      type: Boolean,
+      default: true
+    }
+  },
+  // props: ["initAmountWei", "address", "onInitToken", "onFetch"],
   components: {
-    Button,
+    Input,
     Info
   },
   data() {
     return {
-      symbol: "",
-      decimals: 0,
-      balance: 0,
-      allowance: 0
+      amount: this.initAmountWei,
+      loadingApprove: false
     };
   },
-  watch: {
-    address: function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.reset();
-      }
-    }
-  },
   methods: {
-    reset() {
-      this.symbol = "";
-      this.decimals = 0;
-      this.balance = 0;
-      this.allowance = 0;
+    submit() {
+      this.$refs.form.submit();
     },
-    init(data) {
-      this.decimals = data.decimals;
-      this.symbol = data.symbol;
-      if (this.onInitToken) {
-        this.onInitToken(data);
-      }
+    onChange(fields) {
+      this.amount = number.toWei(fields.amount.value, this.decimals);
     },
-    fetch(data) {
-      this.balance = data.balance;
-      this.allowance = data.allowance;
-      if (this.onFetch) {
-        this.onFetch(data);
+    onSubmit(e, fields) {
+      this.loadingApprove = true;
+      if (e) {
+        this.loadingApprove = false;
+      } else {
+        this.approve(fields.amount.value)
+          .then(() => {
+            this.loadingApprove = false;
+            return this.fetchData();
+          })
+          .catch(() => {
+            this.loadingApprove = false;
+          });
       }
     }
   }

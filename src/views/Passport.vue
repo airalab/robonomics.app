@@ -25,7 +25,9 @@
           <Approve
             v-if="Number(response.cost) > 0"
             :address="response.token"
-            :cost="response.cost"
+            :toAddress="$robonomics.factory.address"
+            :initAmountWei="cost"
+            :alwaysShow="false"
             :onFetch="onAllowance"
           />
           <Order
@@ -63,6 +65,7 @@ import Request from "@/components/passport/Request";
 import Response from "@/components/passport/Response";
 import Order from "@/components/passport/Order";
 import Passport from "@/components/passport/Passport";
+import { number } from "../RComponents/tools/utils";
 
 export default {
   props: ["passport"],
@@ -91,6 +94,9 @@ export default {
     ...mapState("msg", ["statuses"]),
     demand() {
       return this.$store.getters["msg/demandById"](this.demandId);
+    },
+    cost() {
+      return number.numToString(this.response.cost);
     }
   },
   created() {
