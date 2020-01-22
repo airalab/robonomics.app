@@ -2,7 +2,7 @@
   <fragment>
     <section>
       <Info
-        v-if="cost > 0"
+        v-if="Number(cost) > 0"
         style="margin-bottom:10px"
         :cost="cost"
         :balance="balance"
@@ -12,7 +12,7 @@
       />
     </section>
     <Button
-      v-if="allowance < cost"
+      v-if="Number(allowance) < Number(cost)"
       :address="address"
       :cost="cost"
       :onInitToken="init"

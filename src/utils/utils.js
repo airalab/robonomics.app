@@ -1,5 +1,39 @@
 import axios from "axios";
 import getRobonomics from "../RComponents/tools/robonomics";
+
+import getIpfs, { cat as ipfsCat } from "../RComponents/tools/ipfs";
+import rosBag, { getRosbag } from "./rosBag";
+import config from "../config";
+
+export const genRosbagIpfs = data => {
+  let bag;
+  let hash;
+  return getRosbag(data)
+    .then(r => {
+      bag = r;
+      return getIpfs();
+    })
+    .then(ipfs => {
+      return ipfs.add(bag);
+    })
+    .then(r => {
+      hash = r[0].hash;
+      axios.get(`${config.IPFS_GATEWAY}${hash}`);
+    })
+    .then(() => {
+      return hash;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
+export const readRosbagIpfs = (hash, cb, topics = {}) => {
+  return ipfsCat(hash).then(r => {
+    return rosBag(new Blob([r]), cb, topics);
+  });
+};
+
 // import crypto from "crypto";
 // import { utils } from "robonomics-js";
 // import getIpfs from "../RComponents/tools/ipfs";

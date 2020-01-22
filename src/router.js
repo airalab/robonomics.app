@@ -7,6 +7,7 @@ import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
 import Sensor from "@/views/Sensor";
+import Passport from "@/views/Passport";
 
 Vue.use(Router);
 
@@ -59,6 +60,21 @@ export default new Router({
         {
           path: "result/:result",
           name: "sensor-result"
+        }
+      ]
+    },
+    {
+      path: "/passport",
+      component: Passport,
+      props: true,
+      children: [
+        {
+          path: "",
+          name: "passport-registration"
+        },
+        {
+          path: ":passport",
+          name: "passport-view"
         }
       ]
     },

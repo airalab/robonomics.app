@@ -8,12 +8,20 @@
         class="item"
         :class="{ disabled: service.disabled }"
       >
-        <RImgHover :src="service.img" :href="service.link" />
+        <RImgHover v-if="service.target" :src="service.img" :href="service.link" />
+        <RImgHover v-else :src="service.img" :to="service.link" />
         <div class="item-content">
           <h2>
-            <a :href="service.link" target="_blank">{{
+            <a v-if="service.target" :href="service.link" target="_blank">
+              {{
               service[$i18n.locale].name
-            }}</a>
+              }}
+            </a>
+            <router-link v-else :to="service.link">
+              {{
+              service[$i18n.locale].name
+              }}
+            </router-link>
           </h2>
           <div class="t-hyphen">{{ service[$i18n.locale].desc }}</div>
           <div class="item-bottom">
@@ -21,10 +29,7 @@
               <span>Provider:</span>
               <span class="item-bottom--info">{{ service.by.label }}</span>
             </div>
-            <div
-              v-if="service.token && service.token.name"
-              class="item-bottom--line"
-            >
+            <div v-if="service.token && service.token.name" class="item-bottom--line">
               <span>Payment token:</span>
               <span class="item-bottom--info">{{ service.token.name }}</span>
             </div>
@@ -47,6 +52,25 @@ export default {
       services: [
         {
           en: {
+            name: "Digital passport registration",
+            desc: "Global registration service in the Ethereum Blockchain."
+          },
+          ru: {
+            name: "Регистрация цифрового паспорта",
+            desc: "Сервис глобальной регистрации в Ethereum Blockchain."
+          },
+          link: { name: "passport-registration" },
+          target: false,
+          img: "assets/i/services/digital-passport.png",
+          by: {
+            link: "#",
+            label: "Airalab"
+          },
+          token: null,
+          disabled: false
+        },
+        {
+          en: {
             name: "Gaka-chu",
             desc:
               "Buy the robot's idea on a canvas with copyright digital mark stored in the public blockchain."
@@ -57,6 +81,7 @@ export default {
               "Купите мысль робота на холсте с цифровой меткой права в публичном блокчейне."
           },
           link: "#",
+          target: true,
           img: "assets/i/services/gaka-chu.png",
           by: {
             link: "#",
@@ -77,6 +102,7 @@ export default {
               "Сервис погашения углеродного следа умных зданий на основе информации о геолокации и потреблении электроэнергии."
           },
           link: "https://new.dapp.ipci.io/#/offsetting",
+          target: true,
           img: "assets/i/services/smart-buildings.png",
           by: {
             link: "#",
@@ -97,6 +123,7 @@ export default {
               "Сервис эмиссии углеродных единиц и зеленых сертификатов на основе данных от возобновляемого источника электроэнергии."
           },
           link: "https://new.dapp.ipci.io/#/issuing",
+          target: true,
           img: "assets/i/services/smart-assets.png",
           by: {
             link: "#",
@@ -116,6 +143,7 @@ export default {
             desc: "Сервис глобальной регистрации дронов в Ethereum Blockchain."
           },
           link: "https://drone-employee.com/#/registration",
+          target: true,
           img: "assets/i/services/drone-passport.png",
           by: {
             link: "#",
@@ -134,6 +162,7 @@ export default {
             desc: "Сервис публичных отчетов о выполненных полетах дронов."
           },
           link: "https://drone-employee.com/#/flight",
+          target: true,
           img: "assets/i/services/drone-route.png",
           by: {
             link: "#",

@@ -158,6 +158,37 @@ export default {
         cancel: "Cancel",
         choose: "Choose lighthouse"
       }
+    },
+    steps: {
+      contract:
+        "A smart contract has been created, we are waiting for the robot to execute the service.",
+      view_contract: "View contract.",
+      executed: "Smart contract is executed!"
+    },
+    passport: {
+      title: "Digital passport registration",
+      subtitle1: "Manufacturer Information",
+      subtitle2: "Collected product information",
+      success: "Your passport",
+      link: "view passport",
+      agent: "Agent",
+      objective: "Objective",
+      token: "Token",
+      requestPrice: "Request price",
+      liability: "Liability",
+      group1: "Info",
+      info: "Manufacturer Information",
+      meta: "Information file",
+      images: "Photos",
+      email: "E-mail",
+      order: "order",
+      error: "Check if data correct, please.",
+      informations: "Manufacturer Information",
+      metaField: "Attach information file (json)",
+      imagesField: "Attach photos, if any (jpg, png)",
+      emailField: "E-mail",
+      dragFile: "Drag & Drop your file or Browse",
+      dragImages: "Drag & Drop your image files or Browse"
     }
   },
   ru: {
@@ -319,6 +350,35 @@ export default {
         cancel: "Отмена",
         choose: "Выберите маяк"
       }
+    },
+    steps: {
+      contract: "Создан смарт контракт, мы ждем, что робот выполнит услугу.",
+      view_contract: "Посмотреть контракт.",
+      executed: "Смарт контракт выполнен!"
+    },
+    passport: {
+      title: "Регистрация цифрового паспорта",
+      subtitle1: "Информация о производителе",
+      subtitle2: "Собранная информация о продукте",
+      success: "Ваш паспорт",
+      link: "открыть паспорт",
+      agent: "Агент",
+      objective: "Задача",
+      token: "Токен",
+      requestPrice: "Запросить цену",
+      liability: "Контракт обязательства",
+      info: "Информация о производителе",
+      meta: "Файл с информацией",
+      images: "Фотографии",
+      email: "E-mail",
+      order: "Заказать",
+      error: "Проверьте пожалуйста правильность данных.",
+      informations: "Информация о производителе",
+      metaField: "Прикрепите файл с информацией (json)",
+      imagesField: "Прикрепите фотографии, если есть (jpg, png)",
+      emailField: "E-mail",
+      dragFile: "Drag & Drop your file or Browse",
+      dragImages: "Drag & Drop your image files or Browse"
     }
   }
 };

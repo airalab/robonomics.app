@@ -6,14 +6,14 @@
       <section class="m-b-0">
         <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
         <Approve
-          v-if="cost > 0 && token"
+          v-if="Number(cost) > 0 && token"
           :address="token"
           :cost="costWei"
           :onInitToken="onInitToken"
           :onFetch="onAllowance"
         />
         <RButton
-          v-else-if="allowance >= cost"
+          v-if="Number(allowance) >= Number(cost)"
           @click.native="sendMsgDemand"
           :disabled="watch"
           green

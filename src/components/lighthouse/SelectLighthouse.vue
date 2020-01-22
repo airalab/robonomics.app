@@ -15,12 +15,7 @@
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
         <br />
-        <input
-          type="number"
-          v-model="form.minimalStake"
-          @input="form.minimalStake = Number($event.target.value)"
-          class="input-size--md"
-        />
+        <input type="number" v-model="form.minimalStake" class="input-size--md" />
       </p>
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
@@ -71,7 +66,7 @@ export default {
       lighthouses: [],
       form: {
         name: "",
-        minimalStake: 0.000001,
+        minimalStake: "0.000001",
         timeoutInBlocks: 25
       },
       createForm: false,
@@ -201,7 +196,7 @@ export default {
       return this.searchLighthouse();
     },
     async sendCreateLighthouse() {
-      if (!(this.form.minimalStake > 0)) {
+      if (!(Number(this.form.minimalStake) > 0)) {
         this.createMsg = this.$t("lighthouse.select.error.stake");
         return;
       }

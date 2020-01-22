@@ -49,12 +49,12 @@ export default {
       valid: false,
       error: "",
       success: "",
-      amount: 1
+      amount: "1"
     };
   },
   mounted() {
     if (this.current > 0) {
-      this.amount = Number(number.fromWei(this.current, this.decimals));
+      this.amount = number.fromWei(this.current, this.decimals);
     }
   },
   computed: {
@@ -68,7 +68,7 @@ export default {
   watch: {
     current: function(newVal) {
       if (newVal > 0) {
-        this.amount = Number(number.fromWei(newVal, this.decimals));
+        this.amount = number.fromWei(newVal, this.decimals);
       }
     },
     watchTx(value) {
@@ -83,7 +83,7 @@ export default {
     submit() {
       this.error = "";
       this.success = "";
-      if (this.amount > 0) {
+      if (Number(this.amount) > 0) {
         const value = Number(number.toWei(this.amount, this.decimals));
         const approve = Number(this.current);
         const balance = Number(this.balance);

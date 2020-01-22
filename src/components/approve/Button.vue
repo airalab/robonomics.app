@@ -20,7 +20,7 @@
     </section>-->
     <button
       v-if="!err"
-      :disabled="loadingApprove || balance < form.fields.amount.value"
+      :disabled="loadingApprove || Number(balance) < Number(form.fields.amount.value)"
       @click="sendApprove"
     >
       <div class="loader-ring" v-if="loadingApprove"></div>
@@ -66,9 +66,7 @@ export default {
   },
   watch: {
     cost: function(newVal) {
-      this.form.fields.amount.value = Number(
-        number.fromWei(newVal, this.decimals)
-      );
+      this.form.fields.amount.value = number.fromWei(newVal, this.decimals);
     },
     address: function(newVal) {
       this.err = false;
@@ -98,7 +96,7 @@ export default {
           } else if (
             rule === "max" &&
             Number(number.toWei(this.form.fields[field].value, this.decimals)) >
-              this.balance
+              Number(this.balance)
           ) {
             this.form.fields[field].error = true;
             this.form.error = true;
@@ -111,9 +109,7 @@ export default {
       this.token = new Token(this.$robonomics.web3, address);
       this.decimals = await this.token.methods.decimals().call();
       this.symbol = await this.token.methods.symbol().call();
-      this.form.fields.amount.value = Number(
-        number.fromWei(this.cost, this.decimals)
-      );
+      this.form.fields.amount.value = number.fromWei(this.cost, this.decimals);
       if (this.onInitToken) {
         this.onInitToken({
           decimals: this.decimals,
