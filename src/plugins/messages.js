@@ -188,7 +188,11 @@ export default {
       imagesField: "Attach photos, if any (jpg, png)",
       emailField: "E-mail",
       dragFile: "Drag & Drop your file or Browse",
-      dragImages: "Drag & Drop your image files or Browse"
+      dragImages: "Drag & Drop your image files or Browse",
+      view: "view",
+      viewImages: "view images",
+      hideImages: "hide images",
+      loading: "Loading"
     }
   },
   ru: {
@@ -378,7 +382,11 @@ export default {
       imagesField: "Прикрепите фотографии, если есть (jpg, png)",
       emailField: "E-mail",
       dragFile: "Drag & Drop your file or Browse",
-      dragImages: "Drag & Drop your image files or Browse"
+      dragImages: "Drag & Drop your image files or Browse",
+      view: "просмотр",
+      viewImages: "показать фото",
+      hideImages: "скрыть фото",
+      loading: "Загрузка"
     }
   }
 };

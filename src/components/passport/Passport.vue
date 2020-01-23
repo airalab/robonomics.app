@@ -21,7 +21,10 @@
         <div v-if="passport.meta" class="form-item form-line-label">
           <label>{{ $t("passport.meta") }}</label>
           <RLinkExplorer type="ipfs" :text="passport.meta" />
-          <RButton v-if="json === null" @click.native="view(passport.meta)">view</RButton>
+          <RButton v-if="json === null" @click.native="view(passport.meta)" :disabled="loadJson">
+            <div class="loader-ring" v-if="loadJson"></div>
+            &nbsp;{{ $t("passport.view") }}
+          </RButton>
           <pre
             v-if="json"
             style="max-height: 200px;overflow: scroll;border: 1px solid #eee;padding: 10px;color: crimson;font-size: 12px;"
@@ -29,9 +32,13 @@
         </div>
         <div v-if="passport.images" class="form-item form-line-label">
           <label>{{ $t("passport.images") }}</label>
+          <RButton style="margin-top:20px" @click.native="viewImages = !viewImages">
+            <template v-if="!viewImages">{{ $t("passport.viewImages") }}</template>
+            <template v-else>{{ $t("passport.hideImages") }}</template>
+          </RButton>
           <div v-for="(image, key) in passport.images" :key="key">
             <RCard>
-              <RImgHover :href="image | urlIpfs" :src="image | urlIpfs" />
+              <RImgHover v-if="viewImages" :href="image | urlIpfs" :src="image | urlIpfs" />
               <RLinkExplorer type="ipfs" :text="image" />
             </RCard>
           </div>
@@ -40,7 +47,7 @@
     </section>
     <div v-else class="loader">
       <RLoader />&nbsp;
-      <b class="align-vertical t-style_uppercase">Loading</b>
+      <b class="align-vertical t-style_uppercase">{{ $t("passport.loading") }}</b>
     </div>
   </fragment>
 </template>
@@ -57,7 +64,9 @@ export default {
   data() {
     return {
       passport: null,
-      json: null
+      json: null,
+      loadJson: false,
+      viewImages: false
     };
   },
   created() {
@@ -96,10 +105,16 @@ export default {
       });
     },
     view(hash) {
-      axios.get(`${config.IPFS_GATEWAY}${hash}`).then(r => {
-        this.json = r.data;
-        console.log(this.json);
-      });
+      this.loadJson = true;
+      axios
+        .get(`${config.IPFS_GATEWAY}${hash}`)
+        .then(r => {
+          this.json = r.data;
+          this.loadJson = false;
+        })
+        .catch(() => {
+          this.loadJson = false;
+        });
     }
   }
 };
