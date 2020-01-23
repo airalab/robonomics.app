@@ -16,18 +16,24 @@
         <label>{{ $t("passport.info") }}</label>
         <div>{{ passport.info }}</div>
       </div>
-      <div class="form-section-title">{{ $t("passport.subtitle2") }}</div>
-      <div class="form-item form-line-label">
-        <label>{{ $t("passport.meta") }}</label>
-        <RLinkExplorer type="ipfs" :text="passport.meta" />
-      </div>
-      <div class="form-item form-line-label">
-        <label>{{ $t("passport.images") }}</label>
-        <div v-for="(image, key) in passport.images" :key="key">
-          <RLinkExplorer type="ipfs" :text="image" />
+      <template v-if="passport.meta || passport.images">
+        <div class="form-section-title">{{ $t("passport.subtitle2") }}</div>
+        <div v-if="passport.meta" class="form-item form-line-label">
+          <label>{{ $t("passport.meta") }}</label>
+          <RLinkExplorer type="ipfs" :text="passport.meta" />
         </div>
-      </div>
+        <div v-if="passport.images" class="form-item form-line-label">
+          <label>{{ $t("passport.images") }}</label>
+          <div v-for="(image, key) in passport.images" :key="key">
+            <RLinkExplorer type="ipfs" :text="image" />
+          </div>
+        </div>
+      </template>
     </section>
+    <div v-else class="loader">
+      <RLoader />&nbsp;
+      <b class="align-vertical t-style_uppercase">Loading</b>
+    </div>
   </fragment>
 </template>
 
@@ -57,6 +63,9 @@ export default {
     rosbagObjective(hash) {
       const passport = {};
       readRosbagIpfs(hash, bag => {
+        if (bag.message.data === "") {
+          return;
+        }
         const topic = bag.topic.replace(/\//, "");
         if (topic === "images") {
           if (!passport[topic]) {
@@ -72,7 +81,7 @@ export default {
           );
         }
       }).then(() => {
-        // console.log(passport);
+        console.log(passport);
         this.passport = passport;
       });
     }
