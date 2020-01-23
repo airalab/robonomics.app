@@ -21,11 +21,19 @@
         <div v-if="passport.meta" class="form-item form-line-label">
           <label>{{ $t("passport.meta") }}</label>
           <RLinkExplorer type="ipfs" :text="passport.meta" />
+          <RButton v-if="json === null" @click.native="view(passport.meta)">view</RButton>
+          <pre
+            v-if="json"
+            style="max-height: 200px;overflow: scroll;border: 1px solid #eee;padding: 10px;color: crimson;font-size: 12px;"
+          >{{json}}</pre>
         </div>
         <div v-if="passport.images" class="form-item form-line-label">
           <label>{{ $t("passport.images") }}</label>
           <div v-for="(image, key) in passport.images" :key="key">
-            <RLinkExplorer type="ipfs" :text="image" />
+            <RCard>
+              <RImgHover :href="image | urlIpfs" :src="image | urlIpfs" />
+              <RLinkExplorer type="ipfs" :text="image" />
+            </RCard>
           </div>
         </div>
       </template>
@@ -38,15 +46,18 @@
 </template>
 
 <script>
+import axios from "axios";
 import { Liability } from "robonomics-js";
 import iconv from "iconv-lite";
 import { readRosbagIpfs } from "../../utils/utils";
+import config from "~config";
 
 export default {
   props: ["address"],
   data() {
     return {
-      passport: null
+      passport: null,
+      json: null
     };
   },
   created() {
@@ -81,8 +92,13 @@ export default {
           );
         }
       }).then(() => {
-        console.log(passport);
         this.passport = passport;
+      });
+    },
+    view(hash) {
+      axios.get(`${config.IPFS_GATEWAY}${hash}`).then(r => {
+        this.json = r.data;
+        console.log(this.json);
       });
     }
   }
