@@ -142,7 +142,6 @@ export default {
           meta: {
             value: "",
             type: "file",
-            // rules: [],
             rules: ["require"],
             error: false
           },
@@ -150,7 +149,6 @@ export default {
             items: {},
             type: "files",
             rules: ["items"],
-            // rules: [],
             error: false
           }
         },

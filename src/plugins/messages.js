@@ -169,6 +169,9 @@ export default {
       title: "Digital passport registration",
       subtitle1: "Manufacturer Information",
       subtitle2: "Collected product information",
+      subtitle3: "Passport registration",
+      priceTitle: "Cost of a digital passport",
+      details: "Show more details",
       success: "Your passport",
       link: "view passport",
       agent: "Agent",
@@ -250,7 +253,7 @@ export default {
       allowance: "Одобрено",
       approve: "Одобрить",
       cost: "Стоимость",
-      balance: "Баланс"
+      balance: "Ваш баланс"
     },
     sensors: {
       title: "Сенсорные сети",
@@ -356,16 +359,19 @@ export default {
       }
     },
     steps: {
-      contract: "Создан смарт контракт, мы ждем, что робот выполнит услугу.",
+      contract: "Умный контракт создан, мы ждем, что робот выполнит услугу.",
       view_contract: "Посмотреть контракт.",
-      executed: "Смарт контракт выполнен!"
+      executed: "Умный контракт выполнен!"
     },
     passport: {
       title: "Регистрация цифрового паспорта",
       subtitle1: "Информация о производителе",
       subtitle2: "Собранная информация о продукте",
+      subtitle3: "Заказ паспорта",
+      priceTitle: "Стоимость цифрового паспорта составит",
+      details: "Показать больше деталей",
       success: "Ваш паспорт",
-      link: "открыть паспорт",
+      link: "Перейти на страницу паспорта",
       agent: "Агент",
       objective: "Задача",
       token: "Токен",
@@ -375,7 +381,7 @@ export default {
       meta: "Файл с информацией",
       images: "Фотографии",
       email: "E-mail",
-      order: "Заказать",
+      order: "Заказать цифровой паспорт",
       error: "Проверьте пожалуйста правильность данных.",
       informations: "Информация о производителе",
       metaField: "Прикрепите файл с информацией (json)",

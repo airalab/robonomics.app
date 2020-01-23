@@ -17,38 +17,41 @@
           :onResponse="onResponse"
         />
         <template v-else>
-          <Response
-            :sender="response.sender"
-            :objective="response.objective"
-            :token="response.token"
-          />
-          <Approve
-            v-if="Number(response.cost) > 0"
-            :address="response.token"
-            :toAddress="$robonomics.factory.address"
-            :initAmountWei="cost"
-            :alwaysShow="false"
-            :onFetch="onAllowance"
-          />
-          <Order
-            v-if="
-              Number(allowance) >= response.cost &&
-                (!demand || demand.status < statuses.RESULT)
-            "
-            :offer="response"
-            :onDemand="onDemand"
-          />
-          <Steps v-if="demand" :status="demand.status" :liability="demand.liability" />
-          <div v-if="demand && demand.status == statuses.RESULT">
-            {{ $t("passport.success") }}
-            <h3>{{ demand.liability }}</h3>
-            <router-link
-              :to="{
-                name: 'passport-view',
-                params: { passport: demand.liability }
-              }"
-            >{{ $t("passport.link") }}</router-link>
-          </div>
+          <section>
+            <div class="form-section-title">{{ $t("passport.subtitle3") }}</div>
+            <Response
+              :sender="response.sender"
+              :objective="response.objective"
+              :address="response.token"
+              :cost="response.cost"
+            />
+            <Approve
+              v-if="Number(response.cost) > 0"
+              :address="response.token"
+              :toAddress="$robonomics.factory.address"
+              :initAmountWei="cost"
+              :alwaysShow="false"
+              :onFetch="onAllowance"
+            />
+            <Order
+              v-if="
+                Number(allowance) >= response.cost &&
+                  (!demand || demand.status < statuses.RESULT)
+              "
+              :offer="response"
+              :onDemand="onDemand"
+            />
+            <Steps v-if="demand" :status="demand.status" :liability="demand.liability" />
+            <div v-if="demand && demand.status == statuses.RESULT">
+              <router-link
+                class="container-full btn-big btn-green"
+                :to="{
+                  name: 'passport-view',
+                  params: { passport: demand.liability }
+                }"
+              >{{ $t("passport.link") }}</router-link>
+            </div>
+          </section>
         </template>
       </template>
     </section>
@@ -66,6 +69,7 @@ import Response from "@/components/passport/Response";
 import Order from "@/components/passport/Order";
 import Passport from "@/components/passport/Passport";
 import { number } from "../RComponents/tools/utils";
+import config from "~config";
 
 export default {
   props: ["passport"],
@@ -102,9 +106,7 @@ export default {
   created() {
     this.token = this.$robonomics.xrt.address;
     this.$robonomics
-      .initLighthouse("airalab")
-      // .initLighthouse("mytest")
-      // .initLighthouse("mytest.lighthouse.5.robonomics.eth")
+      .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
       .then(() => {
         this.ready = true;
         this.$robonomics.onDemand(this.model, msg => {

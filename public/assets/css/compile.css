@@ -3341,12 +3341,10 @@ table.container-full {
 }
 
 .align-vertical {
-  display: inline-block;
   vertical-align: middle;
 }
 
 .align-top {
-  display: inline-block;
   vertical-align: top;
 }
 
@@ -3386,7 +3384,7 @@ table.container-full {
 /* action states (1-actions.js) */
 .disabled *, .disabled {
   filter: grayscale(1);
-  opacity: 0.5;
+  opacity: 0.8;
   pointer-events: none;
 }
 
