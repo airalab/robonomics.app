@@ -8,14 +8,14 @@
         <Approve
           v-if="Number(cost) > 0 && token"
           :address="token"
-          :toAddress="$robonomics.factory.address"
+          :from="$robonomics.account.address"
+          :to="$robonomics.factory.address"
           :initAmountWei="costWei"
           :alwaysShow="false"
           :onInitToken="onInitToken"
-          :onFetch="onAllowance"
         />
         <RButton
-          v-if="Number(allowance) >= Number(cost)"
+          v-if="Number(myAllowance) >= Number(costWei)"
           @click.native="sendMsgDemand"
           :disabled="watch"
           green
@@ -69,9 +69,11 @@
 import Vue from "vue";
 import TradeForm from "./TradeForm";
 import Approve from "@/components/approve/Main";
+import token from "@/mixins/token";
 import { number } from "../../RComponents/tools/utils";
 
 export default {
+  mixins: [token],
   components: {
     TradeForm,
     Approve
@@ -84,8 +86,6 @@ export default {
       id: null,
       token: null,
       cost: null,
-      decimals: 0,
-      allowance: 0,
       error: false
     };
   },
@@ -113,6 +113,16 @@ export default {
       return this.demand && this.demand.status > 0 && this.demand.status < 6
         ? true
         : false;
+    },
+    decimals: function() {
+      return this.token(this.token).decimals;
+    },
+    myAllowance: function() {
+      return this.allowance(
+        this.token,
+        this.$robonomics.account.address,
+        this.$robonomics.factory.address
+      );
     }
   },
   watch: {
@@ -176,6 +186,12 @@ export default {
     onChange(fields) {
       this.token = fields.token.value;
       this.cost = fields.cost.value;
+
+      this.watchToken(
+        this.token,
+        this.$robonomics.account.address,
+        this.$robonomics.factory.address
+      );
     },
     onSubmit(e, fields) {
       this.error = e;
@@ -197,12 +213,6 @@ export default {
           });
         });
       }
-    },
-    onInitToken({ decimals }) {
-      this.decimals = decimals;
-    },
-    onAllowance({ allowance }) {
-      this.allowance = Number(number.fromWei(allowance, this.decimals));
     },
     setNonce() {
       this.$robonomics.factory.methods

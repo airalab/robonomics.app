@@ -1,22 +1,10 @@
 <template>
-  <section>
-    <div class="form-item form-line-label">
-      <label for="inputdata-amount">
-        Amount *
-        <span
-          v-if="form.fields.amount.error"
-          class="input-msg"
-        >Check if data correct, please.</span>
-      </label>
-      <input
-        v-model="form.fields.amount.value"
-        class="container-full"
-        :class="{ error: form.fields.amount.error }"
-        type="text"
-        required
-      />
-    </div>
-  </section>
+  <input
+    v-model="form.fields.amount.value"
+    :class="{ error: form.fields.amount.error }"
+    type="text"
+    required
+  />
 </template>
 
 <script>
@@ -31,15 +19,12 @@ export default {
       type: Function
     },
     initAmountWei: {
-      type: String,
       default: "0"
     },
-    maxAmount: {
-      type: String,
+    maxAmountWei: {
       default: "0"
     },
     decimals: {
-      type: String,
       default: "0"
     }
   },
@@ -102,7 +87,7 @@ export default {
           } else if (
             rule === "max" &&
             Number(number.toWei(this.form.fields[field].value, this.decimals)) >
-              Number(this.maxAmount)
+              Number(this.maxAmountWei)
           ) {
             this.form.fields[field].error = true;
             this.form.error = true;

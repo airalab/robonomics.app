@@ -196,7 +196,9 @@ export default {
       viewImages: "view images",
       hideImages: "hide images",
       loading: "Loading",
-      openIpfs: "Open IPFS"
+      openIpfs: "Open IPFS",
+      reqApprove:
+        "You need to approve an additional amount to purchase a passport"
     }
   },
   ru: {
@@ -394,7 +396,8 @@ export default {
       viewImages: "показать фото",
       hideImages: "скрыть фото",
       loading: "Загрузка",
-      openIpfs: "Открыть в IPFS"
+      openIpfs: "Открыть в IPFS",
+      reqApprove: "Вам нужно одобрить дополнительную сумму для покупки паспорта"
     }
   }
 };

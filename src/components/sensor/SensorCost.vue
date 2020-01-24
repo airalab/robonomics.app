@@ -13,14 +13,14 @@
       </h4>
       <section>
         <Approve
-          v-if="Number(cost) > 0 && token"
-          :address="token"
-          :toAddress="$robonomics.factory.address"
+          v-if="Number(cost) > 0 && tokenAddress"
+          :address="tokenAddress"
+          :from="$robonomics.account.address"
+          :to="$robonomics.factory.address"
           :initAmountWei="cost"
           :alwaysShow="false"
-          :onFetch="onAllowance"
         />
-        <div v-if="allowance >= Number(cost)" class="input-size--md">
+        <div v-if="Number(myAllowance) >= Number(cost)" class="input-size--md">
           <RButton v-if="isRequest" full green>
             {{
             $t("sensor.requested")
@@ -64,10 +64,12 @@ import Pagination from "./Pagination";
 import Message from "./MessageCost";
 import history from "./historyStore";
 import { parseResult, loadScript } from "./utils";
+import token from "@/mixins/token";
 import config from "~config";
 
 export default {
-  props: ["lighthouse", "model", "agent", "token", "cost"],
+  mixins: [token],
+  props: ["lighthouse", "model", "agent", "tokenAddress", "cost"],
   components: {
     Pagination,
     Message,
@@ -78,8 +80,7 @@ export default {
       ready: false,
       isRequest: false,
       log: [],
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}_cost`,
-      allowance: 0
+      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}_cost`
     };
   },
   mounted() {
@@ -174,6 +175,25 @@ export default {
       });
     });
   },
+  created() {
+    this.watchToken(
+      this.tokenAddress,
+      this.$robonomics.account.address,
+      this.$robonomics.factory.address
+    );
+  },
+  computed: {
+    myAllowance: function() {
+      if (this.response) {
+        return this.allowance(
+          this.tokenAddress,
+          this.$robonomics.account.address,
+          this.$robonomics.factory.address
+        );
+      }
+      return 0;
+    }
+  },
   methods: {
     sendMsgDemand() {
       this.isRequest = true;
@@ -181,7 +201,7 @@ export default {
         const demand = {
           model: this.model,
           objective: config.DEFAULT_OBJECTIVE,
-          token: this.token,
+          token: this.tokenAddress,
           cost: this.cost,
           lighthouse: this.$robonomics.lighthouse.address,
           validator: "0x0000000000000000000000000000000000000000",
@@ -260,9 +280,6 @@ export default {
             console.log(e);
           });
       });
-    },
-    onAllowance({ allowance }) {
-      this.allowance = Number(allowance);
     },
     clear() {
       history.removeItem(this.storeKey);

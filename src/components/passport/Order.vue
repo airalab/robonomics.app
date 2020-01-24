@@ -7,9 +7,7 @@
         demand.status != statuses.RESULT
     "
     @click="order"
-  >
-    {{ $t("passport.order") }}
-  </button>
+  >{{ $t("passport.order") }}</button>
 </template>
 
 <script>

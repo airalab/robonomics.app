@@ -42,7 +42,8 @@
       <Approve
         v-if="!form.error"
         :address="form.fields.token.value"
-        :toAddress="form.fields.toApprove.value"
+        :from="$robonomics.account.address"
+        :to="form.fields.toApprove.value"
         initAmountWei="1"
       />
     </section>
@@ -52,9 +53,6 @@
 <script>
 import Page from "@/components/Page";
 import Approve from "@/components/approve/Main";
-import getRobonomics from "../RComponents/tools/robonomics";
-
-window.r = getRobonomics;
 
 export default {
   props: ["passport"],
@@ -127,12 +125,6 @@ export default {
         });
       }
       return !this.form.error;
-    },
-    submit() {
-      this.validate();
-      if (this.onSubmit) {
-        this.onSubmit(this.form.error, this.form.fields);
-      }
     }
   }
 };

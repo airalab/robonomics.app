@@ -4,19 +4,30 @@
       <div class="m-b-5">
         <span>{{ $t("approve.balance") }}:</span>
         &nbsp;
-        {{ balance | fromWei(decimals, symbol) }}
+        {{ balanceFormat(address, from) }}
       </div>
       <div class="m-b-5">
         <span>{{ $t("approve.allowance") }}:</span>
         &nbsp;
-        {{ allowance | fromWei(decimals, symbol) }}
+        {{ allowanceFormat(address, from, to) }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import token from "@/mixins/token";
+
 export default {
-  props: ["cost", "balance", "allowance", "decimals", "symbol"]
+  mixins: [token],
+  props: ["address", "from", "to"],
+  created() {
+    this.watchToken(this.address, this.from, this.to);
+  },
+  watch: {
+    address: function(newAddressl) {
+      this.watchToken(newAddressl, this.from, this.to);
+    }
+  }
 };
 </script>

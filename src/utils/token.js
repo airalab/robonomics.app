@@ -4,6 +4,13 @@ import getRobonomics from "../RComponents/tools/robonomics";
 const balance = {};
 const allowance = {};
 
+export function toChecksumAddress(address) {
+  const r = getRobonomics();
+  return r.web3.utils.isAddress(address)
+    ? r.web3.utils.toChecksumAddress(address)
+    : address;
+}
+
 export function getContract(token) {
   const r = getRobonomics();
   return new Token(r.web3, token);

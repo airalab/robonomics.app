@@ -6,7 +6,8 @@ import {
   getBalance,
   watchBalance,
   getAllowance,
-  watchAllowance
+  watchAllowance,
+  toChecksumAddress
 } from "../../utils/token";
 
 // initial state
@@ -19,18 +20,27 @@ const state = {
 // getters
 const getters = {
   token: state => token => {
+    token = toChecksumAddress(token);
     if (!state.list[token]) {
-      return null;
+      return {
+        name: "",
+        decimals: 0,
+        symbol: ""
+      };
     }
     return state.list[token];
   },
   balance: state => (token, account) => {
+    token = toChecksumAddress(token);
+    account = toChecksumAddress(account);
     if (!state.balance[token] || !state.balance[token][account]) {
       return 0;
     }
     return state.balance[token][account];
   },
   balanceFormat: (state, getters) => (token, account) => {
+    token = toChecksumAddress(token);
+    account = toChecksumAddress(account);
     const balance = getters.balance(token, account);
     const info = getters.token(token);
     return Vue.options.filters.fromWei(
@@ -40,6 +50,9 @@ const getters = {
     );
   },
   allowance: state => (token, from, to) => {
+    token = toChecksumAddress(token);
+    from = toChecksumAddress(from);
+    to = toChecksumAddress(to);
     if (
       !state.allowance[token] ||
       !state.allowance[token][from] ||
@@ -50,6 +63,9 @@ const getters = {
     return state.allowance[token][from][to];
   },
   allowanceFormat: (state, getters) => (token, from, to) => {
+    token = toChecksumAddress(token);
+    from = toChecksumAddress(from);
+    to = toChecksumAddress(to);
     const allowance = getters.allowance(token, from, to);
     const info = getters.token(token);
     return Vue.options.filters.fromWei(
@@ -78,20 +94,22 @@ const actions = {
         }
       },
       (_, account, value) => {
-        dispatch("setBalance", { token: address, account, value });
+        dispatch("setBalance", { token: token.address, account, value });
       },
       (_, from, to, value) => {
-        dispatch("setAllowance", { token: address, from, to, value });
+        dispatch("setAllowance", { token: token.address, from, to, value });
       }
     );
     getInfo(token).then(info => {
-      dispatch("setInfo", { address, info });
+      dispatch("setInfo", { address: token.address, info });
     });
   },
   setInfo({ commit }, { address, info }) {
     commit("info", { address, info });
   },
   watchBalance({ dispatch, state }, { token, account }) {
+    token = toChecksumAddress(token);
+    account = toChecksumAddress(account);
     if (state.balance[token] && state.balance[token][account]) {
       return;
     }
@@ -101,6 +119,9 @@ const actions = {
     });
   },
   watchAllowance({ dispatch, state }, { token, from, to }) {
+    token = toChecksumAddress(token);
+    from = toChecksumAddress(from);
+    to = toChecksumAddress(to);
     if (
       state.balance[token] &&
       state.balance[token][from] &&
@@ -114,9 +135,14 @@ const actions = {
     });
   },
   setBalance({ commit }, { token, account, value }) {
+    token = toChecksumAddress(token);
+    account = toChecksumAddress(account);
     commit("balance", { token, account, value });
   },
   setAllowance({ commit }, { token, from, to, value }) {
+    token = toChecksumAddress(token);
+    from = toChecksumAddress(from);
+    to = toChecksumAddress(to);
     commit("allowance", { token, from, to, value });
   }
 };

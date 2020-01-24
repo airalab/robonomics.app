@@ -21,7 +21,7 @@
         :lighthouse="lighthouse"
         :model="model"
         :agent="agent"
-        :token="token"
+        :tokenAddress="token"
         :cost="cost"
       />
       <SensorFree v-else :lighthouse="lighthouse" :model="model" :agent="agent" :result="result" />
