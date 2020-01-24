@@ -1,50 +1,71 @@
 <template>
   <fragment>
-    <section>
-      <div class="form-item form-line-label">
-        <label>{{ $t("passport.liability") }}</label>
-        <RLinkExplorer :text="address" />
-      </div>
-    </section>
-    <section v-if="passport">
-      <div class="form-section-title">{{ $t("passport.subtitle1") }}</div>
-      <div class="form-item form-line-label">
-        <label>{{ $t("passport.email") }}</label>
-        <div>{{ passport.email }}</div>
-      </div>
-      <div class="form-item form-line-label">
-        <label>{{ $t("passport.info") }}</label>
-        <div>{{ passport.info }}</div>
-      </div>
-      <template v-if="passport.meta || passport.images">
+    <span class="t-sm">{{ $t("passport.liability") }}</span>
+    <blockquote>
+      <a class="t-lg content-overflow" :href="address | urlExplorer" target="_blank">{{address}}</a>
+    </blockquote>
+    <template v-if="passport">
+      <section>
+        <div class="form-section-title">{{ $t("passport.subtitle1") }}</div>
+        <section>
+          <span class="t-sm">{{ $t("passport.email") }}:</span>
+          <br />
+          <span>{{ passport.email }}</span>
+        </section>
+        <hr />
+        <section>
+          <span class="t-sm">{{ $t("passport.info") }}:</span>
+          <br />
+          <span>{{ passport.info }}</span>
+        </section>
+      </section>
+      <section v-if="passport.meta || passport.images">
         <div class="form-section-title">{{ $t("passport.subtitle2") }}</div>
-        <div v-if="passport.meta" class="form-item form-line-label">
-          <label>{{ $t("passport.meta") }}</label>
-          <RLinkExplorer type="ipfs" :text="passport.meta" />
-          <RButton v-if="json === null" @click.native="view(passport.meta)" :disabled="loadJson">
-            <div class="loader-ring" v-if="loadJson"></div>
-            &nbsp;{{ $t("passport.view") }}
-          </RButton>
-          <pre
-            v-if="json"
-            style="max-height: 200px;overflow: scroll;border: 1px solid #eee;padding: 10px;color: crimson;font-size: 12px;"
-          >{{json}}</pre>
-        </div>
-        <div v-if="passport.images" class="form-item form-line-label">
-          <label>{{ $t("passport.images") }}</label>
-          <RButton style="margin-top:20px" @click.native="viewImages = !viewImages">
-            <template v-if="!viewImages">{{ $t("passport.viewImages") }}</template>
-            <template v-else>{{ $t("passport.hideImages") }}</template>
-          </RButton>
-          <div v-for="(image, key) in passport.images" :key="key">
-            <RCard>
-              <RImgHover v-if="viewImages" :href="image | urlIpfs" :src="image | urlIpfs" />
-              <RLinkExplorer type="ipfs" :text="image" />
-            </RCard>
+        <section v-if="passport.meta">
+          <span class="t-sm">{{ $t("passport.meta") }}:</span>
+          <br />
+          <a class="ptint-hidden" href="javascript:;" @click="view(passport.meta)">{{ metaSlice }}</a>
+          <div v-if="viewMeta">
+            <div v-if="loadJson">
+              <div class="loader-ring"></div>
+            </div>
+            <pre class="pre__overflow" v-else>{{json}}</pre>
+            <a
+              class="btn-blue btn-sm ptint-hidden"
+              :href="passport.meta | urlIpfs"
+              target="_blank"
+            >{{ $t("passport.openIpfs") }}</a>
+            <div class="print-show">Link in IPFS: {{passport.meta | urlIpfs}}</div>
           </div>
-        </div>
-      </template>
-    </section>
+        </section>
+        <hr v-if="passport.meta && passport.images" />
+        <section v-if="passport.images">
+          <span class="t-sm">{{ $t("passport.images") }}:</span>
+          <div v-for="(image, key) in passport.images" :key="key">
+            <a
+              class="ptint-hidden"
+              href="javascript:;"
+              @click="image.show = !image.show"
+            >{{image.sliceHash}}</a>
+            <div v-if="image.show">
+              <img class="i-block" alt :src="image.hash | urlIpfs" />
+              <a
+                class="btn-blue btn-sm m-t-5 ptint-hidden"
+                :href="image.hash | urlIpfs"
+                target="_blank"
+              >{{ $t("passport.openIpfs") }}</a>
+              <div class="print-show">Link in IPFS: {{image.hash | urlIpfs}}</div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <hr class="ptint-hidden" />
+      <div class="icons-line ptint-hidden">
+        <a class="i-print" href="#" title="Print Passport" onclick="window.print();return false;"></a>
+        <a class="i-twitter" :href="getLinkTwitter()" title="Tweet"></a>
+        <a class="i-share" href="javascript:;" title="Share the link" v-clipboard:copy="getLink()"></a>
+      </div>
+    </template>
     <div v-else class="loader">
       <RLoader />&nbsp;
       <b class="align-vertical t-style_uppercase">{{ $t("passport.loading") }}</b>
@@ -59,6 +80,16 @@ import iconv from "iconv-lite";
 import { readRosbagIpfs } from "../../utils/utils";
 import config from "~config";
 
+function loadScript(src) {
+  return new Promise(function(resolve, reject) {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
 export default {
   props: ["address"],
   data() {
@@ -66,6 +97,7 @@ export default {
       passport: null,
       json: null,
       loadJson: false,
+      viewMeta: false,
       viewImages: false
     };
   },
@@ -79,6 +111,16 @@ export default {
       this.rosbagObjective(info.objective);
     });
   },
+  mounted() {
+    loadScript("https://platform.twitter.com/widgets.js");
+  },
+  computed: {
+    metaSlice: function() {
+      return (
+        this.passport.meta.slice(0, 6) + "..." + this.passport.meta.slice(-4)
+      );
+    }
+  },
   methods: {
     rosbagObjective(hash) {
       const passport = {};
@@ -91,9 +133,15 @@ export default {
           if (!passport[topic]) {
             passport[topic] = [];
           }
-          passport[topic].push(
-            iconv.decode(Buffer.from(bag.message.data, "ascii"), "utf-8")
+          const hash = iconv.decode(
+            Buffer.from(bag.message.data, "ascii"),
+            "utf-8"
           );
+          passport[topic].push({
+            hash,
+            sliceHash: hash.slice(0, 6) + "..." + hash.slice(-4),
+            show: false
+          });
         } else {
           passport[topic] = iconv.decode(
             Buffer.from(bag.message.data, "ascii"),
@@ -105,16 +153,34 @@ export default {
       });
     },
     view(hash) {
-      this.loadJson = true;
-      axios
-        .get(`${config.IPFS_GATEWAY}${hash}`)
-        .then(r => {
-          this.json = r.data;
-          this.loadJson = false;
-        })
-        .catch(() => {
-          this.loadJson = false;
-        });
+      this.viewMeta = !this.viewMeta;
+      if (!this.loadJson && this.json === null) {
+        this.loadJson = true;
+        axios
+          .get(`${config.IPFS_GATEWAY}${hash}`)
+          .then(r => {
+            this.json = r.data;
+            this.loadJson = false;
+          })
+          .catch(() => {
+            this.loadJson = false;
+          });
+      }
+    },
+    getLink() {
+      return `${window.location.origin}/${
+        this.$router.resolve({
+          name: "passport-view",
+          params: {
+            passport: this.address
+          }
+        }).href
+      }`;
+    },
+    getLinkTwitter() {
+      return `https://twitter.com/intent/tweet?text=${window.encodeURIComponent(
+        this.getLink()
+      )}&ref_src=twsrc%5Etfw`;
     }
   }
 };

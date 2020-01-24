@@ -195,7 +195,8 @@ export default {
       view: "view",
       viewImages: "view images",
       hideImages: "hide images",
-      loading: "Loading"
+      loading: "Loading",
+      openIpfs: "Open IPFS"
     }
   },
   ru: {
@@ -392,7 +393,8 @@ export default {
       view: "просмотр",
       viewImages: "показать фото",
       hideImages: "скрыть фото",
-      loading: "Загрузка"
+      loading: "Загрузка",
+      openIpfs: "Открыть в IPFS"
     }
   }
 };

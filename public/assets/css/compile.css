@@ -2004,10 +2004,10 @@ a.a-dashed {
   border-style: dashed;
 }
 
-li, p, blockquote {
+li, p, blockquote, pre {
   margin-bottom: 24px;
 }
-li:last-child, p:last-child, blockquote:last-child {
+li:last-child, p:last-child, blockquote:last-child, pre:last-child {
   margin-bottom: 0;
 }
 
@@ -2401,6 +2401,17 @@ table caption {
   border-radius: 4px;
 }
 
+.pre__overflow {
+  font-family: monospace;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding: 15px;
+  max-height: 150px;
+  overflow-y: scroll;
+  border-style: solid;
+  border-width: 1px;
+}
+
 @keyframes FadeOut {
   0% {
     visibility: visible;
@@ -2498,7 +2509,7 @@ table caption {
   font-weight: normal;
   font-style: normal;
 }
-.i-arrow-left, .i-arrow-right, .i-copy, .i-cursor, .i-github, .i-reddit, .i-lighthouse, .i-piechart, .i-transfer, .i-day, .i-night, .i-menu, .i-app, .i-arrowhead, .i-check, .i-stop, .i-file, .i-user, .i-alert, .i-info, .i-devcon5-construction, .i-devcon5-life, .i-devcon5-beer, .i-signal, .i-favorite, .i-share, .i-twitter, input[type="checkbox"], .ss-main .ss-single-selected .ss-arrow span {
+.i-arrow-left, .i-arrow-right, .i-copy, .i-cursor, .i-github, .i-reddit, .i-lighthouse, .i-piechart, .i-transfer, .i-day, .i-night, .i-menu, .i-app, .i-arrowhead, .i-check, .i-stop, .i-file, .i-user, .i-alert, .i-info, .i-devcon5-construction, .i-devcon5-life, .i-devcon5-beer, .i-signal, .i-favorite, .i-share, .i-twitter, .i-print, input[type="checkbox"], .ss-main .ss-single-selected .ss-arrow span {
   font-family: 'iconfont' !important;
   speak: none;
   font-size: 100%;
@@ -2672,6 +2683,12 @@ table caption {
   line-height: 1;
 }
 
+.i-print:before {
+  content: "󪀧";
+  display: block;
+  line-height: 1;
+}
+
 input:not([type='submit']):not([type='button']), select, textarea, input[type="submit"], input[type="button"], button, *[class*='btn-'], .ss-main .ss-single-selected {
   border-radius: 6px;
   display: inline-block;
@@ -2703,6 +2720,10 @@ input[type="submit"], input[type="button"], button, *[class*='btn-'] {
 input.btn-big[type="submit"], input.btn-big[type="button"], button.btn-big, .btn-big[class*='btn-'] {
   font-size: 19.2px;
   padding: 10px 20px;
+}
+input.btn-sm[type="submit"], input.btn-sm[type="button"], button.btn-sm, .btn-sm[class*='btn-'] {
+  font-size: 12.8px;
+  padding: 6.66667px;
 }
 
 input:not([type='submit']):not([type='button']), select, textarea, .ss-main .ss-single-selected {
@@ -2865,8 +2886,8 @@ section {
   margin-bottom: 72px;
 }
 section section {
-  margin-top: 36px;
-  margin-bottom: 36px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 *[class^='section-'] {
@@ -3392,6 +3413,42 @@ table.container-full {
   opacity: 1;
 }
 
+.content-overflow {
+  display: inline-block;
+  box-sizing: content-box;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.content-hidden, .print-show {
+  display: none;
+}
+
+@media print {
+  body.theme-light, body.theme-dark {
+    background-color: none !important;
+  }
+  body.flexcols {
+    display: block;
+  }
+
+  .sidebar, .ptint-hidden {
+    display: none;
+  }
+
+  .content-hidden, .print-show {
+    display: block;
+  }
+
+  .pre__overflow {
+    max-height: 100%;
+  }
+
+  .form-section-title {
+    padding: 0;
+    background-color: transparent !important;
+  }
+}
 .loading-logo {
   position: relative;
   padding-top: 16px;
@@ -3470,6 +3527,9 @@ table.container-full {
 .theme-light a.a-dashed {
   border-color: #03A5ED;
 }
+.theme-light blockquote {
+  border-color: #03A5ED;
+}
 .theme-light table td {
   border-color: #e6e6e6;
 }
@@ -3512,6 +3572,9 @@ table.container-full {
 }
 .theme-light hr {
   background-color: #d9d9d9;
+}
+.theme-light .pre__overflow {
+  border-color: #d9d9d9;
 }
 .theme-light .red, .theme-light a.red {
   color: #E84004;
@@ -3737,6 +3800,9 @@ table.container-full {
 .theme-dark a.a-dashed {
   border-color: #0282bb;
 }
+.theme-dark blockquote {
+  border-color: #0282bb;
+}
 .theme-dark table td {
   border-color: #161616;
 }
@@ -3779,6 +3845,9 @@ table.container-full {
 }
 .theme-dark hr {
   background-color: #090909;
+}
+.theme-dark .pre__overflow {
+  border-color: #090909;
 }
 .theme-dark .red, .theme-dark a.red {
   color: #b63203;
