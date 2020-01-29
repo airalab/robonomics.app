@@ -13,12 +13,12 @@
       </h4>
       <section>
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green>
+          <RButton v-if="isRequest" full green disabled>
             {{
             $t("sensor.requested")
             }}
           </RButton>
-          <RButton v-else @click.native="sendMsgDemand" full>
+          <RButton v-else @click.native="sendMsgDemand" full green>
             {{
             $t("sensor.isRequest")
             }}
@@ -28,10 +28,10 @@
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
         <template slot="header">
           <span>
-            {{ $t("sensor.requests") }}
+            {{ $t("sensor.requests") }} ({{log.length}})
             <RButton
               @click.native="clear"
-              style="padding: 2px 8px; font-size: 14px; vertical-align: text-top;"
+              style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
             >{{ $t("sensor.clear") }}</RButton>
           </span>
         </template>

@@ -71,6 +71,32 @@ export default {
         },
         {
           en: {
+            name: "Fuji weather",
+            desc: "Get Weather on Fuji Mountain."
+          },
+          ru: {
+            name: "Fuji погода",
+            desc: "Получить погоду на горе Фудзи."
+          },
+          link: {
+            name: "sensor",
+            params: {
+              lighthouse: "airalab",
+              model: "QmbQT8cj9TJKfYVaidfShnrEX1g14yTC9bdG1XbcRX73wY",
+              agent: "0x4D8a26e1f055c0b28D71cf1deA05f0f595a6975d"
+            }
+          },
+          target: false,
+          img: "assets/i/services/fuji_mountain_DAPP.png",
+          by: {
+            link: "#",
+            label: "Airalab"
+          },
+          token: null,
+          disabled: false
+        },
+        {
+          en: {
             name: "Gaka-chu",
             desc:
               "Buy the robot's idea on a canvas with copyright digital mark stored in the public blockchain."
@@ -173,6 +199,9 @@ export default {
         }
       ]
     };
+  },
+  created() {
+    document.title = `${this.$t("services.title")} – Robonomics Network dApp`;
   },
   mounted() {
     this.loadTokens();

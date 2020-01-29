@@ -4,7 +4,7 @@
       <slot v-bind:item="item" />
     </div>
     <button :disabled="pageNumber === 0" @click="prevPage">Previous</button>
-    <button :disabled="pageNumber >= pageCount -1" @click="nextPage">Next</button>
+    <button class="m-l-15" :disabled="pageNumber >= pageCount -1" @click="nextPage">Next</button>
   </div>
 </template>
 

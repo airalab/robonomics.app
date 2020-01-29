@@ -56,6 +56,11 @@ export default {
         ? config.CATEGORY_MODELS[this.model]
         : "unknown";
     }
+  },
+  created() {
+    document.title = `${this.$t("sensors.title")} ${
+      this.nameModel
+    } – Robonomics Network dApp`;
   }
 };
 </script>
