@@ -3,8 +3,8 @@
     <section>
       <h1>
         <span class="d-block">{{ $t("statistics_header") }}</span>
-        <RLabel color="green" small class="align-top" v-if="connected">{{ $t("сonnected") }}</RLabel>
-        <RLabel color="orange" small class="align-top" v-else>{{ $t("no_сonnected") }}</RLabel>
+        <!-- <RLabel color="green" small class="align-top" v-if="connected">{{ $t("сonnected") }}</RLabel>
+        <RLabel color="orange" small class="align-top" v-else>{{ $t("no_сonnected") }}</RLabel>-->
         <p class="m-b-0 t-sm" v-if="Object.values(nodes).length === 0">
           <i>{{ $t("waiting") }}</i>
         </p>
