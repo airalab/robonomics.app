@@ -36,7 +36,7 @@
                 <b>{{$t('passport.reqApprove')}}</b>
               </div>
               <Approve
-                :address="$robonomics.xrt.address"
+                :address="response.token"
                 :from="$robonomics.account.address"
                 :to="$robonomics.factory.address"
                 :initAmountWei="cost"
@@ -118,7 +118,7 @@ export default {
           this.$robonomics.factory.address
         );
       }
-      return 2;
+      return 0;
     }
   },
   created() {
