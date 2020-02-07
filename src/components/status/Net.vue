@@ -14,15 +14,19 @@
         </tr>
       </thead>
       <tbody>
-        <td v-if="Object.values(nodes).length === 0" colspan="7">{{ $t("no_data") }}</td>
+        <tr v-if="Object.values(nodes).length === 0">
+          <td colspan="7">{{ $t("no_data") }}</td>
+        </tr>
         <tr v-else v-for="item in Object.values(nodes)" :key="item.id">
-          <a>
-            <a :href="item.id | urlIpfs('ipns')" target="_blank">
-              {{
-              item.id
-              }}
+          <td>
+            <a>
+              <a :href="item.id | urlIpfs('ipns')" target="_blank">
+                {{
+                item.id
+                }}
+              </a>
             </a>
-          </a>
+          </td>
           <td>
             <a
               v-if="item.address"
