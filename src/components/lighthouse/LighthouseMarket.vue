@@ -4,10 +4,12 @@
       <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
+        <div v-if="error" style="margin: 5px 0;">
+          {{ $t("lighthouse.market.error") }}
+        </div>
         <Approve
-          v-if="Number(cost) > 0 && token"
-          :address="token"
+          v-if="Number(cost) > 0 && tokenAddress"
+          :address="tokenAddress"
           :from="$robonomics.account.address"
           :to="$robonomics.factory.address"
           :initAmountWei="costWei"
@@ -32,30 +34,33 @@
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
-        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
+        <div
+          v-for="(item, i) in log"
+          :key="`${i}-${item.date}`"
+          style="margin: 5px 0"
+        >
           <template v-if="item.type == 'liability'">
-            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <RAvatar
+              :address="item.address"
+              class="avatar-small align-vertical m-r-10"
+            />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a
-              :href="item.address | urlExplorer"
-              target="_blank"
-            >
-              {{
-              item.address | labelAddress
-              }}
+            <a :href="item.address | urlExplorer" target="_blank">
+              {{ item.address | labelAddress }}
             </a>
           </template>
           <template v-else>
-            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
+            <RAvatar
+              :address="item.sender"
+              class="avatar-small align-vertical m-r-10"
+            />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
             <a :href="item.sender | urlExplorer" target="_blank">
-              {{
-              item.sender | labelAddress
-              }}
+              {{ item.sender | labelAddress }}
             </a>
           </template>
           <hr />
@@ -84,8 +89,8 @@ export default {
       messages: {},
       nonce: null,
       id: null,
-      token: null,
-      cost: null,
+      tokenAddress: null,
+      cost: 0,
       error: false
     };
   },
@@ -115,11 +120,11 @@ export default {
         : false;
     },
     decimals: function() {
-      return this.token(this.token).decimals;
+      return this.token(this.tokenAddress).decimals;
     },
     myAllowance: function() {
       return this.allowance(
-        this.token,
+        this.tokenAddress,
         this.$robonomics.account.address,
         this.$robonomics.factory.address
       );
@@ -184,14 +189,15 @@ export default {
       this.$refs.form.submit();
     },
     onChange(fields) {
-      this.token = fields.token.value;
+      this.tokenAddress = fields.token.value;
       this.cost = fields.cost.value;
-
-      this.watchToken(
-        this.token,
-        this.$robonomics.account.address,
-        this.$robonomics.factory.address
-      );
+      if (this.tokenAddress) {
+        this.watchToken(
+          this.tokenAddress,
+          this.$robonomics.account.address,
+          this.$robonomics.factory.address
+        );
+      }
     },
     onSubmit(e, fields) {
       this.error = e;
