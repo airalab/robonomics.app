@@ -1,14 +1,15 @@
-import axios from "axios";
+// import axios from "axios";
 import { cat as ipfsCat } from "../../RComponents/tools/ipfs";
 import rosBag from "../../utils/rosBag";
-import config from "~config";
+// import config from "~config";
 
 export function parseResult(result) {
   let message = {};
-  axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
-    console.log("result ipfs hash resolved");
-  });
+  // axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
+  //   console.log("result ipfs hash resolved");
+  // });
   return ipfsCat(result).then(function(r) {
+    // console.log(r);
     return rosBag(
       new Blob([r]),
       function(bag) {
