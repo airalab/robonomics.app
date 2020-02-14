@@ -21,6 +21,11 @@ const chains = {
         address: "0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7",
         decimals: 9,
         label: "XRT"
+      },
+      dai: {
+        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        decimals: 18,
+        label: "DAI"
       }
     },
     DEFAULT_LIGHTHOUSE: "airalab"
@@ -34,6 +39,11 @@ const chains = {
     },
     TOKEN: {
       xrt: {
+        address: "0x966EbbFD7ECbCF44b1e05341976e0652CFA01360",
+        decimals: 9,
+        label: "XRT"
+      },
+      dai: {
         address: "0x966EbbFD7ECbCF44b1e05341976e0652CFA01360",
         decimals: 9,
         label: "XRT"
