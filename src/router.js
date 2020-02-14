@@ -10,6 +10,7 @@ import Sensor from "@/views/Sensor";
 import Passport from "@/views/Passport";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
+import Results from "@/views/Results";
 
 Vue.use(Router);
 
@@ -66,13 +67,13 @@ export default new Router({
       ]
     },
     {
-      path: "/passport",
+      path: "/blockchain-stamp",
       component: Passport,
       props: true,
       children: [
         {
           path: "",
-          name: "passport-registration"
+          name: "blockchain-stamp"
         },
         {
           path: ":passport",
@@ -90,6 +91,11 @@ export default new Router({
       path: "/approve",
       name: "approve",
       component: Approve
+    },
+    {
+      path: "/results",
+      name: "results",
+      component: Results
     },
     { path: "*", redirect: "/" }
   ]
