@@ -122,7 +122,7 @@ export default {
     }
   },
   created() {
-    this.tokenAddress = this.$robonomics.xrt.address;
+    this.tokenAddress = config.chain.get().TOKEN.dai.address;
     this.$robonomics
       .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
       .then(() => {

@@ -44,6 +44,7 @@
 import { Token } from "robonomics-js";
 import Web3Check from "vue-web3-check";
 import Page from "../components/Page";
+import config from "~config";
 
 export default {
   components: { Page },
@@ -52,21 +53,23 @@ export default {
       services: [
         {
           en: {
-            name: "Digital passport registration",
+            name: "Public blockchain stamp",
             desc: "Global registration service in the Ethereum Blockchain."
           },
           ru: {
-            name: "Регистрация цифрового паспорта",
+            name: "Публичный блокчейн-штамп",
             desc: "Сервис глобальной регистрации в Ethereum Blockchain."
           },
-          link: { name: "passport-registration" },
+          link: { name: "blockchain-stamp" },
           target: false,
           img: "assets/i/services/digital-passport.png",
           by: {
             link: "#",
             label: "Airalab"
           },
-          token: null,
+          token: config.chain.get().TOKEN.dai
+            ? config.chain.get().TOKEN.dai.address
+            : false,
           disabled: false
         },
         {
@@ -88,6 +91,32 @@ export default {
           },
           target: false,
           img: "assets/i/services/fuji_mountain_DAPP.png",
+          by: {
+            link: "#",
+            label: "Airalab"
+          },
+          token: null,
+          disabled: false
+        },
+        {
+          en: {
+            name: "The Playground",
+            desc: "Playground at home Sportivnaya 33"
+          },
+          ru: {
+            name: "Детская площадка",
+            desc: "Детская площадка дома Спортивная 33."
+          },
+          link: {
+            name: "sensor",
+            params: {
+              lighthouse: "airalab",
+              model: "Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm",
+              agent: "0xFfd95814A77884AfF78B7e6eAFCEbB81c3C2D765"
+            }
+          },
+          target: false,
+          img: "assets/i/services/Robonomics_DVOR.jpg",
           by: {
             link: "#",
             label: "Airalab"
@@ -134,7 +163,9 @@ export default {
             link: "#",
             label: "DAO IPCI IoT connection"
           },
-          token: "0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7",
+          token: config.chain.get().TOKEN.dai
+            ? config.chain.get().TOKEN.dai.address
+            : false,
           disabled: false
         },
         {
@@ -155,7 +186,9 @@ export default {
             link: "#",
             label: "DAO IPCI IoT connection"
           },
-          token: "0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7",
+          token: config.chain.get().TOKEN.dai
+            ? config.chain.get().TOKEN.dai.address
+            : false,
           disabled: false
         },
         {
@@ -175,7 +208,9 @@ export default {
             link: "#",
             label: "Distributed sky"
           },
-          token: "0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7",
+          token: config.chain.get().TOKEN.dai
+            ? config.chain.get().TOKEN.dai.address
+            : false,
           disabled: false
         },
         {
@@ -194,7 +229,9 @@ export default {
             link: "#",
             label: "Distributed sky"
           },
-          token: "0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7",
+          token: config.chain.get().TOKEN.dai
+            ? config.chain.get().TOKEN.dai.address
+            : false,
           disabled: false
         }
       ]
@@ -202,8 +239,6 @@ export default {
   },
   created() {
     document.title = `${this.$t("services.title")} – Robonomics Network dApp`;
-  },
-  mounted() {
     this.loadTokens();
   },
   methods: {

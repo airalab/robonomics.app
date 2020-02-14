@@ -71,6 +71,7 @@ export default {
       requests: "Your requests",
       requestAt: "Request at",
       result: "Result",
+      wait: "Waiting for data",
       table: {
         model: "model",
         sender: "sender",
@@ -166,28 +167,28 @@ export default {
       executed: "Smart contract is executed!"
     },
     passport: {
-      title: "Digital passport registration",
-      subtitle1: "Manufacturer Information",
-      subtitle2: "Collected product information",
-      subtitle3: "Passport registration",
-      priceTitle: "Cost of a digital passport",
+      title: "Public blockchain stamp",
+      subtitle1: "Publisher information",
+      subtitle2: "Collected information",
+      subtitle3: "Public blockchain stamp",
+      priceTitle: "Cost of a blockchain stamp",
       details: "Show more details",
       detailsLess: "Show less details",
-      success: "Your passport",
-      link: "view passport",
+      success: "Your blockchain stamp",
+      link: "view blockchain stamp",
       agent: "Agent",
       objective: "Objective",
       token: "Token",
-      requestPrice: "Request price",
+      requestPrice: "Request service",
       liability: "Liability",
       group1: "Info",
-      info: "Manufacturer Information",
+      info: "Additional Information",
       meta: "Information file",
       images: "Photos",
       email: "E-mail",
       order: "order",
       error: "Check if data correct, please.",
-      informations: "Manufacturer Information",
+      informations: "Additional Information",
       metaField: "Attach information file (json)",
       imagesField: "Attach photos, if any (jpg, png)",
       emailField: "E-mail",
@@ -199,7 +200,7 @@ export default {
       loading: "Loading",
       openIpfs: "Open IPFS",
       reqApprove:
-        "You need to approve an additional amount to purchase a passport"
+        "You need to approve an additional amount to purchase a blockchain stamp"
     }
   },
   ru: {
@@ -274,6 +275,7 @@ export default {
       requests: "Ваши запросы",
       requestAt: "Запрос от",
       result: "Результат",
+      wait: "Ожидание данных",
       table: {
         model: "модель",
         sender: "отправитель",
@@ -368,27 +370,27 @@ export default {
       executed: "Умный контракт выполнен!"
     },
     passport: {
-      title: "Регистрация цифрового паспорта",
-      subtitle1: "Информация о производителе",
-      subtitle2: "Собранная информация о продукте",
-      subtitle3: "Заказ паспорта",
-      priceTitle: "Стоимость цифрового паспорта составит",
+      title: "Публичный блокчейн-штамп",
+      subtitle1: "Информация об отправителе",
+      subtitle2: "Собранная информация",
+      subtitle3: "Заказ блокчейн-штампа",
+      priceTitle: "Стоимость блокчейн-штампа составит",
       details: "Показать больше деталей",
       detailsLess: "Показать меньше деталей",
-      success: "Ваш паспорт",
-      link: "Перейти на страницу паспорта",
+      success: "Ваш блокчейн-штамп",
+      link: "Перейти на страницу блокчейн-штампа",
       agent: "Агент",
       objective: "Задача",
       token: "Токен",
-      requestPrice: "Запросить цену",
+      requestPrice: "Запросить услугу",
       liability: "Контракт обязательства",
-      info: "Информация о производителе",
+      info: "Дополнительная информация",
       meta: "Файл с информацией",
       images: "Фотографии",
       email: "E-mail",
-      order: "Заказать цифровой паспорт",
+      order: "Заказать блокчейн-штамп",
       error: "Проверьте пожалуйста правильность данных.",
-      informations: "Информация о производителе",
+      informations: "Дополнительная информация",
       metaField: "Прикрепите файл с информацией (json)",
       imagesField: "Прикрепите фотографии, если есть (jpg, png)",
       emailField: "E-mail",
@@ -399,7 +401,8 @@ export default {
       hideImages: "скрыть фото",
       loading: "Загрузка",
       openIpfs: "Открыть в IPFS",
-      reqApprove: "Вам нужно одобрить дополнительную сумму для покупки паспорта"
+      reqApprove:
+        "Вам нужно одобрить дополнительную сумму для покупки блокчейн-штампа"
     }
   }
 };
