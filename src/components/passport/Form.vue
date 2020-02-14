@@ -4,7 +4,7 @@
       <div class="form-section-title">{{ $t("passport.subtitle1") }}</div>
       <div class="form-item form-line-label">
         <label for="inputdata-info">
-          {{ $t("passport.emailField") }} *
+          {{ $t("passport.emailField") }}
           <span v-if="form.fields.email.error" class="input-msg">
             {{
             $t("passport.error")
@@ -21,7 +21,7 @@
       </div>
       <div class="form-item form-line-label">
         <label for="inputdata-info">
-          {{ $t("passport.informations") }} *
+          {{ $t("passport.informations") }}
           <span v-if="form.fields.info.error" class="input-msg">
             {{
             $t("passport.error")
@@ -58,7 +58,7 @@
       </div>
       <div class="form-item form-line-label">
         <label for="inputdata-images">
-          {{ $t("passport.imagesField") }} *
+          {{ $t("passport.imagesField") }}
           <span v-if="form.fields.images.error" class="input-msg">
             {{
             $t("passport.error")
@@ -130,13 +130,13 @@ export default {
           email: {
             value: "",
             type: "text",
-            rules: ["require", "email"],
+            rules: ["email"],
             error: false
           },
           info: {
             value: "",
             type: "text",
-            rules: ["require"],
+            rules: [],
             error: false
           },
           meta: {
@@ -148,7 +148,7 @@ export default {
           images: {
             items: {},
             type: "files",
-            rules: ["items"],
+            rules: [],
             error: false
           }
         },
@@ -167,6 +167,7 @@ export default {
             this.form.error = true;
           } else if (
             rule === "email" &&
+            this.form.fields[field].value !== "" &&
             !/.+@.+/.test(this.form.fields[field].value)
           ) {
             this.form.fields[field].error = true;

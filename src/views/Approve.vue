@@ -55,7 +55,6 @@ import Page from "@/components/Page";
 import Approve from "@/components/approve/Main";
 
 export default {
-  props: ["passport"],
   components: {
     Page,
     Approve

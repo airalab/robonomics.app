@@ -5,15 +5,15 @@
       <a class="t-lg content-overflow" :href="address | urlExplorer" target="_blank">{{address}}</a>
     </blockquote>
     <template v-if="passport">
-      <section>
+      <section v-if="passport.emai || passport.info">
         <div class="form-section-title">{{ $t("passport.subtitle1") }}</div>
-        <section>
+        <section v-if="passport.emai">
           <span class="t-sm">{{ $t("passport.email") }}:</span>
           <br />
           <span>{{ passport.email }}</span>
         </section>
-        <hr />
-        <section>
+        <hr v-if="passport.emai && passport.info" />
+        <section v-if="passport.info">
           <span class="t-sm">{{ $t("passport.info") }}:</span>
           <br />
           <span>{{ passport.info }}</span>
