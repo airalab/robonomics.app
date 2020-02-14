@@ -1,3 +1,6 @@
+import axios from "axios";
+import config from "~config";
+
 let ipfs = null;
 
 function getIpfs() {
@@ -57,7 +60,14 @@ export async function init(config) {
 
 export function cat(hash) {
   const node = getIpfs();
-  return node.cat(hash);
+  return Promise.race([
+    node.cat(hash),
+    axios
+      .get(`${config.IPFS_GATEWAY}${hash}`, { responseType: "blob" })
+      .then(result => {
+        return result.data;
+      })
+  ]);
 }
 
 export default getIpfs;
