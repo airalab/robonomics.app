@@ -19,6 +19,7 @@ export default {
     QmUBVwmCcbhzd4nJ63Hi599ucV8mHmuN5u4r7fm19mCprk: "Пыль (pm2.5)",
     QmNrPMALieL6aX8xfs8TukYWbEDTPq1bv6At19qU1PsUWz: "Электричество",
     QmUZTatTL3F5DvcMbsscgSx6ogBZFekaCvLstjixw4xMXv: "voc",
-    QmbQT8cj9TJKfYVaidfShnrEX1g14yTC9bdG1XbcRX73wY: "Fuji weather"
+    QmbQT8cj9TJKfYVaidfShnrEX1g14yTC9bdG1XbcRX73wY: "Fuji weather",
+    Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm: "Playground"
   }
 };
