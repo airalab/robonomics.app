@@ -15,6 +15,11 @@ export default {
       type: Array,
       required: true
     },
+    currentPage: {
+      type: Number,
+      required: false,
+      default: 0
+    },
     size: {
       type: Number,
       required: false,
@@ -23,8 +28,13 @@ export default {
   },
   data() {
     return {
-      pageNumber: 0
+      pageNumber: this.currentPage
     };
+  },
+  watch: {
+    currentPage: function(newVal) {
+      this.pageNumber = newVal;
+    }
   },
   computed: {
     pageCount() {
@@ -41,9 +51,11 @@ export default {
   methods: {
     nextPage() {
       this.pageNumber++;
+      this.$emit("onPage", this.pageNumber);
     },
     prevPage() {
       this.pageNumber--;
+      this.$emit("onPage", this.pageNumber);
     }
   }
 };

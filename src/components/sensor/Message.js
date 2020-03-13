@@ -14,9 +14,12 @@ export default {
         }).href
       }`;
     },
+    getDescription() {
+      return "Look data from my sensor in IPFS via Robonomics dapp: ";
+    },
     getLinkTwitter(result) {
       return `https://twitter.com/intent/tweet?text=${window.encodeURIComponent(
-        this.getLink(result)
+        this.getDescription() + this.getLink(result)
       )}&ref_src=twsrc%5Etfw`;
     }
   }

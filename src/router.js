@@ -11,6 +11,7 @@ import Passport from "@/views/Passport";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
+import Uniswap from "@/views/Uniswap";
 
 Vue.use(Router);
 
@@ -96,6 +97,11 @@ export default new Router({
       path: "/results",
       name: "results",
       component: Results
+    },
+    {
+      path: "/uniswap",
+      name: "uniswap",
+      component: Uniswap
     },
     { path: "*", redirect: "/" }
   ]

@@ -7,23 +7,18 @@
     </template>
     <RItem icon="i-menu">
       <RNavigation>
-        <RNavigationLink :to="{ name: 'status' }" icon="i-piechart">{{
-          $t("menu.net_stats")
-        }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'status' }" icon="i-piechart">{{ $t("menu.net_stats") }}</RNavigationLink>
         <RNavigationLink
           :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
-          >{{ $t("menu.lighthouse") }}</RNavigationLink
-        >
+        >{{ $t("menu.lighthouse") }}</RNavigationLink>
         <RNavigationLink
           v-if="networkId == 1"
           :to="{ name: 'ambix' }"
           icon="i-transfer"
-          >{{ $t("menu.tokens_alembic") }}</RNavigationLink
-        >
-        <RNavigationLink :to="{ name: 'services' }" icon="i-app">{{
-          $t("menu.services")
-        }}</RNavigationLink>
+        >{{ $t("menu.tokens_alembic") }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'services' }" icon="i-app">{{ $t("menu.services") }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'uniswap' }" icon="i-day">{{ $t("menu.uniswap") }}</RNavigationLink>
       </RNavigation>
     </RItem>
     <RItem bottom icon="i-user">

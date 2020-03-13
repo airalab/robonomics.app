@@ -15,7 +15,8 @@ export default {
       lighthouse: "Lighthouses",
       net_stats: "Statistics",
       services: "Services",
-      sensors: "Sensor networks"
+      sensors: "Sensor networks",
+      uniswap: "Uniswap"
     },
 
     waiting: "Waiting for IPFS data",
@@ -219,7 +220,8 @@ export default {
       lighthouse: "Маяки",
       net_stats: "Статистика",
       services: "Сервисы",
-      sensors: "Сенсорные сети"
+      sensors: "Сенсорные сети",
+      uniswap: "Uniswap"
     },
 
     waiting: "Ожидание данных IPFS",
