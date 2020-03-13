@@ -1,3 +1,5 @@
+import sensorsNetwork from "../services/sensors-network/messages";
+
 export default {
   en: {
     header: "Aira → XRT alembic",
@@ -202,7 +204,8 @@ export default {
       openIpfs: "Open IPFS",
       reqApprove:
         "You need to approve an additional amount to purchase a blockchain stamp"
-    }
+    },
+    sensorSelect: sensorsNetwork.en
   },
   ru: {
     header: "Перегонный куб Aira токенов в XRT",
@@ -405,6 +408,7 @@ export default {
       openIpfs: "Открыть в IPFS",
       reqApprove:
         "Вам нужно одобрить дополнительную сумму для покупки блокчейн-штампа"
-    }
+    },
+    sensorSelect: sensorsNetwork.ru
   }
 };

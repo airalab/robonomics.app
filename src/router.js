@@ -12,6 +12,7 @@ import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
 import Uniswap from "@/views/Uniswap";
+import sensorsNetwork from "@/services/sensors-network/router";
 
 Vue.use(Router);
 
@@ -103,6 +104,7 @@ export default new Router({
       name: "uniswap",
       component: Uniswap
     },
+    sensorsNetwork,
     { path: "*", redirect: "/" }
   ]
 });

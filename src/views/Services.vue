@@ -44,6 +44,7 @@
 import { Token } from "robonomics-js";
 import Web3Check from "vue-web3-check";
 import Page from "../components/Page";
+import sensorSelect from "../services/sensor-select/meta";
 import config from "~config";
 
 export default {
@@ -51,6 +52,7 @@ export default {
   data() {
     return {
       services: [
+        sensorSelect,
         {
           en: {
             name: "Public blockchain stamp",
