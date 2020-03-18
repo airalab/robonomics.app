@@ -9,6 +9,7 @@
         <i>/</i>
         <span>{{ nameModel }} {{ miniAddrAgent }}</span>
       </h2>
+      <modals-container />
       <SensorResult
         v-if="result"
         :lighthouse="lighthouse"
@@ -16,15 +17,29 @@
         :agent="agent"
         :result="result"
       />
+      <SensorResultSubstrate
+        v-if="substrateBlock"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+        :substrateBlock="substrateBlock"
+        :substrateTx="substrateTx"
+      />
       <SensorCost
-        v-else-if="cost>0"
+        v-else-if="cost > 0"
         :lighthouse="lighthouse"
         :model="model"
         :agent="agent"
         :tokenAddress="token"
         :cost="cost"
       />
-      <SensorFree v-else :lighthouse="lighthouse" :model="model" :agent="agent" :result="result" />
+      <SensorFree
+        v-else
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+        :result="result"
+      />
     </section>
   </Page>
 </template>
@@ -34,15 +49,26 @@ import Page from "../components/Page";
 import SensorFree from "../components/sensor/SensorFree";
 import SensorCost from "../components/sensor/SensorCost";
 import SensorResult from "../components/sensor/SensorResult";
+import SensorResultSubstrate from "../components/sensor/SensorResultSubstrate";
 import config from "~config";
 
 export default {
-  props: ["lighthouse", "model", "agent", "result", "token", "cost"],
+  props: [
+    "lighthouse",
+    "model",
+    "agent",
+    "result",
+    "substrateBlock",
+    "substrateTx",
+    "token",
+    "cost"
+  ],
   components: {
     Page,
     SensorFree,
     SensorCost,
-    SensorResult
+    SensorResult,
+    SensorResultSubstrate
   },
   computed: {
     miniAddrAgent: function() {

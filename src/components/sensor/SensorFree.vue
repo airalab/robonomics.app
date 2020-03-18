@@ -3,20 +3,22 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template v-if="log.length === 0">
-          {{
+        <template v-if="log.length === 0">{{
           $t("sensor.notStatusAgent")
-          }}
-        </template>
+        }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].time }}
         </template>
       </h4>
-      <section v-if="model !== 'Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm'">
+      <section>
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green disabled>{{ $t("sensor.requested") }}</RButton>
-          <RButton v-else @click.native="sendMsgDemand" full green>{{ $t("sensor.isRequest") }}</RButton>
+          <RButton v-if="isRequest" full green disabled>
+            {{ $t("sensor.requested") }}
+          </RButton>
+          <RButton v-else @click.native="sendMsgDemand" full green>
+            {{ $t("sensor.isRequest") }}
+          </RButton>
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -26,7 +28,8 @@
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-            >{{ $t("sensor.clear") }}</RButton>
+              >{{ $t("sensor.clear") }}</RButton
+            >
           </span>
         </template>
 
@@ -37,15 +40,16 @@
         >
           <template v-slot:default="props">
             <RCard>
-              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+              <Message
+                :item="props.item"
+                :lighthouse="lighthouse"
+                :model="model"
+                :agent="agent"
+              />
             </RCard>
           </template>
         </Pagination>
       </RWindow>
-      <RCard v-else-if="model === 'Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm'">
-        <span class="align-vertical">{{ $t("sensor.wait") }}</span>
-        <div class="loader-ring align-vertical m-l-10"></div>
-      </RCard>
     </div>
   </div>
 </template>
@@ -79,10 +83,12 @@ export default {
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
 
-      const data = history.getData(this.storeKey);
+      const data = history.getData(this.storeKey).filter(item => item);
       this.log = data;
+      console.log("load", data);
       data.forEach((item, index) => {
         if (
+          item &&
           Object.prototype.hasOwnProperty.call(item, "status") &&
           item.status >= 2
         ) {
@@ -109,9 +115,9 @@ export default {
         console.log("demand", msg);
       });
       this.$robonomics.onResult(msg => {
+        console.log("open", msg);
         // const sender = msg.recovery();
         const sender = this.$robonomics.account.recoveryMessage(msg);
-        console.log("open", sender, msg);
 
         if (
           sender.toLowerCase() === this.agent.toLowerCase() &&
@@ -139,11 +145,15 @@ export default {
             status: 2,
             resultHash: msg.result
           });
-          history.addItem(this.storeKey, {
-            ...this.log[index],
-            status: 2,
-            resultHash: msg.result
-          });
+          history.addItem(
+            this.storeKey,
+            {
+              ...this.log[index],
+              status: 2,
+              resultHash: msg.result
+            },
+            index
+          );
 
           parseResult(msg.result).then(result => {
             Vue.set(this.log, index, {

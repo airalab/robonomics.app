@@ -6,7 +6,13 @@
           <span>{{ $t("sensor.result") }}</span>
         </template>
         <RCard v-if="item">
-          <Message :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+          <Message
+            :item="item"
+            :lighthouse="lighthouse"
+            :model="model"
+            :agent="agent"
+            :isSubstrate="true"
+          />
         </RCard>
       </RWindow>
     </div>

@@ -6,13 +6,13 @@ import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
-import Sensor from "@/views/Sensor";
 import Passport from "@/views/Passport";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
 import Uniswap from "@/views/Uniswap";
 import sensorsNetwork from "@/services/sensors-network/router";
+const Sensor = () => import("@/views/Sensor");
 
 Vue.use(Router);
 
@@ -65,6 +65,10 @@ export default new Router({
         {
           path: "result/:result",
           name: "sensor-result"
+        },
+        {
+          path: "substrate/:substrateBlock/:substrateTx",
+          name: "sensor-result-substrate"
         }
       ]
     },

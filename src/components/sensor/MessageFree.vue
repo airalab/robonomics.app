@@ -25,15 +25,13 @@
         <span class="loader-ring align-vertical m-r-15"></span>
         <b class="align-vertical">2. {{ $t("sensor.free.status22") }}</b>
       </p>
-      <p class="icons-line">
-        <a
-          class="i-share"
-          href="javascript:;"
-          title="copy to clipboard"
-          v-clipboard:copy="getLink(item.resultHash)"
-        ></a>
-        <a class="i-twitter" :href="getLinkTwitter(item.resultHash)" target="_blank"></a>
-      </p>
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+        :isSubstrate="true"
+      />
     </div>
     <div v-else-if="item.status === 3">
       <p>
@@ -62,22 +60,21 @@
           <pre>{{ item.result }}</pre>
         </code>
       </p>
-      <p class="icons-line">
-        <a
-          class="i-share"
-          href="javascript:;"
-          title="copy to clipboard"
-          v-clipboard:copy="getLink(item.resultHash)"
-        ></a>
-        <a class="i-twitter" :href="getLinkTwitter(item.resultHash)" target="_blank"></a>
-      </p>
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+        :isSubstrate="true"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import Message from "./Message";
+import MessageShare from "./MessageShare";
 export default {
-  mixins: [Message]
+  props: ["item", "lighthouse", "model", "agent"],
+  components: { MessageShare }
 };
 </script>

@@ -8,19 +8,19 @@
         class="item"
         :class="{ disabled: service.disabled }"
       >
-        <RImgHover v-if="service.target" :src="service.img" :href="service.link" />
+        <RImgHover
+          v-if="service.target"
+          :src="service.img"
+          :href="service.link"
+        />
         <RImgHover v-else :src="service.img" :to="service.link" />
         <div class="item-content">
           <h2>
             <a v-if="service.target" :href="service.link" target="_blank">
-              {{
-              service[$i18n.locale].name
-              }}
+              {{ service[$i18n.locale].name }}
             </a>
             <router-link v-else :to="service.link">
-              {{
-              service[$i18n.locale].name
-              }}
+              {{ service[$i18n.locale].name }}
             </router-link>
           </h2>
           <div class="t-hyphen">{{ service[$i18n.locale].desc }}</div>
@@ -29,7 +29,10 @@
               <span>Provider:</span>
               <span class="item-bottom--info">{{ service.by.label }}</span>
             </div>
-            <div v-if="service.token && service.token.name" class="item-bottom--line">
+            <div
+              v-if="service.token && service.token.name"
+              class="item-bottom--line"
+            >
               <span>Payment token:</span>
               <span class="item-bottom--info">{{ service.token.name }}</span>
             </div>
@@ -44,7 +47,7 @@
 import { Token } from "robonomics-js";
 import Web3Check from "vue-web3-check";
 import Page from "../components/Page";
-import sensorSelect from "../services/sensor-select/meta";
+import sensorsNetwork from "../services/sensors-network/meta";
 import config from "~config";
 
 export default {
@@ -52,7 +55,7 @@ export default {
   data() {
     return {
       services: [
-        sensorSelect,
+        sensorsNetwork,
         {
           en: {
             name: "Public blockchain stamp",

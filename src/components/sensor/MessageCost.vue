@@ -13,7 +13,11 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
+        <RLinkExplorer
+          type="ipfs"
+          :text="item.liability"
+          classStyle="align-vertical"
+        />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -32,7 +36,11 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
+        <RLinkExplorer
+          type="ipfs"
+          :text="item.liability"
+          classStyle="align-vertical"
+        />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -45,7 +53,11 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
+        <RLinkExplorer
+          type="ipfs"
+          :text="item.resultHash"
+          classStyle="align-vertical"
+        />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -57,15 +69,12 @@
         <span class="loader-ring align-vertical m-r-15"></span>
         <b class="align-vertical">3. {{ $t("sensor.cost.status32") }}</b>
       </p>
-      <p class="icons-line">
-        <a
-          class="i-share"
-          href="javascript:;"
-          title="copy to clipboard"
-          v-clipboard:copy="getLink(item.resultHash)"
-        ></a>
-        <a class="i-twitter" :href="getLinkTwitter(item.resultHash)" target="_blank"></a>
-      </p>
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+      />
     </div>
     <div v-else-if="item.status === 4">
       <p>
@@ -73,7 +82,11 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.liability" classStyle="align-vertical" />
+        <RLinkExplorer
+          type="ipfs"
+          :text="item.liability"
+          classStyle="align-vertical"
+        />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -86,7 +99,11 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
+        <RLinkExplorer
+          type="ipfs"
+          :text="item.resultHash"
+          classStyle="align-vertical"
+        />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -107,22 +124,20 @@
           <pre>{{ item.result }}</pre>
         </code>
       </p>
-      <p class="icons-line">
-        <a
-          class="i-share"
-          href="javascript:;"
-          title="copy to clipboard"
-          v-clipboard:copy="getLink(item.resultHash)"
-        ></a>
-        <a class="i-twitter" :href="getLinkTwitter(item.resultHash)" target="_blank"></a>
-      </p>
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import Message from "./Message";
+import MessageShare from "./MessageShare";
 export default {
-  mixins: [Message]
+  props: ["item", "lighthouse", "model", "agent"],
+  components: { MessageShare }
 };
 </script>
