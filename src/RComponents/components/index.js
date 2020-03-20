@@ -21,5 +21,6 @@ export { default as InputText } from "./form/InputText";
 export { default as Textarea } from "./form/Textarea";
 export { default as OverlayLoader } from "./OverlayLoader";
 export { default as ErrorDepNetwork } from "./errors/DepNetwork";
+export { default as ErrorNotAccess } from "./errors/NotAccess";
 export { default as ErrorNotAccounts } from "./errors/NotAccounts";
 export { default as ErrorNotWeb3 } from "./errors/NotWeb3";

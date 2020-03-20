@@ -21,5 +21,6 @@ export default {
     QmUZTatTL3F5DvcMbsscgSx6ogBZFekaCvLstjixw4xMXv: "voc",
     QmbQT8cj9TJKfYVaidfShnrEX1g14yTC9bdG1XbcRX73wY: "Fuji weather",
     Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm: "Playground"
-  }
+  },
+  INFURA_KEY: "c1ea69ab1e0a4c6aa6a9dcd0641aecc7"
 };

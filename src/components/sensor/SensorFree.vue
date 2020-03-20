@@ -3,21 +3,25 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template v-if="log.length === 0">{{
-          $t("sensor.notStatusAgent")
-        }}</template>
+        <template
+          v-if="log.length === 0"
+        >{{ $t("sensor.notStatusAgent") }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].time }}
         </template>
       </h4>
-      <section>
+      <section v-if="$robonomics.account">
         <div class="input-size--md">
           <RButton v-if="isRequest" full green disabled>
-            {{ $t("sensor.requested") }}
+            {{
+            $t("sensor.requested")
+            }}
           </RButton>
           <RButton v-else @click.native="sendMsgDemand" full green>
-            {{ $t("sensor.isRequest") }}
+            {{
+            $t("sensor.isRequest")
+            }}
           </RButton>
         </div>
       </section>
@@ -28,8 +32,7 @@
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-              >{{ $t("sensor.clear") }}</RButton
-            >
+            >{{ $t("sensor.clear") }}</RButton>
           </span>
         </template>
 
@@ -40,12 +43,7 @@
         >
           <template v-slot:default="props">
             <RCard>
-              <Message
-                :item="props.item"
-                :lighthouse="lighthouse"
-                :model="model"
-                :agent="agent"
-              />
+              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
             </RCard>
           </template>
         </Pagination>
@@ -56,6 +54,7 @@
 
 <script>
 import Vue from "vue";
+import { Account } from "robonomics-js";
 import Pagination from "./Pagination";
 import Message from "./MessageFree";
 import history from "./historyStore";
@@ -80,6 +79,9 @@ export default {
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
 
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
 
@@ -117,7 +119,7 @@ export default {
       this.$robonomics.onResult(msg => {
         console.log("open", msg);
         // const sender = msg.recovery();
-        const sender = this.$robonomics.account.recoveryMessage(msg);
+        const sender = Account.recoveryMessage(msg);
 
         if (
           sender.toLowerCase() === this.agent.toLowerCase() &&
@@ -137,7 +139,8 @@ export default {
           this.log.length > 0 &&
           sender.toLowerCase() === this.agent.toLowerCase() &&
           (msg.liability === "0x0000000000000000000000000000000000000000" ||
-            msg.liability === this.$robonomics.account.address)
+            (this.$robonomics.account &&
+              msg.liability === this.$robonomics.account.address))
         ) {
           const index = this.log.findIndex(item => item.status === 1);
           Vue.set(this.log, index, {

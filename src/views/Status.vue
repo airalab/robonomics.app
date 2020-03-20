@@ -10,7 +10,7 @@
         </p>
       </h1>
     </section>
-    <Statistic />
+    <!-- <Statistic /> -->
     <Net />
   </Page>
 </template>
@@ -18,21 +18,21 @@
 <script>
 import Page from "../components/Page";
 import { mapState } from "vuex";
-import Statistic from "../components/status/Statistic";
+// import Statistic from "../components/status/Statistic";
 import Net from "../components/status/Net";
 
 export default {
   components: {
     Page,
-    Statistic,
+    // Statistic,
     Net
   },
   computed: mapState({
-    connected: state => state.statistics.connected,
+    // connected: state => state.statistics.connected,
     nodes: state => state.net.nodes
   }),
   created() {
-    this.$store.dispatch("statistics/init");
+    // this.$store.dispatch("statistics/init");
     this.$store.dispatch("net/init");
   }
 };

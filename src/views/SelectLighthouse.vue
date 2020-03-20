@@ -1,6 +1,10 @@
 <template>
   <Page>
-    <SelectLighthouse @connect="(lighthouse) => { $router.push({ path: `/lighthouse/${lighthouse}` });$router.go(); }" />
+    <SelectLighthouse
+      @connect="(lighthouse) => {
+        $router.push({ path: `/lighthouse/${lighthouse}` });
+      }"
+    />
   </Page>
 </template>
 

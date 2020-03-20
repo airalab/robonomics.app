@@ -4,9 +4,7 @@
       <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">
-          {{ $t("lighthouse.market.error") }}
-        </div>
+        <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
         <Approve
           v-if="Number(cost) > 0 && tokenAddress"
           :address="tokenAddress"
@@ -34,34 +32,26 @@
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
-        <div
-          v-for="(item, i) in log"
-          :key="`${i}-${item.date}`"
-          style="margin: 5px 0"
-        >
+        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
           <template v-if="item.type == 'liability'">
-            <RAvatar
-              :address="item.address"
-              class="avatar-small align-vertical m-r-10"
-            />
+            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a :href="item.address | urlExplorer" target="_blank">
-              {{ item.address | labelAddress }}
-            </a>
+            <a
+              :href="item.address | urlExplorer"
+              target="_blank"
+            >{{ item.address | labelAddress }}</a>
           </template>
           <template v-else>
-            <RAvatar
-              :address="item.sender"
-              class="avatar-small align-vertical m-r-10"
-            />
+            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
-            <a :href="item.sender | urlExplorer" target="_blank">
-              {{ item.sender | labelAddress }}
-            </a>
+            <a
+              :href="item.sender | urlExplorer"
+              target="_blank"
+            >{{ item.sender | labelAddress }}</a>
           </template>
           <hr />
         </div>
@@ -123,11 +113,13 @@ export default {
       return this.token(this.tokenAddress).decimals;
     },
     myAllowance: function() {
-      return this.allowance(
-        this.tokenAddress,
-        this.$robonomics.account.address,
-        this.$robonomics.factory.address
-      );
+      return this.$robonomics.account
+        ? this.allowance(
+            this.tokenAddress,
+            this.$robonomics.account.address,
+            this.$robonomics.factory.address
+          )
+        : 0;
     }
   },
   watch: {
@@ -138,53 +130,56 @@ export default {
     }
   },
   mounted() {
-    this.account = this.$robonomics.account.address;
-    this.$refs.form.fields.token.value = this.$robonomics.xrt.address;
-    this.$robonomics.onDemand(null, msg => {
-      const hash = msg.getHash();
-      if (!this.messages[hash]) {
-        Vue.set(this.messages, hash, {
-          date: new Date(),
-          type: "demand",
-          sender: msg.sender
-        });
-      }
-    });
-    this.$robonomics.onOffer(null, msg => {
-      const hash = msg.getHash();
-      if (!this.messages[hash]) {
-        Vue.set(this.messages, hash, {
-          date: new Date(),
-          type: "offer",
-          sender: msg.sender
-        });
-      }
-    });
-    this.$robonomics.onLiability((err, liability) => {
-      if (
-        this.demand &&
-        this.id &&
-        liability.address &&
-        this.demand.sender === this.$robonomics.account.address
-      ) {
-        this.$store.dispatch("sender/setContract", {
-          id: this.id,
-          address: liability.address
-        });
-      }
-      if (!this.messages[liability.address]) {
-        Vue.set(this.messages, liability.address, {
-          date: new Date(),
-          type: "liability",
-          address: liability.address
-        });
-      }
-    });
     this.tooltip();
-
-    return this.setNonce();
+    this.init();
   },
   methods: {
+    init() {
+      this.account = this.$robonomics.account.address;
+      this.$refs.form.fields.token.value = this.$robonomics.xrt.address;
+      this.$robonomics.onDemand(null, msg => {
+        const hash = msg.getHash();
+        if (!this.messages[hash]) {
+          Vue.set(this.messages, hash, {
+            date: new Date(),
+            type: "demand",
+            sender: msg.sender
+          });
+        }
+      });
+      this.$robonomics.onOffer(null, msg => {
+        const hash = msg.getHash();
+        if (!this.messages[hash]) {
+          Vue.set(this.messages, hash, {
+            date: new Date(),
+            type: "offer",
+            sender: msg.sender
+          });
+        }
+      });
+      this.$robonomics.onLiability((err, liability) => {
+        if (
+          this.demand &&
+          this.id &&
+          liability.address &&
+          this.demand.sender === this.$robonomics.account.address
+        ) {
+          this.$store.dispatch("sender/setContract", {
+            id: this.id,
+            address: liability.address
+          });
+        }
+        if (!this.messages[liability.address]) {
+          Vue.set(this.messages, liability.address, {
+            date: new Date(),
+            type: "liability",
+            address: liability.address
+          });
+        }
+      });
+
+      this.setNonce();
+    },
     sendMsgDemand() {
       this.$refs.form.submit();
     },

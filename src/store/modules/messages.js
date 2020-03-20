@@ -12,7 +12,8 @@ const state = {
   model: null,
   offers: [],
   demands: [],
-  lis: []
+  lis: [],
+  getOldMessenger: null
 };
 
 // getters
@@ -29,9 +30,10 @@ const getters = {
 const actions = {
   async init({ commit, dispatch }) {
     commit("run");
-    commit("clear");
     robonomics = getRobonomics();
+    dispatch("clear");
     robonomics.ready().then(() => {
+      commit("oldMessenger", robonomics.messenger);
       const ipfs = getIpfs();
       ipfs.id((err, info) => {
         commit("model", info.id);
@@ -43,8 +45,9 @@ const actions = {
   },
   onOffer({ commit, state }) {
     robonomics.onOffer(state.model, msg => {
-      console.log("offer", msg);
-      const item = _find(state.offers, { signature: msg.signature });
+      const item = _find(state.offers, {
+        signature: msg.signature
+      });
       if (!item) {
         commit("addOffer", msg);
       }
@@ -80,6 +83,12 @@ const actions = {
     liability.onResult().then(result => {
       commit("setLiabilityResult", { address: liability.address, result });
     });
+  },
+  clear({ commit, state }) {
+    if (state.getOldMessenger !== null) {
+      state.getOldMessenger().stop();
+    }
+    commit("clear");
   }
 };
 
@@ -95,6 +104,7 @@ const mutations = {
     state.offers = [];
     state.demands = [];
     state.lis = [];
+    state.getOldMessenger = null;
   },
   addOffer(state, msg) {
     state.offers.unshift({ ...msg, hash: msg.getHash(), watch: true });
@@ -132,6 +142,9 @@ const mutations = {
         watch: false
       };
     }
+  },
+  oldMessenger(state, oldMessenger) {
+    state.getOldMessenger = () => oldMessenger;
   }
 };
 

@@ -6,10 +6,9 @@
         <div class="form-item form-line-label">
           <label for="inputdata-token">
             Address token *
-            <span
-              v-if="form.fields.token.error"
-              class="input-msg"
-            >Check if data correct, please.</span>
+            <span v-if="form.fields.token.error" class="input-msg"
+              >Check if data correct, please.</span
+            >
           </label>
           <input
             v-model="form.fields.token.value"
@@ -24,10 +23,9 @@
         <div class="form-item form-line-label">
           <label for="inputdata-toApprove">
             Address to approve *
-            <span
-              v-if="form.fields.toApprove.error"
-              class="input-msg"
-            >Check if data correct, please.</span>
+            <span v-if="form.fields.toApprove.error" class="input-msg"
+              >Check if data correct, please.</span
+            >
           </label>
           <input
             v-model="form.fields.toApprove.value"
@@ -40,7 +38,7 @@
       </section>
 
       <Approve
-        v-if="!form.error"
+        v-if="!form.error && $robonomics.account"
         :address="form.fields.token.value"
         :from="$robonomics.account.address"
         :to="form.fields.toApprove.value"

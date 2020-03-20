@@ -23,6 +23,15 @@
           <ThemeSwitcher v-if="isTheme" />
         </section>
         <section class="sidebar-col--bottom">
+          <a
+            href="javascript:;"
+            v-if="!$robonomics.account"
+            @click="connect"
+            class="sidebar-i--lg"
+            style="color:#e88100"
+          >
+            <i class="i-user"></i>
+          </a>
           <Button
             v-for="(item, k) in Object.values(blocks.bottom)"
             :key="k"
@@ -34,11 +43,7 @@
         </section>
       </div>
     </div>
-    <div
-      class="sidebar-col sidebar-col-padding"
-      :class="{ open: !!block }"
-      v-show="!!block"
-    >
+    <div class="sidebar-col sidebar-col-padding" :class="{ open: !!block }" v-show="!!block">
       <div class="sidebar-col-in">
         <LangSwitcher v-if="isLanguage" v-show="block == 'lang'" />
         <div
@@ -97,6 +102,9 @@ export default {
     items() {
       const slots = this.$slots.default || [];
       slots.forEach((item, i) => {
+        if (item.context === undefined) {
+          return;
+        }
         const type = Object.prototype.hasOwnProperty.call(
           item.data.attrs,
           "bottom"
@@ -121,6 +129,9 @@ export default {
       } else {
         this.block = block;
       }
+    },
+    async connect() {
+      this.$store.dispatch("chain/accessAccount", false);
     }
   }
 };

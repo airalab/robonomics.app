@@ -5,7 +5,7 @@
       <template v-if="passport">
         <Passport :address="passport" />
       </template>
-      <template v-else>
+      <template v-else-if="$robonomics.account">
         <Form ref="form" :onSubmit="onSubmit" />
         <Request
           v-if="!response"
@@ -29,11 +29,15 @@
               :initDetails="Number(cost) > Number(myAllowance)"
             />
             <section
-              v-if="demand === null && Number(cost) > 0 && Number(myAllowance) < Number(response.cost)"
+              v-if="
+                demand === null &&
+                  Number(cost) > 0 &&
+                  Number(myAllowance) < Number(response.cost)
+              "
               class="section-light"
             >
               <div>
-                <b>{{$t('passport.reqApprove')}}</b>
+                <b>{{ $t("passport.reqApprove") }}</b>
               </div>
               <Approve
                 :address="response.token"
@@ -45,7 +49,11 @@
             <Steps v-if="demand" :status="demand.status" :liability="demand.liability" />
             <section
               v-if="demand === null || demand.status != statuses.RESULT"
-              :class="{disabled: (Number(cost) > 0 && Number(myAllowance) < Number(cost)) || (demand && demand.status != statuses.EMPTY)}"
+              :class="{
+                disabled:
+                  (Number(cost) > 0 && Number(myAllowance) < Number(cost)) ||
+                  (demand && demand.status != statuses.EMPTY)
+              }"
             >
               <Order :offer="response" :onDemand="onDemand" />
             </section>
@@ -111,7 +119,7 @@ export default {
       return number.numToString(this.response.cost);
     },
     myAllowance: function() {
-      if (this.response) {
+      if (this.$robonomics.account && this.response) {
         return this.allowance(
           this.response.token,
           this.$robonomics.account.address,
@@ -123,6 +131,9 @@ export default {
   },
   created() {
     this.tokenAddress = config.chain.get().TOKEN.dai.address;
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
     this.$robonomics
       .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
       .then(() => {
@@ -141,11 +152,13 @@ export default {
     },
     onResponse(msg) {
       this.response = msg;
-      this.watchToken(
-        this.response.token,
-        this.$robonomics.account.address,
-        this.$robonomics.factory.address
-      );
+      if (this.$robonomics.account) {
+        this.watchToken(
+          this.response.token,
+          this.$robonomics.account.address,
+          this.$robonomics.factory.address
+        );
+      }
     },
     onDemand(demandId) {
       this.demandId = demandId;

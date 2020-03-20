@@ -9,6 +9,7 @@ import providers from "./modules/providers";
 import sender from "./modules/sender";
 import tokens from "./modules/tokens";
 import msg from "./modules/msg";
+import chain from "./modules/chain";
 
 Vue.use(Vuex);
 
@@ -23,7 +24,8 @@ export default new Vuex.Store({
     providers,
     sender,
     tokens,
-    msg
+    msg,
+    chain
   },
   strict: true, // debug,
   plugins: debug ? [createLogger()] : []

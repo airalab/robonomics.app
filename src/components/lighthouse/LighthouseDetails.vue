@@ -14,9 +14,9 @@
       <p>
         <span class="t-sm">{{ $t("lighthouse.details.status") }}:</span>
         <br />
-        <b
-          v-if="timeoutInBlocks < currentBlock - keepAliveBlock"
-        >{{ $t("lighthouse.details.sleeping") }}</b>
+        <b v-if="timeoutInBlocks < currentBlock - keepAliveBlock">{{
+          $t("lighthouse.details.sleeping")
+        }}</b>
         <b v-else>{{ $t("lighthouse.details.active") }}</b>
       </p>
       <hr />
@@ -32,9 +32,9 @@
         <b>{{ minimalStake | fromWei(9, "XRT") }}</b>
       </p>
       <hr />
-      <WorkerForm />
+      <WorkerForm v-if="$robonomics.account" />
       <hr />
-      <WithdrawForm />
+      <WithdrawForm v-if="$robonomics.account" />
     </div>
   </RCard>
 </template>

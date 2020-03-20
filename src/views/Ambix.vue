@@ -2,30 +2,31 @@
   <Page>
     <TextBlockEn v-if="$i18n.locale == 'en'" />
     <TextBlockRu v-else />
-    <RCard>
+    <RCard v-if="$robonomics.account">
       <h3>{{ $t("action") }}</h3>
 
-      <section
-        class="t-align--center d-table container-full table-space--10 table-fixed"
-      >
-        <div
-          v-if="!isWhite"
-          class="d-table--cell section-mid page-alembic--actionblock"
-        >
+      <section class="t-align--center d-table container-full table-space--10 table-fixed">
+        <div v-if="!isWhite" class="d-table--cell section-mid page-alembic--actionblock">
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
             <RLinkExplorer :text="address" />
-            <RButton v-if="isKyc" full green disabled>{{
+            <RButton v-if="isKyc" full green disabled>
+              {{
               $t("kyc_passed")
-            }}</RButton>
+              }}
+            </RButton>
             <template v-else>
-              <RButton v-if="loadingKyc" full :disabled="loadingKyc">{{
+              <RButton v-if="loadingKyc" full :disabled="loadingKyc">
+                {{
                 $t("pass_kyc_wait")
-              }}</RButton>
-              <RButton v-else full @click.native="setKyc">{{
+                }}
+              </RButton>
+              <RButton v-else full @click.native="setKyc">
+                {{
                 $t("pass_kyc")
-              }}</RButton>
+                }}
+              </RButton>
             </template>
           </div>
         </div>
@@ -57,7 +58,6 @@
 <script>
 import Page from "../components/Page";
 import { mapState, mapGetters } from "vuex";
-import Web3Check from "vue-web3-check";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";
 import Ambix from "../components/ambix/Ambix";
@@ -80,18 +80,23 @@ export default {
   computed: {
     ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
     ...mapGetters("tokens", ["balance", "allowance"]),
+    ...mapState("chain", ["networkId"]),
     air() {
       const token = config.chain.get().TOKEN.air;
       return {
         address: token.address,
         decimals: token.decimals,
         label: token.label,
-        balance: this.balance(token.address, this.$robonomics.account.address),
-        approve: this.allowance(
-          token.address,
-          this.$robonomics.account.address,
-          config.AMBIX1
-        )
+        balance: this.$robonomics.account
+          ? this.balance(token.address, this.$robonomics.account.address)
+          : 0,
+        approve: this.$robonomics.account
+          ? this.allowance(
+              token.address,
+              this.$robonomics.account.address,
+              config.AMBIX1
+            )
+          : 0
       };
     },
     airkyc() {
@@ -100,12 +105,16 @@ export default {
         address: token.address,
         decimals: token.decimals,
         label: token.label,
-        balance: this.balance(token.address, this.$robonomics.account.address),
-        approve: this.allowance(
-          token.address,
-          this.$robonomics.account.address,
-          config.AMBIX2
-        )
+        balance: this.$robonomics.account
+          ? this.balance(token.address, this.$robonomics.account.address)
+          : 0,
+        approve: this.$robonomics.account
+          ? this.allowance(
+              token.address,
+              this.$robonomics.account.address,
+              config.AMBIX2
+            )
+          : 0
       };
     },
     xrt() {
@@ -114,29 +123,33 @@ export default {
         address: token.address,
         decimals: token.decimals,
         label: token.label,
-        balance: this.balance(token.address, this.$robonomics.account.address),
+        balance: this.$robonomics.account
+          ? this.balance(token.address, this.$robonomics.account.address)
+          : 0,
         approve: 0
       };
     }
   },
   mounted() {
-    if (Web3Check.store.state.networkId !== 1) {
+    if (this.networkId !== 1) {
       this.$router.push({ path: "/" });
     } else {
-      this.address = this.$robonomics.account.address;
-      this.$store.dispatch("kyc/check", this.address);
+      if (this.$robonomics.account) {
+        this.address = this.$robonomics.account.address;
+        this.$store.dispatch("kyc/check", this.address);
 
-      const tokens = config.chain.get().TOKEN;
-      this.$store.dispatch("tokens/watchAllowance", {
-        token: tokens.air.address,
-        from: this.$robonomics.account.address,
-        to: config.AMBIX1
-      });
-      this.$store.dispatch("tokens/watchAllowance", {
-        token: tokens.airkyc.address,
-        from: this.$robonomics.account.address,
-        to: config.AMBIX2
-      });
+        const tokens = config.chain.get().TOKEN;
+        this.$store.dispatch("tokens/watchAllowance", {
+          token: tokens.air.address,
+          from: this.$robonomics.account.address,
+          to: config.AMBIX1
+        });
+        this.$store.dispatch("tokens/watchAllowance", {
+          token: tokens.airkyc.address,
+          from: this.$robonomics.account.address,
+          to: config.AMBIX2
+        });
+      }
     }
   },
   methods: {

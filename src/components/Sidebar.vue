@@ -7,7 +7,11 @@
     </template>
     <RItem icon="i-menu">
       <RNavigation>
-        <RNavigationLink :to="{ name: 'status' }" icon="i-piechart">{{ $t("menu.net_stats") }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'status' }" icon="i-piechart">
+          {{
+          $t("menu.net_stats")
+          }}
+        </RNavigationLink>
         <RNavigationLink
           :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
@@ -17,11 +21,19 @@
           :to="{ name: 'ambix' }"
           icon="i-transfer"
         >{{ $t("menu.tokens_alembic") }}</RNavigationLink>
-        <RNavigationLink :to="{ name: 'services' }" icon="i-app">{{ $t("menu.services") }}</RNavigationLink>
-        <RNavigationLink :to="{ name: 'uniswap' }" icon="i-day">{{ $t("menu.uniswap") }}</RNavigationLink>
+        <RNavigationLink :to="{ name: 'services' }" icon="i-app">
+          {{
+          $t("menu.services")
+          }}
+        </RNavigationLink>
+        <RNavigationLink :to="{ name: 'uniswap' }" icon="i-day">
+          {{
+          $t("menu.uniswap")
+          }}
+        </RNavigationLink>
       </RNavigation>
     </RItem>
-    <RItem bottom icon="i-user">
+    <RItem bottom icon="i-user" v-if="$robonomics.account">
       <RWallet :account="account" :networkId="networkId" :tokens="balances" />
     </RItem>
     <RItem bottom icon="i-info">
@@ -50,45 +62,47 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import Web3Check from "vue-web3-check";
+import { mapGetters, mapState } from "vuex";
 import config from "~config";
 
 export default {
   data() {
     return {
-      account: "0x0",
-      networkId: 0
+      account: null
     };
   },
   computed: {
     ...mapGetters("tokens", ["balance", "token"]),
+    ...mapState("chain", ["networkId"]),
     balances() {
       const balances = [];
-      Object.values(config.chain.get().TOKEN).forEach(item => {
-        const info = this.token(item.address);
-        const amount = this.$options.filters.fromWei(
-          this.balance(item.address, this.$robonomics.account.address),
-          info ? info.decimals : 0
-        );
-        balances.push({
-          amount: amount,
-          symbol: info ? info.symbol : ""
+      if (this.$robonomics.account) {
+        Object.values(config.chain.get().TOKEN).forEach(item => {
+          const info = this.token(item.address);
+          const amount = this.$options.filters.fromWei(
+            this.balance(item.address, this.$robonomics.account.address),
+            info ? info.decimals : 0
+          );
+          balances.push({
+            amount: amount,
+            symbol: info ? info.symbol : ""
+          });
         });
-      });
+      }
       return balances;
     }
   },
   created() {
-    this.account = this.$robonomics.account.address;
-    this.networkId = Web3Check.store.state.networkId;
-    Object.values(config.chain.get().TOKEN).forEach(item => {
-      this.$store.dispatch("tokens/add", item.address);
-      this.$store.dispatch("tokens/watchBalance", {
-        token: item.address,
-        account: this.$robonomics.account.address
+    if (this.$robonomics.account) {
+      this.account = this.$robonomics.account.address;
+      Object.values(config.chain.get().TOKEN).forEach(item => {
+        this.$store.dispatch("tokens/add", item.address);
+        this.$store.dispatch("tokens/watchBalance", {
+          token: item.address,
+          account: this.$robonomics.account.address
+        });
       });
-    });
+    }
   }
 };
 </script>

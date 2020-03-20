@@ -1,10 +1,18 @@
 <template>
   <div>
     <div v-if="ready">
-      <section>
+      <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green>{{ $t("sensors.requested") }}</RButton>
-          <RButton v-else @click.native="sendMsgDemand" full>{{ $t("sensors.isRequest") }}</RButton>
+          <RButton v-if="isRequest" full green>
+            {{
+            $t("sensors.requested")
+            }}
+          </RButton>
+          <RButton v-else @click.native="sendMsgDemand" full>
+            {{
+            $t("sensors.isRequest")
+            }}
+          </RButton>
         </div>
       </section>
       <RCard v-if="log.length > 0">
@@ -20,9 +28,9 @@
           </thead>
           <tbody>
             <tr v-for="(item, key) in log" :key="key">
-              <td>{{key+1}}</td>
+              <td>{{ key + 1 }}</td>
               <td>
-                <b>{{getTypeByModel(item.model)}}</b>&nbsp;
+                <b>{{ getTypeByModel(item.model) }}</b>&nbsp;
                 <RLinkExplorer type="ipfs" :text="item.model" />
               </td>
               <td>
@@ -31,7 +39,7 @@
               <td>
                 <template v-if="item.cost > 0">
                   <RLinkExplorer :text="item.token" category="token" />/
-                  <b>{{item.cost}}</b>
+                  <b>{{ item.cost }}</b>
                 </template>
                 <template v-else>
                   <b>{{ $t("sensors.table.free") }}</b>
@@ -40,11 +48,27 @@
               <td>
                 <router-link
                   v-if="item.cost > 0"
-                  :to="{name:'sensor-cost',params:{lighthouse: lighthouse, model: item.model, agent: item.sender, token: item.token, cost: item.cost }}"
+                  :to="{
+                    name: 'sensor-cost',
+                    params: {
+                      lighthouse: lighthouse,
+                      model: item.model,
+                      agent: item.sender,
+                      token: item.token,
+                      cost: item.cost
+                    }
+                  }"
                 >{{ $t("sensors.table.view") }}</router-link>
                 <router-link
                   v-else
-                  :to="{name:'sensor',params:{lighthouse: lighthouse, model: item.model, agent: item.sender }}"
+                  :to="{
+                    name: 'sensor',
+                    params: {
+                      lighthouse: lighthouse,
+                      model: item.model,
+                      agent: item.sender
+                    }
+                  }"
                 >{{ $t("sensors.table.view") }}</router-link>
               </td>
             </tr>
@@ -68,6 +92,9 @@ export default {
     };
   },
   mounted() {
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
       this.$robonomics.onDemand(config.DEFAULT_MODEL, msg => {

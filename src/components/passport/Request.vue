@@ -50,6 +50,7 @@ export default {
       }
       this.onResult = this.$robonomics.onResult(msg => {
         if (
+          this.$robonomics.account &&
           msg.liability === this.$robonomics.account.address &&
           msg.result === this.objective
         ) {

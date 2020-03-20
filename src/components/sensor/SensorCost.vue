@@ -3,15 +3,17 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template
-          v-if="log.length === 0"
-        >{{ $t("sensor.notStatusAgent") }}</template>
+        <template v-if="log.length === 0">
+          {{
+          $t("sensor.notStatusAgent")
+          }}
+        </template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].time }}
         </template>
       </h4>
-      <section>
+      <section v-if="$robonomics.account">
         <Approve
           v-if="Number(cost) > 0 && tokenAddress"
           :address="tokenAddress"
@@ -21,22 +23,14 @@
           :alwaysShow="false"
         />
         <div v-if="Number(myAllowance) >= Number(cost)" class="input-size--md">
-          <RButton v-if="isRequest" full green disabled>
-            {{
-            $t("sensor.requested")
-            }}
-          </RButton>
-          <RButton v-else @click.native="sendMsgDemand" full green>
-            {{
-            $t("sensor.isRequest")
-            }}
-          </RButton>
+          <RButton v-if="isRequest" full green disabled>{{ $t("sensor.requested") }}</RButton>
+          <RButton v-else @click.native="sendMsgDemand" full green>{{ $t("sensor.isRequest") }}</RButton>
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
         <template slot="header">
           <span>
-            {{ $t("sensor.requests") }} ({{log.length}})
+            {{ $t("sensor.requests") }} ({{ log.length }})
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
@@ -86,6 +80,9 @@ export default {
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
 
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
 
@@ -176,15 +173,17 @@ export default {
     });
   },
   created() {
-    this.watchToken(
-      this.tokenAddress,
-      this.$robonomics.account.address,
-      this.$robonomics.factory.address
-    );
+    if (this.$robonomics.account) {
+      this.watchToken(
+        this.tokenAddress,
+        this.$robonomics.account.address,
+        this.$robonomics.factory.address
+      );
+    }
   },
   computed: {
     myAllowance: function() {
-      if (this.response) {
+      if (this.$robonomics.account && this.response) {
         return this.allowance(
           this.tokenAddress,
           this.$robonomics.account.address,

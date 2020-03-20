@@ -25,6 +25,8 @@
 <script>
 import Vue from "vue";
 import Page from "@/components/Page";
+import { Account } from "robonomics-js";
+import config from "~config";
 
 export default {
   components: {
@@ -36,19 +38,24 @@ export default {
     };
   },
   created() {
-    this.$robonomics.initLighthouse("airalab").then(() => {
-      this.ready = true;
-      this.$robonomics.onResult(msg => {
-        const sender = this.$robonomics.account.recoveryMessage(msg);
-        if (!Object.prototype.hasOwnProperty.call(this.agents, sender)) {
-          Vue.set(this.agents, sender, { count: 0, time: "" });
-        }
-        Vue.set(this.agents, sender, {
-          count: this.agents[sender].count + 1,
-          time: new Date().toLocaleString()
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
+    this.$robonomics
+      .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
+      .then(() => {
+        this.ready = true;
+        this.$robonomics.onResult(msg => {
+          const sender = Account.recoveryMessage(msg);
+          if (!Object.prototype.hasOwnProperty.call(this.agents, sender)) {
+            Vue.set(this.agents, sender, { count: 0, time: "" });
+          }
+          Vue.set(this.agents, sender, {
+            count: this.agents[sender].count + 1,
+            time: new Date().toLocaleString()
+          });
         });
       });
-    });
   }
 };
 </script>

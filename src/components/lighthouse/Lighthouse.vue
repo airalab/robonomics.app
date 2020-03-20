@@ -14,7 +14,6 @@
       @connect="
         lighthouse => {
           $router.push({ path: `/lighthouse/${lighthouse}` });
-          $router.go();
         }
       "
     />
@@ -25,7 +24,7 @@
         </section>
       </div>
       <div class="col-lg-8 col-md-7">
-        <LighthouseMarket />
+        <LighthouseMarket v-if="$robonomics.account" />
         <Providers :lighthouse="lighthouse" />
       </div>
     </div>
@@ -48,9 +47,20 @@ export default {
   data() {
     return {
       lighthouse: "",
-      lighthouseName: "",
       showApprove: false
     };
+  },
+  computed: {
+    lighthouseName: function() {
+      return this.$route.params.lighthouse;
+    }
+  },
+  watch: {
+    lighthouseName: function(value, old) {
+      if (old && value !== old) {
+        this.fetchData();
+      }
+    }
   },
   mounted() {
     this.$on("approve", data => {
@@ -60,26 +70,23 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.lighthouseName = this.$route.params.lighthouse;
-      let lighthouseAddr = await this.$robonomics.ens.addrLighthouse(
-        this.lighthouseName
-      );
-      lighthouseAddr = this.$robonomics.web3.utils.toChecksumAddress(
-        lighthouseAddr
+      this.lighthouse = "";
+      const lighthouseAddr = this.$robonomics.web3.utils.toChecksumAddress(
+        await this.$robonomics.ens.addrLighthouse(this.lighthouseName)
       );
       if (
         this.$robonomics.lighthouse === null ||
         lighthouseAddr !== this.$robonomics.lighthouse.address
       ) {
         this.$robonomics.initLighthouse(this.lighthouseName).then(() => {
-          this.lighthouse = lighthouseAddr;
           this.$store.dispatch("providers/init");
           this.$store.dispatch("messages/init");
+          this.lighthouse = lighthouseAddr;
         });
       } else {
-        this.lighthouse = lighthouseAddr;
         this.$store.dispatch("providers/init");
         this.$store.dispatch("messages/init");
+        this.lighthouse = lighthouseAddr;
       }
     }
   }

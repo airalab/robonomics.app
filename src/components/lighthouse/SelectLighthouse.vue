@@ -1,7 +1,7 @@
 <template>
   <div class="input-size--lg">
     <select id="select-lighthouseConnect"></select>
-    <div v-if="createForm" class="m-t-5">
+    <div v-if="createForm && $robonomics.account" class="m-t-5">
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.name") }}</label>
         <br />
@@ -15,7 +15,11 @@
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
         <br />
-        <input type="number" v-model="form.minimalStake" class="input-size--md" />
+        <input
+          type="number"
+          v-model="form.minimalStake"
+          class="input-size--md"
+        />
       </p>
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
@@ -27,18 +31,24 @@
           class="input-size--sm"
         />
       </p>
-      <RButton green disabled v-if="create">{{ $t("lighthouse.select.new.create") }}</RButton>
-      <RButton
-        green
-        @click.native="sendCreateLighthouse"
-        v-else
-      >{{ $t("lighthouse.select.new.create") }}</RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">{{ $t("lighthouse.select.cancel") }}</a>
+      <RButton green disabled v-if="create">{{
+        $t("lighthouse.select.new.create")
+      }}</RButton>
+      <RButton green @click.native="sendCreateLighthouse" v-else>{{
+        $t("lighthouse.select.new.create")
+      }}</RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">{{
+        $t("lighthouse.select.cancel")
+      }}</a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
-      <RButton @click.native="connect">{{ $t("lighthouse.select.connect") }}</RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">{{ $t("lighthouse.select.cancel") }}</a>
+      <RButton @click.native="connect">{{
+        $t("lighthouse.select.connect")
+      }}</RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">{{
+        $t("lighthouse.select.cancel")
+      }}</a>
     </div>
   </div>
 </template>
@@ -130,7 +140,7 @@ export default {
               ]
             });
           });
-          if (this.isCreate) {
+          if (this.isCreate && this.$robonomics.account) {
             navData.push({
               label: this.$t("lighthouse.select.new.new"),
               options: [

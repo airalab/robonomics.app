@@ -37,6 +37,9 @@ export default {
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
 
+    if (this.$robonomics.messenger) {
+      this.$robonomics.messenger.stop();
+    }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
 
