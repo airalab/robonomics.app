@@ -19,6 +19,7 @@
     "axios": "^0.19.2",
     "base-x": "^3.0.8",
     "bluebird": "^3.7.2",
+    "core-js": "^3.6.4",
     "dateformat": "^3.0.3",
     "ethereum-blockies-base64": "^1.0.2",
     "filepond": "^4.13.0",
@@ -33,20 +34,20 @@
     "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.15.5",
     "vue-js-modal": "^1.3.33",
-    "vue-router": "^3.1.3",
+    "vue-router": "^3.1.6",
     "vue-wait": "^1.4.8",
-    "vuex": "^3.1.2",
+    "vuex": "^3.1.3",
     "web3": "^1.2.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-plugin-eslint": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
-    "babel-eslint": "^10.0.3",
+    "@vue/cli-plugin-babel": "^4.2.3",
+    "@vue/cli-plugin-eslint": "^4.2.3",
+    "@vue/cli-service": "^4.2.3",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-inline-json": "^1.2.2",
-    "eslint": "^6.3.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "vue-template-compiler": "^2.6.10"
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
