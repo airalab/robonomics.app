@@ -6,14 +6,17 @@
           <slot name="icon"></slot>
         </section>
         <section>
-          <Button
-            v-for="(item, k) in Object.values(blocks.top)"
-            :key="k"
-            :icon="item.icon"
-            :label="item.label"
-            :isActive="block == item.id"
-            @toggle="toggle(item.id)"
-          />
+          <template v-for="(item, k) in Object.values(blocks.top)">
+            <Button
+              v-if="item.canExpand"
+              :key="k"
+              :icon="item.icon"
+              :label="item.label"
+              :isActive="block == item.id"
+              @toggle="toggle(item.id)"
+            />
+            <component v-else :key="k" v-bind:is="item.component"></component>
+          </template>
           <Button
             v-if="isLanguage"
             :label="$i18n.locale.toUpperCase()"
@@ -23,23 +26,17 @@
           <ThemeSwitcher v-if="isTheme" />
         </section>
         <section class="sidebar-col--bottom">
-          <a
-            href="javascript:;"
-            v-if="!$robonomics.account"
-            @click="connect"
-            class="sidebar-i--lg"
-            style="color:#e88100"
-          >
-            <i class="i-user"></i>
-          </a>
-          <Button
-            v-for="(item, k) in Object.values(blocks.bottom)"
-            :key="k"
-            :icon="item.icon"
-            :label="item.label"
-            :isActive="block == item.id"
-            @toggle="toggle(item.id)"
-          />
+          <template v-for="(item, k) in Object.values(blocks.bottom)">
+            <Button
+              v-if="item.canExpand"
+              :key="k"
+              :icon="item.icon"
+              :label="item.label"
+              :isActive="block == item.id"
+              @toggle="toggle(item.id)"
+            />
+            <component v-else :key="k" v-bind:is="item.component"></component>
+          </template>
         </section>
       </div>
     </div>
@@ -50,7 +47,7 @@
           v-for="(item, k) in [
             ...Object.values(blocks.top),
             ...Object.values(blocks.bottom)
-          ]"
+          ].filter((item) => item.canExpand)"
           :key="`block-${k}`"
           v-show="block == item.id"
         >
@@ -113,6 +110,10 @@ export default {
           : "top";
         this.blocks[type][type + "-" + i] = {
           id: type + "-" + i,
+          canExpand:
+            item.data.attrs.canExpand === undefined
+              ? true
+              : item.data.attrs.canExpand,
           label: item.data.attrs.label,
           icon: item.data.attrs.icon,
           component: Vue.component("component-" + i, {
@@ -129,9 +130,6 @@ export default {
       } else {
         this.block = block;
       }
-    },
-    async connect() {
-      this.$store.dispatch("chain/accessAccount", false);
     }
   }
 };

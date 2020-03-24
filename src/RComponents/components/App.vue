@@ -1,38 +1,23 @@
 <template>
   <fragment>
-    <template v-if="error">
-      <RErrorDepNetwork v-if="error==1" />
-      <RErrorNotAccounts v-else-if="error==2" />
-      <RErrorNotAccess @requestAccount="requestAccount" v-else-if="error==3" />
-      <RErrorNotWeb3 v-else />
-    </template>
-    <template v-else-if="!isReady">
-      <ROverlayLoader />
-    </template>
-    <template v-else>
-      <slot v-if="isReadyRobonomics" />
-      <ROverlayLoader v-else />
-    </template>
+    <slot v-if="isReadyRobonomics" />
+    <ROverlayLoader v-else />
   </fragment>
 </template>
 
 <script>
 import Vue from "vue";
-import { mapState } from "vuex";
 import { init as initRobonomics } from "../tools/robonomics";
 import { init as initIpfs } from "../tools/ipfs";
 import { statusPeers } from "../tools/utils";
 import getConfig from "../config";
-import config from "~config";
 
 export default {
+  props: ["networkId", "account", "web3"],
   data() {
     return {
       isReadyRobonomics: false
     };
-  },
-  computed: {
-    ...mapState("chain", ["error", "isReady", "networkId", "account"])
   },
   watch: {
     account(account, old) {
@@ -47,22 +32,14 @@ export default {
       } else if (old !== null && account !== old) {
         window.location.reload(false);
       }
-    },
-    networkId(networkId, old) {
-      if (old !== null && networkId !== old) {
-        window.location.reload(false);
-      }
     }
   },
-  async created() {
-    this.$store.dispatch("chain/init", config.chain.getListId()).then(() => {
-      this.init(this.$store.state.chain);
-    });
+  created() {
+    this.init(getConfig());
   },
   methods: {
-    async init(state) {
-      const config = getConfig();
-      const robonomics = config.robonomics(state.networkId);
+    async init(config) {
+      const robonomics = config.robonomics(this.networkId);
 
       Vue.prototype.$ipfs = await initIpfs(config.ipfs);
       this.$ipfs.id((e, r) => {
@@ -71,11 +48,7 @@ export default {
         }
       });
 
-      const account = state.account
-        ? {
-            address: state.account
-          }
-        : null;
+      const account = this.account ? { address: this.account } : null;
       Vue.prototype.$robonomics = initRobonomics(
         {
           account: account,
@@ -86,7 +59,7 @@ export default {
           },
           lighthouse: robonomics.lighthouse
         },
-        state.getWeb3(),
+        this.web3,
         this.$ipfs
       );
 
@@ -99,9 +72,6 @@ export default {
         console.log("Peers search", config.statusPeers);
         statusPeers(this.$ipfs, this.$robonomics, config.statusPeers, timeout);
       };
-    },
-    requestAccount() {
-      this.$store.dispatch("chain/accessAccount");
     }
   }
 };

@@ -33,6 +33,11 @@
         </RNavigationLink>
       </RNavigation>
     </RItem>
+    <RItem bottom :canExpand="false" v-if="!$robonomics.account">
+      <a href="javascript:;" @click="connect" class="sidebar-i--lg" style="color:#e88100">
+        <i class="i-user"></i>
+      </a>
+    </RItem>
     <RItem bottom icon="i-user" v-if="$robonomics.account">
       <RWallet :account="account" :networkId="networkId" :tokens="balances" />
     </RItem>
@@ -102,6 +107,11 @@ export default {
           account: this.$robonomics.account.address
         });
       });
+    }
+  },
+  methods: {
+    async connect() {
+      this.$store.dispatch("chain/accessAccount", false);
     }
   }
 };
