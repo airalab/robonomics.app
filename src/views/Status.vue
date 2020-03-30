@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import { mapState } from "vuex";
 // import Statistic from "../components/status/Statistic";
 import Net from "../components/status/Net";

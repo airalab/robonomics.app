@@ -1,4 +1,4 @@
-import getRobonomics from "../../RComponents/tools/robonomics";
+import getRobonomics from "../../utils/robonomics";
 
 const STATUS = {
   EMPTY: 0,

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import SensorFree from "../components/sensor/SensorFree";
 import SensorCost from "../components/sensor/SensorCost";
 import SensorResult from "../components/sensor/SensorResult";

@@ -11,7 +11,10 @@
       />
       <button
         class="btn-sm m-l-10"
-        :disabled="loadingApprove || Number(amount) == Number(allowance(address, from, to))"
+        :disabled="
+          loadingApprove ||
+            Number(amount) == Number(allowance(address, from, to))
+        "
       >
         <div class="loader-ring" v-if="loadingApprove"></div>
         &nbsp;{{ $t("approve.approve") }}
@@ -23,7 +26,7 @@
 <script>
 import token from "@/mixins/token";
 import Input from "./Input";
-import { number } from "../../RComponents/tools/utils";
+import { number } from "../../utils/tools";
 
 export default {
   mixins: [token],

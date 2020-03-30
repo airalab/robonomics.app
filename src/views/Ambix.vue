@@ -5,27 +5,26 @@
     <RCard v-if="$robonomics.account">
       <h3>{{ $t("action") }}</h3>
 
-      <section class="t-align--center d-table container-full table-space--10 table-fixed">
-        <div v-if="!isWhite" class="d-table--cell section-mid page-alembic--actionblock">
+      <section
+        class="t-align--center d-table container-full table-space--10 table-fixed"
+      >
+        <div
+          v-if="!isWhite"
+          class="d-table--cell section-mid page-alembic--actionblock"
+        >
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
-            <RLinkExplorer :text="address" />
+            <RChainExplorer :address="address" />
             <RButton v-if="isKyc" full green disabled>
-              {{
-              $t("kyc_passed")
-              }}
+              {{ $t("kyc_passed") }}
             </RButton>
             <template v-else>
               <RButton v-if="loadingKyc" full :disabled="loadingKyc">
-                {{
-                $t("pass_kyc_wait")
-                }}
+                {{ $t("pass_kyc_wait") }}
               </RButton>
               <RButton v-else full @click.native="setKyc">
-                {{
-                $t("pass_kyc")
-                }}
+                {{ $t("pass_kyc") }}
               </RButton>
             </template>
           </div>
@@ -56,7 +55,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import { mapState, mapGetters } from "vuex";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";

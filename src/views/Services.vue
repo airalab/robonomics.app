@@ -8,16 +8,31 @@
         class="item"
         :class="{ disabled: service.disabled }"
       >
-        <RImgHover v-if="service.target" :src="service.img" :href="service.link" />
-        <RImgHover v-else :src="service.img" :to="service.link" />
+        <a
+          v-if="service.target"
+          :href="service.link"
+          target="_blank"
+          class="item-avatar"
+        >
+          <span
+            class="item-avatar--image"
+            :style="`background-image: url('${service.img}');`"
+          ></span>
+        </a>
+        <router-link v-else :to="service.link" class="item-avatar">
+          <span
+            class="item-avatar--image"
+            :style="`background-image: url('${service.img}');`"
+          ></span>
+        </router-link>
         <div class="item-content">
           <h2>
-            <a
-              v-if="service.target"
-              :href="service.link"
-              target="_blank"
-            >{{ service[$i18n.locale].name }}</a>
-            <router-link v-else :to="service.link">{{ service[$i18n.locale].name }}</router-link>
+            <a v-if="service.target" :href="service.link" target="_blank">{{
+              service[$i18n.locale].name
+            }}</a>
+            <router-link v-else :to="service.link">{{
+              service[$i18n.locale].name
+            }}</router-link>
           </h2>
           <div class="t-hyphen">{{ service[$i18n.locale].desc }}</div>
           <div class="item-bottom">
@@ -25,7 +40,10 @@
               <span>Provider:</span>
               <span class="item-bottom--info">{{ service.by.label }}</span>
             </div>
-            <div v-if="service.token && service.token.name" class="item-bottom--line">
+            <div
+              v-if="service.token && service.token.name"
+              class="item-bottom--line"
+            >
               <span>Payment token:</span>
               <span class="item-bottom--info">{{ service.token.name }}</span>
             </div>
@@ -39,8 +57,8 @@
 <script>
 import { mapState } from "vuex";
 import { Token } from "robonomics-js";
-import Page from "../components/Page";
-import sensorsNetwork from "../services/sensors-network/meta";
+import Page from "@/components/layout/Page";
+import services from "../services";
 import config from "~config";
 
 export default {
@@ -48,28 +66,28 @@ export default {
   data() {
     return {
       services: [
-        sensorsNetwork,
-        {
-          en: {
-            name: "Public blockchain stamp",
-            desc: "Global registration service in the Ethereum Blockchain."
-          },
-          ru: {
-            name: "Публичный блокчейн-штамп",
-            desc: "Сервис глобальной регистрации в Ethereum Blockchain."
-          },
-          link: { name: "blockchain-stamp" },
-          target: false,
-          img: "assets/i/services/digital-passport.png",
-          by: {
-            link: "#",
-            label: "Airalab"
-          },
-          token: config.chain.get().TOKEN.dai
-            ? config.chain.get().TOKEN.dai.address
-            : false,
-          disabled: false
-        },
+        ...Object.values(services).map(item => item.meta),
+        // {
+        //   en: {
+        //     name: "Public blockchain stamp",
+        //     desc: "Global registration service in the Ethereum Blockchain."
+        //   },
+        //   ru: {
+        //     name: "Публичный блокчейн-штамп",
+        //     desc: "Сервис глобальной регистрации в Ethereum Blockchain."
+        //   },
+        //   link: { name: "blockchain-stamp" },
+        //   target: false,
+        //   img: "assets/i/services/digital-passport.png",
+        //   by: {
+        //     link: "#",
+        //     label: "Airalab"
+        //   },
+        //   token: config.chain.get().TOKEN.dai
+        //     ? config.chain.get().TOKEN.dai.address
+        //     : false,
+        //   disabled: false
+        // },
         {
           en: {
             name: "Fuji weather",

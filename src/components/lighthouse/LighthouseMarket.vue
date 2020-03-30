@@ -1,7 +1,7 @@
 <template>
   <fragment>
     <RCard>
-      <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
+      <TradeForm ref="form" @onChange="onChange" @onSubmit="onSubmit" />
 
       <section class="m-b-0">
         <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
@@ -38,7 +38,7 @@
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
             <a
-              :href="item.address | urlExplorer"
+              :href="item.address | urlChainExplorer"
               target="_blank"
             >{{ item.address | labelAddress }}</a>
           </template>
@@ -49,7 +49,7 @@
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
             <a
-              :href="item.sender | urlExplorer"
+              :href="item.sender | urlChainExplorer"
               target="_blank"
             >{{ item.sender | labelAddress }}</a>
           </template>
@@ -65,7 +65,7 @@ import Vue from "vue";
 import TradeForm from "./TradeForm";
 import Approve from "@/components/approve/Main";
 import token from "@/mixins/token";
-import { number } from "../../RComponents/tools/utils";
+import { number } from "../../utils/tools";
 
 export default {
   mixins: [token],
@@ -129,7 +129,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     this.tooltip();
     this.init();
   },
@@ -183,7 +183,7 @@ export default {
     sendMsgDemand() {
       this.$refs.form.submit();
     },
-    onChange(fields) {
+    onChange({ fields }) {
       this.tokenAddress = fields.token.value;
       this.cost = fields.cost.value;
       if (this.tokenAddress) {
@@ -194,9 +194,9 @@ export default {
         );
       }
     },
-    onSubmit(e, fields) {
-      this.error = e;
-      if (!e) {
+    onSubmit({ error, fields }) {
+      this.error = error;
+      if (!error) {
         this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
           const demand = {
             model: fields.model.value,

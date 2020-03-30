@@ -13,7 +13,7 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
+        <RIpfsExplorer :hash="item.resultHash" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -39,7 +39,7 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer type="ipfs" :text="item.resultHash" classStyle="align-vertical" />
+        <RIpfsExplorer :hash="item.resultHash" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"

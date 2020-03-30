@@ -6,12 +6,11 @@ import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
-import Passport from "@/views/Passport";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
 import Uniswap from "@/views/Uniswap";
-import sensorsNetwork from "@/services/sensors-network/router";
+import services from "@/services";
 const Sensor = () => import("@/views/Sensor");
 
 Vue.use(Router);
@@ -73,21 +72,6 @@ export default new Router({
       ]
     },
     {
-      path: "/blockchain-stamp",
-      component: Passport,
-      props: true,
-      children: [
-        {
-          path: "",
-          name: "blockchain-stamp"
-        },
-        {
-          path: ":passport",
-          name: "passport-view"
-        }
-      ]
-    },
-    {
       path: "/liability/:liability",
       name: "liability",
       component: Liability,
@@ -108,7 +92,7 @@ export default new Router({
       name: "uniswap",
       component: Uniswap
     },
-    sensorsNetwork,
+    ...Object.values(services).map(item => item.router),
     { path: "*", redirect: "/" }
   ]
 });

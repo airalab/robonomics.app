@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import Lighthouse from "../components/lighthouse/Lighthouse";
 
 export default {

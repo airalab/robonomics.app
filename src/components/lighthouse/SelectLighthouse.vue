@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { number } from "../../RComponents/tools/utils";
+import { number } from "../../utils/tools";
 
 let slim;
 

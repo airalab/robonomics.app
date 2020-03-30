@@ -16,26 +16,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="member in members" :key="member.i">
-            <td>{{ member.i }}</td>
+          <tr v-for="member in members" :key="member.i" :class="{disabled: member.i != marker}">
             <td>
-              <RLinkExplorer :text="member.address" />
+              <span v-if="member.i == marker" style="font-weight: bold;color: #03a5ed;">&gt;</span>
+              {{ member.i }}
+            </td>
+            <td>
+              <RChainExplorer :address="member.address" />
             </td>
             <td>
               <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
-              <template v-else>{{ member.quota }}</template>
+              <template v-else>{{ member.quota }} / {{ member.quota }}</template>
             </td>
             <td>{{ member.balance }} ETH</td>
             <td>
-              <template v-if="member.i == marker">
-                <span
-                  v-if="
-                    quota > 0 && timeoutInBlocks < currentBlock - keepAliveBlock
-                  "
-                >{{ $t("lighthouse.providers.sleeping") }}</span>
-                <span
-                  v-else-if="member.last !== null"
-                >{{ $t("lighthouse.providers.last", { blocks: currentBlock - member.last }) }}</span>
+              <template v-if="member.last">
+                <span>
+                  {{ $t("lighthouse.providers.last", { blocks: currentBlock - member.last }) }}
+                  <RChainExplorer category="tx" :address="member.lastTx" :isAvatar="false" />
+                </span>
+              </template>
+              <template v-else-if="minBlock > 0">
+                <span>{{ $t("lighthouse.providers.more", { blocks: currentBlock - minBlock }) }}</span>
+              </template>
+              <template v-else>
+                <span>{{ $t("lighthouse.providers.more", { blocks: timeoutInBlocks }) }}</span>
               </template>
             </td>
           </tr>
@@ -55,9 +60,9 @@ export default {
     ...mapState("providers", [
       "quota",
       "marker",
-      "keepAliveBlock",
       "timeoutInBlocks",
-      "currentBlock"
+      "currentBlock",
+      "minBlock"
     ])
   }
 };

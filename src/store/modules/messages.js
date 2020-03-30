@@ -1,8 +1,8 @@
 import Vue from "vue";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import getRobonomics from "../../RComponents/tools/robonomics";
-import getIpfs from "../../RComponents/tools/ipfs";
+import getRobonomics from "../../utils/robonomics";
+import getIpfs from "../../utils/ipfs";
 
 let robonomics;
 

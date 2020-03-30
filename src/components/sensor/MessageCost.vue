@@ -13,11 +13,7 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer
-          type="ipfs"
-          :text="item.liability"
-          classStyle="align-vertical"
-        />
+        <RIpfsExplorer :hash="item.liability" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -36,11 +32,7 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer
-          type="ipfs"
-          :text="item.liability"
-          classStyle="align-vertical"
-        />
+        <RIpfsExplorer :hash="item.liability" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -53,11 +45,7 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer
-          type="ipfs"
-          :text="item.resultHash"
-          classStyle="align-vertical"
-        />
+        <RIpfsExplorer :hash="item.resultHash" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -69,12 +57,7 @@
         <span class="loader-ring align-vertical m-r-15"></span>
         <b class="align-vertical">3. {{ $t("sensor.cost.status32") }}</b>
       </p>
-      <MessageShare
-        :item="item"
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-      />
+      <MessageShare :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
     </div>
     <div v-else-if="item.status === 4">
       <p>
@@ -82,11 +65,7 @@
         <br />
         <span>{{ $t("sensor.cost.address") }}:</span>
         <br />
-        <RLinkExplorer
-          type="ipfs"
-          :text="item.liability"
-          classStyle="align-vertical"
-        />
+        <RIpfsExplorer :hash="item.liability" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -99,11 +78,7 @@
         <br />
         <span>{{ $t("sensor.cost.hash") }}:</span>
         <br />
-        <RLinkExplorer
-          type="ipfs"
-          :text="item.resultHash"
-          classStyle="align-vertical"
-        />
+        <RIpfsExplorer :hash="item.resultHash" classStyle="align-vertical" />
         <a
           class="align-vertical i-copy m-l-10"
           href="javascript:;"
@@ -124,12 +99,7 @@
           <pre>{{ item.result }}</pre>
         </code>
       </p>
-      <MessageShare
-        :item="item"
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-      />
+      <MessageShare :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
     </div>
   </div>
 </template>

@@ -1,25 +1,74 @@
 <template>
   <fragment>
     <template v-if="error">
-      <RErrorDepNetwork v-if="error==1" />
-      <RErrorNotAccounts v-else-if="error==2" />
-      <RErrorNotAccess @requestAccount="requestAccount" v-else-if="error==3" />
-      <RErrorNotWeb3 v-else />
+      <ROverlay logo="assets/i/logo-dapp-2.svg" v-if="error == 1">
+        <section class="msg-error msg-icon">
+          <div class="msg-title">
+            Dapp only works on the main network and sidechain
+          </div>
+          <p>
+            <b>For work, you need to switch the network.</b>
+          </p>
+        </section>
+      </ROverlay>
+      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else-if="error == 2">
+        <section class="msg-error msg-icon">
+          <div class="msg-title">Not found account</div>
+        </section>
+      </ROverlay>
+      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else-if="error == 3">
+        <section class="msg-error msg-icon">
+          <div class="msg-title">No access to account</div>
+          <p v-if="isRequest">
+            Try to refresh browser page or
+            <button @click="requestAccount">request account</button>.
+          </p>
+        </section>
+      </ROverlay>
+      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else>
+        <section class="msg-error msg-icon">
+          <div class="msg-title">Plugin required for application operation</div>
+          <p>
+            <b>
+              Please, setup:
+              <a
+                class="t-style_uppercase"
+                href="https://metamask.io/"
+                target="_blank"
+                >Metamask</a
+              >
+            </b>
+          </p>
+        </section>
+      </ROverlay>
     </template>
     <template v-else-if="!isReady">
-      <ROverlayLoader />
+      <ROverlay logo="assets/i/logo-dapp-2.svg">
+        <section>
+          <div class="loader">
+            <RLoader class="align-vertical m-r-15" />
+            <b class="align-vertical t-style_uppercase">
+              <span>Loading</span>
+            </b>
+          </div>
+        </section>
+      </ROverlay>
     </template>
-    <RApp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
+    <Wrapp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
       <router-view />
-    </RApp>
+    </Wrapp>
   </fragment>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import Wrapp from "./components/layout/Wrapp";
 import config from "~config";
 
 export default {
+  components: {
+    Wrapp
+  },
   computed: {
     ...mapState("chain", [
       "error",

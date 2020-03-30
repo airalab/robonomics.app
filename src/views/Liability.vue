@@ -55,7 +55,7 @@
 
 <script>
 import { Liability } from "robonomics-js";
-import Page from "@/components/Page";
+import Page from "@/components/layout/Page";
 
 export default {
   props: ["liability"],

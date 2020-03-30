@@ -1,15 +1,17 @@
 <template>
   <Page>
     <SelectLighthouse
-      @connect="(lighthouse) => {
-        $router.push({ path: `/lighthouse/${lighthouse}` });
-      }"
+      @connect="
+        lighthouse => {
+          $router.push({ path: `/lighthouse/${lighthouse}` });
+        }
+      "
     />
   </Page>
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import SelectLighthouse from "../components/lighthouse/SelectLighthouse";
 
 export default {
