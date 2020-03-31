@@ -106,6 +106,7 @@
 
 <script>
 import MessageShare from "./MessageShare";
+
 export default {
   props: ["item", "lighthouse", "model", "agent"],
   components: { MessageShare }

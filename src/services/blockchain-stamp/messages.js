@@ -1,4 +1,5 @@
 export default {
+  id: "passport",
   en: {
     title: "Public blockchain stamp",
     subtitle1: "Publisher information",

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { cat as ipfsCat } from "../../utils/ipfs";
-import rosBag from "../../utils/rosBag";
+import { cat as ipfsCat } from "@/utils/ipfs";
+import rosBag from "@/utils/rosBag";
 import config from "~config";
 
 export function parseResult(result) {

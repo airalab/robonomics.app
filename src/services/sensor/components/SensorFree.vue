@@ -57,8 +57,8 @@ import Vue from "vue";
 import { Account } from "robonomics-js";
 import Pagination from "./Pagination";
 import Message from "./MessageFree";
-import history from "./historyStore";
-import { parseResult, loadScript } from "./utils";
+import history from "../utils/historyStore";
+import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
 
 export default {

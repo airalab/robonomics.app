@@ -33,23 +33,17 @@
         :tokenAddress="token"
         :cost="cost"
       />
-      <SensorFree
-        v-else
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :result="result"
-      />
+      <SensorFree v-else :lighthouse="lighthouse" :model="model" :agent="agent" :result="result" />
     </section>
   </Page>
 </template>
 
 <script>
 import Page from "@/components/layout/Page";
-import SensorFree from "../components/sensor/SensorFree";
-import SensorCost from "../components/sensor/SensorCost";
-import SensorResult from "../components/sensor/SensorResult";
-import SensorResultSubstrate from "../components/sensor/SensorResultSubstrate";
+import SensorFree from "./SensorFree";
+import SensorCost from "./SensorCost";
+import SensorResult from "./SensorResult";
+import SensorResultSubstrate from "./SensorResultSubstrate";
 import config from "~config";
 
 export default {

@@ -11,7 +11,6 @@ import Approve from "@/views/Approve";
 import Results from "@/views/Results";
 import Uniswap from "@/views/Uniswap";
 import services from "@/services";
-const Sensor = () => import("@/views/Sensor");
 
 Vue.use(Router);
 
@@ -49,29 +48,6 @@ export default new Router({
       props: true
     },
     {
-      path: "/sensors/:lighthouse/:model/:agent",
-      component: Sensor,
-      props: true,
-      children: [
-        {
-          path: "",
-          name: "sensor"
-        },
-        {
-          path: "token/:token/cost/:cost",
-          name: "sensor-cost"
-        },
-        {
-          path: "result/:result",
-          name: "sensor-result"
-        },
-        {
-          path: "substrate/:substrateBlock/:substrateTx",
-          name: "sensor-result-substrate"
-        }
-      ]
-    },
-    {
       path: "/liability/:liability",
       name: "liability",
       component: Liability,
@@ -92,7 +68,9 @@ export default new Router({
       name: "uniswap",
       component: Uniswap
     },
-    ...Object.values(services).map(item => item.router),
+    ...Object.values(services)
+      .filter(item => item.router)
+      .map(item => item.router),
     { path: "*", redirect: "/" }
   ]
 });

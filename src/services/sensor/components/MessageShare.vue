@@ -56,8 +56,8 @@ import {
   getAccounts,
   getAccount,
   sendSubstrate
-} from "./substrate";
-import history from "./historyStore";
+} from "../utils/substrate";
+import history from "../utils/historyStore";
 import Modal from "./Modal";
 
 export default {

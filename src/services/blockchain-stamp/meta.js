@@ -1,5 +1,4 @@
 export default {
-  id: "passport",
   en: {
     name: "Public blockchain stamp",
     desc: "Global registration service in the Ethereum Blockchain."
@@ -11,10 +10,15 @@ export default {
   link: { name: "blockchain-stamp" },
   target: false,
   img: require("./logo.png"),
-  by: {
-    link: "#",
-    label: "Airalab"
+  by: [
+    {
+      link: "https://airalab.org/",
+      label: "Airalab"
+    }
+  ],
+  token: {
+    address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    name: "Dai Stablecoin (DAI)"
   },
-  token: false,
   disabled: false
 };

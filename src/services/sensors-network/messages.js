@@ -1,4 +1,5 @@
 export default {
+  id: "sensorSelect",
   en: {
     title: "DAO IPCI on Robonomics Substrate",
     subtitle: "Please select options to connect dapp to your sensor",

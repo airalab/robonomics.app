@@ -21,8 +21,8 @@
 
 <script>
 import Message from "./MessageFree";
-import { getInstance, hexToString } from "./substrate";
-import { parseResult, loadScript } from "./utils";
+import { getInstance, hexToString } from "../utils/substrate";
+import { parseResult, loadScript } from "../utils/utils";
 
 export default {
   props: ["lighthouse", "model", "agent", "substrateBlock", "substrateTx"],

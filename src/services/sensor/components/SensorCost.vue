@@ -54,11 +54,11 @@
 import Vue from "vue";
 import { Liability } from "robonomics-js";
 import Approve from "@/components/approve/Main";
+import token from "@/mixins/token";
 import Pagination from "./Pagination";
 import Message from "./MessageCost";
-import history from "./historyStore";
-import { parseResult, loadScript } from "./utils";
-import token from "@/mixins/token";
+import history from "../utils/historyStore";
+import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
 
 export default {

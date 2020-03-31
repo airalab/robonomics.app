@@ -1,5 +1,4 @@
 export default {
-  id: "sensorSelect",
   en: {
     name: "DAO IPCI on Robonomics Substrate",
     desc: "Public blockchain for open sensors network."
@@ -11,10 +10,16 @@ export default {
   link: { name: "sensors-network" },
   target: false,
   img: require("./logo.jpg"),
-  by: {
-    link: "#",
-    label: "Airalab, Evercity"
-  },
+  by: [
+    {
+      link: "https://airalab.org/",
+      label: "Airalab"
+    },
+    {
+      link: "https://evercity.io/",
+      label: "Evercity"
+    }
+  ],
   token: false,
   disabled: false
 };

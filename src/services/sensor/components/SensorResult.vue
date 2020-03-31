@@ -21,7 +21,7 @@
 
 <script>
 import Message from "./MessageFree";
-import { parseResult, loadScript } from "./utils";
+import { parseResult, loadScript } from "../utils/utils";
 
 export default {
   props: ["lighthouse", "model", "agent", "result"],
