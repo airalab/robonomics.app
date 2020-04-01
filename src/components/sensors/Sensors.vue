@@ -3,12 +3,12 @@
     <div v-if="ready">
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green>
+          <RButton v-if="isRequest" fullWidth color="green">
             {{
             $t("sensors.requested")
             }}
           </RButton>
-          <RButton v-else @click.native="sendMsgDemand" full>
+          <RButton v-else @click.native="sendMsgDemand" fullWidth>
             {{
             $t("sensors.isRequest")
             }}

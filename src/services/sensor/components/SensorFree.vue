@@ -13,12 +13,12 @@
       </h4>
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green disabled>
+          <RButton v-if="isRequest" fullWidth color="green" disabled>
             {{
             $t("sensor.requested")
             }}
           </RButton>
-          <RButton v-else @click.native="sendMsgDemand" full green>
+          <RButton v-else @click.native="sendMsgDemand" fullWidth color="green">
             {{
             $t("sensor.isRequest")
             }}

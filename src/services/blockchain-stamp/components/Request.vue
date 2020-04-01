@@ -4,9 +4,7 @@
       class="container-full btn-big"
       @click="$emit('submit')"
       :disabled="objective != null || isRun"
-    >
-      {{ $t("passport.requestPrice") }}
-    </button>
+    >{{ $t("passport.requestPrice") }}</button>
     <div v-if="responseError">{{ responseError }}</div>
   </div>
 </template>
@@ -31,12 +29,14 @@ export default {
     async getObjective(fields) {
       const payload = {};
       for (let field in fields) {
-        if (fields[field].type === "file") {
+        if (fields[field].type === "file" && fields[field].value) {
           payload[field] = await addByFile(fields[field].value);
         } else if (fields[field].type === "files") {
           payload[field] = [];
           for (let name in fields[field].items) {
-            payload[field].push(await addByFile(fields[field].items[name]));
+            if (fields[field].items[name]) {
+              payload[field].push(await addByFile(fields[field].items[name]));
+            }
           }
         } else {
           payload[field] = fields[field].value;

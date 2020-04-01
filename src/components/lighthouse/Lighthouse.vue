@@ -80,12 +80,10 @@ export default {
       ) {
         this.$robonomics.initLighthouse(this.lighthouseName).then(() => {
           this.$store.dispatch("providers/init");
-          this.$store.dispatch("messages/init");
           this.lighthouse = lighthouseAddr;
         });
       } else {
         this.$store.dispatch("providers/init");
-        this.$store.dispatch("messages/init");
         this.lighthouse = lighthouseAddr;
       }
     }

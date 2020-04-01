@@ -8,7 +8,7 @@
       <template v-else-if="$robonomics.account">
         <Form ref="form" @onSubmit="handleSubmit" />
         <Request
-          v-if="!response"
+          v-if="!roboCycle.offer"
           ref="request"
           :model="model"
           :token="tokenAddress"
@@ -20,19 +20,19 @@
           <section>
             <div class="form-section-title">{{ $t("passport.subtitle3") }}</div>
             <Response
-              :sender="response.sender"
-              :objective="response.objective"
-              :address="response.token"
+              :sender="roboCycle.offer.sender"
+              :objective="roboCycle.offer.objective"
+              :address="roboCycle.offer.token"
               :from="$robonomics.account.address"
               :to="$robonomics.factory.address"
-              :cost="response.cost"
+              :cost="roboCycle.offer.cost"
               :initDetails="Number(cost) > Number(myAllowance)"
             />
             <section
               v-if="
-                demand === null &&
-                  Number(cost) > 0 &&
-                  Number(myAllowance) < Number(response.cost)
+                roboCycle.demand === null &&
+                Number(cost) > 0 &&
+                Number(myAllowance) < Number(roboCycle.offer.cost)
               "
               class="section-light"
             >
@@ -40,36 +40,45 @@
                 <b>{{ $t("passport.reqApprove") }}</b>
               </div>
               <Approve
-                :address="response.token"
+                :address="roboCycle.offer.token"
                 :from="$robonomics.account.address"
                 :to="$robonomics.factory.address"
                 :initAmountWei="cost"
               />
             </section>
+
             <Steps
-              v-if="demand"
-              :status="demand.status"
-              :liability="demand.liability"
+              v-if="roboCycle.demand"
+              :status="roboCycle.status"
+              :liability="roboCycle.liability"
             />
             <section
-              v-if="demand === null || demand.status != statuses.RESULT"
-              :class="{
-                disabled:
-                  (Number(cost) > 0 && Number(myAllowance) < Number(cost)) ||
-                  (demand && demand.status != statuses.EMPTY)
-              }"
+              v-if="roboCycle.demand === null || roboCycle.status != statuses.RESULT"
+              :class="{ disabled: (Number(cost) > 0 && Number(myAllowance) < Number(cost)) || (roboCycle.demand && roboCycle.status != statuses.EMPTY) }"
             >
-              <Order :offer="response" :onDemand="onDemand" />
+              {{roboCycle}}
+              <RButton
+                @click="sendMsgDemand"
+                fullWidth
+                size="big"
+                :disabled="roboCycle.status > statuses.EMPTY && roboCycle.status < statuses.RESULT"
+              >
+                <div
+                  class="loader-ring"
+                  v-if="roboCycle.status > statuses.EMPTY && roboCycle.status < statuses.RESULT"
+                ></div>
+                &nbsp;{{ $t("passport.order") }}
+              </RButton>
             </section>
-            <div v-if="demand && demand.status == statuses.RESULT">
+
+            <div v-if="roboCycle.demand && roboCycle.status == statuses.RESULT">
               <router-link
                 class="container-full btn-big btn-green"
                 :to="{
                   name: 'passport-view',
-                  params: { passport: demand.liability }
+                  params: { passport: roboCycle.liability }
                 }"
-                >{{ $t("passport.link") }}</router-link
-              >
+              >{{ $t("passport.link") }}</router-link>
             </div>
           </section>
         </template>
@@ -79,26 +88,31 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import Page from "@/components/layout/Page";
 import Approve from "@/components/approve/Form";
 import Steps from "@/components/Steps";
 import Form from "./Form";
 import Request from "./Request";
 import Response from "./Response";
-import Order from "./Order";
 import Passport from "./Passport";
 import { number } from "@/utils/tools";
 import token from "@/mixins/token";
+import order, { STATUS } from "@/mixins/order";
 import config from "~config";
 
 export default {
-  mixins: [token],
+  mixins: [token, order],
   props: ["passport"],
   data() {
     return {
-      response: null,
-      demandId: 0,
+      statuses: STATUS,
+      roboCycle: {
+        status: 0,
+        demand: null,
+        offer: null,
+        liability: null,
+        result: null
+      },
       tokenAddress: "0x0000000000000000000000000000000000000000",
       validator: "0x0000000000000000000000000000000000000000",
       model: "QmWDRjU7xrM7pFUDuAVbV6kytuFgooahNLsqvCnipPgSSQ",
@@ -111,22 +125,17 @@ export default {
     Request,
     Response,
     Approve,
-    Order,
     Steps,
     Passport
   },
   computed: {
-    ...mapState("msg", ["statuses"]),
-    demand() {
-      return this.$store.getters["msg/demandById"](this.demandId);
-    },
     cost() {
-      return number.numToString(this.response.cost);
+      return number.numToString(this.roboCycle.offer.cost);
     },
     myAllowance: function() {
-      if (this.$robonomics.account && this.response) {
+      if (this.$robonomics.account && this.roboCycle.offer) {
         return this.allowance(
-          this.response.token,
+          this.roboCycle.offer.token,
           this.$robonomics.account.address,
           this.$robonomics.factory.address
         );
@@ -147,26 +156,31 @@ export default {
           console.log(msg);
         });
       });
+    this.$on("update", this.handleOrder);
   },
   methods: {
-    submit() {
-      this.$refs.form.submit();
-    },
     handleSubmit({ error, fields }) {
       this.$refs.request.requestPrice(error, fields);
     },
     handleResponse(msg) {
-      this.response = msg;
+      this.roboCycle = {
+        ...this.roboCycle,
+        status: 0,
+        offer: msg.toObject()
+      };
       if (this.$robonomics.account) {
         this.watchToken(
-          this.response.token,
+          this.roboCycle.offer.token,
           this.$robonomics.account.address,
           this.$robonomics.factory.address
         );
       }
     },
-    onDemand(demandId) {
-      this.demandId = demandId;
+    sendMsgDemand() {
+      this.runOrder({ offer: this.roboCycle.offer });
+    },
+    handleOrder(order) {
+      this.roboCycle = order;
     }
   }
 };

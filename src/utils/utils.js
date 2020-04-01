@@ -17,7 +17,7 @@ export const genRosbagIpfs = data => {
     })
     .then(r => {
       hash = r[0].hash;
-      return axios.get(`${config.GATEWAY}${hash}`);
+      return axios.get(`${config.IPFS_GATEWAY}${hash}`);
     })
     .then(() => {
       return hash;

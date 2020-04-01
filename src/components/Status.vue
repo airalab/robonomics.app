@@ -8,12 +8,7 @@
 
 <script>
 import { getStatusPeers } from "../utils/tools";
-
-const lookPeers = [
-  "QmdfQmbmXt6sqjZyowxPUsmvBsgSGQjm4VXrV7WGy62dv8",
-  "QmPTFt7GJ2MfDuVYwJJTULr6EnsQtGVp8ahYn9NSyoxmd9",
-  "QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw"
-];
+import getConfigRobonomics from "../config/robonomics";
 
 export default {
   data() {
@@ -37,7 +32,7 @@ export default {
         const peers = await getStatusPeers(
           this.$ipfs,
           this.$robonomics,
-          lookPeers
+          getConfigRobonomics().statusPeers
         );
         this.required = peers.required;
         this.other = peers.other;

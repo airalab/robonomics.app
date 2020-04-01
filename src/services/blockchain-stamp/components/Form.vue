@@ -2,9 +2,7 @@
   <form v-on:submit.prevent="submit">
     <RFormSection :title="$t('passport.subtitle1')">
       <RFormField>
-        <RFieldLabel :isError="fields.email.error">{{
-          $t("passport.emailField")
-        }}</RFieldLabel>
+        <RFieldLabel :isError="fields.email.error">{{ $t("passport.emailField") }}</RFieldLabel>
         <input
           type="text"
           v-model="fields.email.value"
@@ -13,9 +11,7 @@
         />
       </RFormField>
       <RFormField>
-        <RFieldLabel :isError="fields.info.error">{{
-          $t("passport.informations")
-        }}</RFieldLabel>
+        <RFieldLabel :isError="fields.info.error">{{ $t("passport.informations") }}</RFieldLabel>
         <textarea
           v-model="fields.info.value"
           class="container-full"
@@ -27,9 +23,7 @@
     </RFormSection>
     <RFormSection :title="$t('passport.subtitle2')">
       <RFormField>
-        <RFieldLabel :isError="fields.meta.error">{{
-          $t("passport.metaField")
-        }}</RFieldLabel>
+        <RFieldLabel :isError="fields.meta.error">{{ $t("passport.metaField") }}</RFieldLabel>
         <file-pond
           name="meta"
           ref="pond"
@@ -39,9 +33,7 @@
         />
       </RFormField>
       <RFormField>
-        <RFieldLabel :isError="fields.images.error">{{
-          $t("passport.imagesField")
-        }}</RFieldLabel>
+        <RFieldLabel :isError="fields.images.error">{{ $t("passport.imagesField") }}</RFieldLabel>
         <file-pond
           name="images"
           ref="pond"

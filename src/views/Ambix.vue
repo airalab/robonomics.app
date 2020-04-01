@@ -5,27 +5,16 @@
     <RCard v-if="$robonomics.account">
       <h3>{{ $t("action") }}</h3>
 
-      <section
-        class="t-align--center d-table container-full table-space--10 table-fixed"
-      >
-        <div
-          v-if="!isWhite"
-          class="d-table--cell section-mid page-alembic--actionblock"
-        >
+      <section class="t-align--center d-table container-full table-space--10 table-fixed">
+        <div v-if="!isWhite" class="d-table--cell section-mid page-alembic--actionblock">
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
             <RChainExplorer :address="address" />
-            <RButton v-if="isKyc" full green disabled>
-              {{ $t("kyc_passed") }}
-            </RButton>
+            <RButton v-if="isKyc" fullWidth color="green" disabled>{{ $t("kyc_passed") }}</RButton>
             <template v-else>
-              <RButton v-if="loadingKyc" full :disabled="loadingKyc">
-                {{ $t("pass_kyc_wait") }}
-              </RButton>
-              <RButton v-else full @click.native="setKyc">
-                {{ $t("pass_kyc") }}
-              </RButton>
+              <RButton v-if="loadingKyc" fullWidth :disabled="loadingKyc">{{ $t("pass_kyc_wait") }}</RButton>
+              <RButton v-else fullWidth @click.native="setKyc">{{ $t("pass_kyc") }}</RButton>
             </template>
           </div>
         </div>

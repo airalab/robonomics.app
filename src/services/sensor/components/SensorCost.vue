@@ -23,8 +23,13 @@
           :alwaysShow="false"
         />
         <div v-if="Number(myAllowance) >= Number(cost)" class="input-size--md">
-          <RButton v-if="isRequest" full green disabled>{{ $t("sensor.requested") }}</RButton>
-          <RButton v-else @click.native="sendMsgDemand" full green>{{ $t("sensor.isRequest") }}</RButton>
+          <RButton v-if="isRequest" fullWidth color="green" disabled>{{ $t("sensor.requested") }}</RButton>
+          <RButton
+            v-else
+            @click.native="sendMsgDemand"
+            fullWidth
+            color="green"
+          >{{ $t("sensor.isRequest") }}</RButton>
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">

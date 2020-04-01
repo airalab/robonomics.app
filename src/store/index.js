@@ -4,11 +4,8 @@ import createLogger from "vuex/dist/logger";
 import kyc from "./modules/kyc";
 import statistics from "./modules/statistics";
 import net from "./modules/net";
-import messages from "./modules/messages";
 import providers from "./modules/providers";
-import sender from "./modules/sender";
 import tokens from "./modules/tokens";
-import msg from "./modules/msg";
 import chain from "./modules/chain";
 
 Vue.use(Vuex);
@@ -20,11 +17,8 @@ export default new Vuex.Store({
     kyc,
     statistics,
     net,
-    messages,
     providers,
-    sender,
     tokens,
-    msg,
     chain
   },
   strict: true, // debug,
