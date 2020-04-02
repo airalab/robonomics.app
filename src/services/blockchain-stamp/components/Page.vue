@@ -56,7 +56,6 @@
               v-if="roboCycle.demand === null || roboCycle.status != statuses.RESULT"
               :class="{ disabled: (Number(cost) > 0 && Number(myAllowance) < Number(cost)) || (roboCycle.demand && roboCycle.status != statuses.EMPTY) }"
             >
-              {{roboCycle}}
               <RButton
                 @click="sendMsgDemand"
                 fullWidth
@@ -177,7 +176,18 @@ export default {
       }
     },
     sendMsgDemand() {
-      this.runOrder({ offer: this.roboCycle.offer });
+      const demand = {
+        model: this.roboCycle.offer.model,
+        objective: this.roboCycle.offer.objective,
+        token: this.roboCycle.offer.token,
+        cost: this.roboCycle.offer.cost,
+        lighthouse: this.roboCycle.offer.lighthouse,
+        validator: this.roboCycle.offer.validator,
+        validatorFee: 0,
+        deadline: this.roboCycle.offer.deadline
+      };
+
+      this.runOrder({ demand, offer: this.roboCycle.offer });
     },
     handleOrder(order) {
       this.roboCycle = order;

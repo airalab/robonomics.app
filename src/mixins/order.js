@@ -29,12 +29,12 @@ export default {
         status: this.listOrders[id].status
       });
     },
-    runOrder({ demand = null, offer = null }) {
+    runOrder({ demand, offer = null }) {
       const id = this.listOrders.length;
       this.listOrders.push({
         id,
         demand: null,
-        offer: null,
+        offer: offer,
         liability: null,
         result: null,
         report: null,
@@ -42,7 +42,8 @@ export default {
         offerListener: null,
         resultListener: null
       });
-      if (demand) {
+
+      if (offer === null) {
         this.listOrders[id].offerListener = this.$robonomics.onOffer(
           demand.model,
           msg => {
@@ -58,20 +59,6 @@ export default {
             }
           }
         );
-      } else if (offer) {
-        this.listOrders[id].offer = offer;
-        demand = {
-          model: offer.model,
-          objective: offer.objective,
-          token: offer.token,
-          cost: offer.cost,
-          lighthouse: offer.lighthouse,
-          validator: offer.validator,
-          validatorFee: 0,
-          deadline: offer.deadline
-        };
-      } else {
-        return;
       }
 
       this.setStatus(id, STATUS.BTN);
