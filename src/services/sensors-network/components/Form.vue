@@ -8,6 +8,7 @@
         <input
           type="text"
           v-model="fields.lighthouse.value"
+          name="lighthouse"
           class="container-full"
           :class="{ error: fields.lighthouse.error }"
         />
@@ -19,6 +20,7 @@
         <input
           type="text"
           v-model="fields.model.value"
+          name="model"
           class="container-full"
           :class="{ error: fields.model.error }"
         />
@@ -30,6 +32,7 @@
         <input
           type="text"
           v-model="fields.agent.value"
+          name="agent"
           class="container-full"
           :class="{ error: fields.agent.error }"
         />
@@ -70,6 +73,20 @@ export default {
         }
       }
     };
+  },
+  created() {
+    this.$on("onSubmit", this.handleSubmit);
+    const lastAgentAddress = localStorage.getItem("lastAgentAddress");
+    if (lastAgentAddress) {
+      this.fields.agent.value = lastAgentAddress;
+    }
+  },
+  methods: {
+    handleSubmit({ error, fields }) {
+      if (!error) {
+        localStorage.setItem("lastAgentAddress", fields.agent.value);
+      }
+    }
   }
 };
 </script>
