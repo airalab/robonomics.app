@@ -1,13 +1,15 @@
 export const STATUS = {
   EMPTY: 0,
   BTN: 1,
-  // BROADCAST: 2,
+  BROADCAST: 2,
   SEND: 3,
   OFFER: 4,
-  // TX: 5,
-  CONTRACT: 6,
-  REPORT: 7,
-  RESULT: 8
+  FEEDBACK: 5,
+  TX_LIABILITY: 6,
+  CONTRACT: 7,
+  REPORT: 8,
+  TX_FINALIZATION: 9,
+  RESULT: 10
 };
 
 export default {
@@ -26,22 +28,33 @@ export default {
         liability: this.listOrders[id].liability,
         report: this.listOrders[id].report,
         result: this.listOrders[id].result,
-        status: this.listOrders[id].status
+        status: this.listOrders[id].status,
+        feedback: this.listOrders[id].feedback,
+        txLiability: this.listOrders[id].txLiability,
+        txFinalization: this.listOrders[id].txFinalization
       });
     },
-    runOrder({ demand, offer = null }) {
+    runOrder({ demand, offer = null, feedback = false, tx = false }) {
       const id = this.listOrders.length;
       this.listOrders.push({
         id,
         demand: null,
+        demandHash: null,
         offer: offer,
         liability: null,
         result: null,
         report: null,
+        feedback: false,
+        txLiability: null,
+        txFinalization: null,
         status: STATUS.EMPTY,
         offerListener: null,
-        resultListener: null
+        resultListener: null,
+        feedbackListener: null,
+        txListener: null
       });
+
+      this.setStatus(id, STATUS.BTN);
 
       if (offer === null) {
         this.listOrders[id].offerListener = this.$robonomics.onOffer(
@@ -61,11 +74,60 @@ export default {
         );
       }
 
-      this.setStatus(id, STATUS.BTN);
+      if (feedback) {
+        this.listOrders[id].feedbackListener = this.$robonomics.onFeedback(
+          msg => {
+            if (msg.order === this.listOrders[id].demandHash) {
+              this.listOrders[id].feedback = true;
+              this.setStatus(id, STATUS.FEEDBACK);
+              this.$robonomics.messenger.off(
+                this.listOrders[id].feedbackListener
+              );
+              this.listOrders[id].feedbackListener = null;
+            }
+          }
+        );
+      }
+
+      if (tx) {
+        this.listOrders[id].txListener = this.$robonomics.onPending(msg => {
+          this.$robonomics.web3.eth.getTransaction(msg.tx, (e, r) => {
+            if (e) {
+              console.log(e);
+              return;
+            }
+            if (
+              r &&
+              this.listOrders[id].liability &&
+              r.to.toLowerCase() ===
+                this.$robonomics.lighthouse.address.toLowerCase() &&
+              r.input.includes(
+                this.listOrders[id].liability.toLowerCase().substring(2)
+              )
+            ) {
+              this.listOrders[id].txFinalization = msg.tx;
+              this.setStatus(id, STATUS.TX_FINALIZATION);
+              this.$robonomics.messenger.off(this.listOrders[id].txListener);
+              this.listOrders[id].txListener = null;
+            } else if (
+              r &&
+              r.to.toLowerCase() ===
+                this.$robonomics.lighthouse.address.toLowerCase() &&
+              r.input.includes(
+                this.listOrders[id].demand.signature.substring(2)
+              )
+            ) {
+              this.listOrders[id].txLiability = msg.tx;
+              this.setStatus(id, STATUS.TX_LIABILITY);
+            }
+          });
+        });
+      }
 
       this.$robonomics
         .sendDemand(demand, true, msg => {
           this.listOrders[id].demand = msg.toObject();
+          this.listOrders[id].demandHash = msg.getHash();
           this.setStatus(id, STATUS.SEND);
           this.listOrders[id].resultListener = this.$robonomics.onResult(
             msg => {
@@ -84,11 +146,25 @@ export default {
           );
         })
         .then(liability => {
+          if (this.listOrders[id].offerListener) {
+            this.$robonomics.messenger.off(this.listOrders[id].offerListener);
+            this.listOrders[id].offerListener = null;
+          }
+          if (this.listOrders[id].feedbackListener) {
+            this.$robonomics.messenger.off(
+              this.listOrders[id].feedbackListener
+            );
+            this.listOrders[id].feedbackListener = null;
+          }
           this.listOrders[id].liability = liability.address;
           this.setStatus(id, STATUS.CONTRACT);
           return liability.onResult();
         })
         .then(result => {
+          if (this.listOrders[id].txListener) {
+            this.$robonomics.messenger.off(this.listOrders[id].txListener);
+            this.listOrders[id].txListener = null;
+          }
           this.listOrders[id].result = result;
           this.setStatus(id, STATUS.RESULT);
         })
@@ -102,12 +178,26 @@ export default {
             this.$robonomics.messenger.off(this.listOrders[id].resultListener);
             this.listOrders[id].resultListener = null;
           }
+          if (this.listOrders[id].feedbackListener) {
+            this.$robonomics.messenger.off(
+              this.listOrders[id].feedbackListener
+            );
+            this.listOrders[id].feedbackListener = null;
+          }
+          if (this.listOrders[id].txListener) {
+            this.$robonomics.messenger.off(this.listOrders[id].txListener);
+            this.listOrders[id].txListener = null;
+          }
           this.$emit("error", e);
           this.listOrders[id].demand = null;
+          this.listOrders[id].demandHash = null;
           this.listOrders[id].offer = offer;
           this.listOrders[id].liability = null;
           this.listOrders[id].result = null;
           this.listOrders[id].report = null;
+          this.listOrders[id].feedback = false;
+          this.listOrders[id].txLiability = null;
+          this.listOrders[id].txFinalization = null;
           this.setStatus(id, STATUS.EMPTY);
         });
 
