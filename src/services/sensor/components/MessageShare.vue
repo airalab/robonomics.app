@@ -81,6 +81,17 @@ export default {
       this.substrateTxHash = this.item.substrateTxHash;
     }
   },
+  watch: {
+    item: function(value) {
+      if (value.substrateBlockHash) {
+        this.substrateBlockHash = value.substrateBlockHash;
+        this.substrateTxHash = value.substrateTxHash;
+      } else {
+        this.substrateBlockHash = "";
+        this.substrateTxHash = "";
+      }
+    }
+  },
   methods: {
     getLink(type, result, tx = null) {
       if (type === "substrate") {
@@ -133,25 +144,33 @@ export default {
       });
       this.$modal.show(Modal, {
         accounts: accountsSelects,
-        select: async (address, close) => {
+        select: async (address, close, stop) => {
           const account = await getAccount(substrate, address);
 
-          await sendSubstrate(substrate, account, result, (block, txHash) => {
-            console.log("saved block", block, txHash);
-            close();
-            this.substrateBlockHash = block;
-            this.substrateTxHash = txHash;
+          await sendSubstrate(
+            substrate,
+            account,
+            result,
+            (block, txHash) => {
+              console.log("saved block", block, txHash);
+              close();
+              this.substrateBlockHash = block;
+              this.substrateTxHash = txHash;
 
-            const id = this.findId(
-              item => item.resultHash === this.item.resultHash
-            );
-            if (id) {
-              this.upadte(id, {
-                substrateBlockHash: this.substrateBlockHash,
-                substrateTxHash: this.substrateTxHash
-              });
+              const id = this.findId(
+                item => item.resultHash === this.item.resultHash
+              );
+              if (id) {
+                this.upadte(id, {
+                  substrateBlockHash: this.substrateBlockHash,
+                  substrateTxHash: this.substrateTxHash
+                });
+              }
+            },
+            () => {
+              stop();
             }
-          });
+          );
         }
       });
     },

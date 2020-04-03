@@ -36,7 +36,9 @@ export default {
       address: "Contract address",
       hash: "IPFS data hash"
     },
-    clear: "clear"
+    clear: "clear",
+    modalTitle: "Save result to substrate chain.",
+    modalBtn: "Send"
   },
   ru: {
     title: "Сенсорные сети",
@@ -74,6 +76,8 @@ export default {
       address: "Адрес контракта",
       hash: "IPFS data hash"
     },
-    clear: "очистить"
+    clear: "очистить",
+    modalTitle: "Сохранить результат в цепочке субстратов.",
+    modalBtn: "Отправить"
   }
 };

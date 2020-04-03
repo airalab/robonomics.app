@@ -1,21 +1,24 @@
 <template>
-  <div class="modal-content">
-    <div class="item">
-      <select v-model="selected">
-        <option
-          v-for="(option, key) in accounts"
-          :value="option.value"
-          :key="key"
-        >
-          {{ option.text }}
-        </option>
-      </select>
-    </div>
-    <div class="item">
-      <button @click="send" :disabled="isWork">
-        <div class="loader-ring" v-if="isWork"></div>
-        &nbsp;send
-      </button>
+  <div class="modal-wrapper">
+    <h2>{{ $t("sensor.modalTitle") }}</h2>
+    <div class="modal-content">
+      <div class="item">
+        <select v-model="selected">
+          <option
+            v-for="(option, key) in accounts"
+            :value="option.value"
+            :key="key"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+      <div class="item">
+        <button @click="send" :disabled="isWork">
+          <div class="loader-ring" v-if="isWork"></div>
+          &nbsp;{{ $t("sensor.modalBtn") }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -35,16 +38,29 @@ export default {
   methods: {
     send() {
       this.isWork = true;
-      this.select(this.selected, () => this.$emit("close"));
+      this.select(
+        this.selected,
+        () => this.$emit("close"),
+        () => {
+          this.isWork = false;
+        }
+      );
     }
   }
 };
 </script>
 
 <style scoped>
+.modal-wrapper {
+  padding: 20px;
+  height: 100%;
+}
+.modal-wrapper h2 {
+  text-align: center;
+}
 .modal-content {
   font-size: 16px;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   justify-content: center;
   align-items: center;

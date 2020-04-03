@@ -91,7 +91,7 @@ export async function getAccount(substrate, address) {
   return account;
 }
 
-export async function sendSubstrate(substrate, account, result, cb) {
+export async function sendSubstrate(substrate, account, result, cb, cbErr) {
   const record = u8aToHex(bs58.decode(result));
 
   const tx = substrate.tx.robonomicsStorage.record(record);
@@ -103,6 +103,6 @@ export async function sendSubstrate(substrate, account, result, cb) {
       }
     });
   } catch (error) {
-    console.log(error);
+    cbErr(error);
   }
 }
