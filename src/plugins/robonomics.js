@@ -1,16 +1,23 @@
 import Vue from "vue";
-import RComponents, { filters } from "../RComponents";
+import robonomicsVC from "robonomics-vc";
+import * as filters from "../utils/filters";
+import { setConfig } from "../config/robonomics";
 import config from "~config";
+import "robonomics-vc/dist/robonomics-vc.css";
 
-Vue.filter("urlExplorer", filters.urlExplorer);
-Vue.filter("urlIpfs", filters.urlIpfs);
+Vue.use(robonomicsVC);
+
+Vue.filter("urlChainExplorer", robonomicsVC.filters.urlChainExplorer);
+Vue.filter("urlIpfsExplorer", robonomicsVC.filters.urlIpfsExplorer);
 Vue.filter("fromWei", filters.fromWei);
 Vue.filter("labelAddress", filters.labelAddress);
 
-Vue.use(RComponents, {
+setConfig({
   ipfs: {
-    cdn: "ipfs.min.js"
+    cdn: "ipfs.min.js",
+    fallback: config.ipfs
   },
+  statusPeers: config.statusPeers,
   robonomics: networkId => {
     config.chain.set(networkId);
     return {

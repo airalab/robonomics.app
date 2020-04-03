@@ -8,15 +8,13 @@
       <p>
         <span class="t-sm">{{ $t("lighthouse.details.contract") }}:</span>
         <br />
-        <RLinkExplorer :text="lighthouse" />
+        <RChainExplorer :address="lighthouse" />
       </p>
       <hr />
       <p>
         <span class="t-sm">{{ $t("lighthouse.details.status") }}:</span>
         <br />
-        <b v-if="timeoutInBlocks < currentBlock - keepAliveBlock">{{
-          $t("lighthouse.details.sleeping")
-        }}</b>
+        <b v-if="isSleeping">{{ $t("lighthouse.details.sleeping") }}</b>
         <b v-else>{{ $t("lighthouse.details.active") }}</b>
       </p>
       <hr />
@@ -40,7 +38,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import WorkerForm from "./WorkerForm";
 import WithdrawForm from "./WithdrawForm";
 
@@ -55,12 +53,9 @@ export default {
       showWorkers: false
     };
   },
-  computed: mapState("providers", [
-    "lighthouseBalance",
-    "minimalStake",
-    "keepAliveBlock",
-    "timeoutInBlocks",
-    "currentBlock"
-  ])
+  computed: {
+    ...mapGetters("providers", ["isSleeping"]),
+    ...mapState("providers", ["lighthouseBalance", "minimalStake"])
+  }
 };
 </script>

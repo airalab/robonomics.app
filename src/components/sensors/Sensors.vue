@@ -3,12 +3,12 @@
     <div v-if="ready">
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" full green>
+          <RButton v-if="isRequest" fullWidth color="green">
             {{
             $t("sensors.requested")
             }}
           </RButton>
-          <RButton v-else @click.native="sendMsgDemand" full>
+          <RButton v-else @click.native="sendMsgDemand" fullWidth>
             {{
             $t("sensors.isRequest")
             }}
@@ -31,14 +31,14 @@
               <td>{{ key + 1 }}</td>
               <td>
                 <b>{{ getTypeByModel(item.model) }}</b>&nbsp;
-                <RLinkExplorer type="ipfs" :text="item.model" />
+                <RIpfsExplorer :hash="item.model" />
               </td>
               <td>
-                <RLinkExplorer :text="item.sender" />
+                <RChainExplorer :address="item.sender" />
               </td>
               <td>
                 <template v-if="item.cost > 0">
-                  <RLinkExplorer :text="item.token" category="token" />/
+                  <RChainExplorer :address="item.token" category="token" />/
                   <b>{{ item.cost }}</b>
                 </template>
                 <template v-else>

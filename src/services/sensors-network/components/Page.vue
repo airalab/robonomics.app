@@ -2,14 +2,13 @@
   <Page>
     <section class="section-light section-centered">
       <h2>{{ $t("sensorSelect.title") }}</h2>
-      <Form ref="form" :onSubmit="onSubmit" />
-      <button class="container-full btn-big" @click="open">{{ $t("sensorSelect.btn") }}</button>
+      <Form @onSubmit="handleSubmit" />
     </section>
   </Page>
 </template>
 
 <script>
-import Page from "@/components/Page";
+import Page from "@/components/layout/Page";
 import Form from "./Form";
 
 export default {
@@ -23,11 +22,8 @@ export default {
     Form
   },
   methods: {
-    open() {
-      this.$refs.form.submit();
-    },
-    onSubmit(e, fields) {
-      if (!e) {
+    handleSubmit({ error, fields }) {
+      if (!error) {
         this.$router.push({
           name: "sensor",
           params: {

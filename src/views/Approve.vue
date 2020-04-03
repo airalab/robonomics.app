@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import Page from "@/components/Page";
+import Page from "@/components/layout/Page";
 import Approve from "@/components/approve/Main";
 
 export default {

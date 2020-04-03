@@ -7,12 +7,19 @@ export default {
     name: "DAO IPCI on Robonomics Substrate",
     desc: "Публичный блокчейн для открытой сенсорной сети."
   },
-  link: "sensors-network",
-  img: "img/services/sensors-network.jpg",
-  by: {
-    link: "#",
-    label: "Airalab, Evercity"
-  },
+  link: { name: "sensors-network" },
+  target: false,
+  img: require("./logo.jpg"),
+  by: [
+    {
+      link: "https://airalab.org/",
+      label: "Airalab"
+    },
+    {
+      link: "https://evercity.io/",
+      label: "Evercity"
+    }
+  ],
   token: false,
   disabled: false
 };

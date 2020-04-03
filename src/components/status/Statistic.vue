@@ -124,7 +124,7 @@
         <div class="col-md-4">
           <section>
             <b>{{ $t("token_addr") }}:</b>
-            <RLinkExplorer :text="token" category="token" />
+            <RChainExplorer :address="token" category="token" />
           </section>
           <table class="container-full table-hover">
             <caption>

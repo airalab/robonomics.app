@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import Sensors from "../components/sensors/Sensors";
 import SelectLighthouse from "../components/lighthouse/SelectLighthouse";
 

@@ -1,8 +1,8 @@
 import _has from "lodash/has";
 import dateFormat from "dateformat";
 import { Lighthouse } from "robonomics-js";
-import getRobonomics from "../../RComponents/tools/robonomics";
-import getIpfs from "../../RComponents/tools/ipfs";
+import getRobonomics from "../../utils/robonomics";
+import getIpfs from "../../utils/ipfs";
 import { recovery, getDataByIpns } from "../../utils/utils";
 import config from "~config";
 

@@ -1,10 +1,7 @@
-import _find from "lodash/find";
 import _sortBy from "lodash/sortBy";
-import _values from "lodash/values";
-import _mapValues from "lodash/mapValues";
 import Promise from "bluebird";
-import getRobonomics from "../../RComponents/tools/robonomics";
-import { findLastTx } from "../../utils/utils";
+import getRobonomics from "../../utils/robonomics";
+// import { Liability } from "robonomics-js";
 
 let robonomics;
 
@@ -20,13 +17,20 @@ const state = {
   lastUpd: 0,
   lastUpdFind: 0,
   lighthouseBalance: 0,
-  minimalStake: 0
+  minimalStake: 0,
+  minBlock: 0
 };
 
 // getters
 const getters = {
   members: state => {
     return _sortBy(state.members, "i");
+  },
+  downtime: state => {
+    return state.currentBlock - state.keepAliveBlock;
+  },
+  isSleeping: (state, getters) => {
+    return getters.downtime > state.timeoutInBlocks;
   }
 };
 
@@ -80,7 +84,7 @@ const actions = {
       });
     dispatch("getProviders");
   },
-  getProviders({ commit, dispatch }) {
+  getProviders({ state, commit, dispatch }) {
     robonomics.lighthouse.getProviders().then(result => {
       const members = [];
       const quotas = [];
@@ -91,7 +95,8 @@ const actions = {
           address: member,
           quota: 0,
           balance: 0,
-          last: null
+          last: null,
+          lastTx: null
         });
         quotas.push(robonomics.lighthouse.methods.quotaOf(member).call());
         balances.push(
@@ -112,9 +117,12 @@ const actions = {
             ).toFixed(3);
           });
           members.forEach((item, i) => {
-            const last = _find(this.members, { address: item.address });
-            if (last) {
-              members[i].last = last.last;
+            const index = state.members.findIndex(member => {
+              return member.address === item.address;
+            });
+            if (index >= 0) {
+              members[i].last = state.members[index].last;
+              members[i].lastTx = state.members[index].lastTx;
             }
           });
 
@@ -123,31 +131,64 @@ const actions = {
         });
     });
   },
-  providerLastBlock({ commit, state }) {
-    robonomics.web3.eth.getBlockNumber((e, lastBlock) => {
-      findLastTx(
-        _values(_mapValues(state.members, "address")),
-        robonomics.lighthouse.address,
-        lastBlock,
-        state.lastUpdFind === 0
-          ? lastBlock - state.timeoutInBlocks
-          : state.lastUpdFind
-      ).then(r => {
-        const newMembers = [];
-        for (let i = 0; i < state.members.length; i++) {
-          newMembers.push({
-            ...state.members[i],
-            last:
-              state.members[i].last === null ||
-              r[state.members[i].address] > state.members[i].last
-                ? r[state.members[i].address]
-                : state.members[i].last
-          });
+  async providerLastBlock({ commit, state }) {
+    const lastBlock = await robonomics.web3.eth.getBlockNumber();
+
+    const fromBlock =
+      state.lastUpdFind > 0
+        ? state.lastUpdFind
+        : state.keepAliveBlock > 0
+        ? state.keepAliveBlock - state.timeoutInBlocks
+        : lastBlock - 100;
+
+    if (fromBlock === lastBlock) {
+      // skip
+      return;
+    }
+
+    // const li = new Liability(
+    //   robonomics.web3,
+    //   "0xd65Ef32bB136421d8243210292ce2aFE5c0e6b81"
+    // );
+    // const events = await li.getPastEvents("Finalized", {
+    //   fromBlock: fromBlock,
+    //   toBlock: lastBlock
+    // });
+    // console.log(events);
+
+    const events = (
+      await robonomics.factory.getPastEvents("NewLiability", {
+        fromBlock: fromBlock,
+        toBlock: lastBlock
+      })
+    ).reverse();
+
+    const newMembers = {};
+    for (let item of events) {
+      const t = await robonomics.web3.eth.getTransaction(item.transactionHash);
+      if (t.to === robonomics.lighthouse.address) {
+        const index = state.members.findIndex(member => {
+          return member.address === t.from;
+        });
+        if (index >= 0) {
+          newMembers[index] = {
+            block: item.blockNumber,
+            tx: item.transactionHash
+          };
+          break;
         }
-        commit("members", newMembers);
-        commit("setLastUpdFind", lastBlock);
+      }
+    }
+    Object.keys(newMembers).forEach(index => {
+      commit("setLastBlockProvider", {
+        ...newMembers[index],
+        index
       });
     });
+    if (state.minBlock === 0) {
+      commit("setMinBlock", fromBlock);
+    }
+    commit("setLastUpdFind", lastBlock);
   },
   watchBlock({ commit, state, dispatch }) {
     const setCurrentBlock = () => {
@@ -200,6 +241,13 @@ const mutations = {
   },
   members(state, data) {
     state.members = data;
+  },
+  setLastBlockProvider(state, data) {
+    state.members[data.index].last = data.block;
+    state.members[data.index].lastTx = data.tx;
+  },
+  setMinBlock(state, data) {
+    state.minBlock = data;
   },
   setLastUpdFind(state, data) {
     state.lastUpdFind = data;

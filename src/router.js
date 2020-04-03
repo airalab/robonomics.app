@@ -6,13 +6,11 @@ import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
 import Services from "@/views/Services";
 import Sensors from "@/views/Sensors";
-import Passport from "@/views/Passport";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
 import Uniswap from "@/views/Uniswap";
-import sensorsNetwork from "@/services/sensors-network/router";
-const Sensor = () => import("@/views/Sensor");
+import services from "@/services";
 
 Vue.use(Router);
 
@@ -50,44 +48,6 @@ export default new Router({
       props: true
     },
     {
-      path: "/sensors/:lighthouse/:model/:agent",
-      component: Sensor,
-      props: true,
-      children: [
-        {
-          path: "",
-          name: "sensor"
-        },
-        {
-          path: "token/:token/cost/:cost",
-          name: "sensor-cost"
-        },
-        {
-          path: "result/:result",
-          name: "sensor-result"
-        },
-        {
-          path: "substrate/:substrateBlock/:substrateTx",
-          name: "sensor-result-substrate"
-        }
-      ]
-    },
-    {
-      path: "/blockchain-stamp",
-      component: Passport,
-      props: true,
-      children: [
-        {
-          path: "",
-          name: "blockchain-stamp"
-        },
-        {
-          path: ":passport",
-          name: "passport-view"
-        }
-      ]
-    },
-    {
       path: "/liability/:liability",
       name: "liability",
       component: Liability,
@@ -108,7 +68,9 @@ export default new Router({
       name: "uniswap",
       component: Uniswap
     },
-    sensorsNetwork,
+    ...Object.values(services)
+      .filter(item => item.router)
+      .map(item => item.router),
     { path: "*", redirect: "/" }
   ]
 });

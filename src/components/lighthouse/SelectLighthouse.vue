@@ -15,11 +15,7 @@
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
         <br />
-        <input
-          type="number"
-          v-model="form.minimalStake"
-          class="input-size--md"
-        />
+        <input type="number" v-model="form.minimalStake" class="input-size--md" />
       </p>
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
@@ -31,30 +27,40 @@
           class="input-size--sm"
         />
       </p>
-      <RButton green disabled v-if="create">{{
+      <RButton color="green" disabled v-if="create">
+        {{
         $t("lighthouse.select.new.create")
-      }}</RButton>
-      <RButton green @click.native="sendCreateLighthouse" v-else>{{
+        }}
+      </RButton>
+      <RButton color="green" @click.native="sendCreateLighthouse" v-else>
+        {{
         $t("lighthouse.select.new.create")
-      }}</RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">{{
+        }}
+      </RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">
+        {{
         $t("lighthouse.select.cancel")
-      }}</a>
+        }}
+      </a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
-      <RButton @click.native="connect">{{
+      <RButton @click.native="connect">
+        {{
         $t("lighthouse.select.connect")
-      }}</RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">{{
+        }}
+      </RButton>
+      <a href="javascript:;" class="m-l-20" @click="reset">
+        {{
         $t("lighthouse.select.cancel")
-      }}</a>
+        }}
+      </a>
     </div>
   </div>
 </template>
 
 <script>
-import { number } from "../../RComponents/tools/utils";
+import { number } from "../../utils/tools";
 
 let slim;
 

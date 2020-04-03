@@ -1,120 +1,90 @@
 <template>
-  <form>
-    <section>
-      <div class="form-section-title">{{ $t("sensorSelect.subtitle") }}</div>
-      <div class="form-item form-line-label">
-        <label for="inputdata-lighthouse">
-          {{ $t("sensorSelect.form.lighthouse") }}
-          <span
-            v-if="form.fields.lighthouse.error"
-            class="input-msg"
-          >
-            {{
-            $t("sensorSelect.form.error")
-            }}
-          </span>
-        </label>
+  <form v-on:submit.prevent="submit">
+    <RFormSection :title="$t('sensorSelect.subtitle')">
+      <RFormField>
+        <RFieldLabel :isError="fields.lighthouse.error">{{
+          $t("sensorSelect.form.lighthouse")
+        }}</RFieldLabel>
         <input
           type="text"
-          v-model="form.fields.lighthouse.value"
+          v-model="fields.lighthouse.value"
+          name="lighthouse"
           class="container-full"
-          :class="{ error: form.fields.lighthouse.error }"
-          required
+          :class="{ error: fields.lighthouse.error }"
         />
-      </div>
-      <div class="form-item form-line-label">
-        <label for="inputdata-model">
-          {{ $t("sensorSelect.form.model") }}
-          <span v-if="form.fields.model.error" class="input-msg">
-            {{
-            $t("sensorSelect.form.error")
-            }}
-          </span>
-        </label>
+      </RFormField>
+      <RFormField>
+        <RFieldLabel :isError="fields.model.error">{{
+          $t("sensorSelect.form.model")
+        }}</RFieldLabel>
         <input
           type="text"
-          v-model="form.fields.model.value"
+          v-model="fields.model.value"
+          name="model"
           class="container-full"
-          :class="{ error: form.fields.model.error }"
-          required
+          :class="{ error: fields.model.error }"
         />
-      </div>
-      <div class="form-item form-line-label">
-        <label for="inputdata-agent">
-          {{ $t("sensorSelect.form.agent") }}
-          <span v-if="form.fields.agent.error" class="input-msg">
-            {{
-            $t("sensorSelect.form.error")
-            }}
-          </span>
-        </label>
+      </RFormField>
+      <RFormField>
+        <RFieldLabel :isError="fields.agent.error">{{
+          $t("sensorSelect.form.agent")
+        }}</RFieldLabel>
         <input
           type="text"
-          v-model="form.fields.agent.value"
+          v-model="fields.agent.value"
+          name="agent"
           class="container-full"
-          :class="{ error: form.fields.agent.error }"
-          required
+          :class="{ error: fields.agent.error }"
         />
-      </div>
-    </section>
+      </RFormField>
+    </RFormSection>
+
+    <button class="container-full btn-big">
+      {{ $t("sensorSelect.btn") }}
+    </button>
   </form>
 </template>
 
 <script>
+import robonomicsVC from "robonomics-vc";
+
 export default {
-  props: {
-    onSubmit: {
-      type: Function
-    },
-    isDisabled: {
-      default: false
-    }
-  },
+  mixins: [robonomicsVC.mixins.form],
   data() {
     return {
-      form: {
-        fields: {
-          lighthouse: {
-            value: "airalab",
-            type: "text",
-            rules: ["require"],
-            error: false
-          },
-          model: {
-            value: "QmWjvXGfVUDBNR15BBH5ERGP3SzEKbeLZWx7Fcp4kwwaw9",
-            type: "text",
-            rules: ["require"],
-            error: false
-          },
-          agent: {
-            value: "",
-            type: "text",
-            rules: ["require"],
-            error: false
-          }
+      fields: {
+        lighthouse: {
+          value: "airalab",
+          type: "text",
+          rules: ["require"],
+          error: false
         },
-        error: false
+        model: {
+          value: "QmWjvXGfVUDBNR15BBH5ERGP3SzEKbeLZWx7Fcp4kwwaw9",
+          type: "text",
+          rules: ["require", "hashIpfs"],
+          error: false
+        },
+        agent: {
+          value: "",
+          type: "text",
+          rules: ["require", robonomicsVC.validators.length(42)],
+          error: false
+        }
       }
     };
   },
+  created() {
+    this.$on("onSubmit", this.handleSubmit);
+    const lastAgentAddress = localStorage.getItem("lastAgentAddress");
+    if (lastAgentAddress) {
+      this.fields.agent.value = lastAgentAddress;
+    }
+  },
   methods: {
-    validate() {
-      this.form.error = false;
-      for (let field in this.form.fields) {
-        this.form.fields[field].error = false;
-        this.form.fields[field].rules.forEach(rule => {
-          if (rule === "require" && !this.form.fields[field].value) {
-            this.form.fields[field].error = true;
-            this.form.error = true;
-          }
-        });
-      }
-      return !this.form.error;
-    },
-    submit() {
-      this.validate();
-      if (this.onSubmit) {
-        this.onSubmit(this.form.error, this.form.fields);
+    handleSubmit({ error, fields }) {
+      if (!error) {
+        localStorage.setItem("lastAgentAddress", fields.agent.value);
       }
     }
   }

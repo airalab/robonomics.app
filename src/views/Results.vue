@@ -12,9 +12,9 @@
         </thead>
         <tbody>
           <tr v-for="(agent, index) in Object.keys(agents)" :key="index">
-            <td>{{agent}}</td>
-            <td>{{agents[agent].count}}</td>
-            <td>{{agents[agent].time}}</td>
+            <td>{{ agent }}</td>
+            <td>{{ agents[agent].count }}</td>
+            <td>{{ agents[agent].time }}</td>
           </tr>
         </tbody>
       </table>
@@ -24,7 +24,7 @@
 
 <script>
 import Vue from "vue";
-import Page from "@/components/Page";
+import Page from "@/components/layout/Page";
 import { Account } from "robonomics-js";
 import config from "~config";
 

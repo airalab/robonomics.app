@@ -1,7 +1,7 @@
 <template>
   <fragment>
     <RCard>
-      <TradeForm ref="form" :onChange="onChange" :onSubmit="onSubmit" />
+      <TradeForm ref="form" @onChange="onChange" @onSubmit="onSubmit" />
 
       <section class="m-b-0">
         <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
@@ -16,11 +16,11 @@
         />
         <RButton
           v-if="Number(myAllowance) >= Number(costWei)"
-          @click.native="sendMsgDemand"
-          :disabled="watch"
-          green
+          @click="sendMsgDemand"
+          :disabled="run"
+          color="green"
         >
-          <div class="loader-ring" v-if="watch"></div>
+          <div class="loader-ring" v-if="run"></div>
           &nbsp;{{ $t("lighthouse.market.broadcast") }}
         </RButton>
       </section>
@@ -38,9 +38,18 @@
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
             <a
-              :href="item.address | urlExplorer"
+              :href="item.address | urlChainExplorer"
               target="_blank"
             >{{ item.address | labelAddress }}</a>
+          </template>
+          <template v-else-if="item.type == 'result'">
+            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <b>[{{ item.date.toLocaleString() }}]</b>
+            New {{ item.type }}&nbsp;
+            <a
+              :href="item.hash | urlIpfsExplorer"
+              target="_blank"
+            >{{ item.hash | labelAddress }}</a>
           </template>
           <template v-else>
             <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
@@ -49,7 +58,7 @@
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
             <a
-              :href="item.sender | urlExplorer"
+              :href="item.sender | urlChainExplorer"
               target="_blank"
             >{{ item.sender | labelAddress }}</a>
           </template>
@@ -61,14 +70,14 @@
 </template>
 
 <script>
-import Vue from "vue";
-import TradeForm from "./TradeForm";
 import Approve from "@/components/approve/Main";
 import token from "@/mixins/token";
-import { number } from "../../RComponents/tools/utils";
+import order, { STATUS } from "@/mixins/order";
+import { number } from "@/utils/tools";
+import TradeForm from "./TradeForm";
 
 export default {
-  mixins: [token],
+  mixins: [token, order],
   components: {
     TradeForm,
     Approve
@@ -77,11 +86,11 @@ export default {
     return {
       account: "",
       messages: {},
-      nonce: null,
-      id: null,
       tokenAddress: null,
       cost: 0,
-      error: false
+      error: false,
+      idOrder: null,
+      run: false
     };
   },
   computed: {
@@ -101,14 +110,6 @@ export default {
     costWei() {
       return number.toWei(this.cost, this.decimals);
     },
-    demand() {
-      return this.$store.getters["sender/demandById"](this.id);
-    },
-    watch() {
-      return this.demand && this.demand.status > 0 && this.demand.status < 6
-        ? true
-        : false;
-    },
     decimals: function() {
       return this.token(this.tokenAddress).decimals;
     },
@@ -122,25 +123,49 @@ export default {
         : 0;
     }
   },
-  watch: {
-    demand: function(newStatus) {
-      if (newStatus.status === 6) {
-        this.setNonce();
-      }
-    }
+  created() {
+    this.$on("update", this.handleOrder);
   },
   mounted() {
     this.tooltip();
     this.init();
   },
   methods: {
+    handleOrder(order) {
+      if (
+        this.idOrder === order.id &&
+        (order.status === STATUS.EMPTY || order.status >= STATUS.CONTRACT)
+      ) {
+        this.run = false;
+      }
+      if (order.liability) {
+        if (!this.messages[order.liability]) {
+          this.$set(this.messages, order.liability, {
+            date: new Date(),
+            type: "liability",
+            address: order.liability
+          });
+        }
+        if (
+          order.result &&
+          !this.messages[order.liability + "/" + order.result]
+        ) {
+          this.$set(this.messages, order.liability + "/" + order.result, {
+            date: new Date(),
+            type: "result",
+            hash: order.result,
+            address: order.liability
+          });
+        }
+      }
+    },
     init() {
       this.account = this.$robonomics.account.address;
       this.$refs.form.fields.token.value = this.$robonomics.xrt.address;
       this.$robonomics.onDemand(null, msg => {
         const hash = msg.getHash();
         if (!this.messages[hash]) {
-          Vue.set(this.messages, hash, {
+          this.$set(this.messages, hash, {
             date: new Date(),
             type: "demand",
             sender: msg.sender
@@ -150,40 +175,18 @@ export default {
       this.$robonomics.onOffer(null, msg => {
         const hash = msg.getHash();
         if (!this.messages[hash]) {
-          Vue.set(this.messages, hash, {
+          this.$set(this.messages, hash, {
             date: new Date(),
             type: "offer",
             sender: msg.sender
           });
         }
       });
-      this.$robonomics.onLiability((err, liability) => {
-        if (
-          this.demand &&
-          this.id &&
-          liability.address &&
-          this.demand.sender === this.$robonomics.account.address
-        ) {
-          this.$store.dispatch("sender/setContract", {
-            id: this.id,
-            address: liability.address
-          });
-        }
-        if (!this.messages[liability.address]) {
-          Vue.set(this.messages, liability.address, {
-            date: new Date(),
-            type: "liability",
-            address: liability.address
-          });
-        }
-      });
-
-      this.setNonce();
     },
     sendMsgDemand() {
       this.$refs.form.submit();
     },
-    onChange(fields) {
+    onChange({ fields }) {
       this.tokenAddress = fields.token.value;
       this.cost = fields.cost.value;
       if (this.tokenAddress) {
@@ -194,9 +197,10 @@ export default {
         );
       }
     },
-    onSubmit(e, fields) {
-      this.error = e;
-      if (!e) {
+    onSubmit({ error, fields }) {
+      this.error = error;
+      if (!error) {
+        this.run = true;
         this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
           const demand = {
             model: fields.model.value,
@@ -206,22 +210,11 @@ export default {
             lighthouse: this.$robonomics.lighthouse.address,
             validator: "0x0000000000000000000000000000000000000000",
             validatorFee: 0,
-            deadline: r.number + 1000,
-            nonce: this.nonce
+            deadline: r.number + 1000
           };
-          this.$store.dispatch("sender/sendDemand", demand).then(id => {
-            this.id = id;
-          });
+          this.idOrder = this.runOrder({ demand });
         });
       }
-    },
-    setNonce() {
-      this.$robonomics.factory.methods
-        .nonceOf(this.$robonomics.account.address)
-        .call()
-        .then(r => {
-          this.nonce = Number(r);
-        });
     },
     tooltip() {
       const reference = document.querySelectorAll(".js-tooltip");

@@ -10,23 +10,11 @@
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
-            <RLinkExplorer :text="address" />
-            <RButton v-if="isKyc" full green disabled>
-              {{
-              $t("kyc_passed")
-              }}
-            </RButton>
+            <RChainExplorer :address="address" />
+            <RButton v-if="isKyc" fullWidth color="green" disabled>{{ $t("kyc_passed") }}</RButton>
             <template v-else>
-              <RButton v-if="loadingKyc" full :disabled="loadingKyc">
-                {{
-                $t("pass_kyc_wait")
-                }}
-              </RButton>
-              <RButton v-else full @click.native="setKyc">
-                {{
-                $t("pass_kyc")
-                }}
-              </RButton>
+              <RButton v-if="loadingKyc" fullWidth :disabled="loadingKyc">{{ $t("pass_kyc_wait") }}</RButton>
+              <RButton v-else fullWidth @click.native="setKyc">{{ $t("pass_kyc") }}</RButton>
             </template>
           </div>
         </div>
@@ -56,7 +44,7 @@
 </template>
 
 <script>
-import Page from "../components/Page";
+import Page from "@/components/layout/Page";
 import { mapState, mapGetters } from "vuex";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";

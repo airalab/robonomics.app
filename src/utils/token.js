@@ -1,5 +1,5 @@
 import { Token } from "robonomics-js";
-import getRobonomics from "../RComponents/tools/robonomics";
+import getRobonomics from "./robonomics";
 
 const balance = {};
 const allowance = {};

@@ -1,169 +1,154 @@
 <template>
-  <fragment>
+  <form v-on:submit.prevent="submit">
     <p>
       <span class="t-sm">{{ $t("lighthouse.approve.value") }}:</span>
       <br />
-      <b>{{ approveWorker.value | fromWei(9, "XRT") }}</b>
+      <b>{{ myAllowance | fromWei(9, "XRT") }}</b>
     </p>
     <hr />
     <p>
-      <span class="t-sm">{{ $t("lighthouse.approve.count") }}:</span>
+      <span class="t-sm">{{ fields.count.label }}:</span>
       <br />
       <input
-        class="input-size--sm m-r-10 input-sm"
         type="text"
-        v-model="count"
-        @input="
-          count = Number($event.target.value);
-          validate();
-        "
-        min="1"
+        v-model="fields.count.value"
+        class="input-size--sm m-r-10 input-sm"
+        :class="{ error: fields.count.error }"
       />
-      <RButton
-        @click.native="sendApproveWorker"
-        v-if="approveWorker.show"
-        :disabled="approveWorker.disabled"
-        class="btn-blue input-sm"
-      >{{ approveWorker.text }}</RButton>
-      <RButton
-        @click.native="sendRefill"
-        v-if="refill.show"
-        :disabled="refill.disabled"
-        class="btn-blue input-sm"
-      >{{ refill.text }}</RButton>
+      <button :disabled="isDisabledBtn">{{textBtn}}</button>
     </p>
-  </fragment>
+  </form>
 </template>
 
 <script>
-import { Promise } from "bluebird";
+import { mapGetters } from "vuex";
+import robonomicsVC from "robonomics-vc";
 
 export default {
+  mixins: [robonomicsVC.mixins.form],
   data() {
     return {
-      minimalStake: 1000,
-      count: 1,
-      approveWorker: {
-        value: 0,
-        show: true,
-        disabled: true,
-        text: this.$t("lighthouse.approve.quotes")
+      fields: {
+        count: {
+          label: this.$t("lighthouse.approve.count"),
+          value: "1",
+          type: "text",
+          rules: ["require", "number", robonomicsVC.validators.min(1)],
+          error: false
+        }
       },
-      refill: {
-        show: false,
-        disabled: false,
-        text: this.$t("lighthouse.approve.refill")
-      }
+      minimalStake: 0,
+      run: false
     };
   },
-  mounted() {
-    return this.fetchData();
+  computed: {
+    ...mapGetters("tokens", ["balance", "allowance", "token"]),
+    myBalance: function() {
+      return this.$robonomics.account
+        ? Number(
+            this.balance(
+              this.$robonomics.xrt.address,
+              this.$robonomics.account.address
+            )
+          )
+        : 0;
+    },
+    myAllowance: function() {
+      return this.$robonomics.account
+        ? this.allowance(
+            this.$robonomics.xrt.address,
+            this.$robonomics.account.address,
+            this.$robonomics.lighthouse.address
+          )
+        : 0;
+    },
+    isDisabledBtn: function() {
+      if (
+        this.run ||
+        this.error ||
+        this.myBalance < this.minimalStake * Number(this.fields.count.value)
+      ) {
+        return true;
+      }
+      return false;
+    },
+    textBtn: function() {
+      if (this.run) {
+        return "...";
+      }
+      if (
+        this.myAllowance >=
+        this.minimalStake * Number(this.fields.count.value)
+      ) {
+        return this.$t("lighthouse.approve.refill");
+      }
+      return this.$t("lighthouse.approve.quotes");
+    }
+  },
+  created() {
+    if (this.$robonomics.account) {
+      this.$store.dispatch("tokens/watchAllowance", {
+        token: this.$robonomics.xrt.address,
+        from: this.$robonomics.account.address,
+        to: this.$robonomics.lighthouse.address
+      });
+    }
+    this.$robonomics.lighthouse.methods
+      .minimalStake()
+      .call()
+      .then(r => {
+        this.minimalStake = Number(r);
+      });
+    this.$on("onChange", this.onChange);
+    this.$on("onSubmit", this.onSubmit);
   },
   methods: {
-    validate() {
-      if (this.approveWorker.value >= this.minimalStake * this.count) {
-        this.refill.show = true;
-        this.approveWorker.show = false;
+    onChange() {
+      this.validate();
+    },
+    onSubmit() {
+      this.run = true;
+      if (
+        this.myAllowance >=
+        this.minimalStake * Number(this.fields.count.value)
+      ) {
+        this.sendRefill()
+          .then(() => {
+            this.run = false;
+            this.fields.count.value = 1;
+          })
+          .catch(() => {
+            this.run = false;
+          });
       } else {
-        this.refill.show = false;
-        this.approveWorker.show = true;
-        this.approveWorker.disabled = false;
-        this.approveWorker.text = this.$t("lighthouse.approve.quotes");
+        this.sendApprove()
+          .then(() => {
+            this.run = false;
+            this.fields.count.value = 1;
+          })
+          .catch(() => {
+            this.run = false;
+          });
       }
     },
-    fetchData() {
-      return this.$robonomics.lighthouse.methods
-        .minimalStake()
-        .call()
-        .then(r => {
-          this.minimalStake = Number(r);
-          return this.$robonomics.xrt.methods
-            .balanceOf(this.$robonomics.account.address)
-            .call();
-        })
-        .then(balanceOf => {
-          const calls = [];
-          if (balanceOf >= this.minimalStake * this.count) {
-            calls.push(
-              this.$robonomics.xrt.methods
-                .allowance(
-                  this.$robonomics.account.address,
-                  this.$robonomics.lighthouse.address
-                )
-                .call()
-                .then(allowance => {
-                  this.approveWorker.value = allowance;
-                  this.count = Math.floor(
-                    this.approveWorker.value / this.minimalStake
-                  );
-                  if (allowance >= this.minimalStake * this.count) {
-                    this.approveWorker.show = false;
-                    this.approveWorker.disabled = true;
-                    this.approveWorker.text = this.$t(
-                      "lighthouse.approve.approved"
-                    );
-
-                    this.refill.show = true;
-                    this.refill.disabled = false;
-                    this.refill.text = this.$t("lighthouse.approve.refill");
-                  } else {
-                    this.approveWorker.show = true;
-                    this.approveWorker.disabled = false;
-                    this.approveWorker.text = this.$t(
-                      "lighthouse.approve.quotes"
-                    );
-
-                    this.refill.show = false;
-                    this.refill.disabled = true;
-                    this.refill.text = this.$t("lighthouse.approve.refill");
-                  }
-                })
-            );
-          } else {
-            this.approveWorker.disabled = true;
-            this.approveWorker.text = this.$t("lighthouse.approve.quotes");
-          }
-          return Promise.all(calls);
-        });
-    },
-    sendApproveWorker() {
-      this.approveWorker.disabled = true;
-      this.approveWorker.text = "...";
+    sendApprove() {
       return this.$robonomics.xrt.methods
         .approve(
           this.$robonomics.lighthouse.address,
-          this.minimalStake * this.count
+          this.minimalStake * Number(this.fields.count.value)
         )
         .send({
           from: this.$robonomics.account.address
-        })
-        .then(() => {
-          this.approveWorker.text = this.$t("lighthouse.approve.approved");
-          this.approveWorker.false = true;
-          return this.fetchData();
-        })
-        .catch(() => {
-          this.approveWorker.text = this.$t("lighthouse.approve.quotes");
-          this.approveWorker.false = true;
         });
     },
     sendRefill() {
-      this.refill.disabled = true;
-      this.refill.text = "...";
       return this.$robonomics.lighthouse.methods
-        .refill(this.minimalStake * this.count)
+        .refill(this.minimalStake * Number(this.fields.count.value))
         .send({
           from: this.$robonomics.account.address
         })
         .then(() => {
-          this.refill.text = "Ok";
-          this.refill.disabled = false;
           this.$store.dispatch("providers/fetchData");
-        })
-        .then(() => this.fetchData())
-        .catch(() => {
-          this.refill.text = this.$t("lighthouse.approve.refill");
-          this.refill.disabled = false;
         });
     }
   }

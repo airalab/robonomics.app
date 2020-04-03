@@ -20,19 +20,18 @@
         <tr v-else v-for="item in Object.values(nodes)" :key="item.id">
           <td>
             <a>
-              <a :href="item.id | urlIpfs('ipns')" target="_blank">
-                {{
-                item.id
-                }}
+              <a :href="item.id | urlIpfsExplorer('ipns')" target="_blank">
+                {{ item.id }}
               </a>
             </a>
           </td>
           <td>
             <a
               v-if="item.address"
-              :href="item.address | urlExplorer()"
+              :href="item.address | urlChainExplorer"
               target="_blank"
-            >{{ item.address }}</a>
+              >{{ item.address }}</a
+            >
             <span v-else>-</span>
           </td>
           <td>
