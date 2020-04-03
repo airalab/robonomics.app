@@ -9,7 +9,11 @@
       title="copy to clipboard"
       v-clipboard:copy="getLink('ipfs', item.resultHash)"
     ></a>
-    <a class="i-twitter" :href="getLinkTwitter('ipfs', item.resultHash)" target="_blank"></a>
+    <a
+      class="i-twitter"
+      :href="getLinkTwitter('ipfs', item.resultHash)"
+      target="_blank"
+    ></a>
     <template v-if="isSubstrate">
       <span style="margin-left: 20px;">|</span>
       <template v-if="substrateBlockHash == ''">
@@ -57,7 +61,7 @@ import {
   getAccount,
   sendSubstrate
 } from "../utils/substrate";
-import history from "../utils/historyStore";
+import Storage from "../utils/storage";
 import Modal from "./Modal";
 
 export default {
@@ -66,7 +70,9 @@ export default {
     return {
       substrateBlockHash: "",
       substrateTxHash: "",
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+      storage: new Storage(
+        `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+      )
     };
   },
   created() {
@@ -129,28 +135,43 @@ export default {
         accounts: accountsSelects,
         select: async (address, close) => {
           const account = await getAccount(substrate, address);
+
           await sendSubstrate(substrate, account, result, (block, txHash) => {
             console.log("saved block", block, txHash);
             close();
             this.substrateBlockHash = block;
             this.substrateTxHash = txHash;
-            const data = history.getData(this.storeKey);
-            data.forEach((item, index) => {
-              if (item.resultHash && item.resultHash === this.item.resultHash) {
-                history.addItem(
-                  this.storeKey,
-                  {
-                    ...data[index],
-                    substrateBlockHash: this.substrateBlockHash,
-                    substrateTxHash: this.substrateTxHash
-                  },
-                  index
-                );
-              }
-            });
+
+            const id = this.findId(
+              item => item.resultHash === this.item.resultHash
+            );
+            if (id) {
+              this.upadte(id, {
+                substrateBlockHash: this.substrateBlockHash,
+                substrateTxHash: this.substrateTxHash
+              });
+            }
           });
         }
       });
+    },
+    findId(filter) {
+      const items = this.storage.getItems();
+      const keys = Object.keys(items);
+      const index = keys.findIndex(key => filter(items[key]));
+      if (index >= 0) {
+        return keys[index];
+      }
+      return false;
+    },
+    upadte(id, data) {
+      const items = this.storage.getItems();
+      const item = {
+        ...items[id],
+        ...data,
+        update_time: new Date().toLocaleString()
+      };
+      this.storage.addItem(item.id, item);
     }
   }
 };

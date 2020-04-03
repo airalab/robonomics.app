@@ -12,7 +12,10 @@
       </select>
     </div>
     <div class="item">
-      <button @click="select(selected, () => $emit('close'))">send</button>
+      <button @click="send" :disabled="isWork">
+        <div class="loader-ring" v-if="isWork"></div>
+        &nbsp;send
+      </button>
     </div>
   </div>
 </template>
@@ -22,11 +25,18 @@ export default {
   props: ["accounts", "select"],
   data() {
     return {
-      selected: null
+      selected: null,
+      isWork: false
     };
   },
   created() {
     this.selected = this.accounts[0].value;
+  },
+  methods: {
+    send() {
+      this.isWork = true;
+      this.select(this.selected, () => this.$emit("close"));
+    }
   }
 };
 </script>

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3 v-if="item.time">{{ $t("sensor.requestAt") }} {{ item.time }}</h3>
+    <h3 v-if="item.create_time">
+      {{ $t("sensor.requestAt") }} {{ item.create_time }}
+    </h3>
     <div v-if="item.status === 1" class="animation-fadein">
       <p>
         <span class="loader-ring align-vertical m-r-15"></span>

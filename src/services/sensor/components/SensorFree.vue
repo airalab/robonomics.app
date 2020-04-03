@@ -3,25 +3,21 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template
-          v-if="log.length === 0"
-        >{{ $t("sensor.notStatusAgent") }}</template>
+        <template v-if="log.length === 0">{{
+          $t("sensor.notStatusAgent")
+        }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
-          {{ log[log.length - 1].time }}
+          {{ log[log.length - 1].create_time }}
         </template>
       </h4>
       <section v-if="$robonomics.account">
         <div class="input-size--md">
           <RButton v-if="isRequest" fullWidth color="green" disabled>
-            {{
-            $t("sensor.requested")
-            }}
+            {{ $t("sensor.requested") }}
           </RButton>
           <RButton v-else @click.native="sendMsgDemand" fullWidth color="green">
-            {{
-            $t("sensor.isRequest")
-            }}
+            {{ $t("sensor.isRequest") }}
           </RButton>
         </div>
       </section>
@@ -32,18 +28,24 @@
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-            >{{ $t("sensor.clear") }}</RButton>
+              >{{ $t("sensor.clear") }}</RButton
+            >
           </span>
         </template>
 
         <Pagination
-          :listData="log.slice().reverse()"
+          :listData="log"
           :currentPage="currentPage"
           @onPage="handlePage"
         >
           <template v-slot:default="props">
             <RCard>
-              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+              <Message
+                :item="props.item"
+                :lighthouse="lighthouse"
+                :model="model"
+                :agent="agent"
+              />
             </RCard>
           </template>
         </Pagination>
@@ -53,13 +55,14 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { Account } from "robonomics-js";
 import Pagination from "./Pagination";
 import Message from "./MessageFree";
-import history from "../utils/historyStore";
+import Storage from "../utils/storage";
 import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
+
+const MAX_ROW_HISTORY = 100;
 
 export default {
   props: ["lighthouse", "model", "agent"],
@@ -73,7 +76,9 @@ export default {
       isRequest: false,
       log: [],
       currentPage: 0,
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+      storage: new Storage(
+        `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+      )
     };
   },
   mounted() {
@@ -84,31 +89,15 @@ export default {
     }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
+      this.upLog();
 
-      const data = history.getData(this.storeKey).filter(item => item);
-      this.log = data;
-      console.log("load", data);
-      data.forEach((item, index) => {
-        if (
-          item &&
-          Object.prototype.hasOwnProperty.call(item, "status") &&
-          item.status >= 2
-        ) {
-          parseResult(item.resultHash).then(result => {
-            Vue.set(this.log, index, {
-              ...this.log[index],
+      this.log.forEach(item => {
+        if (item.status === 2) {
+          parseResult(item.result).then(result => {
+            this.upadte(item.id, {
               status: 3,
               result: result
             });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
-                status: 3,
-                result: result
-              },
-              index
-            );
           });
         }
       });
@@ -116,69 +105,86 @@ export default {
       this.$robonomics.onDemand(this.model, msg => {
         console.log("demand", msg);
       });
+
       this.$robonomics.onResult(msg => {
         console.log("open", msg);
-        // const sender = msg.recovery();
         const sender = Account.recoveryMessage(msg);
 
         if (
           sender.toLowerCase() === this.agent.toLowerCase() &&
           msg.liability === "0x0000000000000000000000000000000000000000"
         ) {
-          const item = {
-            status: 1,
-            time: new Date().toLocaleString()
-          };
-          this.log.push(item);
-          if (this.currentPage > 0) {
-            this.currentPage += 1;
-          }
+          this.add();
         }
 
         if (
-          this.log.length > 0 &&
           sender.toLowerCase() === this.agent.toLowerCase() &&
           (msg.liability === "0x0000000000000000000000000000000000000000" ||
             (this.$robonomics.account &&
               msg.liability === this.$robonomics.account.address))
         ) {
-          const index = this.log.findIndex(item => item.status === 1);
-          Vue.set(this.log, index, {
-            ...this.log[index],
-            status: 2,
-            resultHash: msg.result
-          });
-          history.addItem(
-            this.storeKey,
-            {
-              ...this.log[index],
+          const id = this.findId(item => item.status === 1);
+          if (id) {
+            this.upadte(id, {
               status: 2,
               resultHash: msg.result
-            },
-            index
-          );
-
-          parseResult(msg.result).then(result => {
-            Vue.set(this.log, index, {
-              ...this.log[index],
-              status: 3,
-              result: result
             });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
+            parseResult(msg.result).then(result => {
+              this.upadte(id, {
                 status: 3,
                 result: result
-              },
-              index
-            );
-          });
+              });
+            });
+          }
         }
       });
     });
   },
   methods: {
+    upLog() {
+      const items = this.storage.getItems();
+      const keys = Object.keys(items);
+      const removing = keys.length - MAX_ROW_HISTORY;
+      if (removing > 0) {
+        for (let index = 0; index < removing; index++) {
+          delete items[keys[index]];
+        }
+        this.storage.saveItems(items);
+      }
+      this.log = Object.values(items).reverse();
+    },
+    add() {
+      const item = {
+        id: Date.now(),
+        create_time: new Date().toLocaleString(),
+        update_time: new Date().toLocaleString(),
+        status: 1
+      };
+      this.storage.addItem(item.id, item);
+      this.upLog();
+      if (this.currentPage > 0 && this.currentPage < this.log.length - 1) {
+        this.currentPage += 1;
+      }
+    },
+    findId(filter) {
+      const items = this.storage.getItems();
+      const keys = Object.keys(items);
+      const index = keys.findIndex(key => filter(items[key]));
+      if (index >= 0) {
+        return keys[index];
+      }
+      return false;
+    },
+    upadte(id, data) {
+      const items = this.storage.getItems();
+      const item = {
+        ...items[id],
+        ...data,
+        update_time: new Date().toLocaleString()
+      };
+      this.storage.addItem(item.id, item);
+      this.upLog();
+    },
     handlePage(page) {
       this.currentPage = page;
     },
@@ -198,14 +204,7 @@ export default {
         this.$robonomics
           .sendDemand(demand, false, () => {
             this.isRequest = false;
-            const item = {
-              status: 1,
-              time: new Date().toLocaleString()
-            };
-            this.log.push(item);
-            if (this.currentPage > 0) {
-              this.currentPage += 1;
-            }
+            this.add();
           })
           .catch(e => {
             this.isRequest = false;
@@ -214,8 +213,9 @@ export default {
       });
     },
     clear() {
-      history.removeItem(this.storeKey);
+      this.storage.clear();
       this.log = [];
+      this.currentPage = 0;
     }
   }
 };

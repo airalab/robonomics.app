@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3 v-if="item.time">{{ $t("sensor.requestAt") }} {{ item.time }}</h3>
+    <h3 v-if="item.create_time">
+      {{ $t("sensor.requestAt") }} {{ item.create_time }}
+    </h3>
     <div v-if="item.status === 1" class="animation-fadein">
       <p>
         <span class="loader-ring align-vertical m-r-15"></span>
@@ -57,7 +59,12 @@
         <span class="loader-ring align-vertical m-r-15"></span>
         <b class="align-vertical">3. {{ $t("sensor.cost.status32") }}</b>
       </p>
-      <MessageShare :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+      />
     </div>
     <div v-else-if="item.status === 4">
       <p>
@@ -99,7 +106,12 @@
           <pre>{{ item.result }}</pre>
         </code>
       </p>
-      <MessageShare :item="item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+      <MessageShare
+        :item="item"
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+      />
     </div>
   </div>
 </template>

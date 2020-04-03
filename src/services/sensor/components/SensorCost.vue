@@ -4,9 +4,7 @@
       <h4>
         {{ $t("sensor.statusAgent") }}:
         <template v-if="log.length === 0">
-          {{
-          $t("sensor.notStatusAgent")
-          }}
+          {{ $t("sensor.notStatusAgent") }}
         </template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
@@ -23,13 +21,16 @@
           :alwaysShow="false"
         />
         <div v-if="Number(myAllowance) >= Number(cost)" class="input-size--md">
-          <RButton v-if="isRequest" fullWidth color="green" disabled>{{ $t("sensor.requested") }}</RButton>
+          <RButton v-if="isRequest" fullWidth color="green" disabled>{{
+            $t("sensor.requested")
+          }}</RButton>
           <RButton
             v-else
             @click.native="sendMsgDemand"
             fullWidth
             color="green"
-          >{{ $t("sensor.isRequest") }}</RButton>
+            >{{ $t("sensor.isRequest") }}</RButton
+          >
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -39,14 +40,24 @@
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-            >{{ $t("sensor.clear") }}</RButton>
+              >{{ $t("sensor.clear") }}</RButton
+            >
           </span>
         </template>
 
-        <Pagination :listData="log.slice().reverse()">
+        <Pagination
+          :listData="log"
+          :currentPage="currentPage"
+          @onPage="handlePage"
+        >
           <template v-slot:default="props">
             <RCard>
-              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+              <Message
+                :item="props.item"
+                :lighthouse="lighthouse"
+                :model="model"
+                :agent="agent"
+              />
             </RCard>
           </template>
         </Pagination>
@@ -56,15 +67,16 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { Liability } from "robonomics-js";
 import Approve from "@/components/approve/Main";
 import token from "@/mixins/token";
 import Pagination from "./Pagination";
 import Message from "./MessageCost";
-import history from "../utils/historyStore";
+import Storage from "../utils/storage";
 import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
+
+const MAX_ROW_HISTORY = 100;
 
 export default {
   mixins: [token],
@@ -79,7 +91,10 @@ export default {
       ready: false,
       isRequest: false,
       log: [],
-      storeKey: `sn_${this.lighthouse}_${this.model}_${this.agent}_cost`
+      currentPage: 0,
+      storage: new Storage(
+        `sn_${this.lighthouse}_${this.model}_${this.agent}_cost`
+      )
     };
   },
   mounted() {
@@ -90,82 +105,46 @@ export default {
     }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
+      this.upLog();
 
-      const data = history.getData(this.storeKey);
-      this.log = data;
-      data.forEach((item, index) => {
-        Vue.set(this.log, index, {
-          ...this.log[index]
-        });
-        if (item.status > 1) {
+      this.log.forEach(item => {
+        if (item.status === 2) {
           const liability = new Liability(
             this.$robonomics.web3,
             item.liability
           );
-          if (item.status === 2) {
-            liability
-              .result()
-              .then(r => {
-                if (r) {
-                  return r;
-                }
-                return liability.onResult();
-              })
-              .then(result => {
-                console.log(result);
-                Vue.set(this.log, index, {
-                  ...this.log[index],
-                  status: 3,
-                  resultHash: result
-                });
-                history.addItem(
-                  this.storeKey,
-                  {
-                    ...this.log[index],
-                    status: 3,
-                    resultHash: result
-                  },
-                  index
-                );
-                parseResult(result).then(result => {
-                  Vue.set(this.log, index, {
-                    ...this.log[index],
-                    status: 4,
-                    result: result
-                  });
-                  history.addItem(
-                    this.storeKey,
-                    {
-                      ...this.log[index],
-                      status: 4,
-                      result: result
-                    },
-                    index
-                  );
-                });
-              })
-              .catch(e => {
-                this.isRequest = false;
-                console.log(e);
+          liability
+            .result()
+            .then(r => {
+              if (r) {
+                return r;
+              }
+              return liability.onResult();
+            })
+            .then(result => {
+              console.log(result);
+              this.upadte(item.id, {
+                status: 3,
+                resultHash: result
               });
-          } else if (item.status === 3) {
-            parseResult(item.resultHash).then(result => {
-              Vue.set(this.log, index, {
-                ...this.log[index],
-                status: 4,
-                result: result
-              });
-              history.addItem(
-                this.storeKey,
-                {
-                  ...this.log[index],
+              parseResult(result).then(result => {
+                this.upadte(item.id, {
                   status: 4,
                   result: result
-                },
-                index
-              );
+                });
+              });
+            })
+            .catch(e => {
+              this.isRequest = false;
+              console.log(e);
             });
-          }
+        } else if (item.status === 3) {
+          parseResult(item.resultHash).then(result => {
+            this.upadte(item.id, {
+              status: 4,
+              result: result
+            });
+          });
         }
       });
 
@@ -199,6 +178,46 @@ export default {
     }
   },
   methods: {
+    upLog() {
+      const items = this.storage.getItems();
+      const keys = Object.keys(items);
+      const removing = keys.length - MAX_ROW_HISTORY;
+      if (removing > 0) {
+        for (let index = 0; index < removing; index++) {
+          delete items[keys[index]];
+        }
+        this.storage.saveItems(items);
+      }
+      this.log = Object.values(items).reverse();
+    },
+    add() {
+      const id = Date.now();
+      const item = {
+        id,
+        create_time: new Date().toLocaleString(),
+        update_time: new Date().toLocaleString(),
+        status: 1
+      };
+      this.storage.addItem(item.id, item);
+      this.upLog();
+      if (this.currentPage > 0 && this.currentPage < this.log.length - 1) {
+        this.currentPage += 1;
+      }
+      return id;
+    },
+    upadte(id, data) {
+      const items = this.storage.getItems();
+      const item = {
+        ...items[id],
+        ...data,
+        update_time: new Date().toLocaleString()
+      };
+      this.storage.addItem(item.id, item);
+      this.upLog();
+    },
+    handlePage(page) {
+      this.currentPage = page;
+    },
     sendMsgDemand() {
       this.isRequest = true;
       this.$robonomics.web3.eth.getBlock("latest", (e, r) => {
@@ -212,71 +231,37 @@ export default {
           validatorFee: 0,
           deadline: r.number + 1000
         };
-        let liabilityWatch;
+        let id = null;
         this.$robonomics
           .sendDemand(demand, true, () => {
             this.isRequest = false;
-            const item = {
-              status: 1,
-              time: new Date().toLocaleString()
-            };
-            this.log.push(item);
+            id = this.add();
           })
           .then(liability => {
             console.log(liability.address);
-            liabilityWatch = liability.address;
-
-            const index = this.log.findIndex(item => item.status === 1);
-            Vue.set(this.log, index, {
-              ...this.log[index],
-              status: 2,
-              liability: liability.address
-            });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
+            if (id) {
+              this.upadte(id, {
                 status: 2,
                 liability: liability.address
-              },
-              index
-            );
+              });
+            }
             return liability.onResult();
           })
           .then(result => {
             console.log(result);
-            const index = this.log.findIndex(
-              item => item.liability === liabilityWatch
-            );
-            Vue.set(this.log, index, {
-              ...this.log[index],
-              status: 3,
-              resultHash: result
-            });
-            history.addItem(
-              this.storeKey,
-              {
-                ...this.log[index],
+            if (id) {
+              this.upadte(id, {
                 status: 3,
                 resultHash: result
-              },
-              index
-            );
-            parseResult(result).then(result => {
-              Vue.set(this.log, index, {
-                ...this.log[index],
-                status: 4,
-                result: result
               });
-              history.addItem(
-                this.storeKey,
-                {
-                  ...this.log[index],
+            }
+            parseResult(result).then(result => {
+              if (id) {
+                this.upadte(id, {
                   status: 4,
                   result: result
-                },
-                index
-              );
+                });
+              }
             });
           })
           .catch(e => {
@@ -286,8 +271,9 @@ export default {
       });
     },
     clear() {
-      history.removeItem(this.storeKey);
+      this.storage.clear();
       this.log = [];
+      this.currentPage = 0;
     }
   }
 };

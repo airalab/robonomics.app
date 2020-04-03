@@ -20,7 +20,8 @@ export default {
     QmNrPMALieL6aX8xfs8TukYWbEDTPq1bv6At19qU1PsUWz: "Электричество",
     QmUZTatTL3F5DvcMbsscgSx6ogBZFekaCvLstjixw4xMXv: "voc",
     QmbQT8cj9TJKfYVaidfShnrEX1g14yTC9bdG1XbcRX73wY: "Fuji weather",
-    Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm: "Playground"
+    Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm: "Playground",
+    QmWjvXGfVUDBNR15BBH5ERGP3SzEKbeLZWx7Fcp4kwwaw9: "SDS011"
   },
   INFURA_KEY: "c1ea69ab1e0a4c6aa6a9dcd0641aecc7"
 };
