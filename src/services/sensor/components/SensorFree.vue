@@ -68,7 +68,7 @@ export default {
       log: [],
       currentPage: 0,
       storage: new Storage(
-        `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+        `sn_${this.lighthouse}_${this.model}_${this.agent}_free_v1`
       )
     };
   },

@@ -9,11 +9,7 @@
       title="copy to clipboard"
       v-clipboard:copy="getLink('ipfs', item.resultHash)"
     ></a>
-    <a
-      class="i-twitter"
-      :href="getLinkTwitter('ipfs', item.resultHash)"
-      target="_blank"
-    ></a>
+    <a class="i-twitter" :href="getLinkTwitter('ipfs', item.resultHash)" target="_blank"></a>
     <template v-if="isSubstrate">
       <span style="margin-left: 20px;">|</span>
       <template v-if="substrateBlockHash == ''">
@@ -71,7 +67,7 @@ export default {
       substrateBlockHash: "",
       substrateTxHash: "",
       storage: new Storage(
-        `sn_${this.lighthouse}_${this.model}_${this.agent}_free`
+        `sn_${this.lighthouse}_${this.model}_${this.agent}_free_v1`
       )
     };
   },
