@@ -3,9 +3,9 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template v-if="log.length === 0">{{
-          $t("sensor.notStatusAgent")
-        }}</template>
+        <template
+          v-if="log.length === 0"
+        >{{ $t("sensor.notStatusAgent") }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].create_time }}
@@ -13,12 +13,13 @@
       </h4>
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" fullWidth color="green" disabled>
-            {{ $t("sensor.requested") }}
-          </RButton>
-          <RButton v-else @click.native="sendMsgDemand" fullWidth color="green">
-            {{ $t("sensor.isRequest") }}
-          </RButton>
+          <RButton v-if="isRequest" fullWidth color="green" disabled>{{ $t("sensor.requested") }}</RButton>
+          <RButton
+            v-else
+            @click.native="sendMsgDemand"
+            fullWidth
+            color="green"
+          >{{ $t("sensor.isRequest") }}</RButton>
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -28,24 +29,14 @@
             <RButton
               @click.native="clear"
               style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-              >{{ $t("sensor.clear") }}</RButton
-            >
+            >{{ $t("sensor.clear") }}</RButton>
           </span>
         </template>
 
-        <Pagination
-          :listData="log"
-          :currentPage="currentPage"
-          @onPage="handlePage"
-        >
+        <Pagination :listData="log" :currentPage="currentPage" @onPage="handlePage">
           <template v-slot:default="props">
             <RCard>
-              <Message
-                :item="props.item"
-                :lighthouse="lighthouse"
-                :model="model"
-                :agent="agent"
-              />
+              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
             </RCard>
           </template>
         </Pagination>
@@ -107,8 +98,8 @@ export default {
       });
 
       this.$robonomics.onResult(msg => {
-        console.log("open", msg);
         const sender = Account.recoveryMessage(msg);
+        console.log("open", msg, sender);
 
         if (
           sender.toLowerCase() === this.agent.toLowerCase() &&
