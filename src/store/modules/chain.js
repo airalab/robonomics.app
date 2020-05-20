@@ -13,7 +13,7 @@ function getWeb3Provider() {
       type: 3,
       provider: new Web3.providers.WebsocketProvider(
         "wss://mainnet.infura.io/ws/v3/" + config.INFURA_KEY
-      )
+      ),
     };
   }
 }
@@ -35,7 +35,7 @@ export async function accountAccess() {
   }
 }
 
-const initAccount = true;
+const initAccount = false;
 const initAccessRequired = true;
 
 // initial state
@@ -45,7 +45,7 @@ const state = {
   networkId: null,
   account: null,
   getWeb3: null,
-  typeProvider: null
+  typeProvider: null,
 };
 
 // getters
@@ -134,7 +134,7 @@ const actions = {
         commit("isReady", true);
       }
     }
-  }
+  },
 };
 
 // mutations
@@ -158,7 +158,7 @@ const mutations = {
   error(state, payload) {
     state.error = payload;
     state.isReady = false;
-  }
+  },
 };
 
 export default {
@@ -166,5 +166,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };
