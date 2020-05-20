@@ -110,15 +110,11 @@ function findPeers(ipfs, lighthouse, lookPeers) {
   });
 }
 export async function getStatusPeers(ipfs, robonomics, lookPeers) {
+  let lighthouse = "airalab.lighthouse.5.robonomics.eth";
   if (robonomics.lighthouse) {
-    try {
-      return await findPeers(ipfs, robonomics.lighthouse.name, lookPeers);
-    } catch (error) {
-      throw new Error(error);
-    }
-  } else {
-    throw new Error("Skip. Lighthouse no selected");
+    lighthouse = robonomics.lighthouse.name;
   }
+  return await findPeers(ipfs, lighthouse, lookPeers);
 }
 function diff(arr1, arr2) {
   const filteredArr1 = arr1.filter(function(ele) {
