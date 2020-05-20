@@ -5,16 +5,30 @@
     <RCard v-if="$robonomics.account">
       <h3>{{ $t("action") }}</h3>
 
-      <section class="t-align--center d-table container-full table-space--10 table-fixed">
-        <div v-if="!isWhite" class="d-table--cell section-mid page-alembic--actionblock">
+      <section
+        class="t-align--center d-table container-full table-space--10 table-fixed"
+      >
+        <div
+          v-if="!isWhite"
+          class="d-table--cell section-mid page-alembic--actionblock"
+        >
           <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
           <h3>{{ $t("passing_kyc") }}</h3>
           <div class="content">
             <RChainExplorer :address="address" />
-            <RButton v-if="isKyc" fullWidth color="green" disabled>{{ $t("kyc_passed") }}</RButton>
+            <RButton v-if="loadingCheck" fullWidth color="green" disabled
+              >...</RButton
+            >
+            <RButton v-else-if="isKyc" fullWidth color="green" disabled>{{
+              $t("kyc_passed")
+            }}</RButton>
             <template v-else>
-              <RButton v-if="loadingKyc" fullWidth :disabled="loadingKyc">{{ $t("pass_kyc_wait") }}</RButton>
-              <RButton v-else fullWidth @click.native="setKyc">{{ $t("pass_kyc") }}</RButton>
+              <RButton v-if="loadingKyc" fullWidth :disabled="loadingKyc">{{
+                $t("pass_kyc_wait")
+              }}</RButton>
+              <RButton v-else fullWidth @click.native="setKyc">{{
+                $t("pass_kyc")
+              }}</RButton>
             </template>
           </div>
         </div>
@@ -56,17 +70,17 @@ export default {
     Page,
     TextBlockEn,
     TextBlockRu,
-    Ambix
+    Ambix,
   },
   data() {
     return {
       address: "",
       ambix1: config.AMBIX1,
-      ambix2: config.AMBIX2
+      ambix2: config.AMBIX2,
     };
   },
   computed: {
-    ...mapState("kyc", ["isKyc", "isWhite", "loadingKyc"]),
+    ...mapState("kyc", ["isKyc", "isWhite", "loadingCheck", "loadingKyc"]),
     ...mapGetters("tokens", ["balance", "allowance"]),
     ...mapState("chain", ["networkId"]),
     air() {
@@ -84,7 +98,7 @@ export default {
               this.$robonomics.account.address,
               config.AMBIX1
             )
-          : 0
+          : 0,
       };
     },
     airkyc() {
@@ -102,7 +116,7 @@ export default {
               this.$robonomics.account.address,
               config.AMBIX2
             )
-          : 0
+          : 0,
       };
     },
     xrt() {
@@ -114,9 +128,9 @@ export default {
         balance: this.$robonomics.account
           ? this.balance(token.address, this.$robonomics.account.address)
           : 0,
-        approve: 0
+        approve: 0,
       };
-    }
+    },
   },
   mounted() {
     if (this.networkId !== 1) {
@@ -130,12 +144,12 @@ export default {
         this.$store.dispatch("tokens/watchAllowance", {
           token: tokens.air.address,
           from: this.$robonomics.account.address,
-          to: config.AMBIX1
+          to: config.AMBIX1,
         });
         this.$store.dispatch("tokens/watchAllowance", {
           token: tokens.airkyc.address,
           from: this.$robonomics.account.address,
-          to: config.AMBIX2
+          to: config.AMBIX2,
         });
       }
     }
@@ -143,7 +157,7 @@ export default {
   methods: {
     setKyc() {
       this.$store.dispatch("kyc/setKyc");
-    }
-  }
+    },
+  },
 };
 </script>
