@@ -84,7 +84,7 @@ export const number = {
     fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
     const whole = wei.div(base).toString(10);
     return `${whole}${fraction == "0" ? "" : `.${fraction}`}`;
-  }
+  },
 };
 
 function findPeers(ipfs, lighthouse, lookPeers) {
@@ -96,9 +96,9 @@ function findPeers(ipfs, lighthouse, lookPeers) {
       }
       const find = {
         required: [],
-        other: []
+        other: [],
       };
-      peers.forEach(peer => {
+      peers.forEach((peer) => {
         if (lookPeers.includes(peer)) {
           find.required.push(peer);
         } else {
@@ -162,4 +162,8 @@ export async function statusPeers(ipfs, robonomics, lookPeers, timeout = 0) {
       statusPeers(ipfs, robonomics, lookPeers, timeout);
     }, timeout);
   }
+}
+
+export async function isBrave() {
+  return (navigator.brave && (await navigator.brave.isBrave())) || false;
 }

@@ -3,7 +3,7 @@ import { cat as ipfsCat } from "@/utils/ipfs";
 import rosBag from "@/utils/rosBag";
 import config from "~config";
 
-export function parseResult(result) {
+export function parseResult(result, options = { topics: ["/data"] }) {
   let message = {};
   axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
     console.log("result ipfs hash resolved");
@@ -18,7 +18,7 @@ export function parseResult(result) {
           console.log(error);
         }
       },
-      { topics: ["/data"] }
+      options
     ).then(function() {
       return message;
     });

@@ -7,22 +7,47 @@
     </template>
     <Item icon="i-menu">
       <Navigation>
-        <NavigationLink :to="{ name: 'status' }" icon="i-piechart">{{ $t("menu.net_stats") }}</NavigationLink>
+        <NavigationLink :to="{ name: 'status' }" icon="i-piechart">{{
+          $t("menu.net_stats")
+        }}</NavigationLink>
         <NavigationLink
           :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
-        >{{ $t("menu.lighthouse") }}</NavigationLink>
+          >{{ $t("menu.lighthouse") }}</NavigationLink
+        >
         <NavigationLink
           v-if="networkId == 1"
           :to="{ name: 'ambix' }"
           icon="i-transfer"
-        >{{ $t("menu.tokens_alembic") }}</NavigationLink>
-        <NavigationLink :to="{ name: 'services' }" icon="i-app">{{ $t("menu.services") }}</NavigationLink>
-        <NavigationLink :to="{ name: 'uniswap' }" icon="i-day">{{ $t("menu.uniswap") }}</NavigationLink>
+          >{{ $t("menu.tokens_alembic") }}</NavigationLink
+        >
+        <NavigationLink :to="{ name: 'services' }" icon="i-app">{{
+          $t("menu.services")
+        }}</NavigationLink>
+
+        <a
+          v-if="isBrave"
+          href="https://uniswap.exchange/swap?outputCurrency=0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7"
+          target="_blank"
+        >
+          <span class="align-vertical i-day"></span>
+          &nbsp;
+          <span class="align-vertical">
+            {{ $t("menu.uniswap") }}
+          </span>
+        </a>
+        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">{{
+          $t("menu.uniswap")
+        }}</NavigationLink>
       </Navigation>
     </Item>
     <Item bottom :canExpand="false" v-if="!$robonomics.account">
-      <a href="javascript:;" @click="connect" class="sidebar-i--lg" style="color:#e88100">
+      <a
+        href="javascript:;"
+        @click="connect"
+        class="sidebar-i--lg"
+        style="color:#e88100"
+      >
         <i class="i-user"></i>
       </a>
     </Item>
@@ -63,8 +88,9 @@ import {
   Item,
   Navigation,
   NavigationLink,
-  Wallet
+  Wallet,
 } from "./sidebar";
+import { isBrave } from "@/utils/tools";
 
 export default {
   components: {
@@ -73,11 +99,12 @@ export default {
     Item,
     Navigation,
     NavigationLink,
-    Wallet
+    Wallet,
   },
   data() {
     return {
-      account: null
+      account: null,
+      isBrave: true,
     };
   },
   computed: {
@@ -86,7 +113,7 @@ export default {
     balances() {
       const balances = [];
       if (this.$robonomics.account) {
-        Object.values(config.chain.get().TOKEN).forEach(item => {
+        Object.values(config.chain.get().TOKEN).forEach((item) => {
           const info = this.token(item.address);
           const amount = this.$options.filters.fromWei(
             this.balance(item.address, this.$robonomics.account.address),
@@ -94,21 +121,22 @@ export default {
           );
           balances.push({
             amount: amount,
-            symbol: info ? info.symbol : ""
+            symbol: info ? info.symbol : "",
           });
         });
       }
       return balances;
-    }
+    },
   },
-  created() {
+  async created() {
+    this.isBrave = await isBrave();
     if (this.$robonomics.account) {
       this.account = this.$robonomics.account.address;
-      Object.values(config.chain.get().TOKEN).forEach(item => {
+      Object.values(config.chain.get().TOKEN).forEach((item) => {
         this.$store.dispatch("tokens/add", item.address);
         this.$store.dispatch("tokens/watchBalance", {
           token: item.address,
-          account: this.$robonomics.account.address
+          account: this.$robonomics.account.address,
         });
       });
     }
@@ -116,7 +144,7 @@ export default {
   methods: {
     async connect() {
       this.$store.dispatch("chain/accessAccount", false);
-    }
-  }
+    },
+  },
 };
 </script>
