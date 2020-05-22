@@ -18,7 +18,7 @@ setConfig({
     fallback: config.ipfs
   },
   statusPeers: config.statusPeers,
-  robonomics: networkId => {
+  robonomics: (networkId) => {
     config.chain.set(networkId);
     return {
       version: 5,

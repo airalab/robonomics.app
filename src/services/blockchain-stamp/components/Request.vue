@@ -4,7 +4,9 @@
       class="container-full btn-big"
       @click="$emit('submit')"
       :disabled="objective != null || isRun"
-    >{{ $t("passport.requestPrice") }}</button>
+    >
+      {{ $t("passport.requestPrice") }}
+    </button>
     <div v-if="responseError">{{ responseError }}</div>
   </div>
 </template>
@@ -48,7 +50,7 @@ export default {
       if (this.onResult) {
         return;
       }
-      this.onResult = this.$robonomics.onResult(msg => {
+      this.onResult = this.$robonomics.onResult((msg) => {
         if (
           this.$robonomics.account &&
           msg.liability === this.$robonomics.account.address &&
@@ -58,7 +60,7 @@ export default {
           this.responseError = "Energy consumption very small.";
         }
       });
-      this.onOffer = this.$robonomics.onOffer(this.model, msg => {
+      this.onOffer = this.$robonomics.onOffer(this.model, (msg) => {
         console.log("offer", msg);
         if (msg.objective === this.objective) {
           this.responseError = null;
@@ -83,7 +85,7 @@ export default {
             return;
           }
           this.getObjective(fields)
-            .then(objective => {
+            .then((objective) => {
               this.listenResult();
               const demand = {
                 model: this.model,
@@ -95,7 +97,7 @@ export default {
                 validatorFee: 0,
                 deadline: r.number + 1000
               };
-              this.$robonomics.sendDemand(demand, false, msg => {
+              this.$robonomics.sendDemand(demand, false, (msg) => {
                 this.objective = msg.objective;
               });
             })

@@ -59,7 +59,7 @@ export default {
       if (offer === null) {
         this.listOrders[id].offerListener = this.$robonomics.onOffer(
           demand.model,
-          msg => {
+          (msg) => {
             if (
               msg.objective === demand.objective &&
               msg.token === demand.token &&
@@ -76,7 +76,7 @@ export default {
 
       if (feedback) {
         this.listOrders[id].feedbackListener = this.$robonomics.onFeedback(
-          msg => {
+          (msg) => {
             if (msg.order === this.listOrders[id].demandHash) {
               this.listOrders[id].feedback = true;
               this.setStatus(id, STATUS.FEEDBACK);
@@ -90,7 +90,7 @@ export default {
       }
 
       if (tx) {
-        this.listOrders[id].txListener = this.$robonomics.onPending(msg => {
+        this.listOrders[id].txListener = this.$robonomics.onPending((msg) => {
           this.$robonomics.web3.eth.getTransaction(msg.tx, (e, r) => {
             if (e) {
               console.log(e);
@@ -125,12 +125,12 @@ export default {
       }
 
       this.$robonomics
-        .sendDemand(demand, true, msg => {
+        .sendDemand(demand, true, (msg) => {
           this.listOrders[id].demand = msg.toObject();
           this.listOrders[id].demandHash = msg.getHash();
           this.setStatus(id, STATUS.SEND);
           this.listOrders[id].resultListener = this.$robonomics.onResult(
-            msg => {
+            (msg) => {
               if (
                 this.listOrders[id].liability !== null &&
                 msg.liability === this.listOrders[id].liability
@@ -145,7 +145,7 @@ export default {
             }
           );
         })
-        .then(liability => {
+        .then((liability) => {
           if (this.listOrders[id].offerListener) {
             this.$robonomics.messenger.off(this.listOrders[id].offerListener);
             this.listOrders[id].offerListener = null;
@@ -160,7 +160,7 @@ export default {
           this.setStatus(id, STATUS.CONTRACT);
           return liability.onResult();
         })
-        .then(result => {
+        .then((result) => {
           if (this.listOrders[id].txListener) {
             this.$robonomics.messenger.off(this.listOrders[id].txListener);
             this.listOrders[id].txListener = null;
@@ -168,7 +168,7 @@ export default {
           this.listOrders[id].result = result;
           this.setStatus(id, STATUS.RESULT);
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
           if (this.listOrders[id].offerListener) {
             this.$robonomics.messenger.off(this.listOrders[id].offerListener);

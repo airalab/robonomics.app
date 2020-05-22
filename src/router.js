@@ -69,8 +69,8 @@ export default new Router({
       component: Uniswap
     },
     ...Object.values(services)
-      .filter(item => item.router)
-      .map(item => item.router),
+      .filter((item) => item.router)
+      .map((item) => item.router),
     { path: "*", redirect: "/" }
   ]
 });

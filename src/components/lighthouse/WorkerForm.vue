@@ -15,7 +15,7 @@
         class="input-size--sm m-r-10 input-sm"
         :class="{ error: fields.count.error }"
       />
-      <button :disabled="isDisabledBtn">{{textBtn}}</button>
+      <button :disabled="isDisabledBtn">{{ textBtn }}</button>
     </p>
   </form>
 </template>
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     ...mapGetters("tokens", ["balance", "allowance", "token"]),
-    myBalance: function() {
+    myBalance: function () {
       return this.$robonomics.account
         ? Number(
             this.balance(
@@ -53,7 +53,7 @@ export default {
           )
         : 0;
     },
-    myAllowance: function() {
+    myAllowance: function () {
       return this.$robonomics.account
         ? this.allowance(
             this.$robonomics.xrt.address,
@@ -62,7 +62,7 @@ export default {
           )
         : 0;
     },
-    isDisabledBtn: function() {
+    isDisabledBtn: function () {
       if (
         this.run ||
         this.error ||
@@ -72,7 +72,7 @@ export default {
       }
       return false;
     },
-    textBtn: function() {
+    textBtn: function () {
       if (this.run) {
         return "...";
       }
@@ -96,7 +96,7 @@ export default {
     this.$robonomics.lighthouse.methods
       .minimalStake()
       .call()
-      .then(r => {
+      .then((r) => {
         this.minimalStake = Number(r);
       });
     this.$on("onChange", this.onChange);

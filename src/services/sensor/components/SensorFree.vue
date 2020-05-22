@@ -3,9 +3,9 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template
-          v-if="log.length === 0"
-        >{{ $t("sensor.notStatusAgent") }}</template>
+        <template v-if="log.length === 0">{{
+          $t("sensor.notStatusAgent")
+        }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].create_time }}
@@ -13,13 +13,16 @@
       </h4>
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" fullWidth color="green" disabled>{{ $t("sensor.requested") }}</RButton>
+          <RButton v-if="isRequest" fullWidth color="green" disabled>{{
+            $t("sensor.requested")
+          }}</RButton>
           <RButton
             v-else
             @click.native="sendMsgDemand"
             fullWidth
             color="green"
-          >{{ $t("sensor.isRequest") }}</RButton>
+            >{{ $t("sensor.isRequest") }}</RButton
+          >
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -28,15 +31,32 @@
             {{ $t("sensor.requests") }} ({{ log.length }})
             <RButton
               @click.native="clear"
-              style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-            >{{ $t("sensor.clear") }}</RButton>
+              style="
+                background: none;
+                color: #03a5ed;
+                border: 2px solid #03a5ed;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                margin-left: 15px;
+              "
+              >{{ $t("sensor.clear") }}</RButton
+            >
           </span>
         </template>
 
-        <Pagination :listData="log" :currentPage="currentPage" @onPage="handlePage">
+        <Pagination
+          :listData="log"
+          :currentPage="currentPage"
+          @onPage="handlePage"
+        >
           <template v-slot:default="props">
             <RCard>
-              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+              <Message
+                :item="props.item"
+                :lighthouse="lighthouse"
+                :model="model"
+                :agent="agent"
+              />
             </RCard>
           </template>
         </Pagination>
@@ -82,9 +102,9 @@ export default {
       this.ready = true;
       this.upLog();
 
-      this.log.forEach(item => {
+      this.log.forEach((item) => {
         if (item.status === 2) {
-          parseResult(item.result).then(result => {
+          parseResult(item.result).then((result) => {
             this.upadte(item.id, {
               status: 3,
               result: result
@@ -93,11 +113,11 @@ export default {
         }
       });
 
-      this.$robonomics.onDemand(this.model, msg => {
+      this.$robonomics.onDemand(this.model, (msg) => {
         console.log("demand", msg);
       });
 
-      this.$robonomics.onResult(msg => {
+      this.$robonomics.onResult((msg) => {
         const sender = Account.recoveryMessage(msg);
         console.log("open", msg, sender);
 
@@ -114,13 +134,13 @@ export default {
             (this.$robonomics.account &&
               msg.liability === this.$robonomics.account.address))
         ) {
-          const id = this.findId(item => item.status === 1);
+          const id = this.findId((item) => item.status === 1);
           if (id) {
             this.upadte(id, {
               status: 2,
               resultHash: msg.result
             });
-            parseResult(msg.result).then(result => {
+            parseResult(msg.result).then((result) => {
               this.upadte(id, {
                 status: 3,
                 result: result
@@ -160,7 +180,7 @@ export default {
     findId(filter) {
       const items = this.storage.getItems();
       const keys = Object.keys(items);
-      const index = keys.findIndex(key => filter(items[key]));
+      const index = keys.findIndex((key) => filter(items[key]));
       if (index >= 0) {
         return keys[index];
       }
@@ -197,7 +217,7 @@ export default {
             this.isRequest = false;
             this.add();
           })
-          .catch(e => {
+          .catch((e) => {
             this.isRequest = false;
             console.log(e);
           });

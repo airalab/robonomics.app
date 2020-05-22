@@ -25,7 +25,7 @@ export default {
     this.watchToken(this.address, this.from, this.to);
   },
   watch: {
-    address: function(newAddressl) {
+    address: function (newAddressl) {
       this.watchToken(newAddressl, this.from, this.to);
     }
   }

@@ -10,7 +10,7 @@ const state = {
   isKyc: false,
   isWhite: false,
   loadingCheck: false,
-  loadingKyc: false,
+  loadingKyc: false
 };
 
 // getters
@@ -69,9 +69,9 @@ const actions = {
     commit("loadingKyc", true);
     civicSip.signup({
       style: "popup",
-      scopeRequest: civicSip.ScopeRequests.PROOF_OF_IDENTITY,
+      scopeRequest: civicSip.ScopeRequests.PROOF_OF_IDENTITY
     });
-  },
+  }
 };
 
 // mutations
@@ -90,7 +90,7 @@ const mutations = {
   },
   loadingKyc(state, data) {
     state.loadingKyc = data;
-  },
+  }
 };
 
 export default {
@@ -98,5 +98,5 @@ export default {
   state,
   getters,
   actions,
-  mutations,
+  mutations
 };

@@ -21,7 +21,7 @@ export default {
     setTheme(theme) {
       this.theme = theme;
       const el = document.body;
-      this.themes.forEach(function(item) {
+      this.themes.forEach(function (item) {
         el.classList.remove("theme-" + item);
       });
       el.classList.add("theme-" + theme);

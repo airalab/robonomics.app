@@ -8,10 +8,10 @@ export function parseResult(result, options = { topics: ["/data"] }) {
   axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
     console.log("result ipfs hash resolved");
   });
-  return ipfsCat(result).then(function(r) {
+  return ipfsCat(result).then(function (r) {
     return rosBag(
       new Blob([r]),
-      function(bag) {
+      function (bag) {
         try {
           message = JSON.parse(bag.message.data);
         } catch (error) {
@@ -19,14 +19,14 @@ export function parseResult(result, options = { topics: ["/data"] }) {
         }
       },
       options
-    ).then(function() {
+    ).then(function () {
       return message;
     });
   });
 }
 
 export function loadScript(src) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const script = document.createElement("script");
     script.src = src;
     script.onload = resolve;

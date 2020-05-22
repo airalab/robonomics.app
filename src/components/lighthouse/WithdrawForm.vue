@@ -9,7 +9,7 @@
         class="input-size--sm m-r-10 input-sm"
         :class="{ error: fields.count.error }"
       />
-      <button :disabled="isDisabledBtn">{{textBtn}}</button>
+      <button :disabled="isDisabledBtn">{{ textBtn }}</button>
     </p>
   </form>
 </template>
@@ -31,7 +31,7 @@ export default {
             "require",
             "number",
             robonomicsVC.validators.min(1),
-            v => robonomicsVC.validators.max(this.maxCount)(v)
+            (v) => robonomicsVC.validators.max(this.maxCount)(v)
           ],
           error: false
         }
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     ...mapGetters("tokens", ["balance", "token"]),
-    myBalance: function() {
+    myBalance: function () {
       return this.$robonomics.account
         ? Number(
             this.balance(
@@ -53,13 +53,13 @@ export default {
           )
         : 0;
     },
-    isDisabledBtn: function() {
+    isDisabledBtn: function () {
       if (this.run || this.error) {
         return true;
       }
       return false;
     },
-    textBtn: function() {
+    textBtn: function () {
       if (this.run) {
         return "...";
       }
@@ -67,7 +67,7 @@ export default {
     }
   },
   watch: {
-    myBalance: function() {
+    myBalance: function () {
       this.setMaxCount();
     }
   },
@@ -75,7 +75,7 @@ export default {
     this.$robonomics.lighthouse.methods
       .minimalStake()
       .call()
-      .then(r => {
+      .then((r) => {
         this.minimalStake = Number(r);
         this.setMaxCount();
       });
@@ -101,7 +101,7 @@ export default {
       this.$robonomics.lighthouse.methods
         .stakes(this.$robonomics.account.address)
         .call()
-        .then(stake => {
+        .then((stake) => {
           if (stake > 0) {
             this.maxCount = Number(stake) / this.minimalStake;
           } else {

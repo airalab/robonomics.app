@@ -30,15 +30,15 @@ import { isBrave } from "@/utils/tools";
 
 export default {
   components: {
-    Page,
+    Page
   },
   data() {
     return {
-      isBrave: true,
+      isBrave: true
     };
   },
   async created() {
     this.isBrave = await isBrave();
-  },
+  }
 };
 </script>

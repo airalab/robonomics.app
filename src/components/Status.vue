@@ -1,7 +1,14 @@
 <template>
-  <div style="position: absolute;top: 20px;right: 20px;">
-    <span v-if="status == statuses.OK" class="label label-green t-sm">Connected</span>
-    <span v-else-if="status == statuses.WARNING" class="label label-orange t-sm">Connected</span>
+  <div style="position: absolute; top: 20px; right: 20px;">
+    <span v-if="status == statuses.OK" class="label label-green t-sm">
+      Connected
+    </span>
+    <span
+      v-else-if="status == statuses.WARNING"
+      class="label label-orange t-sm"
+    >
+      Connected
+    </span>
     <span v-else class="label label-orange t-sm">Disconnected</span>
   </div>
 </template>

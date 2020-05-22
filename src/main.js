@@ -13,5 +13,5 @@ new Vue({
   i18n,
   router,
   wait,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount("#app");

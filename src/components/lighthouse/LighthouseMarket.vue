@@ -4,7 +4,9 @@
       <TradeForm ref="form" @onChange="onChange" @onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">{{ $t("lighthouse.market.error") }}</div>
+        <div v-if="error" style="margin: 5px 0;">
+          {{ $t("lighthouse.market.error") }}
+        </div>
         <Approve
           v-if="Number(cost) > 0 && tokenAddress"
           :address="tokenAddress"
@@ -32,35 +34,45 @@
         <a class="window-head-toggle" href="#">–</a>
       </div>
       <div class="window-content">
-        <div v-for="(item, i) in log" :key="`${i}-${item.date}`" style="margin: 5px 0">
+        <div
+          v-for="(item, i) in log"
+          :key="`${i}-${item.date}`"
+          style="margin: 5px 0;"
+        >
           <template v-if="item.type == 'liability'">
-            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <RAvatar
+              :address="item.address"
+              class="avatar-small align-vertical m-r-10"
+            />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a
-              :href="item.address | urlChainExplorer"
-              target="_blank"
-            >{{ item.address | labelAddress }}</a>
+            <a :href="item.address | urlChainExplorer" target="_blank">{{
+              item.address | labelAddress
+            }}</a>
           </template>
           <template v-else-if="item.type == 'result'">
-            <RAvatar :address="item.address" class="avatar-small align-vertical m-r-10" />
+            <RAvatar
+              :address="item.address"
+              class="avatar-small align-vertical m-r-10"
+            />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a
-              :href="item.hash | urlIpfsExplorer"
-              target="_blank"
-            >{{ item.hash | labelAddress }}</a>
+            <a :href="item.hash | urlIpfsExplorer" target="_blank">{{
+              item.hash | labelAddress
+            }}</a>
           </template>
           <template v-else>
-            <RAvatar :address="item.sender" class="avatar-small align-vertical m-r-10" />
+            <RAvatar
+              :address="item.sender"
+              class="avatar-small align-vertical m-r-10"
+            />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
-            <a
-              :href="item.sender | urlChainExplorer"
-              target="_blank"
-            >{{ item.sender | labelAddress }}</a>
+            <a :href="item.sender | urlChainExplorer" target="_blank">{{
+              item.sender | labelAddress
+            }}</a>
           </template>
           <hr />
         </div>
@@ -94,9 +106,9 @@ export default {
     };
   },
   computed: {
-    log: function() {
+    log: function () {
       return Object.values(this.messages)
-        .sort(function(a, b) {
+        .sort(function (a, b) {
           if (a.date > b.date) {
             return -1;
           }
@@ -110,10 +122,10 @@ export default {
     costWei() {
       return number.toWei(this.cost, this.decimals);
     },
-    decimals: function() {
+    decimals: function () {
       return this.token(this.tokenAddress).decimals;
     },
-    myAllowance: function() {
+    myAllowance: function () {
       return this.$robonomics.account
         ? this.allowance(
             this.tokenAddress,
@@ -162,7 +174,7 @@ export default {
     init() {
       this.account = this.$robonomics.account.address;
       this.$refs.form.fields.token.value = this.$robonomics.xrt.address;
-      this.$robonomics.onDemand(null, msg => {
+      this.$robonomics.onDemand(null, (msg) => {
         const hash = msg.getHash();
         if (!this.messages[hash]) {
           this.$set(this.messages, hash, {
@@ -172,7 +184,7 @@ export default {
           });
         }
       });
-      this.$robonomics.onOffer(null, msg => {
+      this.$robonomics.onOffer(null, (msg) => {
         const hash = msg.getHash();
         if (!this.messages[hash]) {
           this.$set(this.messages, hash, {
@@ -219,7 +231,7 @@ export default {
     tooltip() {
       const reference = document.querySelectorAll(".js-tooltip");
       if (reference) {
-        reference.forEach(function(elem) {
+        reference.forEach(function (elem) {
           new Tooltip(elem, {
             title: elem.getAttribute("data-tooltip"),
             placement: elem.getAttribute("data-placement") || "auto",

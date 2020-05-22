@@ -25,11 +25,18 @@
           </div>
         </div>
         <div class="col-sm-6">
-          <div class="m-b-5">{{ $t("approve.balance") }}: {{ balanceFormat(address, from) }}</div>
+          <div class="m-b-5">
+            {{ $t("approve.balance") }}: {{ balanceFormat(address, from) }}
+          </div>
           <div
             class="m-b-5"
-            :class="{ red: Number(cost) > Number(allowance(address, from, to)) }"
-          >{{ $t("approve.allowance") }}: {{ allowanceFormat(address, from, to) }}</div>
+            :class="{
+              red: Number(cost) > Number(allowance(address, from, to))
+            }"
+          >
+            {{ $t("approve.allowance") }}:
+            {{ allowanceFormat(address, from, to) }}
+          </div>
         </div>
       </div>
     </div>
@@ -54,15 +61,15 @@ export default {
     this.watchToken(this.address, this.from, this.to);
   },
   watch: {
-    address: function(newAddressl) {
+    address: function (newAddressl) {
       this.watchToken(newAddressl, this.from, this.to);
     }
   },
   computed: {
-    decimals: function() {
+    decimals: function () {
       return this.token(this.address).decimals;
     },
-    symbol: function() {
+    symbol: function () {
       return this.token(this.address).symbol;
     }
   },

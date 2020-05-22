@@ -8,9 +8,7 @@ export const number = {
     //if the number is in scientific notation remove it
     if (/\d+\.?\d*e[+-]*\d+/i.test(num)) {
       var zero = "0",
-        parts = String(num)
-          .toLowerCase()
-          .split("e"), //split into coeff and exponent
+        parts = String(num).toLowerCase().split("e"), //split into coeff and exponent
         e = parts.pop(), //store the exponential part
         l = Math.abs(e), //get the number of zeros
         sign = e / l,
@@ -84,7 +82,7 @@ export const number = {
     fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
     const whole = wei.div(base).toString(10);
     return `${whole}${fraction == "0" ? "" : `.${fraction}`}`;
-  },
+  }
 };
 
 function findPeers(ipfs, lighthouse, lookPeers) {
@@ -96,7 +94,7 @@ function findPeers(ipfs, lighthouse, lookPeers) {
       }
       const find = {
         required: [],
-        other: [],
+        other: []
       };
       peers.forEach((peer) => {
         if (lookPeers.includes(peer)) {
@@ -117,10 +115,10 @@ export async function getStatusPeers(ipfs, robonomics, lookPeers) {
   return await findPeers(ipfs, lighthouse, lookPeers);
 }
 function diff(arr1, arr2) {
-  const filteredArr1 = arr1.filter(function(ele) {
+  const filteredArr1 = arr1.filter(function (ele) {
     return arr2.indexOf(ele) === -1;
   });
-  const filteredArr2 = arr2.filter(function(ele) {
+  const filteredArr2 = arr2.filter(function (ele) {
     return arr1.indexOf(ele) === -1;
   });
   return filteredArr1.concat(filteredArr2);

@@ -15,7 +15,11 @@
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
         <br />
-        <input type="number" v-model="form.minimalStake" class="input-size--md" />
+        <input
+          type="number"
+          v-model="form.minimalStake"
+          class="input-size--md"
+        />
       </p>
       <p>
         <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
@@ -28,32 +32,22 @@
         />
       </p>
       <RButton color="green" disabled v-if="create">
-        {{
-        $t("lighthouse.select.new.create")
-        }}
+        {{ $t("lighthouse.select.new.create") }}
       </RButton>
       <RButton color="green" @click.native="sendCreateLighthouse" v-else>
-        {{
-        $t("lighthouse.select.new.create")
-        }}
+        {{ $t("lighthouse.select.new.create") }}
       </RButton>
       <a href="javascript:;" class="m-l-20" @click="reset">
-        {{
-        $t("lighthouse.select.cancel")
-        }}
+        {{ $t("lighthouse.select.cancel") }}
       </a>
       <div v-if="createMsg">{{ createMsg }}</div>
     </div>
     <div v-if="isBtnConnect" class="m-t-5">
       <RButton @click.native="connect">
-        {{
-        $t("lighthouse.select.connect")
-        }}
+        {{ $t("lighthouse.select.connect") }}
       </RButton>
       <a href="javascript:;" class="m-l-20" @click="reset">
-        {{
-        $t("lighthouse.select.cancel")
-        }}
+        {{ $t("lighthouse.select.cancel") }}
       </a>
     </div>
   </div>
@@ -103,7 +97,7 @@ export default {
         data: [
           { placeholder: true, text: this.$t("lighthouse.select.choose") }
         ],
-        onChange: info => {
+        onChange: (info) => {
           this.old = this.createForm = false;
           this.isBtnConnect = false;
           if (info.class == "type-new") {
@@ -121,7 +115,7 @@ export default {
       this.isBtnConnect = false;
     },
     fetchData() {
-      this.getLighthouses().then(lighthouses => {
+      this.getLighthouses().then((lighthouses) => {
         if (lighthouses.length > 0) {
           // this.lighthouse = lighthouses[0].name;
           // this.lighthouseAddr = lighthouses[0].addr;
@@ -132,7 +126,7 @@ export default {
               text: this.$t("lighthouse.select.choose")
             }
           ];
-          lighthouses.forEach(item => {
+          lighthouses.forEach((item) => {
             this.lighthouses.push(item);
             navData.push({
               label: item.name,
@@ -181,7 +175,7 @@ export default {
           (error, result) => {
             if (!error) {
               const lighthouses = [];
-              result.forEach(item => {
+              result.forEach((item) => {
                 lighthouses.push({
                   name: this.$robonomics.ens.getUrl(
                     item.returnValues.name,
@@ -265,10 +259,10 @@ export default {
           .send({
             from: this.$robonomics.account.address
           })
-          .then(tx => {
+          .then((tx) => {
             console.log("tx", tx);
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
             this.create = false;
           });

@@ -13,9 +13,7 @@
           <i class="i-info"></i>
         </a>
         <span v-if="fields.model.error" class="input-msg">
-          {{
-          $t("lighthouse.trade.correct")
-          }}
+          {{ $t("lighthouse.trade.correct") }}
         </span>
       </label>
       <input
@@ -37,7 +35,7 @@
       />
     </RFormField>
 
-    <div class="form-item" id="moreopts" style="display:none">
+    <div class="form-item" id="moreopts" style="display: none;">
       <RFormField>
         <RFieldLabel :isError="fields.token.error">Token</RFieldLabel>
         <input
@@ -62,7 +60,8 @@
         class="a-dashed"
         href="javascript:;"
         onclick="show(this, '#moreopts', 'Minimize', 'More options');return false;"
-      >{{ $t("lighthouse.trade.more") }}</a>
+        >{{ $t("lighthouse.trade.more") }}</a
+      >
     </div>
   </form>
 </template>

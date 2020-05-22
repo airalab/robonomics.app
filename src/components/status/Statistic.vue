@@ -15,7 +15,7 @@
       </div>
     </div>
     <hr />
-    <div id="statistic" style="display:none">
+    <div id="statistic" style="display: none;">
       <div class="row">
         <div class="col-md-4">
           <table class="container-full table-hover table-full">

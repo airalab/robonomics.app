@@ -62,12 +62,12 @@ export function setConfig({ ipfs, robonomics, statusPeers }) {
     statusPeers: statusPeers || config.statusPeers,
     robonomics:
       robonomics ||
-      function() {
+      function () {
         throw new Error("bad config");
       }
   };
 }
 
-export default function() {
+export default function () {
   return config;
 }

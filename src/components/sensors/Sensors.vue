@@ -4,14 +4,10 @@
       <section v-if="$robonomics.account">
         <div class="input-size--md">
           <RButton v-if="isRequest" fullWidth color="green">
-            {{
-            $t("sensors.requested")
-            }}
+            {{ $t("sensors.requested") }}
           </RButton>
           <RButton v-else @click.native="sendMsgDemand" fullWidth>
-            {{
-            $t("sensors.isRequest")
-            }}
+            {{ $t("sensors.isRequest") }}
           </RButton>
         </div>
       </section>
@@ -30,7 +26,8 @@
             <tr v-for="(item, key) in log" :key="key">
               <td>{{ key + 1 }}</td>
               <td>
-                <b>{{ getTypeByModel(item.model) }}</b>&nbsp;
+                <b>{{ getTypeByModel(item.model) }}</b
+                >&nbsp;
                 <RIpfsExplorer :hash="item.model" />
               </td>
               <td>
@@ -58,7 +55,8 @@
                       cost: item.cost
                     }
                   }"
-                >{{ $t("sensors.table.view") }}</router-link>
+                  >{{ $t("sensors.table.view") }}</router-link
+                >
                 <router-link
                   v-else
                   :to="{
@@ -69,7 +67,8 @@
                       agent: item.sender
                     }
                   }"
-                >{{ $t("sensors.table.view") }}</router-link>
+                  >{{ $t("sensors.table.view") }}</router-link
+                >
               </td>
             </tr>
           </tbody>
@@ -97,10 +96,10 @@ export default {
     }
     this.$robonomics.initLighthouse(this.lighthouse).then(() => {
       this.ready = true;
-      this.$robonomics.onDemand(config.DEFAULT_MODEL, msg => {
+      this.$robonomics.onDemand(config.DEFAULT_MODEL, (msg) => {
         console.log("demand", msg);
       });
-      this.$robonomics.onOffer(null, msg => {
+      this.$robonomics.onOffer(null, (msg) => {
         console.log("offer", msg);
         if (hasOwnProperty.call(config.CATEGORY_MODELS, msg.model)) {
           this.log.push(msg.toObject());
@@ -129,7 +128,7 @@ export default {
           .sendDemand(demand, false, () => {
             this.isRequest = false;
           })
-          .catch(e => {
+          .catch((e) => {
             this.isRequest = false;
             console.log(e);
           });

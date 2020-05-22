@@ -29,7 +29,7 @@ export default {
   },
   computed: mapState({
     // connected: state => state.statistics.connected,
-    nodes: state => state.net.nodes
+    nodes: (state) => state.net.nodes
   }),
   created() {
     // this.$store.dispatch("statistics/init");

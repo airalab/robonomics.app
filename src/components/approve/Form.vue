@@ -13,7 +13,7 @@
         class="btn-sm m-l-10"
         :disabled="
           loadingApprove ||
-            Number(amount) == Number(allowance(address, from, to))
+          Number(amount) == Number(allowance(address, from, to))
         "
       >
         <div class="loader-ring" v-if="loadingApprove"></div>
@@ -51,7 +51,7 @@ export default {
     this.watchToken(this.address, this.from, this.to);
   },
   watch: {
-    address: function(newAddressl) {
+    address: function (newAddressl) {
       this.watchToken(newAddressl, this.from, this.to);
     }
   },

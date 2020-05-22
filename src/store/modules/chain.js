@@ -13,7 +13,7 @@ function getWeb3Provider() {
       type: 3,
       provider: new Web3.providers.WebsocketProvider(
         "wss://mainnet.infura.io/ws/v3/" + config.INFURA_KEY
-      ),
+      )
     };
   }
 }
@@ -45,7 +45,7 @@ const state = {
   networkId: null,
   account: null,
   getWeb3: null,
-  typeProvider: null,
+  typeProvider: null
 };
 
 // getters
@@ -66,10 +66,10 @@ const actions = {
       } else {
         let error = 0;
         if (instance && provider.type === 1) {
-          window.ethereum.on("networkChanged", function(networkId) {
+          window.ethereum.on("networkChanged", function (networkId) {
             commit("networkId", networkId);
           });
-          window.ethereum.on("accountsChanged", function(accounts) {
+          window.ethereum.on("accountsChanged", function (accounts) {
             if (accounts.length > 0) {
               commit("account", instance.utils.toChecksumAddress(accounts[0]));
             } else {
@@ -134,7 +134,7 @@ const actions = {
         commit("isReady", true);
       }
     }
-  },
+  }
 };
 
 // mutations
@@ -158,7 +158,7 @@ const mutations = {
   error(state, payload) {
     state.error = payload;
     state.isReady = false;
-  },
+  }
 };
 
 export default {
@@ -166,5 +166,5 @@ export default {
   state,
   getters,
   actions,
-  mutations,
+  mutations
 };

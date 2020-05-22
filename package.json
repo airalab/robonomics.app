@@ -8,7 +8,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "pretty": "prettier --write \"./src/**/*.{js,vue,ts,jsx,json}\""
   },
   "dependencies": {
     "@polkadot/api": "^1.9.1",
@@ -48,6 +49,7 @@
     "babel-plugin-inline-json": "^1.2.2",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
+    "prettier": "^2.0.5",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

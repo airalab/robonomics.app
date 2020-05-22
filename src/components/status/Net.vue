@@ -65,7 +65,7 @@ import { mapState } from "vuex";
 
 export default {
   computed: mapState({
-    nodes: state => state.net.nodes
+    nodes: (state) => state.net.nodes
   })
 };
 </script>

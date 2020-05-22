@@ -7,7 +7,11 @@
           :class="{
             'i-check': status >= statuses.CONTRACT,
             green: status >= statuses.CONTRACT,
-            'loader-ring': status == statuses.SEND || status == statuses.OFFER || status == statuses.FEEDBACK || status == statuses.TX_LIABILITY,
+            'loader-ring':
+              status == statuses.SEND ||
+              status == statuses.OFFER ||
+              status == statuses.FEEDBACK ||
+              status == statuses.TX_LIABILITY,
             'i-stop': status < statuses.SEND
           }"
         ></div>
@@ -18,17 +22,25 @@
           v-if="status >= statuses.CONTRACT"
           :href="liability | urlChainExplorer"
           target="_blank"
-        >{{ $t("steps.view_contract") }}</a>
+        >
+          {{ $t("steps.view_contract") }}
+        </a>
       </div>
     </div>
-    <div class="form-item d-table" :class="{ disabled: status < statuses.CONTRACT }">
+    <div
+      class="form-item d-table"
+      :class="{ disabled: status < statuses.CONTRACT }"
+    >
       <div class="d-table--cell align-vertical">
         <div
           class="m-r-15"
           :class="{
             'i-check': status == statuses.RESULT,
             green: status == statuses.RESULT,
-            'loader-ring': status == statuses.CONTRACT || status == statuses.REPORT || status == statuses.TX_FINALIZATION,
+            'loader-ring':
+              status == statuses.CONTRACT ||
+              status == statuses.REPORT ||
+              status == statuses.TX_FINALIZATION,
             'i-stop': status < statuses.CONTRACT
           }"
         ></div>

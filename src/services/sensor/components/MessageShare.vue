@@ -1,7 +1,13 @@
 <template>
   <p class="icons-line">
     <span
-      style="vertical-align: middle;width: 24px;display: inline-block;height: 24px;background: url(img/ipfs.png) 0% 0% / 24px no-repeat;"
+      style="
+        vertical-align: middle;
+        width: 24px;
+        display: inline-block;
+        height: 24px;
+        background: url(img/ipfs.png) 0% 0% / 24px no-repeat;
+      "
     ></span>
     <a
       class="i-share"
@@ -9,7 +15,11 @@
       title="copy to clipboard"
       v-clipboard:copy="getLink('ipfs', item.resultHash)"
     ></a>
-    <a class="i-twitter" :href="getLinkTwitter('ipfs', item.resultHash)" target="_blank"></a>
+    <a
+      class="i-twitter"
+      :href="getLinkTwitter('ipfs', item.resultHash)"
+      target="_blank"
+    ></a>
     <template v-if="isSubstrate">
       <span style="margin-left: 20px;">|</span>
       <template v-if="substrateBlockHash == ''">
@@ -17,7 +27,12 @@
           v-if="substrateBlockHash == ''"
           href="javascript:;"
           @click="sendSubstrate(item.resultHash)"
-          style="width: 24px;display: inline-block;height: 24px;background: url(img/substrate.png) 0% 0% / 24px no-repeat;"
+          style="
+            width: 24px;
+            display: inline-block;
+            height: 24px;
+            background: url(img/substrate.png) 0% 0% / 24px no-repeat;
+          "
         ></a>
         <span class="disabled" style="margin-left: 20px;">
           <a class="i-share" href></a>
@@ -26,7 +41,14 @@
       </template>
       <template v-else>
         <span
-          style="vertical-align: middle;margin-left: 20px;width: 24px;display: inline-block;height: 24px;background: url(img/substrate.png) 0% 0% / 24px no-repeat;"
+          style="
+            vertical-align: middle;
+            margin-left: 20px;
+            width: 24px;
+            display: inline-block;
+            height: 24px;
+            background: url(img/substrate.png) 0% 0% / 24px no-repeat;
+          "
         ></span>
         <span style="margin-left: 20px;">
           <a
@@ -78,7 +100,7 @@ export default {
     }
   },
   watch: {
-    item: function(value) {
+    item: function (value) {
       if (value.substrateBlockHash) {
         this.substrateBlockHash = value.substrateBlockHash;
         this.substrateTxHash = value.substrateTxHash;
@@ -130,7 +152,7 @@ export default {
     async sendSubstrate(result) {
       const substrate = await getInstance();
       const accounts = await getAccounts(substrate);
-      const accountsSelects = accounts.map(account => {
+      const accountsSelects = accounts.map((account) => {
         return {
           value: account.address,
           text: `${account.meta.name} (${
@@ -154,7 +176,7 @@ export default {
               this.substrateTxHash = txHash;
 
               const id = this.findId(
-                item => item.resultHash === this.item.resultHash
+                (item) => item.resultHash === this.item.resultHash
               );
               if (id) {
                 this.upadte(id, {
@@ -173,7 +195,7 @@ export default {
     findId(filter) {
       const items = this.storage.getItems();
       const keys = Object.keys(items);
-      const index = keys.findIndex(key => filter(items[key]));
+      const index = keys.findIndex((key) => filter(items[key]));
       if (index >= 0) {
         return keys[index];
       }

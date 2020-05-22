@@ -51,7 +51,7 @@ const actions = {
     }
     commit("run");
     const api = config.chain.get().STATISTICS_API;
-    axios.get(api + "/start").then(r => {
+    axios.get(api + "/start").then((r) => {
       commit("connected", r.data.result.connected);
       commit("lastBlock", r.data.result.lastBlock);
       commit("totalSupply", r.data.result.totalSupply);
@@ -62,10 +62,10 @@ const actions = {
     });
 
     const socket = io(api);
-    socket.on("lastBlock", r => {
+    socket.on("lastBlock", (r) => {
       commit("lastBlock", r);
     });
-    socket.on("data", r => {
+    socket.on("data", (r) => {
       commit("connected", r.connected);
       commit("totalSupply", r.totalSupply);
       commit("wn", r.wn);
@@ -94,13 +94,13 @@ const mutations = {
     state.wn = data;
   },
   gas(state, data) {
-    Object.keys(data.full).forEach(key => {
+    Object.keys(data.full).forEach((key) => {
       state.gas.full[key] = intFormat(Math.round(data.full[key]));
       state.gas.fin[key] = intFormat(Math.round(data.fin[key]));
     });
   },
   li(state, data) {
-    Object.keys(data.create).forEach(key => {
+    Object.keys(data.create).forEach((key) => {
       state.li.create[key] = intFormat(Math.round(data.create[key]));
       state.li.fin[key] = intFormat(Math.round(data.fin[key]));
     });

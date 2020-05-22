@@ -16,31 +16,57 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="member in members" :key="member.i" :class="{disabled: member.i != marker}">
+          <tr
+            v-for="member in members"
+            :key="member.i"
+            :class="{ disabled: member.i != marker }"
+          >
             <td>
-              <span v-if="member.i == marker" style="font-weight: bold;color: #03a5ed;">&gt;</span>
+              <span
+                v-if="member.i == marker"
+                style="font-weight: bold; color: #03a5ed;"
+                >&gt;</span
+              >
               {{ member.i }}
             </td>
             <td>
               <RChainExplorer :address="member.address" />
             </td>
             <td>
-              <template v-if="member.i == marker">{{ quota }} / {{ member.quota }}</template>
-              <template v-else>{{ member.quota }} / {{ member.quota }}</template>
+              <template v-if="member.i == marker"
+                >{{ quota }} / {{ member.quota }}</template
+              >
+              <template v-else
+                >{{ member.quota }} / {{ member.quota }}</template
+              >
             </td>
             <td>{{ member.balance }} ETH</td>
             <td>
               <template v-if="member.last">
                 <span>
-                  {{ $t("lighthouse.providers.last", { blocks: currentBlock - member.last }) }}
-                  <RChainExplorer category="tx" :address="member.lastTx" :isAvatar="false" />
+                  {{
+                    $t("lighthouse.providers.last", {
+                      blocks: currentBlock - member.last
+                    })
+                  }}
+                  <RChainExplorer
+                    category="tx"
+                    :address="member.lastTx"
+                    :isAvatar="false"
+                  />
                 </span>
               </template>
               <template v-else-if="minBlock > 0">
-                <span>{{ $t("lighthouse.providers.more", { blocks: currentBlock - minBlock }) }}</span>
+                <span>{{
+                  $t("lighthouse.providers.more", {
+                    blocks: currentBlock - minBlock
+                  })
+                }}</span>
               </template>
               <template v-else>
-                <span>{{ $t("lighthouse.providers.more", { blocks: timeoutInBlocks }) }}</span>
+                <span>{{
+                  $t("lighthouse.providers.more", { blocks: timeoutInBlocks })
+                }}</span>
               </template>
             </td>
           </tr>

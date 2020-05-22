@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="ready" style="padding-top:20px">
+    <div v-if="ready" style="padding-top: 20px;">
       <RWindow id="window-sensornetwork-requests">
         <template slot="header">
           <span>{{ $t("sensor.result") }}</span>
@@ -47,7 +47,7 @@ export default {
         status: 2,
         resultHash: this.result
       };
-      parseResult(this.result).then(result => {
+      parseResult(this.result).then((result) => {
         this.item = {
           ...this.item,
           status: 3,

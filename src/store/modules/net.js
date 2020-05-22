@@ -24,13 +24,13 @@ const actions = {
     commit("run");
     const ipfs = getIpfs();
 
-    config.NET_TOPICS.forEach(topic => {
+    config.NET_TOPICS.forEach((topic) => {
       const suffix = topic.split(".");
       const network =
         suffix[suffix.length - 1] === "eth" ? "mainnet" : "sidechain";
       ipfs.pubsub.subscribe(
         topic,
-        r => {
+        (r) => {
           const hash = r.data
             .toString()
             .trim()

@@ -10,7 +10,7 @@ export function init(config, web3, ipfs) {
   return robonomics;
 }
 
-export default function() {
+export default function () {
   if (robonomics === null) {
     throw new Error("Robonomics not init");
   }

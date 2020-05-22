@@ -80,7 +80,7 @@ export default {
   created() {
     // 0x46cba2de944ee7bb9f951f1157ae04d0ddd9ed85
     this.contarct = new Liability(this.$robonomics.web3, this.liability);
-    this.contarct.getInfo().then(r => {
+    this.contarct.getInfo().then((r) => {
       this.model = r.model;
       this.objective = r.objective;
       this.result = r.result;

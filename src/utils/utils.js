@@ -4,31 +4,31 @@ import rosBag, { getRosbag } from "./rosBag";
 import getRobonomics from "./robonomics";
 import config from "../config";
 
-export const genRosbagIpfs = data => {
+export const genRosbagIpfs = (data) => {
   let bag;
   let hash;
   return getRosbag(data)
-    .then(r => {
+    .then((r) => {
       bag = r;
       return getIpfs();
     })
-    .then(ipfs => {
+    .then((ipfs) => {
       return ipfs.add(bag);
     })
-    .then(r => {
+    .then((r) => {
       hash = r[0].hash;
       return axios.get(`${config.IPFS_GATEWAY}${hash}`);
     })
     .then(() => {
       return hash;
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
     });
 };
 
 export const readRosbagIpfs = (hash, cb, topics = {}) => {
-  return ipfsCat(hash).then(r => {
+  return ipfsCat(hash).then((r) => {
     return rosBag(new Blob([r]), cb, topics);
   });
 };
@@ -49,18 +49,18 @@ export const watchTx = (web3, tx) => {
     });
   };
   if (Array.isArray(tx)) {
-    return Promise.all(tx.map(oneTx => watchTx(oneTx)));
+    return Promise.all(tx.map((oneTx) => watchTx(oneTx)));
   } else if (typeof tx === "string") {
     return new Promise(transactionReceiptAsync);
   }
   throw new Error(`Invalid Type: ${tx}`);
 };
 
-export const intFormat = x => {
+export const intFormat = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
-export const floatFormat = x => {
+export const floatFormat = (x) => {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   return parts.join(".");
@@ -87,7 +87,7 @@ export const getDataByIpns = (hash, force = true) => {
   requestsIpns.add(hash);
   return axios
     .get(`https://ipfs.io/ipns/${hash}`)
-    .then(r => {
+    .then((r) => {
       requestsIpns.delete(hash);
       return r.data;
     })

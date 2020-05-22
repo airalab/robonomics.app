@@ -1,7 +1,12 @@
 <template>
   <fragment>
     <Info :address="address" :from="from" :to="to" />
-    <Form :address="address" :from="from" :to="to" :initAmountWei="initAmountWei" />
+    <Form
+      :address="address"
+      :from="from"
+      :to="to"
+      :initAmountWei="initAmountWei"
+    />
   </fragment>
 </template>
 
@@ -28,7 +33,7 @@ export default {
     this.watchToken(this.address, this.from, this.to);
   },
   watch: {
-    address: function(newAddressl) {
+    address: function (newAddressl) {
       this.watchToken(newAddressl, this.from, this.to);
     }
   }

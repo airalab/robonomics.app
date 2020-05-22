@@ -33,7 +33,13 @@
         :tokenAddress="token"
         :cost="cost"
       />
-      <SensorFree v-else :lighthouse="lighthouse" :model="model" :agent="agent" :result="result" />
+      <SensorFree
+        v-else
+        :lighthouse="lighthouse"
+        :model="model"
+        :agent="agent"
+        :result="result"
+      />
     </section>
   </Page>
 </template>
@@ -65,10 +71,10 @@ export default {
     SensorResultSubstrate
   },
   computed: {
-    miniAddrAgent: function() {
+    miniAddrAgent: function () {
       return this.agent.slice(0, 6) + "..." + this.agent.slice(-4);
     },
-    nameModel: function() {
+    nameModel: function () {
       return Object.prototype.hasOwnProperty.call(
         config.CATEGORY_MODELS,
         this.model

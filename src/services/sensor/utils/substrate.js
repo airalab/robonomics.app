@@ -22,7 +22,7 @@ let instance = null;
 
 export function getInstance() {
   if (instance) {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       resolve(instance);
     });
   }
@@ -39,20 +39,20 @@ export function getInstance() {
       // Report: "Vec<u8>"
     }
   })
-    .then(r => {
+    .then((r) => {
       instance = r;
       return web3Enable("dapp");
     })
     .then(() => {
       return web3Accounts();
     })
-    .then(accounts => {
+    .then((accounts) => {
       return accounts.map(({ address, meta }) => ({
         address,
         meta
       }));
     })
-    .then(injectedAccounts => {
+    .then((injectedAccounts) => {
       keyring.loadAll(
         {
           addressPrefix: 42,
@@ -96,7 +96,7 @@ export async function sendSubstrate(substrate, account, result, cb, cbErr) {
 
   const tx = substrate.tx.robonomicsStorage.record(record);
   try {
-    const unsub = await tx.signAndSend(account, result => {
+    const unsub = await tx.signAndSend(account, (result) => {
       if (result.status.isFinalized) {
         cb(result.status.asFinalized.toString(), tx.hash.toString());
         unsub();

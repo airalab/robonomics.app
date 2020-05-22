@@ -6,7 +6,8 @@
         class="t-lg content-overflow"
         :href="address | urlChainExplorer"
         target="_blank"
-      >{{ address }}</a>
+        >{{ address }}</a
+      >
     </blockquote>
     <template v-if="passport">
       <section v-if="passport.email || passport.info">
@@ -28,7 +29,12 @@
         <section v-if="passport.meta">
           <span class="t-sm">{{ $t("passport.meta") }}:</span>
           <br />
-          <a class="ptint-hidden" href="javascript:;" @click="view(passport.meta)">{{ metaSlice }}</a>
+          <a
+            class="ptint-hidden"
+            href="javascript:;"
+            @click="view(passport.meta)"
+            >{{ metaSlice }}</a
+          >
           <div v-if="viewMeta">
             <div v-if="loadJson">
               <div class="loader-ring"></div>
@@ -38,8 +44,11 @@
               class="btn-blue btn-sm ptint-hidden"
               :href="passport.meta | urlIpfsExplorer"
               target="_blank"
-            >{{ $t("passport.openIpfs") }}</a>
-            <div class="print-show">Link in IPFS: {{ passport.meta | urlIpfsExplorer }}</div>
+              >{{ $t("passport.openIpfs") }}</a
+            >
+            <div class="print-show">
+              Link in IPFS: {{ passport.meta | urlIpfsExplorer }}
+            </div>
           </div>
         </section>
         <hr v-if="passport.meta && passport.images" />
@@ -50,32 +59,44 @@
               class="ptint-hidden"
               href="javascript:;"
               @click="image.show = !image.show"
-            >{{ image.sliceHash }}</a>
+              >{{ image.sliceHash }}</a
+            >
             <div v-if="image.show">
               <img class="i-block" alt :src="image.hash | urlIpfsExplorer" />
               <a
                 class="btn-blue btn-sm m-t-5 ptint-hidden"
                 :href="image.hash | urlIpfsExplorer"
                 target="_blank"
-              >{{ $t("passport.openIpfs") }}</a>
-              <div class="print-show">Link in IPFS: {{ image.hash | urlIpfsExplorer }}</div>
+                >{{ $t("passport.openIpfs") }}</a
+              >
+              <div class="print-show">
+                Link in IPFS: {{ image.hash | urlIpfsExplorer }}
+              </div>
             </div>
           </div>
         </section>
       </section>
       <hr class="ptint-hidden" />
       <div class="icons-line ptint-hidden">
-        <a class="i-print" href="#" title="Print Passport" onclick="window.print();return false;"></a>
+        <a
+          class="i-print"
+          href="#"
+          title="Print Passport"
+          onclick="window.print();return false;"
+        ></a>
         <a class="i-twitter" :href="getLinkTwitter()" title="Tweet"></a>
-        <a class="i-share" href="javascript:;" title="Share the link" v-clipboard:copy="getLink()"></a>
+        <a
+          class="i-share"
+          href="javascript:;"
+          title="Share the link"
+          v-clipboard:copy="getLink()"
+        ></a>
       </div>
     </template>
     <div v-else class="loader">
       <RLoader />&nbsp;
       <b class="align-vertical t-style_uppercase">
-        {{
-        $t("passport.loading")
-        }}
+        {{ $t("passport.loading") }}
       </b>
     </div>
   </fragment>
@@ -89,7 +110,7 @@ import { readRosbagIpfs } from "@/utils/utils";
 import config from "~config";
 
 function loadScript(src) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const script = document.createElement("script");
     script.src = src;
     script.onload = resolve;
@@ -115,7 +136,7 @@ export default {
       this.address,
       this.address
     );
-    liability.getInfo().then(info => {
+    liability.getInfo().then((info) => {
       this.rosbagObjective(info.objective);
     });
   },
@@ -123,7 +144,7 @@ export default {
     loadScript("https://platform.twitter.com/widgets.js");
   },
   computed: {
-    metaSlice: function() {
+    metaSlice: function () {
       return (
         this.passport.meta.slice(0, 6) + "..." + this.passport.meta.slice(-4)
       );
@@ -132,7 +153,7 @@ export default {
   methods: {
     rosbagObjective(hash) {
       const passport = {};
-      readRosbagIpfs(hash, bag => {
+      readRosbagIpfs(hash, (bag) => {
         if (bag.message.data === "") {
           return;
         }
@@ -166,7 +187,7 @@ export default {
         this.loadJson = true;
         axios
           .get(`${config.IPFS_GATEWAY}${hash}`)
-          .then(r => {
+          .then((r) => {
             this.json = r.data;
             this.loadJson = false;
           })

@@ -100,7 +100,7 @@ import {
   Item,
   Navigation,
   NavigationLink,
-  Wallet,
+  Wallet
 } from "./sidebar";
 import { isBrave } from "@/utils/tools";
 
@@ -111,12 +111,12 @@ export default {
     Item,
     Navigation,
     NavigationLink,
-    Wallet,
+    Wallet
   },
   data() {
     return {
       account: null,
-      isBrave: true,
+      isBrave: true
     };
   },
   computed: {
@@ -133,12 +133,12 @@ export default {
           );
           balances.push({
             amount: amount,
-            symbol: info ? info.symbol : "",
+            symbol: info ? info.symbol : ""
           });
         });
       }
       return balances;
-    },
+    }
   },
   async created() {
     this.isBrave = await isBrave();
@@ -148,7 +148,7 @@ export default {
         this.$store.dispatch("tokens/add", item.address);
         this.$store.dispatch("tokens/watchBalance", {
           token: item.address,
-          account: this.$robonomics.account.address,
+          account: this.$robonomics.account.address
         });
       });
     }
@@ -156,7 +156,7 @@ export default {
   methods: {
     async connect() {
       this.$store.dispatch("chain/accessAccount", false);
-    },
-  },
+    }
+  }
 };
 </script>

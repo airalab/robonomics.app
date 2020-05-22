@@ -70,13 +70,13 @@ export default {
     Page,
     TextBlockEn,
     TextBlockRu,
-    Ambix,
+    Ambix
   },
   data() {
     return {
       address: "",
       ambix1: config.AMBIX1,
-      ambix2: config.AMBIX2,
+      ambix2: config.AMBIX2
     };
   },
   computed: {
@@ -98,7 +98,7 @@ export default {
               this.$robonomics.account.address,
               config.AMBIX1
             )
-          : 0,
+          : 0
       };
     },
     airkyc() {
@@ -116,7 +116,7 @@ export default {
               this.$robonomics.account.address,
               config.AMBIX2
             )
-          : 0,
+          : 0
       };
     },
     xrt() {
@@ -128,9 +128,9 @@ export default {
         balance: this.$robonomics.account
           ? this.balance(token.address, this.$robonomics.account.address)
           : 0,
-        approve: 0,
+        approve: 0
       };
-    },
+    }
   },
   mounted() {
     if (this.networkId !== 1) {
@@ -144,12 +144,12 @@ export default {
         this.$store.dispatch("tokens/watchAllowance", {
           token: tokens.air.address,
           from: this.$robonomics.account.address,
-          to: config.AMBIX1,
+          to: config.AMBIX1
         });
         this.$store.dispatch("tokens/watchAllowance", {
           token: tokens.airkyc.address,
           from: this.$robonomics.account.address,
-          to: config.AMBIX2,
+          to: config.AMBIX2
         });
       }
     }
@@ -157,7 +157,7 @@ export default {
   methods: {
     setKyc() {
       this.$store.dispatch("kyc/setKyc");
-    },
-  },
+    }
+  }
 };
 </script>

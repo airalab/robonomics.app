@@ -2,7 +2,7 @@
   <Page>
     <SelectLighthouse
       @connect="
-        lighthouse => {
+        (lighthouse) => {
           $router.push({ path: `/lighthouse/${lighthouse}` });
         }
       "

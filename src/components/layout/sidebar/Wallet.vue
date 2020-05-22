@@ -1,9 +1,18 @@
 <template>
   <fragment>
     <section>
-      <RChainExplorer v-if="account" :address="account" class="nowrap" :chainid="networkId" />
+      <RChainExplorer
+        v-if="account"
+        :address="account"
+        class="nowrap"
+        :chainid="networkId"
+      />
       <div v-if="networkId" class="m-t-10">
-        <RLabel class="align-top" :color="networkId === 1 ? 'green' : 'violet'">{{ nameChain }}</RLabel>
+        <RLabel
+          class="align-top"
+          :color="networkId === 1 ? 'green' : 'violet'"
+          >{{ nameChain }}</RLabel
+        >
       </div>
     </section>
     <section>
@@ -29,7 +38,7 @@ export default {
     tokens: Array
   },
   computed: {
-    nameChain: function() {
+    nameChain: function () {
       return this.networkId === 1 ? "Mainnet" : "Sidechain";
     }
   }

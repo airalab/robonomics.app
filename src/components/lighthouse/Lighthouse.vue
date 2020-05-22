@@ -12,7 +12,7 @@
       :isCreate="false"
       :selectedLighthouse="lighthouseName"
       @connect="
-        lighthouse => {
+        (lighthouse) => {
           $router.push({ path: `/lighthouse/${lighthouse}` });
         }
       "
@@ -51,19 +51,19 @@ export default {
     };
   },
   computed: {
-    lighthouseName: function() {
+    lighthouseName: function () {
       return this.$route.params.lighthouse;
     }
   },
   watch: {
-    lighthouseName: function(value, old) {
+    lighthouseName: function (value, old) {
       if (old && value !== old) {
         this.fetchData();
       }
     }
   },
   mounted() {
-    this.$on("approve", data => {
+    this.$on("approve", (data) => {
       this.showApprove = data;
     });
     return this.fetchData();

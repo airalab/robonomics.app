@@ -19,7 +19,7 @@ const state = {
 
 // getters
 const getters = {
-  token: state => token => {
+  token: (state) => (token) => {
     token = toChecksumAddress(token);
     if (!state.list[token]) {
       return {
@@ -30,7 +30,7 @@ const getters = {
     }
     return state.list[token];
   },
-  balance: state => (token, account) => {
+  balance: (state) => (token, account) => {
     token = toChecksumAddress(token);
     account = toChecksumAddress(account);
     if (!state.balance[token] || !state.balance[token][account]) {
@@ -49,7 +49,7 @@ const getters = {
       info ? info.symbol : ""
     );
   },
-  allowance: state => (token, from, to) => {
+  allowance: (state) => (token, from, to) => {
     token = toChecksumAddress(token);
     from = toChecksumAddress(from);
     to = toChecksumAddress(to);
@@ -86,7 +86,7 @@ const actions = {
     const token = getContract(address);
     watchToken(
       token,
-      result => {
+      (result) => {
         if (rootGetters["wait/is"]("tx." + result.transactionHash)) {
           dispatch("wait/end", "tx." + result.transactionHash, {
             root: true
@@ -100,7 +100,7 @@ const actions = {
         dispatch("setAllowance", { token: token.address, from, to, value });
       }
     );
-    getInfo(token).then(info => {
+    getInfo(token).then((info) => {
       dispatch("setInfo", { address: token.address, info });
     });
   },
@@ -114,7 +114,7 @@ const actions = {
       return;
     }
     watchBalance(token, account);
-    getBalance(getContract(token), account).then(value => {
+    getBalance(getContract(token), account).then((value) => {
       dispatch("setBalance", { token, account, value });
     });
   },
@@ -130,7 +130,7 @@ const actions = {
       return;
     }
     watchAllowance(token, from, to);
-    getAllowance(getContract(token), from, to).then(value => {
+    getAllowance(getContract(token), from, to).then((value) => {
       dispatch("setAllowance", { token, from, to, value });
     });
   },

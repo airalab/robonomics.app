@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="ready" style="padding-top:20px">
+    <div v-if="ready" style="padding-top: 20px;">
       <RWindow id="window-sensornetwork-requests">
         <template slot="header">
           <span>{{ $t("sensor.result") }}</span>
@@ -49,9 +49,9 @@ export default {
       //     console.log(r);
       //   }
       // );
-      substrate.query.system.events.at(this.substrateBlock, events => {
+      substrate.query.system.events.at(this.substrateBlock, (events) => {
         // console.log(events);
-        events.forEach(record => {
+        events.forEach((record) => {
           const { event /*, phase*/ } = record;
           if (event.section === "robonomicsStorage") {
             const eventObj = {
@@ -62,7 +62,7 @@ export default {
               data: {}
             };
 
-            Object.keys(event.data.typeDef).forEach(index => {
+            Object.keys(event.data.typeDef).forEach((index) => {
               eventObj.data[event.data.typeDef[index].type] = event.data[
                 index
               ].toString();
@@ -72,9 +72,9 @@ export default {
         });
       });
 
-      substrate.rpc.chain.getBlock(this.substrateBlock, block => {
+      substrate.rpc.chain.getBlock(this.substrateBlock, (block) => {
         // get extrinsics
-        block.block.extrinsics.forEach(item => {
+        block.block.extrinsics.forEach((item) => {
           if (
             item.method.sectionName === "robonomicsStorage" &&
             item.method.methodName === "record" &&
@@ -94,7 +94,7 @@ export default {
               substrateBlockHash: this.substrateBlock,
               substrateTxHash: this.substrateTx
             };
-            parseResult(resultHash).then(result => {
+            parseResult(resultHash).then((result) => {
               this.item = {
                 ...this.item,
                 status: 3,

@@ -8,29 +8,46 @@
         class="item"
         :class="{ disabled: service.disabled }"
       >
-        <a v-if="service.target" :href="service.link" target="_blank" class="item-avatar">
-          <span class="item-avatar--image" :style="`background-image: url('${service.img}');`"></span>
+        <a
+          v-if="service.target"
+          :href="service.link"
+          target="_blank"
+          class="item-avatar"
+        >
+          <span
+            class="item-avatar--image"
+            :style="`background-image: url('${service.img}');`"
+          ></span>
         </a>
         <router-link v-else :to="service.link" class="item-avatar">
-          <span class="item-avatar--image" :style="`background-image: url('${service.img}');`"></span>
+          <span
+            class="item-avatar--image"
+            :style="`background-image: url('${service.img}');`"
+          ></span>
         </router-link>
         <div class="item-content">
           <h2>
-            <a
-              v-if="service.target"
-              :href="service.link"
-              target="_blank"
-            >{{ service[$i18n.locale].name }}</a>
-            <router-link v-else :to="service.link">{{ service[$i18n.locale].name }}</router-link>
+            <a v-if="service.target" :href="service.link" target="_blank">{{
+              service[$i18n.locale].name
+            }}</a>
+            <router-link v-else :to="service.link">{{
+              service[$i18n.locale].name
+            }}</router-link>
           </h2>
           <div class="t-hyphen">{{ service[$i18n.locale].desc }}</div>
           <div class="item-bottom">
             <div class="item-bottom--line">
               <span>Provider:</span>
-              <span class="item-bottom--info" v-for="(item, i) in service.by" :key="i">
-                <a v-if="item.link" :href="item.link" target="_blank">{{ item.label }}</a>
+              <span
+                class="item-bottom--info"
+                v-for="(item, i) in service.by"
+                :key="i"
+              >
+                <a v-if="item.link" :href="item.link" target="_blank">{{
+                  item.label
+                }}</a>
                 <template v-else>{{ item.label }}</template>
-                <template v-if="i != (service.by.length - 1)">,&nbsp;</template>
+                <template v-if="i != service.by.length - 1">,&nbsp;</template>
               </span>
             </div>
             <div v-if="service.token" class="item-bottom--line">
@@ -55,8 +72,8 @@ export default {
     return {
       services: [
         ...Object.values(services)
-          .filter(item => item.meta)
-          .map(item => item.meta)
+          .filter((item) => item.meta)
+          .map((item) => item.meta)
       ]
     };
   },

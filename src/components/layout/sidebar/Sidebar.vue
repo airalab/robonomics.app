@@ -51,7 +51,7 @@
           v-for="(item, k) in [
             ...Object.values(blocks.top),
             ...Object.values(blocks.bottom)
-          ].filter(item => item.canExpand)"
+          ].filter((item) => item.canExpand)"
           :key="`block-${k}`"
           v-show="block == item.id"
         >

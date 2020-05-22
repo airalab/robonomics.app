@@ -3,9 +3,9 @@
     <div v-if="ready">
       <h4>
         {{ $t("sensor.statusAgent") }}:
-        <template
-          v-if="log.length === 0"
-        >{{ $t("sensor.notStatusAgent") }}</template>
+        <template v-if="log.length === 0">{{
+          $t("sensor.notStatusAgent")
+        }}</template>
         <template v-else>
           {{ $t("sensor.yesStatusAgent") }}
           {{ log[log.length - 1].time }}
@@ -22,16 +22,15 @@
         />
         <div v-if="Number(myAllowance) >= Number(cost)" class="input-size--md">
           <RButton v-if="isRequest" fullWidth color="green" disabled>
-            {{
-            $t("sensor.requested")
-            }}
+            {{ $t("sensor.requested") }}
           </RButton>
           <RButton
             v-else
             @click.native="sendMsgDemand"
             fullWidth
             color="green"
-          >{{ $t("sensor.isRequest") }}</RButton>
+            >{{ $t("sensor.isRequest") }}</RButton
+          >
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -40,15 +39,32 @@
             {{ $t("sensor.requests") }} ({{ log.length }})
             <RButton
               @click.native="clear"
-              style="background:none;color:#03a5ed;border:2px solid #03a5ed;padding-top:2px;padding-bottom:2px;margin-left:15px;"
-            >{{ $t("sensor.clear") }}</RButton>
+              style="
+                background: none;
+                color: #03a5ed;
+                border: 2px solid #03a5ed;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                margin-left: 15px;
+              "
+              >{{ $t("sensor.clear") }}</RButton
+            >
           </span>
         </template>
 
-        <Pagination :listData="log" :currentPage="currentPage" @onPage="handlePage">
+        <Pagination
+          :listData="log"
+          :currentPage="currentPage"
+          @onPage="handlePage"
+        >
           <template v-slot:default="props">
             <RCard>
-              <Message :item="props.item" :lighthouse="lighthouse" :model="model" :agent="agent" />
+              <Message
+                :item="props.item"
+                :lighthouse="lighthouse"
+                :model="model"
+                :agent="agent"
+              />
             </RCard>
           </template>
         </Pagination>
@@ -98,7 +114,7 @@ export default {
       this.ready = true;
       this.upLog();
 
-      this.log.forEach(item => {
+      this.log.forEach((item) => {
         if (item.status === 2) {
           const liability = new Liability(
             this.$robonomics.web3,
@@ -106,31 +122,31 @@ export default {
           );
           liability
             .result()
-            .then(r => {
+            .then((r) => {
               if (r) {
                 return r;
               }
               return liability.onResult();
             })
-            .then(result => {
+            .then((result) => {
               console.log(result);
               this.upadte(item.id, {
                 status: 3,
                 resultHash: result
               });
-              parseResult(result).then(result => {
+              parseResult(result).then((result) => {
                 this.upadte(item.id, {
                   status: 4,
                   result: result
                 });
               });
             })
-            .catch(e => {
+            .catch((e) => {
               this.isRequest = false;
               console.log(e);
             });
         } else if (item.status === 3) {
-          parseResult(item.resultHash).then(result => {
+          parseResult(item.resultHash).then((result) => {
             this.upadte(item.id, {
               status: 4,
               result: result
@@ -139,10 +155,10 @@ export default {
         }
       });
 
-      this.$robonomics.onDemand(this.model, msg => {
+      this.$robonomics.onDemand(this.model, (msg) => {
         console.log("demand", msg);
       });
-      this.$robonomics.onOffer(this.model, msg => {
+      this.$robonomics.onOffer(this.model, (msg) => {
         console.log("offer", msg);
       });
     });
@@ -157,7 +173,7 @@ export default {
     }
   },
   computed: {
-    myAllowance: function() {
+    myAllowance: function () {
       if (this.$robonomics.account && this.response) {
         return this.allowance(
           this.tokenAddress,
@@ -228,7 +244,7 @@ export default {
             this.isRequest = false;
             id = this.add();
           })
-          .then(liability => {
+          .then((liability) => {
             console.log(liability.address);
             if (id) {
               this.upadte(id, {
@@ -238,7 +254,7 @@ export default {
             }
             return liability.onResult();
           })
-          .then(result => {
+          .then((result) => {
             console.log(result);
             if (id) {
               this.upadte(id, {
@@ -246,7 +262,7 @@ export default {
                 resultHash: result
               });
             }
-            parseResult(result).then(result => {
+            parseResult(result).then((result) => {
               if (id) {
                 this.upadte(id, {
                   status: 4,
@@ -255,7 +271,7 @@ export default {
               }
             });
           })
-          .catch(e => {
+          .catch((e) => {
             this.isRequest = false;
             console.log(e);
           });

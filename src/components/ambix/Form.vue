@@ -15,13 +15,17 @@
       <span class="align-vertical">{{ $t("convert") }} {{ toLabel }}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
     </RButton>
-    <RButton v-else fullWidth @click.native="submit">{{ $t("convert") }} {{ toLabel }}</RButton>
+    <RButton v-else fullWidth @click.native="submit">
+      {{ $t("convert") }} {{ toLabel }}
+    </RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
         :href="actionTx.replace('tx.', '') | urlChainExplorer('tx')"
         target="_blank"
-      >transaction</a>
+      >
+        transaction
+      </a>
       to be mined
     </p>
     <p v-if="error !== ''" class="t-sm">{{ error }}</p>
@@ -64,7 +68,7 @@ export default {
     }
   },
   computed: {
-    watchTx: function() {
+    watchTx: function () {
       if (this.actionTx !== "") {
         return this.$wait.is(this.actionTx);
       }
@@ -72,7 +76,7 @@ export default {
     }
   },
   watch: {
-    current: function(newVal) {
+    current: function (newVal) {
       if (newVal > 0) {
         this.amount = number.fromWei(newVal, this.decimals);
       }
@@ -127,7 +131,7 @@ export default {
       contract.methods
         .approve(this.ambix, value)
         .send({ from: this.$robonomics.account.address })
-        .then(r => {
+        .then((r) => {
           this.$wait.end(this.actionForm);
           this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
@@ -148,7 +152,7 @@ export default {
       contract.methods
         .unapprove(this.ambix)
         .send({ from: this.$robonomics.account.address })
-        .then(r => {
+        .then((r) => {
           this.$wait.end(this.actionForm);
           this.tx = r.transactionHash;
           this.actionTx = "tx." + this.tx;
@@ -174,13 +178,13 @@ export default {
             "/" +
             this.$robonomics.account.address
         )
-        .then(r => {
+        .then((r) => {
           if (_has(r.data, "result")) {
             const signature = r.data.result;
             ambix.methods
               .run(this.index, signature)
               .send({ from: this.$robonomics.account.address })
-              .then(r => {
+              .then((r) => {
                 this.$wait.end(this.actionForm);
                 this.tx = r.transactionHash;
                 this.actionTx = "tx." + this.tx;

@@ -11,7 +11,7 @@
         :isCreate="false"
         :selectedLighthouse="lighthouseNameFull"
         @connect="
-          lighthouse => {
+          (lighthouse) => {
             $router.push({ path: `/sensors/${lighthouse.split('.')[0]}` });
             $router.go();
           }
@@ -35,7 +35,7 @@ export default {
     SelectLighthouse
   },
   computed: {
-    lighthouseNameFull: function() {
+    lighthouseNameFull: function () {
       return this.lighthouse
         ? this.$robonomics.ens.getUrl(this.lighthouse, "lighthouse")
         : "";

@@ -1,10 +1,10 @@
 import services from "../services";
 
-const messages = Object.values(services).filter(item => item.messages);
-const en = messages.reduce(function(result, item) {
+const messages = Object.values(services).filter((item) => item.messages);
+const en = messages.reduce(function (result, item) {
   return { ...result, [item.messages.id]: item.messages.en };
 }, {});
-const ru = messages.reduce(function(result, item) {
+const ru = messages.reduce(function (result, item) {
   return { ...result, [item.messages.id]: item.messages.ru };
 }, {});
 

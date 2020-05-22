@@ -23,10 +23,10 @@ const state = {
 
 // getters
 const getters = {
-  members: state => {
+  members: (state) => {
     return _sortBy(state.members, "i");
   },
-  downtime: state => {
+  downtime: (state) => {
     return state.currentBlock - state.keepAliveBlock;
   },
   isSleeping: (state, getters) => {
@@ -49,43 +49,43 @@ const actions = {
     robonomics.xrt.methods
       .balanceOf(robonomics.lighthouse.address)
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setLighthouseBalance", Number(r));
       });
     robonomics.lighthouse.methods
       .minimalStake()
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setMinimalStake", Number(r));
       });
     robonomics.lighthouse.methods
       .quota()
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setQuota", Number(r));
       });
     robonomics.lighthouse.methods
       .marker()
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setMarker", Number(r));
       });
     robonomics.lighthouse.methods
       .keepAliveBlock()
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setKeepAliveBlock", Number(r));
       });
     robonomics.lighthouse.methods
       .timeoutInBlocks()
       .call()
-      .then(r => {
+      .then((r) => {
         commit("setTimeoutInBlocks", Number(r));
       });
     dispatch("getProviders");
   },
   getProviders({ state, commit, dispatch }) {
-    robonomics.lighthouse.getProviders().then(result => {
+    robonomics.lighthouse.getProviders().then((result) => {
       const members = [];
       const quotas = [];
       const balances = [];
@@ -104,20 +104,20 @@ const actions = {
         );
       });
       Promise.all(quotas)
-        .then(res => {
+        .then((res) => {
           res.forEach((quota, i) => {
             members[i].quota = Number(quota);
           });
           return Promise.all(balances);
         })
-        .then(res => {
+        .then((res) => {
           res.forEach((balance, i) => {
             members[i].balance = Number(
               robonomics.web3.utils.fromWei(balance)
             ).toFixed(3);
           });
           members.forEach((item, i) => {
-            const index = state.members.findIndex(member => {
+            const index = state.members.findIndex((member) => {
               return member.address === item.address;
             });
             if (index >= 0) {
@@ -167,7 +167,7 @@ const actions = {
     for (let item of events) {
       const t = await robonomics.web3.eth.getTransaction(item.transactionHash);
       if (t.to === robonomics.lighthouse.address) {
-        const index = state.members.findIndex(member => {
+        const index = state.members.findIndex((member) => {
           return member.address === t.from;
         });
         if (index >= 0) {
@@ -179,7 +179,7 @@ const actions = {
         }
       }
     }
-    Object.keys(newMembers).forEach(index => {
+    Object.keys(newMembers).forEach((index) => {
       commit("setLastBlockProvider", {
         ...newMembers[index],
         index

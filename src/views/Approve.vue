@@ -106,7 +106,7 @@ export default {
       this.form.error = false;
       for (let field in this.form.fields) {
         this.form.fields[field].error = false;
-        this.form.fields[field].rules.forEach(rule => {
+        this.form.fields[field].rules.forEach((rule) => {
           if (rule === "require" && !this.form.fields[field].value) {
             this.form.fields[field].error = true;
             this.form.error = true;

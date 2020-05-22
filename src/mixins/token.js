@@ -27,9 +27,7 @@ export default {
       }
     },
     approve(address, value, from, to) {
-      return getContract(address)
-        .methods.approve(to, value)
-        .send({ from });
+      return getContract(address).methods.approve(to, value).send({ from });
     }
   }
 };

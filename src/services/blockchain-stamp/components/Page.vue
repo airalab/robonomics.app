@@ -53,18 +53,30 @@
               :liability="roboCycle.liability"
             />
             <section
-              v-if="roboCycle.demand === null || roboCycle.status != statuses.RESULT"
-              :class="{ disabled: (Number(cost) > 0 && Number(myAllowance) < Number(cost)) || (roboCycle.demand && roboCycle.status != statuses.EMPTY) }"
+              v-if="
+                roboCycle.demand === null || roboCycle.status != statuses.RESULT
+              "
+              :class="{
+                disabled:
+                  (Number(cost) > 0 && Number(myAllowance) < Number(cost)) ||
+                  (roboCycle.demand && roboCycle.status != statuses.EMPTY)
+              }"
             >
               <RButton
                 @click="sendMsgDemand"
                 fullWidth
                 size="big"
-                :disabled="roboCycle.status > statuses.EMPTY && roboCycle.status < statuses.RESULT"
+                :disabled="
+                  roboCycle.status > statuses.EMPTY &&
+                  roboCycle.status < statuses.RESULT
+                "
               >
                 <div
                   class="loader-ring"
-                  v-if="roboCycle.status > statuses.EMPTY && roboCycle.status < statuses.RESULT"
+                  v-if="
+                    roboCycle.status > statuses.EMPTY &&
+                    roboCycle.status < statuses.RESULT
+                  "
                 ></div>
                 &nbsp;{{ $t("passport.order") }}
               </RButton>
@@ -77,7 +89,8 @@
                   name: 'passport-view',
                   params: { passport: roboCycle.liability }
                 }"
-              >{{ $t("passport.link") }}</router-link>
+                >{{ $t("passport.link") }}</router-link
+              >
             </div>
           </section>
         </template>
@@ -131,7 +144,7 @@ export default {
     cost() {
       return number.numToString(this.roboCycle.offer.cost);
     },
-    myAllowance: function() {
+    myAllowance: function () {
       if (this.$robonomics.account && this.roboCycle.offer) {
         return this.allowance(
           this.roboCycle.offer.token,
@@ -151,7 +164,7 @@ export default {
       .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
       .then(() => {
         this.ready = true;
-        this.$robonomics.onDemand(this.model, msg => {
+        this.$robonomics.onDemand(this.model, (msg) => {
           console.log(msg);
         });
       });

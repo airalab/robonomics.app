@@ -6,8 +6,8 @@
         <thead>
           <tr>
             <th>agent</th>
-            <th style="width:20%">counter</th>
-            <th style="width:20%">time</th>
+            <th style="width: 20%;">counter</th>
+            <th style="width: 20%;">time</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@ export default {
       .initLighthouse(config.chain.get().DEFAULT_LIGHTHOUSE)
       .then(() => {
         this.ready = true;
-        this.$robonomics.onResult(msg => {
+        this.$robonomics.onResult((msg) => {
           const sender = Account.recoveryMessage(msg);
           if (!Object.prototype.hasOwnProperty.call(this.agents, sender)) {
             Vue.set(this.agents, sender, { count: 0, time: "" });
