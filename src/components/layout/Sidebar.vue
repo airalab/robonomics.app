@@ -7,9 +7,9 @@
     </template>
     <Item icon="i-menu">
       <Navigation>
-        <NavigationLink :to="{ name: 'status' }" icon="i-piechart">{{
-          $t("menu.net_stats")
-        }}</NavigationLink>
+        <NavigationLink :to="{ name: 'status' }" icon="i-piechart">
+          {{ $t("menu.net_stats") }}
+        </NavigationLink>
         <NavigationLink
           :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
@@ -21,9 +21,9 @@
           icon="i-transfer"
           >{{ $t("menu.tokens_alembic") }}</NavigationLink
         >
-        <NavigationLink :to="{ name: 'services' }" icon="i-app">{{
-          $t("menu.services")
-        }}</NavigationLink>
+        <NavigationLink :to="{ name: 'services' }" icon="i-app">
+          {{ $t("menu.services") }}
+        </NavigationLink>
 
         <a
           v-if="isBrave"
@@ -32,13 +32,25 @@
         >
           <span class="align-vertical i-day"></span>
           &nbsp;
-          <span class="align-vertical">
-            {{ $t("menu.uniswap") }}
-          </span>
+          <span class="align-vertical">{{ $t("menu.uniswap") }}</span>
         </a>
-        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">{{
-          $t("menu.uniswap")
-        }}</NavigationLink>
+        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">
+          {{ $t("menu.uniswap") }}
+        </NavigationLink>
+
+        <a href="https://parachain.robonomics.network/" target="_blank">
+          <span
+            class="align-vertical"
+            style="
+              background: url('img/parachain-icon.png');
+              width: 16px;
+              height: 16px;
+              display: inline-block;
+            "
+          ></span>
+          &nbsp;
+          <span class="align-vertical">Parachain</span>
+        </a>
       </Navigation>
     </Item>
     <Item bottom :canExpand="false" v-if="!$robonomics.account">
@@ -46,7 +58,7 @@
         href="javascript:;"
         @click="connect"
         class="sidebar-i--lg"
-        style="color:#e88100"
+        style="color: #e88100;"
       >
         <i class="i-user"></i>
       </a>
