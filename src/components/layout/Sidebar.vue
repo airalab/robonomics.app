@@ -7,24 +7,31 @@
     </template>
     <Item icon="i-menu">
       <Navigation>
-        <NavigationLink :to="{ name: 'status' }" icon="i-piechart">
-          {{ $t("menu.net_stats") }}
+        <NavigationLink :to="{ name: 'overview' }" icon="i-cursor">
+          {{ $t("menu.overview") }}
         </NavigationLink>
-        <NavigationLink
-          :to="{ name: 'lighthouseSelect' }"
-          icon="i-lighthouse"
-          >{{ $t("menu.lighthouse") }}</NavigationLink
-        >
-        <NavigationLink
-          v-if="networkId == 1"
-          :to="{ name: 'ambix' }"
-          icon="i-transfer"
-          >{{ $t("menu.tokens_alembic") }}</NavigationLink
-        >
+        <NavigationLink :to="{ name: 'telemetry' }" icon="i-piechart">
+          {{ $t("menu.telemetry") }}
+        </NavigationLink>
         <NavigationLink :to="{ name: 'services' }" icon="i-app">
           {{ $t("menu.services") }}
         </NavigationLink>
-
+        <NavigationLink :to="{ name: 'lighthouseSelect' }" icon="i-lighthouse">
+          {{ $t("menu.lighthouses") }}
+        </NavigationLink>
+        <a href="https://parachain.robonomics.network/" target="_blank">
+          <span
+            class="align-vertical"
+            style="
+              background: url('img/parachain-icon.png');
+              width: 16px;
+              height: 16px;
+              display: inline-block;
+            "
+          ></span>
+          &nbsp;
+          <span class="align-vertical">{{ $t("menu.parachain") }}</span>
+        </a>
         <a
           v-if="isBrave"
           href="https://uniswap.exchange/swap?outputCurrency=0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7"
@@ -37,19 +44,28 @@
         <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">
           {{ $t("menu.uniswap") }}
         </NavigationLink>
-
-        <a href="https://parachain.robonomics.network/" target="_blank">
+        <NavigationLink
+          v-if="networkId == 1"
+          :to="{ name: 'ambix' }"
+          icon="i-transfer"
+        >
+          {{ $t("menu.alembic") }}
+        </NavigationLink>
+        <a
+          href="https://riot.im/app/#/room/#robonomics:matrix.org"
+          target="_blank"
+        >
           <span
             class="align-vertical"
             style="
-              background: url('img/parachain-icon.png');
+              background: url('img/riot-icon.png') 0% 0% / contain;
               width: 16px;
               height: 16px;
               display: inline-block;
             "
           ></span>
           &nbsp;
-          <span class="align-vertical">Parachain</span>
+          <span class="align-vertical">{{ $t("menu.riot") }}</span>
         </a>
       </Navigation>
     </Item>

@@ -21,12 +21,14 @@ export default {
       "It is important to turn your Aira tokens into Aira ID as early as possible, but you do not have to turn all your Aira ID tokens into XRT. If you want to become a provider or use the network, you can use the Aira ID → XRT alembic at any time to transfer any amount of Aira ID an unlimited number of times.",
     convert: "Convert to",
     menu: {
-      tokens_alembic: "AIRA to XRT",
-      lighthouse: "Lighthouses",
-      net_stats: "Statistics",
+      overview: "Overview",
+      telemetry: "Telemetry",
       services: "Services",
-      sensors: "Sensor networks",
-      uniswap: "Uniswap"
+      lighthouses: "Lighthouses",
+      parachain: "Parachain",
+      uniswap: "Uniswap",
+      alembic: "Alembic",
+      riot: "Riot chat"
     },
 
     waiting: "Waiting for IPFS data",
@@ -154,12 +156,14 @@ export default {
       "Важно превратить свои Aira токены в Aira ID как можно раньше, но не обязательно превращать все свои токены Aira ID в XRT. Если вы хотите стать провайдером или пользоваться сетью, вы можете пользоваться перегонным кубом Aira ID → XRT в любое время для перегонки любого количества Aira ID неограниченное количество раз.",
     convert: "Конвертировать в",
     menu: {
-      tokens_alembic: "Перегонный куб",
-      lighthouse: "Маяки",
-      net_stats: "Статистика",
+      overview: "Обзор",
+      telemetry: "Телеметрия",
       services: "Сервисы",
-      sensors: "Сенсорные сети",
-      uniswap: "Uniswap"
+      lighthouses: "Маяки",
+      parachain: "Parachain",
+      uniswap: "Uniswap",
+      alembic: "Alembic",
+      riot: "Riot chat"
     },
 
     waiting: "Ожидание данных IPFS",

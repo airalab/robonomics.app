@@ -18,8 +18,8 @@
 <script>
 import Page from "@/components/layout/Page";
 import { mapState } from "vuex";
-// import Statistic from "../components/status/Statistic";
-import Net from "../components/status/Net";
+// import Statistic from "../components/telemetry/Statistic";
+import Net from "../components/telemetry/Net";
 
 export default {
   components: {
