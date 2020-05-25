@@ -12,11 +12,6 @@ export default {
   en: {
     header: "Aira → XRT alembic",
     action: "To the action!",
-    kyc_passed: "Civic ID passed",
-    kyc_white: "Civic ID is not required for your account",
-    passing_kyc: "Passing Civic ID",
-    pass_kyc: "Pass Civic ID",
-    pass_kyc_wait: "Waiting Civic ID",
     tip_text:
       "It is important to turn your Aira tokens into Aira ID as early as possible, but you do not have to turn all your Aira ID tokens into XRT. If you want to become a provider or use the network, you can use the Aira ID → XRT alembic at any time to transfer any amount of Aira ID an unlimited number of times.",
     convert: "Convert to",
@@ -147,11 +142,6 @@ export default {
   ru: {
     header: "Перегонный куб Aira токенов в XRT",
     action: "К действию!",
-    kyc_passed: "Civic ID пройден",
-    kyc_white: "Civic ID не требуется для вашей учетной записи",
-    passing_kyc: "Прохождение Civic ID",
-    pass_kyc: "Пройти Civic ID",
-    pass_kyc_wait: "Ожидание Civic ID",
     tip_text:
       "Важно превратить свои Aira токены в Aira ID как можно раньше, но не обязательно превращать все свои токены Aira ID в XRT. Если вы хотите стать провайдером или пользоваться сетью, вы можете пользоваться перегонным кубом Aira ID → XRT в любое время для перегонки любого количества Aira ID неограниченное количество раз.",
     convert: "Конвертировать в",

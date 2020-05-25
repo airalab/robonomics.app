@@ -62,6 +62,8 @@ export default {
   mounted() {
     if (this.current > 0) {
       this.amount = number.fromWei(this.current, this.decimals);
+    } else if (this.balance > 0) {
+      this.amount = number.fromWei(this.balance, this.decimals);
     }
   },
   computed: {
@@ -75,6 +77,11 @@ export default {
   watch: {
     current: function (newVal) {
       if (newVal > 0) {
+        this.amount = number.fromWei(newVal, this.decimals);
+      }
+    },
+    balance: function (newVal) {
+      if (newVal > 0 && this.current <= 0) {
         this.amount = number.fromWei(newVal, this.decimals);
       }
     },
@@ -120,12 +127,17 @@ export default {
       );
       contract.methods
         .approve(this.ambix, value)
-        .send({ from: this.$robonomics.account.address })
+        .send(
+          { from: this.$robonomics.account.address },
+          (error, transactionHash) => {
+            this.$wait.end(this.actionForm);
+            this.tx = transactionHash;
+            this.actionTx = "tx." + this.tx;
+            this.$wait.start(this.actionTx);
+          }
+        )
         .then((r) => {
-          this.$wait.end(this.actionForm);
-          this.tx = r.transactionHash;
-          this.actionTx = "tx." + this.tx;
-          this.$wait.start(this.actionTx);
+          this.$wait.end("tx." + r.transactionHash);
         })
         .catch(() => {
           this.$wait.end(this.actionForm);
@@ -141,12 +153,17 @@ export default {
       );
       ambix.methods
         .run(this.index)
-        .send({ from: this.$robonomics.account.address })
+        .send(
+          { from: this.$robonomics.account.address },
+          (error, transactionHash) => {
+            this.$wait.end(this.actionForm);
+            this.tx = transactionHash;
+            this.actionTx = "tx." + this.tx;
+            this.$wait.start(this.actionTx);
+          }
+        )
         .then((r) => {
-          this.$wait.end(this.actionForm);
-          this.tx = r.transactionHash;
-          this.actionTx = "tx." + this.tx;
-          this.$wait.start(this.actionTx);
+          this.$wait.end("tx." + r.transactionHash);
         })
         .catch(() => {
           this.$wait.end(this.actionForm);
