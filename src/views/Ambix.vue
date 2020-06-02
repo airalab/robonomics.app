@@ -9,32 +9,8 @@
         class="t-align--center d-table container-full table-space--10 table-fixed"
       >
         <div
-          v-if="!isWhite"
           class="d-table--cell section-mid page-alembic--actionblock"
-        >
-          <img class="i-block" alt src="assets/i/cube/i-cube-1.png" />
-          <h3>{{ $t("passing_kyc") }}</h3>
-          <div class="content">
-            <RChainExplorer :address="address" />
-            <RButton v-if="loadingCheck" fullWidth color="green" disabled
-              >...</RButton
-            >
-            <RButton v-else-if="isKyc" fullWidth color="green" disabled>{{
-              $t("kyc_passed")
-            }}</RButton>
-            <template v-else>
-              <RButton v-if="loadingKyc" fullWidth :disabled="loadingKyc">{{
-                $t("pass_kyc_wait")
-              }}</RButton>
-              <RButton v-else fullWidth @click.native="setKyc">{{
-                $t("pass_kyc")
-              }}</RButton>
-            </template>
-          </div>
-        </div>
-        <div
-          class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ disabled: !isKyc || air.balance <= 0 }"
+          :class="{ disabled: air.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-2.png" />
           <h3>Aira → Aira ID</h3>
@@ -42,7 +18,7 @@
         </div>
         <div
           class="d-table--cell section-mid page-alembic--actionblock"
-          :class="{ disabled: !isKyc || airkyc.balance <= 0 }"
+          :class="{ disabled: airkyc.balance <= 0 }"
         >
           <img class="i-block" alt src="assets/i/cube/i-cube-3.png" />
           <h3>Aira ID → XRT</h3>
@@ -80,7 +56,6 @@ export default {
     };
   },
   computed: {
-    ...mapState("kyc", ["isKyc", "isWhite", "loadingCheck", "loadingKyc"]),
     ...mapGetters("tokens", ["balance", "allowance"]),
     ...mapState("chain", ["networkId"]),
     air() {
@@ -138,7 +113,6 @@ export default {
     } else {
       if (this.$robonomics.account) {
         this.address = this.$robonomics.account.address;
-        this.$store.dispatch("kyc/check", this.address);
 
         const tokens = config.chain.get().TOKEN;
         this.$store.dispatch("tokens/watchAllowance", {
@@ -152,11 +126,6 @@ export default {
           to: config.AMBIX2
         });
       }
-    }
-  },
-  methods: {
-    setKyc() {
-      this.$store.dispatch("kyc/setKyc");
     }
   }
 };

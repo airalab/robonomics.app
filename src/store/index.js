@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createLogger from "vuex/dist/logger";
-import kyc from "./modules/kyc";
 import statistics from "./modules/statistics";
 import net from "./modules/net";
 import providers from "./modules/providers";
@@ -14,7 +13,6 @@ const debug = false;
 
 export default new Vuex.Store({
   modules: {
-    kyc,
     statistics,
     net,
     providers,

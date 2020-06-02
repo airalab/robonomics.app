@@ -15,17 +15,13 @@
       <span class="align-vertical">{{ $t("convert") }} {{ toLabel }}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
     </RButton>
-    <RButton v-else fullWidth @click.native="submit">
-      {{ $t("convert") }} {{ toLabel }}
-    </RButton>
+    <RButton v-else fullWidth @click.native="submit">{{ $t("convert") }} {{ toLabel }}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
         :href="actionTx.replace('tx.', '') | urlChainExplorer('tx')"
         target="_blank"
-      >
-        transaction
-      </a>
+      >transaction</a>
       to be mined
     </p>
     <p v-if="error !== ''" class="t-sm">{{ error }}</p>
@@ -33,8 +29,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import _has from "lodash/has";
+import utils from "web3-utils";
+import Account from "eth-lib/lib/account";
 import { number } from "../../utils/tools";
 import TokenABI from "../../abi/Token.json";
 import AmbixABI from "../../abi/Ambix.json";
@@ -65,6 +61,8 @@ export default {
   mounted() {
     if (this.current > 0) {
       this.amount = number.fromWei(this.current, this.decimals);
+    } else if (this.balance > 0) {
+      this.amount = number.fromWei(this.balance, this.decimals);
     }
   },
   computed: {
@@ -78,6 +76,11 @@ export default {
   watch: {
     current: function (newVal) {
       if (newVal > 0) {
+        this.amount = number.fromWei(newVal, this.decimals);
+      }
+    },
+    balance: function (newVal) {
+      if (newVal > 0 && this.current <= 0) {
         this.amount = number.fromWei(newVal, this.decimals);
       }
     },
@@ -130,12 +133,17 @@ export default {
       );
       contract.methods
         .approve(this.ambix, value)
-        .send({ from: this.$robonomics.account.address })
+        .send(
+          { from: this.$robonomics.account.address },
+          (error, transactionHash) => {
+            this.$wait.end(this.actionForm);
+            this.tx = transactionHash;
+            this.actionTx = "tx." + this.tx;
+            this.$wait.start(this.actionTx);
+          }
+        )
         .then((r) => {
-          this.$wait.end(this.actionForm);
-          this.tx = r.transactionHash;
-          this.actionTx = "tx." + this.tx;
-          this.$wait.start(this.actionTx);
+          this.$wait.end("tx." + r.transactionHash);
         })
         .catch(() => {
           this.$wait.end(this.actionForm);
@@ -151,12 +159,17 @@ export default {
       );
       contract.methods
         .unapprove(this.ambix)
-        .send({ from: this.$robonomics.account.address })
+        .send(
+          { from: this.$robonomics.account.address },
+          (error, transactionHash) => {
+            this.$wait.end(this.actionForm);
+            this.tx = transactionHash;
+            this.actionTx = "tx." + this.tx;
+            this.$wait.start(this.actionTx);
+          }
+        )
         .then((r) => {
-          this.$wait.end(this.actionForm);
-          this.tx = r.transactionHash;
-          this.actionTx = "tx." + this.tx;
-          this.$wait.start(this.actionTx);
+          this.$wait.end("tx." + r.transactionHash);
         })
         .catch(() => {
           this.$wait.end(this.actionForm);
@@ -170,32 +183,34 @@ export default {
         AmbixABI,
         this.ambix
       );
-      axios
-        .get(
-          config.API_KYC +
-            "/sign/" +
-            this.ambix +
-            "/" +
-            this.$robonomics.account.address
+
+      const hashMsgPrefix = (hash) => {
+        return utils.soliditySha3(
+          {
+            type: "bytes",
+            value: utils.stringToHex("\x19Ethereum Signed Message:\n32")
+          },
+          { type: "bytes", value: hash }
+        );
+      };
+      const messageHex = hashMsgPrefix(
+        utils.soliditySha3(this.ambix, this.$robonomics.account.address)
+      );
+      const signature = Account.sign(messageHex, config.AMBIX_PRIVATE);
+
+      ambix.methods
+        .run(this.index, signature)
+        .send(
+          { from: this.$robonomics.account.address },
+          (error, transactionHash) => {
+            this.$wait.end(this.actionForm);
+            this.tx = transactionHash;
+            this.actionTx = "tx." + this.tx;
+            this.$wait.start(this.actionTx);
+          }
         )
         .then((r) => {
-          if (_has(r.data, "result")) {
-            const signature = r.data.result;
-            ambix.methods
-              .run(this.index, signature)
-              .send({ from: this.$robonomics.account.address })
-              .then((r) => {
-                this.$wait.end(this.actionForm);
-                this.tx = r.transactionHash;
-                this.actionTx = "tx." + this.tx;
-                this.$wait.start(this.actionTx);
-              })
-              .catch(() => {
-                this.$wait.end(this.actionForm);
-              });
-          } else {
-            this.$wait.end(this.actionForm);
-          }
+          this.$wait.end("tx." + r.transactionHash);
         })
         .catch(() => {
           this.$wait.end(this.actionForm);
