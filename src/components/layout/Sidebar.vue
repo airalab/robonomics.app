@@ -75,6 +75,7 @@
         @click="connect"
         class="sidebar-i--lg"
         style="color: #e88100;"
+        :title="$t('sidebar.connect')"
       >
         <i class="i-user"></i>
       </a>

@@ -25,6 +25,7 @@ export default {
       alembic: "Alembic",
       riot: "Riot chat"
     },
+    sidebar: { connect: "Connect account" },
 
     waiting: "Waiting for IPFS data",
     no_data: "No data available",
@@ -155,6 +156,7 @@ export default {
       alembic: "Alembic",
       riot: "Riot chat"
     },
+    sidebar: { connect: "Подключить аккаунт" },
 
     waiting: "Ожидание данных IPFS",
     no_data: "Данные отсутствуют",
