@@ -1,4 +1,6 @@
+import axios from "axios";
 import getRobonomics from "./robonomics";
+import config from "~config";
 
 export const number = {
   numToString(num) {
@@ -160,4 +162,32 @@ export async function statusPeers(ipfs, robonomics, lookPeers, timeout = 0) {
 
 export async function isBrave() {
   return (navigator.brave && (await navigator.brave.isBrave())) || false;
+}
+
+export async function referral(address = null, referrer = null) {
+  const r = getRobonomics();
+  let store = null;
+  if (!address) {
+    try {
+      store = JSON.parse(localStorage.getItem("referral"));
+      if (store) {
+        address = store.address;
+        referrer = store.referrer;
+      }
+    } catch {
+      return;
+    }
+  }
+  if (address && r.web3.utils.isAddress(address)) {
+    if (r.account) {
+      axios.get(
+        `${config.REFERRAL_API}/api/referral/${address}/${
+          r.account.address
+        }/${encodeURIComponent(referrer)}`
+      );
+      localStorage.removeItem("referral");
+    } else if (!store) {
+      localStorage.setItem("referral", JSON.stringify({ address, referrer }));
+    }
+  }
 }

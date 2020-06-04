@@ -70,9 +70,10 @@ export default new Router({
       component: Results
     },
     {
-      path: "/uniswap",
+      path: "/uniswap/:referral?",
       name: "uniswap",
-      component: Uniswap
+      component: Uniswap,
+      props: true
     },
     ...Object.values(services)
       .filter((item) => item.router)

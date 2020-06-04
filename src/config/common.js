@@ -24,5 +24,6 @@ export default {
     Qmczm9hw8SjGmtx55t6MJPQTtXQDuS9grqaTb18Sv8b6pm: "Playground",
     QmWjvXGfVUDBNR15BBH5ERGP3SzEKbeLZWx7Fcp4kwwaw9: "SDS011"
   },
-  INFURA_KEY: "c1ea69ab1e0a4c6aa6a9dcd0641aecc7"
+  INFURA_KEY: "c1ea69ab1e0a4c6aa6a9dcd0641aecc7",
+  REFERRAL_API: "https://ref.robonomics.network"
 };
