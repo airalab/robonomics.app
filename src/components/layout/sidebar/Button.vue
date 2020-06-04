@@ -4,6 +4,7 @@
     class="sidebar-i--lg"
     :class="{ active: isActive }"
     @click="$emit('toggle')"
+    :title="icon ? label : ''"
   >
     <i v-if="icon" :class="icon"></i>
     <span v-else>{{ label }}</span>

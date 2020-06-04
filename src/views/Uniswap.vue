@@ -26,9 +26,10 @@
 
 <script>
 import Page from "@/components/layout/Page";
-import { isBrave } from "@/utils/tools";
+import { isBrave, referral } from "@/utils/tools";
 
 export default {
+  props: ["referral"],
   components: {
     Page
   },
@@ -38,7 +39,16 @@ export default {
     };
   },
   async created() {
+    if (this.$robonomics.account === null) {
+      this.$store.dispatch("chain/accessAccount", false);
+    }
     this.isBrave = await isBrave();
+    if (
+      document.referrer &&
+      document.referrer.replace(/\/$/, "") !== window.location.origin
+    ) {
+      referral(this.referral, document.referrer);
+    }
   }
 };
 </script>

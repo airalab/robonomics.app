@@ -18,7 +18,7 @@
 import Vue from "vue";
 import { init as initRobonomics } from "../../utils/robonomics";
 import { init as initIpfs } from "../../utils/ipfs";
-import { statusPeers } from "../../utils/tools";
+import { statusPeers, referral } from "../../utils/tools";
 import getConfig from "../../config/robonomics";
 
 export default {
@@ -37,6 +37,7 @@ export default {
         });
         setTimeout(() => {
           this.isReadyRobonomics = true;
+          referral();
         }, 300);
       } else if (old !== null && account !== old) {
         window.location.reload(false);
@@ -76,6 +77,7 @@ export default {
 
       await this.$robonomics.ready();
       this.isReadyRobonomics = true;
+      referral();
 
       window.statusPeers = (timeout = 0) => {
         console.log("Peers search", config.statusPeers);

@@ -35,6 +35,20 @@ export async function accountAccess() {
   }
 }
 
+export async function isAuthorized() {
+  if (!window.ethereum) {
+    return false;
+  }
+  return new Promise((resolve) => {
+    window.ethereum.send({ method: "eth_accounts" }, (e, r) => {
+      if (e) {
+        return resolve(false);
+      }
+      resolve(!!r.result.length);
+    });
+  });
+}
+
 const initAccount = false;
 const initAccessRequired = true;
 
@@ -76,7 +90,7 @@ const actions = {
               commit("account", null);
             }
           });
-          if (initAccount) {
+          if (initAccount || (await isAuthorized())) {
             if (await accountAccess()) {
               try {
                 commit("account", await getAccount(instance));
