@@ -7,6 +7,7 @@ import offsetting from "./offsetting";
 import issuing from "./issuing";
 import droneRegistration from "./drone-registration";
 import droneFlightReport from "./drone-flight-report";
+import sensorsMap from "./sensors-map";
 
 export default {
   sensorsNetwork,
@@ -17,5 +18,6 @@ export default {
   offsetting,
   issuing,
   droneRegistration,
-  droneFlightReport
+  droneFlightReport,
+  sensorsMap
 };
