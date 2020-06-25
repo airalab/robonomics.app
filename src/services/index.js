@@ -8,6 +8,7 @@ import issuing from "./issuing";
 import droneRegistration from "./drone-registration";
 import droneFlightReport from "./drone-flight-report";
 import sensorsMap from "./sensors-map";
+import subscribe from "./subscribe";
 
 export default {
   sensorsNetwork,
@@ -19,5 +20,6 @@ export default {
   issuing,
   droneRegistration,
   droneFlightReport,
-  sensorsMap
+  sensorsMap,
+  subscribe
 };

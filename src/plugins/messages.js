@@ -23,7 +23,8 @@ export default {
       parachain: "Parachain",
       uniswap: "Uniswap",
       alembic: "Alembic",
-      riot: "Riot chat"
+      riot: "Riot chat",
+      rws: "RWS"
     },
     sidebar: { connect: "Connect account" },
 
@@ -154,7 +155,8 @@ export default {
       parachain: "Parachain",
       uniswap: "Uniswap",
       alembic: "Alembic",
-      riot: "Riot chat"
+      riot: "Riot chat",
+      rws: "RWS"
     },
     sidebar: { connect: "Подключить аккаунт" },
 
