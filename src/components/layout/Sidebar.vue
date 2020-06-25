@@ -7,15 +7,15 @@
     </template>
     <Item icon="i-menu">
       <Navigation>
-        <NavigationLink :to="{ name: 'overview' }" icon="i-cursor">{{
+        <!-- <NavigationLink :to="{ name: 'overview' }" icon="i-cursor">{{
           $t("menu.overview")
-        }}</NavigationLink>
-        <NavigationLink :to="{ name: 'telemetry' }" icon="i-piechart">{{
-          $t("menu.telemetry")
-        }}</NavigationLink>
-        <NavigationLink :to="{ name: 'services' }" icon="i-app">{{
-          $t("menu.services")
-        }}</NavigationLink>
+        }}</NavigationLink>-->
+        <NavigationLink :to="{ name: 'telemetry' }" icon="i-piechart">
+          {{ $t("menu.telemetry") }}
+        </NavigationLink>
+        <NavigationLink :to="{ name: 'services' }" icon="i-app">
+          {{ $t("menu.services") }}
+        </NavigationLink>
         <NavigationLink
           :to="{ name: 'lighthouseSelect' }"
           icon="i-lighthouse"
@@ -43,9 +43,9 @@
           &nbsp;
           <span class="align-vertical">{{ $t("menu.uniswap") }}</span>
         </a>
-        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">{{
-          $t("menu.uniswap")
-        }}</NavigationLink>
+        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">
+          {{ $t("menu.uniswap") }}
+        </NavigationLink>
         <router-link :to="{ name: 'subscribe' }" active-class="active" exact>
           <span
             class="align-vertical"
