@@ -1,15 +1,15 @@
 <template>
-  <div style="position: absolute; top: 20px; right: 20px;">
-    <span v-if="status == statuses.OK" class="label label-green t-sm">
-      Connected
-    </span>
-    <span
-      v-else-if="status == statuses.WARNING"
-      class="label label-orange t-sm"
+  <div
+    style="position: absolute; top: 20px; right: 20px;"
+    title="RWS: PubSub Message Broker"
+  >
+    <span v-if="status == statuses.OK" class="label label-green t-sm"
+      >pubsub connected</span
     >
-      Connected
-    </span>
-    <span v-else class="label label-orange t-sm">Disconnected</span>
+    <span v-else-if="status == statuses.WARNING" class="label label-orange t-sm"
+      >pubsub connected</span
+    >
+    <span v-else class="label label-orange t-sm">pubsub disconnected</span>
   </div>
 </template>
 
