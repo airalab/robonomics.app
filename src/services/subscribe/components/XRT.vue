@@ -4,28 +4,32 @@
       size="big"
       fullWidth
       @click="run"
-      :disabled="proccess > 0 || (step1 && step2)"
+      :disabled="!canButton"
       style="margin-bottom: 25px;"
     >
-      <div class="loader-ring" v-if="proccess > 0"></div>
+      <div class="loader-ring" v-if="proccess > 0 && proccess < 4"></div>
       &nbsp;Subscribe
     </RButton>
     <p>
-      <b>Price</b>
-      : {{ price }} XRT
+      <b>Price:</b>
+      {{ $robonomics.web3.utils.fromWei(price.toString(), "gwei") }} XRT
     </p>
     <p>
-      <b>Balance</b>
-      : {{ balance }} XRT
+      <b>Balance RWS:</b>
+      {{ $robonomics.web3.utils.fromWei(balanceRws.toString()) }} RWS
+    </p>
+    <p>
+      <b>Balance XRT:</b>
+      {{ $robonomics.web3.utils.fromWei(balanceXrt.toString(), "gwei") }} XRT
     </p>
     <p>
       <b>Approve</b>:
-      <span v-if="step1">+</span>
+      <span v-if="hasApprove">+</span>
       <span v-else>-</span>
     </p>
     <p>
       <b>Subscribe</b>:
-      <span v-if="step2">+</span>
+      <span v-if="proccess === 4">+</span>
       <span v-else>-</span>
     </p>
     <p v-if="proccess === 3">Success</p>
@@ -39,45 +43,74 @@
 <script>
 import config from "../config";
 import TokenABI from "../abi/Token.json";
-import SubscribeABI from "../abi/Subscribe.json";
+import RouterAbi from "../abi/Router.json";
+import { getToken, getAllPairs, getPrice } from "../tools/uniswap";
 
 const STATUS = {
   EMPTY: 0,
   BTN: 1,
   TX: 2,
-  SUCCESS: 3
+  SUCCESS: 3,
+  FINISH: 4
 };
 
 export default {
-  props: ["currentPrice"],
-  async created() {
-    this.price = this.$robonomics.web3.utils.fromWei(this.currentPrice, "gwei");
-    await this.getAllowance();
-    await this.getBalance();
-  },
+  props: ["value"],
   data() {
     return {
       price: 0,
-      step1: false,
-      step2: false,
       allowance: 0,
-      balance: 0,
+      balanceRws: 0,
+      balanceXrt: 0,
       proccess: STATUS.EMPTY,
       tx: null
     };
   },
+  computed: {
+    canButton: function () {
+      if (Number(this.balanceXrt) < Number(this.price)) {
+        return false;
+      }
+      if (!this.hasApprove) {
+        return false;
+      }
+      return this.proccess === 0 && Number(this.amount) > 0;
+    },
+    hasApprove: function () {
+      return Number(this.allowance) >= Number(this.price);
+    },
+    amount: function () {
+      return this.value.toString().trim() === "" ? "0" : this.value;
+    }
+  },
+  watch: {
+    async amount() {
+      await this.setPrice(this.amount);
+    }
+  },
+  async created() {
+    await this.setPrice(this.amount);
+    await this.getAllowance();
+    this.balanceRws = await this.getBalance(config.RWS);
+    this.balanceXrt = await this.getBalance(config.XRT);
+  },
   methods: {
-    getBalance() {
-      const contract = new this.$robonomics.web3.eth.Contract(
-        TokenABI,
-        config.XRT
+    async setPrice(amount) {
+      const rws = getToken(config.RWS, 18, "RWS", "RWS");
+      const xrt = getToken(config.XRT, 9, "XRT", "XRT");
+      const pairs = await getAllPairs(this.$robonomics.web3, xrt, rws);
+      this.price = await getPrice(
+        pairs,
+        xrt,
+        rws,
+        this.$robonomics.web3.utils.toWei(amount.toString())
       );
+    },
+    getBalance(token) {
+      const contract = new this.$robonomics.web3.eth.Contract(TokenABI, token);
       return contract.methods
         .balanceOf(this.$robonomics.account.address)
-        .call()
-        .then((r) => {
-          this.balance = this.$robonomics.web3.utils.fromWei(r, "gwei");
-        });
+        .call();
     },
     getAllowance() {
       const contract = new this.$robonomics.web3.eth.Contract(
@@ -85,21 +118,16 @@ export default {
         config.XRT
       );
       return contract.methods
-        .allowance(this.$robonomics.account.address, config.SUBSCRIBE)
+        .allowance(this.$robonomics.account.address, config.ROUTER)
         .call()
         .then((r) => {
           this.allowance = r;
-          if (Number(this.allowance) >= Number(this.currentPrice)) {
-            this.step1 = true;
-          } else if (!this.step2) {
-            this.step1 = false;
-          }
         });
     },
     run() {
-      if (this.step1 === false) {
+      if (!this.hasApprove) {
         this.approve();
-      } else if (this.step2 === false) {
+      } else {
         this.subscribe();
       }
     },
@@ -110,7 +138,10 @@ export default {
         config.XRT
       );
       return contract.methods
-        .approve(config.SUBSCRIBE, this.currentPrice)
+        .approve(
+          config.ROUTER,
+          "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        )
         .send(
           {
             from: this.$robonomics.account.address
@@ -138,11 +169,20 @@ export default {
     subscribe() {
       this.proccess = STATUS.BTN;
       const contract = new this.$robonomics.web3.eth.Contract(
-        SubscribeABI,
-        config.SUBSCRIBE
+        RouterAbi,
+        config.ROUTER
       );
+
+      const args = [
+        this.price,
+        this.$robonomics.web3.utils.toWei(this.amount.toString()),
+        [config.XRT, config.RWS],
+        this.$robonomics.account.address,
+        Math.ceil(Date.now() / 1000) + 60 * 20
+      ];
+
       return contract.methods
-        .subscribe(Math.round(Date.now() / 1000 + 1000 * 60 * 24))
+        .swapExactTokensForTokens(...args)
         .send(
           { from: this.$robonomics.account.address },
           (error, transactionHash) => {
@@ -155,15 +195,11 @@ export default {
         )
         .then(() => {
           setTimeout(() => {
+            this.getBalance(config.RWS).then((r) => (this.balanceRws = r));
+            this.getBalance(config.XRT).then((r) => (this.balanceXrt = r));
             this.getAllowance();
-            this.getBalance();
             this.tx = null;
-            this.step2 = true;
-            this.proccess = STATUS.SUCCESS;
-            setTimeout(() => {
-              this.proccess = STATUS.EMPTY;
-              this.$emit("subscribed");
-            }, 3000);
+            this.proccess = STATUS.FINISH;
           }, 3000);
         })
         .catch(() => {
