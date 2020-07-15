@@ -7,31 +7,19 @@
     </template>
     <Item icon="i-menu">
       <Navigation>
-        <!-- <NavigationLink :to="{ name: 'overview' }" icon="i-cursor">{{
-          $t("menu.overview")
-        }}</NavigationLink>-->
-        <NavigationLink :to="{ name: 'telemetry' }" icon="i-piechart">
+        <!-- <NavigationLink :to="{ name: 'home' }" icon="i-cursor">
+          {{ $t("menu.home") }}
+        </NavigationLink>-->
+        <NavigationLink :to="{ name: 'telemetry' }">
           {{ $t("menu.telemetry") }}
         </NavigationLink>
-        <NavigationLink :to="{ name: 'services' }" icon="i-app">
+        <NavigationLink :to="{ name: 'services' }">
           {{ $t("menu.services") }}
         </NavigationLink>
-        <NavigationLink
-          :to="{ name: 'lighthouseSelect' }"
-          icon="i-lighthouse"
-          >{{ $t("menu.lighthouses") }}</NavigationLink
-        >
+        <NavigationLink :to="{ name: 'lighthouseSelect' }">{{
+          $t("menu.lighthouses")
+        }}</NavigationLink>
         <a href="https://parachain.robonomics.network/" target="_blank">
-          <span
-            class="align-vertical"
-            style="
-              background: url('img/parachain-icon.png');
-              width: 16px;
-              height: 16px;
-              display: inline-block;
-            "
-          ></span>
-          &nbsp;
           <span class="align-vertical">{{ $t("menu.parachain") }}</span>
         </a>
         <a
@@ -39,46 +27,21 @@
           href="https://uniswap.exchange/swap?outputCurrency=0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7"
           target="_blank"
         >
-          <span class="align-vertical i-day"></span>
-          &nbsp;
           <span class="align-vertical">{{ $t("menu.uniswap") }}</span>
         </a>
-        <NavigationLink v-else :to="{ name: 'uniswap' }" icon="i-day">
+        <NavigationLink v-else :to="{ name: 'uniswap' }">
           {{ $t("menu.uniswap") }}
         </NavigationLink>
-        <router-link :to="{ name: 'subscribe' }" active-class="active" exact>
-          <span
-            class="align-vertical"
-            style="
-              background: url(img/subscribe.png) 0% 0% / contain;
-              width: 16px;
-              height: 16px;
-              display: inline-block;
-            "
-          ></span>
-          &nbsp;
+        <router-link :to="{ name: 'rws' }" active-class="active" exact>
           <span class="align-vertical">{{ $t("menu.rws") }}</span>
         </router-link>
-        <NavigationLink
-          v-if="networkId == 1"
-          :to="{ name: 'ambix' }"
-          icon="i-transfer"
-          >{{ $t("menu.alembic") }}</NavigationLink
-        >
+        <NavigationLink v-if="networkId == 1" :to="{ name: 'ambix' }">{{
+          $t("menu.alembic")
+        }}</NavigationLink>
         <a
           href="https://riot.im/app/#/room/#robonomics:matrix.org"
           target="_blank"
         >
-          <span
-            class="align-vertical"
-            style="
-              background: url('img/riot-icon.png') 0% 0% / contain;
-              width: 16px;
-              height: 16px;
-              display: inline-block;
-            "
-          ></span>
-          &nbsp;
           <span class="align-vertical">{{ $t("menu.riot") }}</span>
         </a>
       </Navigation>
