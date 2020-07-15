@@ -16,7 +16,7 @@ export default {
       "It is important to turn your Aira tokens into Aira ID as early as possible, but you do not have to turn all your Aira ID tokens into XRT. If you want to become a provider or use the network, you can use the Aira ID → XRT alembic at any time to transfer any amount of Aira ID an unlimited number of times.",
     convert: "Convert to",
     menu: {
-      overview: "Overview",
+      home: "Home",
       telemetry: "Telemetry",
       services: "Services",
       lighthouses: "Lighthouses",
@@ -148,7 +148,7 @@ export default {
       "Важно превратить свои Aira токены в Aira ID как можно раньше, но не обязательно превращать все свои токены Aira ID в XRT. Если вы хотите стать провайдером или пользоваться сетью, вы можете пользоваться перегонным кубом Aira ID → XRT в любое время для перегонки любого количества Aira ID неограниченное количество раз.",
     convert: "Конвертировать в",
     menu: {
-      overview: "Обзор",
+      home: "Главная",
       telemetry: "Телеметрия",
       services: "Сервисы",
       lighthouses: "Маяки",
