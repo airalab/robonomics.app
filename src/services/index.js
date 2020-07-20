@@ -9,6 +9,8 @@ import droneRegistration from "./drone-registration";
 import droneFlightReport from "./drone-flight-report";
 import sensorsMap from "./sensors-map";
 import rws from "./rws";
+import raas from "./raas";
+import datalog from "./datalog";
 
 export default {
   sensorsNetwork,
@@ -21,5 +23,7 @@ export default {
   droneRegistration,
   droneFlightReport,
   sensorsMap,
-  rws
+  rws,
+  raas,
+  datalog
 };
