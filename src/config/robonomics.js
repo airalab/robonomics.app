@@ -1,7 +1,7 @@
 let config = {
   ipfs: {
     fallback: {
-      repo: "ipfs/robonomics",
+      repo: "ipfs/robonomics/3",
       relay: {
         enabled: true,
         hop: {
@@ -14,10 +14,9 @@ let config = {
       config: {
         Addresses: {
           Swarm: [
-            "/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star",
-            "/dns4/1.wsstar.aira.life/tcp/443/wss/p2p-websocket-star/",
-            "/dns4/2.wsstar.aira.life/tcp/443/wss/p2p-websocket-star/",
-            "/dns4/3.wsstar.aira.life/tcp/443/wss/p2p-websocket-star/"
+            "/dns4/1.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/",
+            "/dns4/2.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/",
+            "/dns4/3.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/"
           ]
         },
         Bootstrap: [
@@ -33,7 +32,9 @@ let config = {
         ]
       }
     },
-    cdn: "https://unpkg.com/ipfs@0.34.0/dist/index.min.js",
+    // cdn: "https://unpkg.com/ipfs@0.34.0/dist/index.min.js",
+    // cdn: "https://unpkg.com/ipfs@0.40.0/dist/index.min.js",
+    cdn: "https://unpkg.com/ipfs@0.48.1/dist/index.min.js",
     permission: [
       "id",
       "files.cat",

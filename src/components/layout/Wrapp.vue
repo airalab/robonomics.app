@@ -52,11 +52,10 @@ export default {
       const robonomics = config.robonomics(this.networkId);
 
       Vue.prototype.$ipfs = await initIpfs(config.ipfs);
-      this.$ipfs.id((e, r) => {
-        if (/go/i.test(r.agentVersion)) {
-          this.$ipfs.swarm.connect("/dnsaddr/bootstrap.aira.life", console.log);
-        }
-      });
+      const info = await this.$ipfs.id();
+      if (/go/i.test(info.agentVersion)) {
+        this.$ipfs.swarm.connect("/dnsaddr/bootstrap.aira.life", console.log);
+      }
 
       const account = this.account ? { address: this.account } : null;
       Vue.prototype.$robonomics = initRobonomics(

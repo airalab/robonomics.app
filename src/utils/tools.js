@@ -87,27 +87,20 @@ export const number = {
   }
 };
 
-function findPeers(ipfs, lighthouse, lookPeers) {
-  return new Promise((resolve, reject) => {
-    ipfs.pubsub.peers(lighthouse, (e, peers) => {
-      if (e) {
-        reject(e);
-        return;
-      }
-      const find = {
-        required: [],
-        other: []
-      };
-      peers.forEach((peer) => {
-        if (lookPeers.includes(peer)) {
-          find.required.push(peer);
-        } else {
-          find.other.push(peer);
-        }
-      });
-      resolve(find);
-    });
+async function findPeers(ipfs, lighthouse, lookPeers) {
+  const peers = await ipfs.pubsub.peers(lighthouse);
+  const find = {
+    required: [],
+    other: []
+  };
+  peers.forEach((peer) => {
+    if (lookPeers.includes(peer)) {
+      find.required.push(peer);
+    } else {
+      find.other.push(peer);
+    }
   });
+  return find;
 }
 export async function getStatusPeers(ipfs, robonomics, lookPeers) {
   let lighthouse = "airalab.lighthouse.5.robonomics.eth";
