@@ -10,8 +10,7 @@
       :disabled="!canButton"
       style="margin-bottom: 25px;"
     >
-      <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
-      &nbsp;
+      <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>&nbsp;
       <template v-if="!hasApprove">Approve</template>
       <template v-else>Activate</template>
     </RButton>
@@ -43,6 +42,7 @@ const STATUS = {
 };
 
 export default {
+  props: ["account"],
   mixins: [token],
   components: {
     ActivateForm
@@ -66,6 +66,9 @@ export default {
       this.$refs.form.fields.amount.value = this.$robonomics.web3.utils.fromWei(
         this.myBalance
       );
+    }
+    if (this.account) {
+      this.$refs.form.fields.account.value = this.account;
     }
   },
   computed: {
@@ -99,12 +102,18 @@ export default {
           this.amount
         );
       }
+    },
+    account: function (value, oldValue) {
+      if (value !== oldValue) {
+        this.$refs.form.fields.account.value = this.account;
+      }
     }
   },
   methods: {
     onChange({ fields }) {
       if (this.$refs.form.validate()) {
         this.amount = this.$robonomics.web3.utils.toWei(fields.amount.value);
+        this.$emit("account", fields.account.value);
       }
     },
     handleSubmit({ error, fields }) {

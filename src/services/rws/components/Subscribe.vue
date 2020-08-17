@@ -2,9 +2,8 @@
   <fragment>
     <div class="row">
       <div class="col-md-6" style="text-align: center;">
-        <span style="font-size: 20px; font-weight: bold;">{{ myTps }}</span
-        >&nbsp; <span>{{ status }}</span
-        >&nbsp;
+        <span style="font-size: 20px; font-weight: bold;">{{ myTps }}</span>&nbsp;
+        <span>{{ status }}</span>&nbsp;
         <!-- <span
           v-if="stake.status == 2 && current_block - stake.last_update <= lock_duration"
         >{{Number(lock_duration)-(Number(current_block)-Number(stake.last_update))}} blocks</span>-->
@@ -19,13 +18,10 @@
             (stake.status == 2 &&
               current_block - stake.last_update <= lock_duration)
           "
-          >withdraw</RButton
-        >
+        >withdraw</RButton>
       </div>
       <div class="col-md-6" style="text-align: center;">
-        <span style="font-size: 20px; font-weight: bold;">
-          {{ myBalanceFormat }}
-        </span>
+        <span style="font-size: 20px; font-weight: bold;">{{ myBalanceFormat }}</span>
         tokens
         <br />
         <p>
@@ -33,26 +29,26 @@
           <a
             href="https://app.uniswap.org/#/swap?inputCurrency=0x7de91b204c1c737bcee6f000aaa6569cf7061cb7&outputCurrency=0x08ad83d779bdf2bbe1ad9cc0f78aa0d24ab97802"
             target="_blank"
-            >trade</a
-          >
+          >trade</a>
           or
           <RButton
             size="sm"
             @click="toggleFormActivate = true"
             :disabled="toggleFormActivate || myBalance <= 0"
-            >activate</RButton
-          >
+          >activate</RButton>
         </p>
       </div>
     </div>
 
-    <Activate v-if="toggleFormActivate" />
+    <Activate v-if="toggleFormActivate" :account="stake.account" @account="handleAccount" />
     <Deactivate
       v-else-if="stake.amount > 0"
       :stake="stake"
       :current_block="current_block"
       :lock_duration="lock_duration"
     />
+
+    <Datalog v-if="account" :account="account" />
   </fragment>
 </template>
 
@@ -63,18 +59,21 @@ import config from "../config";
 import SubscriptionAbi from "../abi/Subscription.json";
 import Activate from "./Activate";
 import Deactivate from "./Deactivate";
+import Datalog from "./Datalog";
 
 export default {
   mixins: [token],
   components: {
     Activate,
-    Deactivate
+    Deactivate,
+    Datalog
   },
   data() {
     return {
       toggleFormActivate: true,
       current_block: 0,
       lock_duration: 0,
+      account: "",
       stake: {
         last_update: "",
         status: 0,
@@ -123,6 +122,9 @@ export default {
     }
   },
   methods: {
+    handleAccount(account) {
+      this.account = account;
+    },
     watchEvents(fromBlock) {
       const contract = new this.$robonomics.web3.eth.Contract(
         SubscriptionAbi,
@@ -159,12 +161,15 @@ export default {
         .stakeOf(this.$robonomics.account.address)
         .call()
         .then((r) => {
-          this.stake = {
-            last_update: r.last_update,
-            status: r.status,
-            amount: r.amount,
-            account: encodeAddress(r.account, 32)
-          };
+          if (r.status > 0) {
+            this.stake = {
+              last_update: r.last_update,
+              status: r.status,
+              amount: r.amount,
+              account: encodeAddress(r.account, 32)
+            };
+            this.account = this.stake.account;
+          }
         });
     }
   }
