@@ -4,12 +4,12 @@ import rosBag from "@/utils/rosBag";
 import config from "~config";
 
 export async function parseResult(result, options = { topics: ["/data"] }) {
-  let message = {};
   axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
     console.log("result ipfs hash resolved");
   });
   const r = await tools.cat(result);
-  return rosBag(
+  let message = {};
+  await rosBag(
     new Blob([r]),
     function (bag) {
       try {
@@ -19,9 +19,8 @@ export async function parseResult(result, options = { topics: ["/data"] }) {
       }
     },
     options
-  ).then(function () {
-    return message;
-  });
+  );
+  return message;
 }
 
 export function loadScript(src) {

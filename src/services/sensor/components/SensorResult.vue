@@ -47,13 +47,17 @@ export default {
         status: 2,
         resultHash: this.result
       };
-      parseResult(this.result).then((result) => {
-        this.item = {
-          ...this.item,
-          status: 3,
-          result: result
-        };
-      });
+      parseResult(this.result)
+        .then((result) => {
+          this.item = {
+            ...this.item,
+            status: 3,
+            result: result
+          };
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     });
   }
 };
