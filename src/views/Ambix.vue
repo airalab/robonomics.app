@@ -30,6 +30,20 @@
         <b>{{ $t("tip_text") }}</b>
       </section>
     </RCard>
+    <RCard v-else>
+      <h3>{{ $t("action") }}</h3>
+      <div style="text-align: center;">
+        <a
+          href="javascript:;"
+          @click="connect"
+          :title="$t('sidebar.connect')"
+          class="btn-green"
+          style="font-size: 30px;"
+        >
+          {{ $t("sidebar.connect") }}
+        </a>
+      </div>
+    </RCard>
   </Page>
 </template>
 
@@ -126,6 +140,11 @@ export default {
           to: config.AMBIX2
         });
       }
+    }
+  },
+  methods: {
+    async connect() {
+      this.$store.dispatch("chain/accessAccount", false);
     }
   }
 };
