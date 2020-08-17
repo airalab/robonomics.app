@@ -1,5 +1,5 @@
 <template>
-  <form class="content">
+  <form class="content" v-on:submit.prevent="submit">
     <div v-if="$wait.is('log')">...</div>
     <div class="input-measured container-full">
       <input
@@ -12,22 +12,25 @@
       <span class="input-measure">{{ fromLabel }}</span>
     </div>
     <RButton v-if="$wait.is([actionForm, actionTx])" fullWidth disabled>
-      <span class="align-vertical">{{ $t("convert") }} {{ toLabel }}</span>
+      <span class="align-vertical">{{ action }}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
     </RButton>
-    <RButton v-else fullWidth @click.native="submit"
-      >{{ $t("convert") }} {{ toLabel }}</RButton
-    >
+    <RButton v-else fullWidth @click.native="submit">{{ action }}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
         :href="actionTx.replace('tx.', '') | urlChainExplorer('tx')"
         target="_blank"
-        >transaction</a
-      >
+      >transaction</a>
       to be mined
     </p>
-    <p v-if="error !== ''" class="t-sm">{{ error }}</p>
+    <p></p>
+    <p
+      class="t-sm"
+      :style="{color: isApprove ? '#54CE63' : '#E84004'}"
+    >Current allowance: {{current | fromWei(decimals, fromLabel)}}</p>
+    <p v-if="error !== ''" class="t-sm" style="color:#E84004">{{ error }}</p>
+    <p></p>
   </form>
 </template>
 
@@ -74,6 +77,38 @@ export default {
         return this.$wait.is(this.actionTx);
       }
       return false;
+    },
+    isApprove: function () {
+      if (Number(this.amount) > 0) {
+        const value = Number(number.toWei(this.amount, this.decimals));
+        const approve = Number(this.current);
+        if (value === approve) {
+          return true;
+        }
+      }
+      return false;
+    },
+    action: function () {
+      let text = "Error";
+      if (Number(this.amount) > 0) {
+        const value = Number(number.toWei(this.amount, this.decimals));
+        const approve = Number(this.current);
+        const balance = Number(this.balance);
+        if (approve > balance) {
+          text = this.$t("convert.unapprove") + " " + this.fromLabel;
+        } else if (value === approve) {
+          if (value <= balance) {
+            text = this.$t("convert.convert") + " " + this.toLabel;
+          }
+        } else if (value > approve) {
+          if (value <= balance) {
+            text = this.$t("convert.approve") + " " + this.fromLabel;
+          }
+        } else {
+          text = this.$t("convert.unapprove") + " " + this.fromLabel;
+        }
+      }
+      return text;
     }
   },
   watch: {
@@ -139,10 +174,14 @@ export default {
         .send(
           { from: this.$robonomics.account.address },
           (error, transactionHash) => {
-            this.$wait.end(this.actionForm);
-            this.tx = transactionHash;
-            this.actionTx = "tx." + this.tx;
-            this.$wait.start(this.actionTx);
+            if (error) {
+              this.$wait.end(this.actionForm);
+            } else {
+              this.$wait.end(this.actionForm);
+              this.tx = transactionHash;
+              this.actionTx = "tx." + this.tx;
+              this.$wait.start(this.actionTx);
+            }
           }
         )
         .then((r) => {
@@ -165,10 +204,14 @@ export default {
         .send(
           { from: this.$robonomics.account.address },
           (error, transactionHash) => {
-            this.$wait.end(this.actionForm);
-            this.tx = transactionHash;
-            this.actionTx = "tx." + this.tx;
-            this.$wait.start(this.actionTx);
+            if (error) {
+              this.$wait.end(this.actionForm);
+            } else {
+              this.$wait.end(this.actionForm);
+              this.tx = transactionHash;
+              this.actionTx = "tx." + this.tx;
+              this.$wait.start(this.actionTx);
+            }
           }
         )
         .then((r) => {
@@ -206,10 +249,14 @@ export default {
         .send(
           { from: this.$robonomics.account.address },
           (error, transactionHash) => {
-            this.$wait.end(this.actionForm);
-            this.tx = transactionHash;
-            this.actionTx = "tx." + this.tx;
-            this.$wait.start(this.actionTx);
+            if (error) {
+              this.$wait.end(this.actionForm);
+            } else {
+              this.$wait.end(this.actionForm);
+              this.tx = transactionHash;
+              this.actionTx = "tx." + this.tx;
+              this.$wait.start(this.actionTx);
+            }
           }
         )
         .then((r) => {

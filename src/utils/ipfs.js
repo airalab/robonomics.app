@@ -1,4 +1,5 @@
 import axios from "axios";
+// import Ipfs from "ipfs";
 import config from "~config";
 
 let ipfs = null;

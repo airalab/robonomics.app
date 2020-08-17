@@ -34,7 +34,8 @@ let config = {
     },
     // cdn: "https://unpkg.com/ipfs@0.34.0/dist/index.min.js",
     // cdn: "https://unpkg.com/ipfs@0.40.0/dist/index.min.js",
-    cdn: "https://unpkg.com/ipfs@0.48.1/dist/index.min.js",
+    // cdn: "https://unpkg.com/ipfs@0.48.1/dist/index.min.js",
+    cdn: "https://unpkg.com/ipfs@0.46.0/dist/index.min.js",
     permission: [
       "id",
       "files.cat",
