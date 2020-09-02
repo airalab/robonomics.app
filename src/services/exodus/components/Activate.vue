@@ -132,7 +132,6 @@ export default {
         TokenABI,
         config.XRT
       );
-      console.log(config.XRT, config.EXODUS, amount);
       return contract.methods
         .approve(config.EXODUS, amount)
         .send(
@@ -174,7 +173,6 @@ export default {
         ExodusAbi,
         config.EXODUS
       );
-      console.log(amount, u8aToHex(decodeAddress(account)));
       return contract.methods
         .run(amount, u8aToHex(decodeAddress(account)))
         .send(
