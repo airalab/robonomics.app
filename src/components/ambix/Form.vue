@@ -21,15 +21,15 @@
       <a
         :href="actionTx.replace('tx.', '') | urlChainExplorer('tx')"
         target="_blank"
-      >transaction</a>
+        >transaction</a
+      >
       to be mined
     </p>
     <p></p>
-    <p
-      class="t-sm"
-      :style="{color: isApprove ? '#54CE63' : '#E84004'}"
-    >Current allowance: {{current | fromWei(decimals, fromLabel)}}</p>
-    <p v-if="error !== ''" class="t-sm" style="color:#E84004">{{ error }}</p>
+    <p class="t-sm" :style="{ color: isApprove ? '#54CE63' : '#E84004' }">
+      Current allowance: {{ current | fromWei(decimals, fromLabel) }}
+    </p>
+    <p v-if="error !== ''" class="t-sm" style="color: #e84004;">{{ error }}</p>
     <p></p>
   </form>
 </template>

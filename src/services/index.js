@@ -11,6 +11,7 @@ import sensorsMap from "./sensors-map";
 import rws from "./rws";
 import raas from "./raas";
 import datalog from "./datalog";
+import exodus from "./exodus";
 
 export default {
   sensorsNetwork,
@@ -25,5 +26,6 @@ export default {
   sensorsMap,
   rws,
   raas,
-  datalog
+  datalog,
+  exodus
 };

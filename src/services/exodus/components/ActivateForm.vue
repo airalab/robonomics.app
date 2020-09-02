@@ -1,0 +1,65 @@
+<template>
+  <form v-on:submit.prevent="submit">
+    <RFormField>
+      <RFieldLabel :isError="fields.amount.error">Amount</RFieldLabel>
+      <div class="input-measured container-full">
+        <input
+          v-model="fields.amount.value"
+          type="text"
+          placeholder
+          class="container-full"
+          :class="{ error: fields.amount.error }"
+        />
+        <span class="input-measure">XRT</span>
+      </div>
+    </RFormField>
+    <RFormField>
+      <RFieldLabel :isError="fields.account.error">
+        Parachain Account (Use
+        <a href="https://parachain.robonomics.network/" target="_blank">
+          Substrate portal
+        </a>
+        to create)
+      </RFieldLabel>
+      <input
+        type="text"
+        v-model="fields.account.value"
+        class="container-full"
+        :class="{ error: fields.account.error }"
+      />
+    </RFormField>
+  </form>
+</template>
+
+<script>
+import robonomicsVC from "robonomics-vc";
+import { checkAddress } from "@polkadot/util-crypto";
+
+export default {
+  mixins: [robonomicsVC.mixins.form],
+  data() {
+    return {
+      fields: {
+        amount: {
+          value: "0",
+          type: "text",
+          rules: ["require", "number", (v) => v > 0],
+          error: false
+        },
+        account: {
+          value: "",
+          type: "text",
+          rules: [
+            "require",
+            robonomicsVC.validators.length(48),
+            (v) => {
+              return checkAddress(v, 32)[0];
+            }
+          ],
+          error: false
+        }
+      }
+    };
+  }
+};
+</script>
