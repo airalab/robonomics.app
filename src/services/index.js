@@ -12,6 +12,8 @@ import rws from "./rws";
 import raas from "./raas";
 import datalog from "./datalog";
 import exodus from "./exodus";
+import xrtForVote from "./xrt-for-vote";
+import bigBag from "./bigbag";
 
 export default {
   sensorsNetwork,
@@ -27,5 +29,7 @@ export default {
   rws,
   raas,
   datalog,
-  exodus
+  exodus,
+  xrtForVote,
+  bigBag
 };

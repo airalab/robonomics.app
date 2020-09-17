@@ -66,10 +66,6 @@ export default {
   created() {
     this.watchToken(config.XRT, this.$robonomics.account.address);
     this.getBurnAmount();
-
-    // setInterval(() => {
-    //   this.totalBurn = this.totalBurn.add(new utils.BN("100000000000000"));
-    // }, 2000);
   },
   computed: {
     balanceXrt: function () {
@@ -88,7 +84,6 @@ export default {
       return Math.round(
         new utils.BN(this.totalBurn)
           .mul(new utils.BN("100"))
-          // .div(new utils.BN("100000000000"))
           .div(new utils.BN("1000000000000000"))
           .toNumber()
       );
