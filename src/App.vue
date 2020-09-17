@@ -1,58 +1,39 @@
 <template>
   <fragment>
     <template v-if="error">
-      <ROverlay logo="assets/i/logo-dapp-2.svg" v-if="error == 1">
-        <section class="msg-error msg-icon">
-          <div class="msg-title">
-            Dapp only works on the main network and sidechain
-          </div>
-          <p>
-            <b>For work, you need to switch the network.</b>
-          </p>
-        </section>
-      </ROverlay>
-      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else-if="error == 2">
-        <section class="msg-error msg-icon">
-          <div class="msg-title">Not found account</div>
-        </section>
-      </ROverlay>
-      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else-if="error == 3">
-        <section class="msg-error msg-icon">
-          <div class="msg-title">No access to account</div>
+      <Loader v-if="error == 1">
+        <p>
+          <b>For work, you need to switch the network.</b>
+        </p>
+      </Loader>
+      <Loader v-else-if="error == 2">
+        <p>Not found account</p>
+      </Loader>
+      <Loader v-else-if="error == 3">
+        <div>
+          <p>No access to account</p>
           <p v-if="isRequest">
             Try to refresh browser page or
             <button @click="requestAccount">request account</button>.
           </p>
-        </section>
-      </ROverlay>
-      <ROverlay logo="assets/i/logo-dapp-2.svg" v-else>
-        <section class="msg-error msg-icon">
-          <div class="msg-title">Plugin required for application operation</div>
-          <p>
-            <b>
-              Please, setup:
-              <a
-                class="t-style_uppercase"
-                href="https://metamask.io/"
-                target="_blank"
-                >Metamask</a
-              >
-            </b>
-          </p>
-        </section>
-      </ROverlay>
+        </div>
+      </Loader>
+      <Loader v-else>
+        <p>
+          <b>
+            Please, setup:
+            <a
+              class="t-style_uppercase"
+              href="https://metamask.io/"
+              target="_blank"
+              >Metamask</a
+            >
+          </b>
+        </p>
+      </Loader>
     </template>
     <template v-else-if="!isReady">
-      <ROverlay logo="assets/i/logo-dapp-2.svg">
-        <section>
-          <div class="loader">
-            <RLoader class="align-vertical m-r-15" />
-            <b class="align-vertical t-style_uppercase">
-              <span>Loading</span>
-            </b>
-          </div>
-        </section>
-      </ROverlay>
+      <Loader />
     </template>
     <Wrapp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
       <router-view />
@@ -63,11 +44,13 @@
 <script>
 import { mapState } from "vuex";
 import Wrapp from "./components/layout/Wrapp";
+import Loader from "./components/layout/Loader";
 import config from "~config";
 
 export default {
   components: {
-    Wrapp
+    Wrapp,
+    Loader
   },
   computed: {
     ...mapState("chain", [

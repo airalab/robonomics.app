@@ -26,9 +26,10 @@ export default {
       lighthouses: "Lighthouses",
       parachain: "Parachain",
       uniswap: "Uniswap",
-      alembic: "Alembic",
+      alembic: "AIRA → XRT",
       riot: "Riot chat",
-      rws: "RWS"
+      rws: "RWS",
+      votes: "XRT → DAO VOTES"
     },
     sidebar: { connect: "Connect account" },
 
@@ -162,9 +163,10 @@ export default {
       lighthouses: "Маяки",
       parachain: "Parachain",
       uniswap: "Uniswap",
-      alembic: "Alembic",
+      alembic: "AIRA → XRT",
       riot: "Riot chat",
-      rws: "RWS"
+      rws: "RWS",
+      votes: "XRT → DAO VOTES"
     },
     sidebar: { connect: "Подключить аккаунт" },
 

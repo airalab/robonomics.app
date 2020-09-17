@@ -3,6 +3,7 @@ import config from "~config";
 
 function getWeb3Provider() {
   if (window.ethereum) {
+    window.ethereum.autoRefreshOnNetworkChange = false;
     return { type: 1, provider: window.ethereum };
   } else if (window.web3) {
     console.warn("warrning old metamask");
@@ -25,10 +26,24 @@ export async function getAccount(web3) {
   }
   throw new Error("not account");
 }
+// export async function getAccount(web3) {
+//   if (!window.ethereum) {
+//     throw new Error("not account");
+//   }
+//   try {
+//     const accounts = await window.ethereum.request({ method: "eth_accounts" });
+//     if (accounts.length > 0) {
+//       return web3.utils.toChecksumAddress(accounts[0]);
+//     }
+//     throw new Error("not account");
+//   } catch (_) {
+//     throw new Error("not account");
+//   }
+// }
 
 export async function accountAccess() {
   try {
-    await window.ethereum.enable();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
     return true;
   } catch (_) {
     return false;
@@ -39,14 +54,12 @@ export async function isAuthorized() {
   if (!window.ethereum) {
     return false;
   }
-  return new Promise((resolve) => {
-    window.ethereum.send({ method: "eth_accounts" }, (e, r) => {
-      if (e) {
-        return resolve(false);
-      }
-      resolve(!!r.result.length);
-    });
-  });
+  try {
+    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    return !!accounts.length;
+  } catch (_) {
+    return false;
+  }
 }
 
 const initAccount = false;
@@ -80,8 +93,8 @@ const actions = {
       } else {
         let error = 0;
         if (instance && provider.type === 1) {
-          window.ethereum.on("networkChanged", function (networkId) {
-            commit("networkId", networkId);
+          window.ethereum.on("chainChanged", function (networkId) {
+            commit("networkId", Number(networkId));
           });
           window.ethereum.on("accountsChanged", function (accounts) {
             if (accounts.length > 0) {

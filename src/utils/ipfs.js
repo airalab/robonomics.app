@@ -71,8 +71,11 @@ export const tools = {
   },
   async add(data) {
     const node = getIpfs();
-    const { cid } = await node.add(data);
-    return cid;
+    // const { cid } = await node.add(data);
+    // return cid;
+    for await (const { cid } of node.add(data)) {
+      return cid.toString()
+    }
   }
 };
 

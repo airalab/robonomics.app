@@ -16,14 +16,14 @@
       media="all"
     />
     <link
-      href="<%= BASE_URL %>assets/css/robonomics.min.css?v=12"
+      href="<%= BASE_URL %>assets/css/robonomics.min.css?v=16"
       rel="stylesheet"
     />
-    <script src="<%= BASE_URL %>assets/js/robonomics-html.min.js?v=12"></script>
+    <script src="<%= BASE_URL %>assets/js/robonomics-html.min.js?v=16"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.20.0/slimselect.min.js"></script>
     <script src="https://unpkg.com/popper.js"></script>
     <script src="https://unpkg.com/tooltip.js"></script>
-    <script src="<%= BASE_URL %>assets/js/robonomics-html-init.js?v=12"></script>
+    <script src="<%= BASE_URL %>assets/js/robonomics-html-init.js?v=16"></script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon" />
     <link
       rel="shortcut icon"
@@ -42,8 +42,10 @@
     />
     <script src="<%= BASE_URL %>socket.io.js"></script>
   </head>
-  <body class="flexcols theme-light">
+  <body class="theme-light">
     <div id="app"></div>
+    <div class="js-tooltip-content"></div>
+    <div class="outback"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>

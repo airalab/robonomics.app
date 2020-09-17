@@ -30,7 +30,7 @@
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "robonomics-js": "^0.6.2",
-    "robonomics-vc": "^0.1.0",
+    "robonomics-vc": "^0.1.1",
     "rosbag": "^2.3.1",
     "rosbag-write": "^1.0.0",
     "vue": "^2.6.10",

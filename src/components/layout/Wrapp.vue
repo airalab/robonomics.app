@@ -1,16 +1,7 @@
 <template>
   <fragment>
     <slot v-if="isReadyRobonomics" />
-    <ROverlay logo="assets/i/logo-dapp-2.svg" v-else>
-      <section>
-        <div class="loader">
-          <RLoader class="align-vertical m-r-15" />
-          <b class="align-vertical t-style_uppercase">
-            <span>Loading</span>
-          </b>
-        </div>
-      </section>
-    </ROverlay>
+    <Loader v-else />
   </fragment>
 </template>
 
@@ -20,9 +11,13 @@ import { init as initRobonomics } from "../../utils/robonomics";
 import { init as initIpfs } from "../../utils/ipfs";
 import { statusPeers, referral } from "../../utils/tools";
 import getConfig from "../../config/robonomics";
+import Loader from "./Loader";
 
 export default {
   props: ["networkId", "account", "web3"],
+  components: {
+    Loader
+  },
   data() {
     return {
       isReadyRobonomics: false

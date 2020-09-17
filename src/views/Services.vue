@@ -1,7 +1,7 @@
 <template>
   <Page>
     <h1>{{ $t("services.title") }}</h1>
-    <section class="flex-grid">
+    <div class="flex-grid">
       <RCard
         v-for="(service, index) in services"
         :key="index"
@@ -57,7 +57,7 @@
           </div>
         </div>
       </RCard>
-    </section>
+    </div>
   </Page>
 </template>
 

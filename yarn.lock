@@ -12044,10 +12044,10 @@ robonomics-js@^0.6.2:
     eth-lib "^0.2.8"
     web3-utils "^1.2.8"
 
-robonomics-vc@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/robonomics-vc/-/robonomics-vc-0.1.0.tgz#f969b6a3f0c567adcf8c7ee3dc1646ba10197941"
-  integrity sha512-MMw7lJ6FhxG8Jbev02ai1x4/8d1YiI+hB/cqUiE8qMQPkrhJQuyl1xF+wiAp8dTNSPfx3c63KViHeclhdJ4P9Q==
+robonomics-vc@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/robonomics-vc/-/robonomics-vc-0.1.1.tgz#0bc7bec376dfbac30db4afcc93921882b011a1b5"
+  integrity sha512-CW3bsLHsKO4AVWQ6aiJjf6jEUQmuc6gPgj3v5GgOO4R2o03HjWCF8Grkdwd4hkfu4bkouBaty5nFcXBQO8UdPA==
   dependencies:
     core-js "^3.4.4"
     ethereum-blockies-base64 "^1.0.2"
