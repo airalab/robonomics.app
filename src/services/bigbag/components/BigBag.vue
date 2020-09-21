@@ -52,7 +52,8 @@ export default {
       amount_wei: "0",
       amount_wn: "0",
       price: "0",
-      dao_agent: "0xe40c0c4f8e2424c74e13a301c133ce8b80d90549"
+      dao_agent: "",
+      dao: "0x28A3D3467A3198D1bb5311836036D53c3C64b999"
     };
   },
   created() {
@@ -82,11 +83,13 @@ export default {
         this.address
       );
       try {
+        this.dao_agent = await contract.methods.dao_agent().call();
         this.amount_wei = await contract.methods.amount_wei().call();
         this.amount_wn = await contract.methods.amount_wn().call();
-        this.price =
+        this.price = (
           Number(utils.fromWei(this.amount_wei)) /
-          Number(utils.fromWei(this.amount_wn, "GWei"));
+          Number(utils.fromWei(this.amount_wn, "GWei"))
+        ).toFixed(6);
         this.isCorrect = true;
       } catch (_) {
         this.isCorrect = false;
