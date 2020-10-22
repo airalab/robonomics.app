@@ -14,6 +14,7 @@ import datalog from "./datalog";
 import exodus from "./exodus";
 import xrtForVote from "./xrt-for-vote";
 import bigBag from "./bigbag";
+import auction from "./auction";
 
 export default {
   sensorsNetwork,
@@ -31,5 +32,6 @@ export default {
   datalog,
   exodus,
   xrtForVote,
-  bigBag
+  bigBag,
+  auction
 };
