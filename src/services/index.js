@@ -17,16 +17,16 @@ import bigBag from "./bigbag";
 import auction from "./auction";
 
 export default {
-  sensorsNetwork,
-  blockchainStamp,
-  sensor,
   fujiWeather,
+  sensorsMap,
+  blockchainStamp,
+  sensorsNetwork,
+  sensor,
   gakaChu,
   offsetting,
   issuing,
   droneRegistration,
   droneFlightReport,
-  sensorsMap,
   rws,
   raas,
   datalog,
