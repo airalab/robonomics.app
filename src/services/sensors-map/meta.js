@@ -7,8 +7,8 @@ export default {
     name: "Decentralized Sensors Network",
     desc: ""
   },
-  link: "https://sensors.robonomics.network/",
-  target: true,
+  link: { name: "sensors-map" },
+  target: false,
   img: require("./logo.png"),
   by: [
     {
