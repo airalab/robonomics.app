@@ -38,6 +38,7 @@
     <Wrapp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
       <router-view />
     </Wrapp>
+    <modals-container />
   </fragment>
 </template>
 

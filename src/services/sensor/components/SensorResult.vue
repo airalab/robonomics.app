@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="ready" style="padding-top: 20px;">
+    <div v-if="ready" style="padding-top: 20px">
       <RWindow id="window-sensornetwork-requests">
         <template slot="header">
           <span>{{ $t("sensor.result") }}</span>

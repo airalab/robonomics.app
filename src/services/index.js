@@ -1,3 +1,4 @@
+import devices from "./devices";
 import sensorsNetwork from "./sensors-network";
 import blockchainStamp from "./blockchain-stamp";
 import sensor from "./sensor";
@@ -17,6 +18,7 @@ import bigBag from "./bigbag";
 import auction from "./auction";
 
 export default {
+  devices,
   fujiWeather,
   sensorsMap,
   blockchainStamp,

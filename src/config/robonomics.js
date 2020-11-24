@@ -1,16 +1,16 @@
 let config = {
   ipfs: {
     fallback: {
-      repo: "ipfs/robonomics/3",
+      repo: "ipfs/robonomics/4",
       relay: {
         enabled: true,
         hop: {
           enabled: true
         }
       },
-      EXPERIMENTAL: {
-        pubsub: true
-      },
+      // EXPERIMENTAL: {
+      //   pubsub: true
+      // },
       config: {
         Addresses: {
           Swarm: [
@@ -35,7 +35,8 @@ let config = {
     // cdn: "https://unpkg.com/ipfs@0.34.0/dist/index.min.js",
     // cdn: "https://unpkg.com/ipfs@0.40.0/dist/index.min.js",
     // cdn: "https://unpkg.com/ipfs@0.48.1/dist/index.min.js",
-    cdn: "https://unpkg.com/ipfs@0.46.0/dist/index.min.js",
+    // cdn: "https://unpkg.com/ipfs@0.46.0/dist/index.min.js",
+    cdn: "https://unpkg.com/ipfs@0.52.0/dist/index.min.js",
     permission: [
       "id",
       "files.cat",

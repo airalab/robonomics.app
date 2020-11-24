@@ -99,7 +99,7 @@ export default {
     };
 
     markers = new leaflet.MarkerClusterGroup({
-      showCoverageOnHover: false,
+      // showCoverageOnHover: false,
       // zoomToBoundsOnClick: false,
       maxClusterRadius: 120,
       iconCreateFunction: iconCreateFunction

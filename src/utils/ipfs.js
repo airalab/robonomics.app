@@ -61,21 +61,28 @@ export function cat(hash) {
 }
 
 export const tools = {
-  async cat(hash) {
-    const node = getIpfs();
-    let bufs = [];
-    for await (const buf of node.cat(hash)) {
-      bufs.push(buf);
-    }
-    return Buffer.concat(bufs);
+  cat(hash) {
+    return axios
+      .get(`${config.IPFS_GATEWAY}${hash}`, { responseType: "blob" })
+      .then((result) => {
+        return result.data;
+      });
   },
+  // async cat(hash) {
+  //   const node = getIpfs();
+  //   let bufs = [];
+  //   for await (const buf of node.cat(hash)) {
+  //     bufs.push(buf);
+  //   }
+  //   return Buffer.concat(bufs);
+  // },
   async add(data) {
     const node = getIpfs();
-    // const { cid } = await node.add(data);
-    // return cid;
-    for await (const { cid } of node.add(data)) {
-      return cid.toString()
-    }
+    const { cid } = await node.add(data);
+    return cid;
+    // for await (const { cid } of node.add(data)) {
+    //   return cid.toString();
+    // }
   }
 };
 

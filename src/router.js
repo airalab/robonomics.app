@@ -43,7 +43,7 @@ export default new Router({
       component: Ambix
     },
     {
-      path: "/",
+      path: "/services",
       name: "services",
       component: Services
     },

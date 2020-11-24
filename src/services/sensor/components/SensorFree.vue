@@ -104,7 +104,7 @@ export default {
 
       this.log.forEach((item) => {
         if (item.status === 2) {
-          parseResult(item.result).then((result) => {
+          parseResult(item.resultHash).then((result) => {
             this.upadte(item.id, {
               status: 3,
               result: result

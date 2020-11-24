@@ -5,19 +5,19 @@ export default {
       relay: {
         enabled: true,
         hop: {
-          enabled: true,
-        },
+          enabled: true
+        }
       },
       EXPERIMENTAL: {
-        pubsub: true,
+        pubsub: true
       },
       config: {
         Addresses: {
           Swarm: [
             "/dns4/1.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/",
             "/dns4/2.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/",
-            "/dns4/3.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/",
-          ],
+            "/dns4/3.webrtcstar.aira.life/tcp/443/wss/p2p-webrtc-star/"
+          ]
         },
         Bootstrap: [
           "/dns4/ams-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
@@ -28,9 +28,9 @@ export default {
           "/dns4/node1.preload.ipfs.io/tcp/443/wss/ipfs/Qmbut9Ywz9YEDrz8ySBSgWyJk41Uvm2QJPhwDJzJyGFsD6",
           "/dns4/1.pubsub.aira.life/tcp/443/wss/ipfs/QmdfQmbmXt6sqjZyowxPUsmvBsgSGQjm4VXrV7WGy62dv8",
           "/dns4/2.pubsub.aira.life/tcp/443/wss/ipfs/QmPTFt7GJ2MfDuVYwJJTULr6EnsQtGVp8ahYn9NSyoxmd9",
-          "/dns4/3.pubsub.aira.life/tcp/443/wss/ipfs/QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw",
-        ],
-      },
+          "/dns4/3.pubsub.aira.life/tcp/443/wss/ipfs/QmWZSKTEQQ985mnNzMqhGCrwQ1aTA6sxVsorsycQz9cQrw"
+        ]
+      }
     },
     cdn: "https://unpkg.com/ipfs@0.46.0/dist/index.min.js",
     permission: [
@@ -41,7 +41,7 @@ export default {
       "pubsub.publish",
       "pubsub.subscribe",
       "swarm.peers",
-      "swarm.connect",
-    ],
-  },
+      "swarm.connect"
+    ]
+  }
 };
