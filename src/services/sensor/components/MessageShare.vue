@@ -21,7 +21,7 @@
       target="_blank"
     ></a>
     <template v-if="isSubstrate">
-      <span style="margin-left: 20px;">|</span>
+      <span style="margin-left: 20px">|</span>
       <template v-if="substrateBlockHash == ''">
         <a
           v-if="substrateBlockHash == ''"
@@ -34,7 +34,7 @@
             background: url(img/substrate.png) 0% 0% / 24px no-repeat;
           "
         ></a>
-        <span class="disabled" style="margin-left: 20px;">
+        <span class="disabled" style="margin-left: 20px">
           <a class="i-share" href></a>
           <a class="i-twitter" href></a>
         </span>
@@ -50,7 +50,7 @@
             background: url(img/substrate.png) 0% 0% / 24px no-repeat;
           "
         ></span>
-        <span style="margin-left: 20px;">
+        <span style="margin-left: 20px">
           <a
             class="i-share"
             href="javascript:;"

@@ -94,7 +94,7 @@ export async function getAccount(substrate, address) {
 export async function sendSubstrate(substrate, account, result, cb, cbErr) {
   const record = u8aToHex(bs58.decode(result));
 
-  const tx = substrate.tx.robonomicsStorage.record(record);
+  const tx = substrate.tx.datalog.record(record);
   try {
     const unsub = await tx.signAndSend(account, (result) => {
       if (result.status.isFinalized) {

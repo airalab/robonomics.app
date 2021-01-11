@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="ready" style="padding-top: 20px;">
+    <div v-if="ready" style="padding-top: 20px">
       <RWindow id="window-sensornetwork-requests">
         <template slot="header">
           <span>{{ $t("sensor.result") }}</span>
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     async init() {
-      const substrate = await getInstance();
+      const api = await getInstance();
       // console.log(substrate.query.system);
       // substrate.query.system.extrinsicData.at(
       //   "0xcda332716bd86f8a487fc882ed560ba555b6368b2baf3290f0b4492bbac022e9",
@@ -49,11 +49,11 @@ export default {
       //     console.log(r);
       //   }
       // );
-      substrate.query.system.events.at(this.substrateBlock, (events) => {
+      api.query.system.events.at(this.substrateBlock, (events) => {
         // console.log(events);
         events.forEach((record) => {
           const { event /*, phase*/ } = record;
-          if (event.section === "robonomicsStorage") {
+          if (event.section === "datalog") {
             const eventObj = {
               // link: `${blockNUmber}-${phase.asApplyExtrinsic.toString()}`,
               // hashEvent: event.hash.toString(),
@@ -72,11 +72,11 @@ export default {
         });
       });
 
-      substrate.rpc.chain.getBlock(this.substrateBlock, (block) => {
+      api.rpc.chain.getBlock(this.substrateBlock, (block) => {
         // get extrinsics
         block.block.extrinsics.forEach((item) => {
           if (
-            item.method.sectionName === "robonomicsStorage" &&
+            item.method.sectionName === "datalog" &&
             item.method.methodName === "record" &&
             item.hash.toString() === this.substrateTx
           ) {
