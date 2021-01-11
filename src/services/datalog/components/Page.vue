@@ -9,7 +9,7 @@
         fullWidth
         @click="$refs.form.submit()"
         :disabled="proccess"
-        style="margin-bottom: 25px;"
+        style="margin-bottom: 25px"
       >
         <div class="loader-ring" v-if="proccess"></div>
         &nbsp; Get log
@@ -32,7 +32,7 @@
 <script>
 import Page from "@/components/layout/Page";
 import ActivateForm from "./ActivateForm";
-import { getInstance, toIpfsHash } from "../utils/substrate";
+import { getInstance, toIpfsHash } from "../../../utils/substrate";
 
 export default {
   components: {
@@ -50,9 +50,9 @@ export default {
     async handleSubmit({ error, fields }) {
       this.proccess = true;
       if (!error) {
-        const substrate = await getInstance();
+        const api = await getInstance();
         const log = (
-          await substrate.query.datalog.datalog(fields.account.value)
+          await api.query.datalog.datalog(fields.account.value)
         ).toArray();
         this.count = log.length;
         this.last = log.slice(-10).map((item) => {
