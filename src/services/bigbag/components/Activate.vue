@@ -12,7 +12,7 @@
       fullWidth
       @click="send"
       :disabled="!canButton"
-      style="margin-bottom: 25px;"
+      style="margin-bottom: 25px"
     >
       <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
       &nbsp; Send transaction
@@ -38,7 +38,7 @@ const STATUS = {
 };
 
 export default {
-  props: ["contract", "amount_wei"],
+  props: ["contract", "amount_wei", "isApprove"],
   data() {
     return {
       balance: "0",
@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     canButton: function () {
-      if (Number(this.balance) < Number(this.amount_wei)) {
+      if (!this.isApprove || Number(this.balance) < Number(this.amount_wei)) {
         return false;
       }
       return this.proccess === 0 || this.proccess >= 3;

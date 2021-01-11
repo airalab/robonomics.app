@@ -28,7 +28,15 @@
         <p>
           Total: <b>{{ amountWeiFormat }}</b>
         </p>
-        <Activate :contract="address" :amount_wei="amount_wei" />
+        <Activate
+          :contract="address"
+          :amount_wei="amount_wei"
+          :isApprove="isApprove"
+          @upBurn="upVesting"
+        />
+        <hr />
+
+        <Vesting ref="vesting" />
       </template>
       <span v-else class="red"><b>Please check the contract address</b></span>
     </template>
@@ -38,12 +46,16 @@
 <script>
 import utils from "web3-utils";
 import Activate from "./Activate";
+import Vesting from "./Vesting";
 import BigBagAbi from "../abi/BigBag.json";
+import TokenAbi from "../abi/Token.json";
+import config from "../config";
 
 export default {
   props: ["address"],
   components: {
-    Activate
+    Activate,
+    Vesting
   },
   data() {
     return {
@@ -51,6 +63,7 @@ export default {
       isCorrect: false,
       amount_wei: "0",
       amount_wn: "0",
+      allowance: "0",
       price: "0",
       dao_agent: "",
       dao: "0x28A3D3467A3198D1bb5311836036D53c3C64b999"
@@ -73,17 +86,31 @@ export default {
     },
     priceFormat: function () {
       return this.price + " ETH";
+    },
+    isApprove: function () {
+      return Number(this.allowance) >= Number(this.amount_wn);
     }
   },
   methods: {
+    upVesting() {
+      this.$refs.vesting.getInfoVesting();
+    },
     async getPrice() {
       this.isLoad = true;
       const contract = new this.$robonomics.web3.eth.Contract(
         BigBagAbi,
         this.address
       );
+      const contractXrt = new this.$robonomics.web3.eth.Contract(
+        TokenAbi,
+        config.XRT
+      );
+      console.log(contractXrt);
       try {
         this.dao_agent = await contract.methods.dao_agent().call();
+        this.allowance = await contractXrt.methods
+          .allowance(this.dao_agent, this.address)
+          .call();
         this.amount_wei = await contract.methods.amount_wei().call();
         this.amount_wn = await contract.methods.amount_wn().call();
         this.price = (

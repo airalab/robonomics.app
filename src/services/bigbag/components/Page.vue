@@ -2,7 +2,7 @@
   <Page>
     <RCard class="section-centered">
       <h2>Big Bag sales by Robonomics Developers DAO</h2>
-      <div class="item-avatar" style="margin-bottom: 20px;">
+      <div class="item-avatar" style="margin-bottom: 20px">
         <span
           class="item-avatar--image"
           :style="{ 'background-image': `url(${require('../banner.jpg')})` }"
