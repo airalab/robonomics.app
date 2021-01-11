@@ -76,7 +76,8 @@ export default {
             }
           }
         );
-      } catch (_) {
+      } catch (e) {
+        console.log(e);
         this.isWork = false;
       }
     },

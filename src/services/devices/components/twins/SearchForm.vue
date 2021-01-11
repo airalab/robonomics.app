@@ -2,7 +2,7 @@
   <div>
     <form v-on:submit.prevent="submit">
       <RFormField>
-        <RFieldLabel :isError="fields.addr.error">Thing name</RFieldLabel>
+        <RFieldLabel :isError="fields.addr.error">Address</RFieldLabel>
         <input
           type="text"
           v-model="fields.addr.value"
@@ -17,6 +17,7 @@
 
 <script>
 import robonomicsVC from "robonomics-vc";
+import { checkAddress } from "@polkadot/util-crypto";
 
 export default {
   props: {
@@ -31,7 +32,13 @@ export default {
         addr: {
           value: this.addr,
           type: "text",
-          rules: ["require"],
+          rules: [
+            "require",
+            robonomicsVC.validators.length(48),
+            (v) => {
+              return checkAddress(v, 32)[0];
+            }
+          ],
           error: false
         }
       }

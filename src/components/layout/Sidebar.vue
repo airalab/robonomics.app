@@ -12,12 +12,7 @@
       <router-link :to="{ name: 'iot-activity' }" active-class="active">
         {{ $t("menu.telemetry") }}
       </router-link>
-      <router-link
-        :to="{ name: '' }"
-        active-class="active"
-        exact
-        class="disabled"
-      >
+      <router-link :to="{ name: 'iot-twins' }" active-class="active" exact>
         Digital twins
       </router-link>
       <router-link

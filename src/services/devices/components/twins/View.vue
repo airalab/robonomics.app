@@ -1,15 +1,15 @@
 <template>
   <RCard class="section-centered">
     <div style="overflow: hidden">
-      <h1 style="float: left">Telemetry</h1>
+      <h1 style="float: left">Digital twin</h1>
     </div>
 
-    <SearchForm ref="form" :addr="id" @addr="handleForm" />
+    {{ account }}
+    <!-- <SearchForm ref="form" :addr="account" @addr="handleForm" /> -->
     <hr />
 
-    <div v-if="addr" class="items">
+    <div v-if="addr && schema" class="items">
       <div class="btns">
-        <button @click="push" class="btn-sm">test push</button>
         <button @click="clear" :disabled="log.length === 0" class="btn-sm">
           clear
         </button>
@@ -22,7 +22,7 @@
           @page="handlePage"
         >
           <template v-slot:default="props">
-            <Row :addr="addr" :value="props.item" />
+            <Row :schema="schema" :value="props.item" />
           </template>
         </Pagination>
       </div>
@@ -31,93 +31,87 @@
 </template>
 
 <script>
-import SearchForm from "./SearchForm";
+// import SearchForm from "./SearchForm";
 import Row from "./Row";
 import Pagination from "./Pagination";
-import { storageMsg, addByList } from "../../utils/storage";
-
-const topic = "airalab.lighthouse.5.robonomics.eth";
+import { storageMsg, addByList, storageTwins } from "../../utils/storage";
+import { subscribeDatalog } from "../../../../utils/substrate";
+import { u8aToString } from "@polkadot/util";
 
 export default {
-  props: ["id"],
+  props: ["account"],
   components: {
-    SearchForm,
+    // SearchForm,
     Row,
     Pagination
   },
   data() {
     return {
       addr: "",
+      schema: null,
       log: [],
-      currentPage: 0
+      currentPage: 0,
+      unsubscribe: null
     };
   },
   mounted() {
-    if (this.id) {
-      this.subscribe(this.id);
+    if (this.account) {
+      const list = storageTwins.getItems();
+      this.schema = JSON.parse(list[this.account]);
+
+      this.subscribe(this.account);
     }
     storageMsg.on((items) => {
       this.log = Object.prototype.hasOwnProperty.call(items, this.addr)
         ? items[this.addr]
         : [];
     });
-    // setTimeout(() => {
-    //   this.save(this.addr, Date.now());
-    //   // updateByList(this.addr, 1, {
-    //   //   substrate: { account: "address", block: "1", tx: "2" }
-    //   // });
-    // }, 3000);
+  },
+  async beforeDestroy() {
+    if (this.unsubscribe) {
+      await this.unsubscribe();
+    }
   },
   methods: {
-    save(from, data) {
+    save(from, time, data) {
       addByList(from, {
         data,
-        time: Date.now(),
-        eth: null,
-        substrate: null
+        time: time
       });
     },
     handlerMsg(msg) {
-      const data = msg.data.toString();
-      if (msg.from === this.addr) {
-        this.save(this.addr, data);
-      } else {
-        try {
-          const json = JSON.parse(data);
-          if (json.id && json.id === this.addr) {
-            this.save(this.addr, data);
-          }
-        } catch (error) {
-          console.log(data);
-        }
-      }
+      this.save(this.addr, msg[0].toString(), u8aToString(msg[1]));
     },
     handleForm(addr) {
       if (addr !== this.addr) {
-        this.$router.push({ name: "iot-activity", params: { id: addr } });
+        this.$router.push({ name: "iot-twin-show", params: { account: addr } });
         this.subscribe(addr);
       }
     },
-    subscribe(addr) {
-      this.$ipfs.pubsub.unsubscribe(topic, this.handlerMsg);
+    async subscribe(addr) {
+      if (this.unsubscribe) {
+        await this.unsubscribe();
+      }
       this.log = [];
       this.addr = addr;
+
       const items = storageMsg.getItems();
       this.log = Object.prototype.hasOwnProperty.call(items, this.addr)
         ? items[this.addr]
         : [];
-      this.$ipfs.pubsub.subscribe(topic, this.handlerMsg);
+
+      this.unsubscribe = await subscribeDatalog(
+        addr,
+        (res) => {
+          res.forEach((item) => {
+            this.handlerMsg(item);
+          });
+        }
+        // { pos: 0, time: "1606373183000" }
+      );
     },
     handlePage(page) {
       this.currentPage = page;
-    },
-    push() {
-      this.$ipfs.pubsub.publish(
-        topic,
-        Buffer.from(
-          JSON.stringify({ time: Date.now(), id: this.addr, type: "web" })
-        )
-      );
     },
     clear() {
       storageMsg.removeItem(this.addr);

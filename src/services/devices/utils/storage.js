@@ -3,6 +3,7 @@ import config from "../config";
 
 export const storageDevices = new Storage(config.storageDevices);
 export const storageMsg = new Storage(config.storageMsg);
+export const storageTwins = new Storage(config.storageTwins);
 
 export function addByList(idList, data) {
   const items = storageMsg.getItems();
