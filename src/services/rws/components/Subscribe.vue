@@ -1,12 +1,15 @@
 <template>
   <fragment>
     <div class="row">
-      <div class="col-md-6" style="text-align: center;">
-        <span style="font-size: 20px; font-weight: bold;">{{
-          stake.amount | fromWei(18, "RWS")
-        }}</span
-        >&nbsp; <span>{{ status }}</span
-        >&nbsp;
+      <div class="col-md-6" style="text-align: center">
+        <Balance
+          :amount="stake.amount"
+          symbol="RWS"
+          style="font-size: 20px; font-weight: bold"
+        />
+        &nbsp;
+        <span>{{ status }}</span>
+        &nbsp;
         <!-- <span
           v-if="stake.status == 2 && current_block - stake.last_update <= lock_duration"
         >{{Number(lock_duration)-(Number(current_block)-Number(stake.last_update))}} blocks</span>-->
@@ -21,14 +24,16 @@
             (stake.status == 2 &&
               current_block - stake.last_update <= lock_duration)
           "
-          >withdraw</RButton
         >
+          withdraw
+        </RButton>
       </div>
-      <div class="col-md-6" style="text-align: center;">
-        <span style="font-size: 20px; font-weight: bold;">{{
-          myBalanceFormat
-        }}</span>
-        tokens
+      <div class="col-md-6" style="text-align: center">
+        <Balance
+          :amount="myBalance"
+          symbol="RWS"
+          style="font-size: 20px; font-weight: bold"
+        />
         <br />
         <p>
           available for
@@ -75,13 +80,16 @@ import SubscriptionAbi from "../abi/Subscription.json";
 import Activate from "./Activate";
 import Deactivate from "./Deactivate";
 import Datalog from "./Datalog";
+import Balance from "./Balance";
+import { config as configSubstrate } from "../../../utils/substrate";
 
 export default {
   mixins: [token],
   components: {
     Activate,
     Deactivate,
-    Datalog
+    Datalog,
+    Balance
   },
   data() {
     return {
@@ -130,7 +138,8 @@ export default {
       return this.balance(config.RWS, this.$robonomics.account.address);
     },
     myBalanceFormat: function () {
-      return this.balanceFormat(config.RWS, this.$robonomics.account.address);
+      return this.myBalance;
+      // return this.balanceFormat(config.RWS, this.$robonomics.account.address);
     }
   },
   methods: {
@@ -142,6 +151,9 @@ export default {
         SubscriptionAbi,
         config.SUBSCRIPTION
       );
+      setInterval(() => {
+        this.upStake();
+      }, 3000);
       contract.events.Activated({ fromBlock, filter: {} }).on("data", () => {
         this.upStake();
       });
@@ -178,9 +190,19 @@ export default {
               last_update: r.last_update,
               status: r.status,
               amount: r.amount,
-              account: encodeAddress(r.account, 32)
+              account: encodeAddress(
+                r.account,
+                configSubstrate.robonomics.keyring.ss58Format
+              )
             };
             // this.account = this.stake.account;
+          } else {
+            this.stake = {
+              last_update: "",
+              status: 0,
+              amount: "",
+              account: ""
+            };
           }
         });
     }

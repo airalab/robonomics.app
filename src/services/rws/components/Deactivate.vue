@@ -10,7 +10,7 @@
         (stake.status == 2 &&
           current_block - stake.last_update <= lock_duration)
       "
-      style="margin-bottom: 25px;"
+      style="margin-bottom: 25px"
     >
       <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
       &nbsp;

@@ -4,9 +4,19 @@ module.exports = {
   publicPath: "",
   configureWebpack: {
     resolve: {
+      extensions: ["*", ".mjs", ".js", ".vue", ".json", ".gql", ".graphql"],
       alias: {
         "~config": path.resolve(__dirname, "src/config/", config)
       }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto"
+        }
+      ]
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
   <form v-on:submit.prevent="submit">
     <RFormField>
-      <RFieldLabel :isError="fields.amount.error">amount</RFieldLabel>
+      <RFieldLabel :isError="fields.amount.error">Amount</RFieldLabel>
       <div class="input-measured container-full">
         <input
           v-model="fields.amount.value"
@@ -15,7 +15,13 @@
       <small>1 RWS token = 1.0 tps</small>
     </RFormField>
     <RFormField>
-      <RFieldLabel :isError="fields.account.error">account</RFieldLabel>
+      <RFieldLabel :isError="fields.account.error"
+        >Parachain Account (Use
+        <a href="https://parachain.robonomics.network/" target="_blank">
+          Substrate portal
+        </a>
+        to create)</RFieldLabel
+      >
       <input
         type="text"
         v-model="fields.account.value"
@@ -28,6 +34,8 @@
 
 <script>
 import robonomicsVC from "robonomics-vc";
+import { checkAddress } from "@polkadot/util-crypto";
+import { config as configSubstrate } from "../../../utils/substrate";
 
 export default {
   mixins: [robonomicsVC.mixins.form],
@@ -43,7 +51,16 @@ export default {
         account: {
           value: "",
           type: "text",
-          rules: ["require", robonomicsVC.validators.length(48)],
+          rules: [
+            "require",
+            robonomicsVC.validators.length(48),
+            (v) => {
+              return checkAddress(
+                v,
+                configSubstrate.robonomics.keyring.ss58Format
+              )[0];
+            }
+          ],
           error: false
         }
       }
