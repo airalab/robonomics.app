@@ -58,9 +58,9 @@
 import Claim from "./Claim";
 import moment from "moment";
 import VestingAbi from "../abi/Vesting.json";
-import config from "../config";
 
 export default {
+  props: ["address"],
   components: {
     Claim
   },
@@ -85,7 +85,7 @@ export default {
       this.isLoad = true;
       const contract = new this.$robonomics.web3.eth.Contract(
         VestingAbi,
-        config.VESTING
+        this.address
       );
       try {
         const grantIndexes = await contract.methods

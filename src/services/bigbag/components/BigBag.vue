@@ -36,7 +36,7 @@
         />
         <hr />
 
-        <Vesting ref="vesting" />
+        <Vesting ref="vesting" :address="vesting" />
       </template>
       <span v-else class="red"><b>Please check the contract address</b></span>
     </template>
@@ -66,6 +66,7 @@ export default {
       allowance: "0",
       price: "0",
       dao_agent: "",
+      vesting: config.VESTING,
       dao: "0x28A3D3467A3198D1bb5311836036D53c3C64b999"
     };
   },
@@ -105,7 +106,6 @@ export default {
         TokenAbi,
         config.XRT
       );
-      console.log(contractXrt);
       try {
         this.dao_agent = await contract.methods.dao_agent().call();
         this.allowance = await contractXrt.methods
