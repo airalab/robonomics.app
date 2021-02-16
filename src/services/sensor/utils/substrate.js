@@ -31,12 +31,6 @@ export function getInstance() {
     provider,
     types: {
       Record: "Vec<u8>"
-      // TechnicalParam: "Vec<u8>",
-      // EconomicalParam: "{}",
-      // ProofParam: "MultiSignature",
-      // Technics: "Vec<u8>",
-      // Economics: "{}",
-      // Report: "Vec<u8>"
     }
   })
     .then((r) => {

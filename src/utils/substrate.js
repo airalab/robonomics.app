@@ -12,22 +12,18 @@ import {
   compactFromU8a
 } from "@polkadot/util";
 import { createTypeUnsafe, Bytes } from "@polkadot/types";
-import { storageFromMeta } from "@polkadot/metadata";
+import { expandMetadata } from "@polkadot/metadata";
 
 export const config = {
   local: {
     url: "ws://127.0.0.1:9944",
     types: {
       Record: "Vec<u8>",
-      TechnicalParam: "Vec<u8>",
-      TechnicalReport: "Vec<u8>",
-      EconomicalParam: {},
-      ProofParam: "MultiSignature",
-      LiabilityIndex: "u64",
-      Parameter: "Vec<u8>"
+      Parameter: "Bool",
+      Address: "AccountId",
+      LookupSource: "AccountId"
     },
     keyring: {
-      ss58Format: 42,
       isDevelopment: true,
       type: "ed25519"
     }
@@ -38,7 +34,6 @@ export const config = {
       Record: "Vec<u8>"
     },
     keyring: {
-      ss58Format: 32,
       isDevelopment: false,
       type: "ed25519"
     }
@@ -46,49 +41,12 @@ export const config = {
   robonomics: {
     url: "wss://earth.rpc.robonomics.network",
     types: {
-      Parameter: "Vec<u8>",
-      RefCount: "u8",
       Record: "Vec<u8>",
-      Address: "MultiAddress",
-      LookupSource: "MultiAddress",
-      TechnicalParam: "Vec<u8>",
-      TechnicalReport: "Vec<u8>",
-      EconomicalParam: "{}",
-      ProofParam: "MultiSignature",
-      LiabilityIndex: "u64",
-      PersistedValidationData: {
-        parent_head: "Vec<u8>",
-        block_number: "u32",
-        hrmp_mqc_heads: "Vec<(u32, Hash)>",
-        dmq_mqc_head: "Hash",
-        max_pov_size: "u32"
-      },
-      TransientValidationData: {
-        max_code_size: "u32",
-        max_head_data_size: "u32",
-        balance: "Balance",
-        code_upgrade_allowed: "Option<u32>",
-        dmq_length: "u32"
-      },
-      ValidationData: {
-        persistent: "PersistedValidationData",
-        transient: "TransientValidationData"
-      },
-      InboundHrmpMessage: {
-        send_at: "u32",
-        data: "Vec<u8>"
-      },
-      InboundDownwardMessage: {
-        send_at: "u32",
-        msg: "Vec<u8>"
-      },
-      MessageIngestionType: {
-        downward_messages: "Vec<InboundDownwardMessage>",
-        horizontal_messages: "Vec<InboundHrmpMessage>"
-      }
+      Parameter: "Bool",
+      Address: "AccountId",
+      LookupSource: "AccountId"
     },
     keyring: {
-      ss58Format: 32,
       isDevelopment: false,
       type: "ed25519"
     }
@@ -116,6 +74,12 @@ export function getProvider(network = "robonomics") {
   // });
   return provider[network];
 }
+export function getApi(network = "robonomics") {
+  if (api[network]) {
+    return api[network];
+  }
+  throw new Error("Not init");
+}
 export async function getInstance(network = "robonomics") {
   if (api[network]) {
     return api[network];
@@ -140,6 +104,7 @@ export async function initAccounts(api) {
       keyring.loadAll(
         {
           genesisHash: api.genesisHash,
+          ss58Format: api.registry.chainSS58,
           ...config.keyring
         },
         injectedAccounts
@@ -252,9 +217,8 @@ export async function subscribeDatalog(
   const provider = getProvider();
 
   const metadata = await api.rpc.state.getMetadata();
-  const fnMeta = storageFromMeta(api.registry, metadata);
-
-  const params = [fnMeta.datalog.datalog, address];
+  const fnMeta = expandMetadata(api.registry, metadata);
+  const params = [fnMeta.query.datalog.datalog, address];
   const paramsType = createTypeUnsafe(
     api.registry,
     "StorageKey",

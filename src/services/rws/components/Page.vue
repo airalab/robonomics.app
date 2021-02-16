@@ -19,13 +19,13 @@
         <div class="row">
           <div
             class="col-md-6"
-            style="text-align: center; font-size: 20px; font-weight: bold;"
+            style="text-align: center; font-size: 20px; font-weight: bold"
           >
             ? tps
           </div>
           <div
             class="col-md-6"
-            style="text-align: center; font-size: 20px; font-weight: bold;"
+            style="text-align: center; font-size: 20px; font-weight: bold"
           >
             ? RWS tokens
           </div>
@@ -62,11 +62,15 @@
 <script>
 import Page from "@/components/layout/Page";
 import Subscribe from "./Subscribe";
+import { getInstance } from "../../../utils/substrate";
 
 export default {
   components: {
     Page,
     Subscribe
+  },
+  async created() {
+    await getInstance();
   }
 };
 </script>

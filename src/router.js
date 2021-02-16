@@ -77,7 +77,17 @@ export default new Router({
     },
     ...Object.values(services)
       .filter((item) => item.router)
-      .map((item) => item.router),
+      .map((item) => item.router)
+      .reduce((acc, item) => {
+        if (Array.isArray(item)) {
+          item.forEach((item) => {
+            acc.push(item);
+          });
+        } else {
+          acc.push(item);
+        }
+        return acc;
+      }, []),
     { path: "*", redirect: "/" }
   ]
 });

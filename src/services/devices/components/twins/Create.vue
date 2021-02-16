@@ -61,7 +61,7 @@ import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
 import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism-tomorrow.css";
-import { config } from "../../../../utils/substrate";
+import { getApi } from "../../../../utils/substrate";
 
 const list = storageTwins.getItems();
 
@@ -83,7 +83,10 @@ export default {
             "require",
             robonomicsVC.validators.length(48),
             (v) => {
-              return checkAddress(v, config.robonomics.keyring.ss58Format)[0];
+              return checkAddress(
+                v,
+                getApi("robonomics").registry.chainSS58
+              )[0];
             },
             (v) => {
               return !Object.prototype.hasOwnProperty.call(list, v);

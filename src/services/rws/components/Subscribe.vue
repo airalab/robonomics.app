@@ -81,7 +81,7 @@ import Activate from "./Activate";
 import Deactivate from "./Deactivate";
 import Datalog from "./Datalog";
 import Balance from "./Balance";
-import { config as configSubstrate } from "../../../utils/substrate";
+import { getApi } from "../../../utils/substrate";
 
 export default {
   mixins: [token],
@@ -192,7 +192,7 @@ export default {
               amount: r.amount,
               account: encodeAddress(
                 r.account,
-                configSubstrate.robonomics.keyring.ss58Format
+                getApi("robonomics").registry.chainSS58
               )
             };
             // this.account = this.stake.account;
