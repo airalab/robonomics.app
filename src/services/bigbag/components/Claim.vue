@@ -22,7 +22,6 @@
 
 <script>
 import VestingAbi from "../abi/Vesting";
-import config from "../config";
 
 const STATUS = {
   EMPTY: 0,
@@ -33,7 +32,7 @@ const STATUS = {
 };
 
 export default {
-  props: ["index"],
+  props: ["address", "index"],
   data() {
     return {
       proccess: STATUS.EMPTY,
@@ -50,7 +49,7 @@ export default {
       this.proccess = STATUS.BTN;
       const contract = new this.$robonomics.web3.eth.Contract(
         VestingAbi,
-        config.VESTING
+        this.address
       );
       return contract.methods
         .claimVestedTokens(this.index)

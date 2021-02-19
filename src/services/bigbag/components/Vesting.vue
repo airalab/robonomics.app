@@ -4,6 +4,15 @@
     <template v-else>
       <template v-if="isCorrect">
         <h2>Vesting grants for {{ $robonomics.account.address }}</h2>
+        <h3>
+          Contract
+          <a
+            :href="`https://etherscan.io/address/${address}#readContract`"
+            target="_blank"
+          >
+            {{ address }}
+          </a>
+        </h3>
         <div v-if="grants.length == 0">Not found grants.</div>
         <div v-else v-for="(grant, index) in grants" :key="index">
           <h4>Grant</h4>
@@ -35,6 +44,7 @@
           <div></div>
           <Claim
             v-if="Number(grant.amountVested) > 0"
+            :address="address"
             :index="grant.index"
             @success="getInfoVesting"
           />
