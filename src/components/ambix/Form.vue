@@ -15,7 +15,7 @@
       <span class="align-vertical">{{ action }}</span>
       <div class="loader-ring align-vertical m-l-10"></div>
     </RButton>
-    <RButton v-else fullWidth @click.native="submit">{{ action }}</RButton>
+    <RButton v-else fullWidth>{{ action }}</RButton>
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
@@ -29,7 +29,7 @@
     <p class="t-sm" :style="{ color: isApprove ? '#54CE63' : '#E84004' }">
       Current allowance: {{ current | fromWei(decimals, fromLabel) }}
     </p>
-    <p v-if="error !== ''" class="t-sm" style="color: #e84004;">{{ error }}</p>
+    <p v-if="error !== ''" class="t-sm" style="color: #e84004">{{ error }}</p>
     <p></p>
   </form>
 </template>
