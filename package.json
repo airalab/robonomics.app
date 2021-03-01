@@ -36,7 +36,7 @@
     "leaflet.markercluster": "^1.4.1",
     "lodash": "^4.17.19",
     "moment": "^2.29.1",
-    "prismjs": "^1.22.0",
+    "prismjs": "^1.23.0",
     "robonomics-js": "^0.6.2",
     "robonomics-vc": "^0.1.1",
     "rosbag": "^2.6.3",
