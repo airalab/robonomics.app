@@ -1,16 +1,17 @@
 <template>
   <fragment>
+    <h2>Vesting grants for {{ $robonomics.account.address }}</h2>
+    <ContractForm ref="form" @onChange="onChange" @onSubmit="handleSubmit" />
     <template v-if="isLoad">...</template>
     <template v-else>
       <template v-if="isCorrect">
-        <h2>Vesting grants for {{ $robonomics.account.address }}</h2>
         <h3>
           Contract
           <a
-            :href="`https://etherscan.io/address/${address}#readContract`"
+            :href="`https://etherscan.io/address/${addressContract}#readContract`"
             target="_blank"
           >
-            {{ address }}
+            {{ addressContract }}
           </a>
         </h3>
         <div v-if="grants.length == 0">Not found grants.</div>
@@ -44,7 +45,7 @@
           <div></div>
           <Claim
             v-if="Number(grant.amountVested) > 0"
-            :address="address"
+            :address="addressContract"
             :index="grant.index"
             @success="getInfoVesting"
           />
@@ -67,18 +68,21 @@
 <script>
 import Claim from "./Claim";
 import moment from "moment";
+import ContractForm from "./ContractForm";
 import VestingAbi from "../abi/Vesting.json";
 
 export default {
   props: ["address"],
   components: {
-    Claim
+    Claim,
+    ContractForm
   },
   data() {
     return {
       isLoad: true,
       isCorrect: false,
-      grants: []
+      grants: [],
+      addressContract: this.address
     };
   },
   filters: {
@@ -86,16 +90,28 @@ export default {
       return moment(v, "X").format("DD.MM.YYYY HH:mm:ss");
     }
   },
-  created() {
+  mounted() {
+    this.$refs.form.fields.address.value = this.address;
     this.getInfoVesting();
   },
   methods: {
+    onChange() {
+      this.$refs.form.submit();
+    },
+    handleSubmit({ error, fields }) {
+      if (!error) {
+        this.addressContract = fields.address.value;
+        this.getInfoVesting();
+      } else {
+        this.addressContract = "";
+      }
+    },
     async getInfoVesting() {
       console.log("up vest");
       this.isLoad = true;
       const contract = new this.$robonomics.web3.eth.Contract(
         VestingAbi,
-        this.address
+        this.addressContract
       );
       try {
         const grantIndexes = await contract.methods
