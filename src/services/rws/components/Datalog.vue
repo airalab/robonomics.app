@@ -87,10 +87,12 @@ export default {
     async getBandwidth() {
       if (this.account) {
         const bandwidth = await getBandwidth(this.account);
-        this.bandwidth = new BN(bandwidth)
-          .multipliedBy(new BN("100"))
-          .div(new BN("1000000000"))
-          .toString(10);
+        if (bandwidth.toString()) {
+          this.bandwidth = new BN(bandwidth)
+            .multipliedBy(new BN("100"))
+            .div(new BN("1000000000"))
+            .toString(10);
+        }
       }
     },
     async run() {
