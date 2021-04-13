@@ -100,8 +100,10 @@ export default {
     },
     handleSubmit({ error, fields }) {
       if (!error) {
-        this.addressContract = fields.address.value;
-        this.getInfoVesting();
+        if (this.addressContract != fields.address.value) {
+          this.addressContract = fields.address.value;
+          this.getInfoVesting();
+        }
       } else {
         this.addressContract = "";
       }
