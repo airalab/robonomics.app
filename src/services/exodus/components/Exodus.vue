@@ -1,25 +1,29 @@
 <template>
   <fragment>
-    <Progress :percent="percent" :amount="totalBurnFormat" />
+    <!-- <Progress :percent="percent" :amount="totalBurnFormat" /> -->
+    <h2 style="text-align: center">
+      <b>{{ totalBurnFormat }}</b> ERC-20 XRT SWAPPED to XRT on Robonomics
+      Parachain
+    </h2>
 
-    <div class="row" style="margin-top: 30px;">
-      <div class="col-md-6" style="text-align: center; font-size: 20px;">
+    <div class="row" style="margin-top: 30px">
+      <div class="col-md-6" style="text-align: center; font-size: 20px">
         Ethereum mainnet balance
       </div>
-      <div class="col-md-6" style="text-align: center; font-size: 20px;">
+      <div class="col-md-6" style="text-align: center; font-size: 20px">
         Robonomics Parachain allocation
       </div>
     </div>
     <div class="row">
       <div
         class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold;"
+        style="text-align: center; font-size: 20px; font-weight: bold"
       >
         {{ balanceXrtFormat }}
       </div>
       <div
         class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold;"
+        style="text-align: center; font-size: 20px; font-weight: bold"
       >
         {{ burnFormat }}
       </div>
@@ -47,14 +51,14 @@ import utils from "web3-utils";
 import { encodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
 import Activate from "./Activate";
-import Progress from "./Progress";
+// import Progress from "./Progress";
 import ExodusAbi from "../abi/Exodus.json";
 
 export default {
   mixins: [token],
   components: {
-    Activate,
-    Progress
+    Activate
+    // Progress
   },
   data() {
     return {
@@ -78,7 +82,7 @@ export default {
       return this.$options.filters.fromWei(this.burn, 9, "XRT");
     },
     totalBurnFormat: function () {
-      return this.$options.filters.fromWei(this.totalBurn.toString(), 9, "XRT");
+      return this.$options.filters.fromWei(this.totalBurn.toString(), 9, "");
     },
     percent: function () {
       return Math.round(
