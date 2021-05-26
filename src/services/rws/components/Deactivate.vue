@@ -5,17 +5,19 @@
       size="big"
       fullWidth
       @click="run"
-      :disabled="
-        (proccess > 0 && proccess < 3) ||
-        (stake.status == 2 &&
-          current_block - stake.last_update <= lock_duration)
-      "
+      :disabled="isDisabledButton"
       style="margin-bottom: 25px"
     >
-      <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
+      <div class="loader-ring" v-if="isLoader"></div>
       &nbsp;
       <template v-if="stake.status == 1">Deactivate</template>
-      <template v-else-if="stake.status == 2">Withdraw</template>
+      <template v-else-if="stake.status == 2">
+        <template v-if="isLocked">
+          <div class="loader-ring"></div>
+          &nbsp;&nbsp; Timeout block <b>{{ timeout }}</b>
+        </template>
+        <template v-else> Withdraw </template>
+      </template>
     </RButton>
 
     <p v-if="tx">
@@ -23,7 +25,9 @@
       <a :href="`https://etherscan.io/tx/${tx}`" target="_blank">{{ tx }}</a>
     </p>
 
-    <p v-if="proccess === 4">Success</p>
+    <div class="t-align--center">
+      <b class="green" v-if="isSuccess">Success</b>
+    </div>
   </section>
 </template>
 
@@ -46,6 +50,35 @@ export default {
       proccess: STATUS.EMPTY,
       tx: null
     };
+  },
+  watch: {
+    "stake.status": function (newV, oldV) {
+      console.log(newV, oldV);
+      this.proccess = STATUS.EMPTY;
+    }
+  },
+  computed: {
+    isSuccess: function () {
+      return this.proccess === 4;
+    },
+    isLoader: function () {
+      return this.proccess > 0 && this.proccess < 3;
+    },
+    isLocked: function () {
+      return this.stake.status == 2 && this.isLockWithdraw;
+    },
+    isDisabledButton: function () {
+      return this.isLoader || this.isLocked;
+    },
+    isLockWithdraw: function () {
+      return this.passed <= Number(this.lock_duration);
+    },
+    passed: function () {
+      return Number(this.current_block) - Number(this.stake.last_update);
+    },
+    timeout: function () {
+      return Number(this.lock_duration) + 1 - this.passed;
+    }
   },
   methods: {
     run() {
@@ -77,6 +110,9 @@ export default {
           setTimeout(() => {
             this.tx = null;
             this.proccess = STATUS.FINISH;
+            setTimeout(() => {
+              this.proccess = STATUS.EMPTY;
+            }, 3000);
           }, 3000);
         })
         .catch(() => {
@@ -105,6 +141,9 @@ export default {
           setTimeout(() => {
             this.tx = null;
             this.proccess = STATUS.FINISH;
+            setTimeout(() => {
+              this.proccess = STATUS.EMPTY;
+            }, 3000);
           }, 3000);
         })
         .catch(() => {

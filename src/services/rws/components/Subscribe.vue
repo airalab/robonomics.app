@@ -2,33 +2,58 @@
   <fragment>
     <div class="row">
       <div class="col-md-6" style="text-align: center">
+        <h3>Subscribe</h3>
+        <RButton
+          size="sm"
+          @click="action = 2"
+          :disabled="action === 2 || stake.status == 0 || stake.amount <= 0"
+        >
+          Withdraw
+        </RButton>
+        <br />
+        <br />
         <Balance
           :amount="stake.amount"
           symbol="RWS"
           style="font-size: 20px; font-weight: bold"
         />
-        &nbsp;
-        <span>{{ status }}</span>
-        &nbsp;
-        <!-- <span
-          v-if="stake.status == 2 && current_block - stake.last_update <= lock_duration"
-        >{{Number(lock_duration)-(Number(current_block)-Number(stake.last_update))}} blocks</span>-->
         <br />
-        <RButton
-          size="sm"
-          @click="toggleFormActivate = false"
-          :disabled="
-            !toggleFormActivate ||
-            stake.status == 0 ||
-            stake.amount <= 0 ||
-            (stake.status == 2 &&
-              current_block - stake.last_update <= lock_duration)
-          "
-        >
-          withdraw
-        </RButton>
+        <template v-if="Number(stake.amount) > 0">
+          <b>{{ status }}</b> for account
+          <b
+            style="cursor: copy"
+            :title="stake.account"
+            v-clipboard:copy="stake.account"
+            v-clipboard:success="clipboardSuccessHandler"
+          >
+            {{ stake.account | labelAddress }}
+          </b>
+          <br />
+          <router-link
+            :to="{ name: 'rws-accounts', params: { account: stake.account } }"
+          >
+            Accounts manager
+          </router-link>
+          <br />
+          <b>Bandwidth Robonomics mars</b>:
+          <span :class="[Number(bandwidth) > 0 ? 'green' : 'red']">
+            {{ bandwidth }}%
+          </span>
+        </template>
+        <template v-else>
+          {{ status }}
+        </template>
       </div>
       <div class="col-md-6" style="text-align: center">
+        <h3>Balance</h3>
+        <RButton
+          size="sm"
+          @click="action = 1"
+          :disabled="action === 1 || myBalance <= 0"
+          >Activate</RButton
+        >
+        <br />
+        <br />
         <Balance
           :amount="myBalance"
           symbol="RWS"
@@ -40,35 +65,23 @@
           <a
             href="https://app.uniswap.org/#/swap?inputCurrency=0x7de91b204c1c737bcee6f000aaa6569cf7061cb7&outputCurrency=0x08ad83d779bdf2bbe1ad9cc0f78aa0d24ab97802"
             target="_blank"
-            >trade</a
           >
-          or
-          <RButton
-            size="sm"
-            @click="toggleFormActivate = true"
-            :disabled="toggleFormActivate || myBalance <= 0"
-            >activate</RButton
-          >
+            trade
+          </a>
+          or activate
         </p>
       </div>
     </div>
 
-    <Activate v-if="toggleFormActivate" :account="stake.account" />
-    <!-- <Activate
-      v-if="toggleFormActivate"
-      :account="stake.account"
-      @account="handleAccount"
-    /> -->
+    <hr v-if="action > 0" style="margin: 30px 0" />
+
+    <Activate v-if="action === 1" :account="stake.account" />
     <Deactivate
-      v-else-if="stake.amount > 0"
+      v-else-if="action === 2 && stake.amount > 0"
       :stake="stake"
       :current_block="current_block"
       :lock_duration="lock_duration"
     />
-
-    <div v-if="stake.account && stake.amount > 0">
-      <Datalog ref="datalog" :account="stake.account" :amount="stake.amount" />
-    </div>
   </fragment>
 </template>
 
@@ -79,30 +92,31 @@ import config from "../config";
 import SubscriptionAbi from "../abi/Subscription.json";
 import Activate from "./Activate";
 import Deactivate from "./Deactivate";
-import Datalog from "./Datalog";
 import Balance from "./Balance";
 import { getApi } from "../../../utils/substrate";
+import { getBandwidth } from "../utils";
+import BN from "bignumber.js";
 
 export default {
   mixins: [token],
   components: {
     Activate,
     Deactivate,
-    Datalog,
     Balance
   },
   data() {
     return {
-      toggleFormActivate: true,
+      action: 0,
       current_block: 0,
       lock_duration: 0,
-      // account: "",
       stake: {
         last_update: "",
         status: 0,
         amount: "",
         account: ""
-      }
+      },
+      bandwidthListener: null,
+      bandwidth: "0"
     };
   },
   created() {
@@ -138,14 +152,41 @@ export default {
       return this.balance(config.RWS, this.$robonomics.account.address);
     },
     myBalanceFormat: function () {
-      return this.myBalance;
-      // return this.balanceFormat(config.RWS, this.$robonomics.account.address);
+      return this.balanceFormat(config.RWS, this.$robonomics.account.address);
     }
   },
+  watch: {
+    "stake.amount": {
+      immediate: true,
+      handler: function (newValue, oldValue) {
+        if (!oldValue && newValue) {
+          this.bandwidthListener = setInterval(async () => {
+            if (this.stake.account) {
+              const bandwidth = await getBandwidth(this.stake.account);
+              if (bandwidth.toHuman()) {
+                this.bandwidth = new BN(bandwidth)
+                  .multipliedBy(new BN("100"))
+                  .div(new BN("1000000000"))
+                  .toString(10);
+              }
+            }
+          }, 2000);
+        } else if (!newValue && oldValue) {
+          clearInterval(this.bandwidthListener);
+          this.bandwidth = "0";
+        }
+      }
+    }
+  },
+  destroyed() {
+    clearInterval(this.bandwidthListener);
+  },
   methods: {
-    // handleAccount(account) {
-    //   this.account = account;
-    // },
+    clipboardSuccessHandler() {
+      this.$notify({
+        title: "Address copied."
+      });
+    },
     watchEvents(fromBlock) {
       const contract = new this.$robonomics.web3.eth.Contract(
         SubscriptionAbi,
@@ -195,7 +236,6 @@ export default {
                 getApi("robonomics").registry.chainSS58
               )
             };
-            // this.account = this.stake.account;
           } else {
             this.stake = {
               last_update: "",

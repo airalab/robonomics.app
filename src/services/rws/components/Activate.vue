@@ -21,7 +21,9 @@
       <a :href="`https://etherscan.io/tx/${tx}`" target="_blank">{{ tx }}</a>
     </p>
 
-    <p v-if="proccess === 4">Success</p>
+    <div class="t-align--center">
+      <b class="t-align--center green" v-if="proccess === 4">Success</b>
+    </div>
   </section>
 </template>
 
@@ -181,6 +183,9 @@ export default {
           setTimeout(() => {
             this.tx = null;
             this.proccess = STATUS.FINISH;
+            setTimeout(() => {
+              this.proccess = STATUS.EMPTY;
+            }, 3000);
           }, 3000);
         })
         .catch(() => {
