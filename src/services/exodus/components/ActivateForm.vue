@@ -16,7 +16,10 @@
     <RFormField>
       <RFieldLabel :isError="fields.account.error">
         Parachain Account (Use
-        <a href="https://parachain.robonomics.network/" target="_blank">
+        <a
+          href="https://parachain.robonomics.network/?rpc=wss%3A%2F%2Fearth.rpc.robonomics.network#/accounts"
+          target="_blank"
+        >
           Substrate portal
         </a>
         to create)
