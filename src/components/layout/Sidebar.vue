@@ -15,12 +15,7 @@
       <router-link :to="{ name: 'iot-twins' }" active-class="active" exact>
         Digital twins
       </router-link>
-      <router-link
-        :to="{ name: 'rws' }"
-        active-class="active"
-        exact
-        class="disabled"
-      >
+      <router-link :to="{ name: 'rws' }" active-class="active" exact>
         Subscription
       </router-link>
     </RSidebarSection>
@@ -57,6 +52,9 @@
       </router-link>
       <router-link :to="{ name: 'ambix' }" active-class="active" exact>
         {{ $t("menu.alembic") }}
+      </router-link>
+      <router-link :to="{ name: 'exodus' }" active-class="active" exact>
+        {{ $t("menu.exodus") }}
       </router-link>
     </RSidebarSection>
     <RSidebarSection title="Wiki and support">

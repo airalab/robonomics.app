@@ -62,7 +62,11 @@ export default {
             accounts: accounts,
             onSend: async (address) => {
               const account = await getAccount(api, address);
-              const tx = await send(api, account, stringToHex(this.value.data));
+              const tx = await send(
+                api,
+                account.address,
+                stringToHex(this.value.data)
+              );
               updateByList(this.addr, this.value.id, {
                 substrate: { account: address, ...tx }
               });

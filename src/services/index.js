@@ -2,7 +2,7 @@ import devices from "./devices";
 import sensorsNetwork from "./sensors-network";
 import blockchainStamp from "./blockchain-stamp";
 import sensor from "./sensor";
-import fujiWeather from "./fuji-weather";
+// import fujiWeather from "./fuji-weather";
 import gakaChu from "./gaka-chu";
 import offsetting from "./offsetting";
 import issuing from "./issuing";
@@ -16,10 +16,14 @@ import exodus from "./exodus";
 import xrtForVote from "./xrt-for-vote";
 import bigBag from "./bigbag";
 import auction from "./auction";
+import fuji from "./fuji";
+import decoded from "./decoded";
 
 export default {
+  decoded,
   devices,
-  fujiWeather,
+  // fujiWeather,
+  fuji,
   sensorsMap,
   blockchainStamp,
   sensorsNetwork,

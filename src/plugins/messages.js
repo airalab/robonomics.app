@@ -29,7 +29,8 @@ export default {
       alembic: "AIRA → XRT",
       riot: "Riot chat",
       rws: "RWS",
-      votes: "XRT → DAO VOTES"
+      votes: "XRT → DAO VOTES",
+      exodus: "Exodus"
     },
     sidebar: { connect: "Connect account" },
 
@@ -166,7 +167,8 @@ export default {
       alembic: "AIRA → XRT",
       riot: "Riot chat",
       rws: "RWS",
-      votes: "XRT → DAO VOTES"
+      votes: "XRT → DAO VOTES",
+      exodus: "Исход"
     },
     sidebar: { connect: "Подключить аккаунт" },
 

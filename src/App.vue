@@ -39,6 +39,7 @@
       <router-view />
     </Wrapp>
     <modals-container />
+    <notifications />
   </fragment>
 </template>
 

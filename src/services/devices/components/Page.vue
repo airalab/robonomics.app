@@ -1,6 +1,7 @@
 <template>
   <Page>
-    <router-view></router-view>
+    <router-view v-if="ready"></router-view>
+    <div v-else>...</div>
   </Page>
 </template>
 
@@ -12,8 +13,14 @@ export default {
   components: {
     Page
   },
+  data() {
+    return {
+      ready: false
+    };
+  },
   async created() {
     await getInstance();
+    this.ready = true;
   }
 };
 </script>

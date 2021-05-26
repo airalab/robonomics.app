@@ -6,8 +6,8 @@ import List from "./components/list/List";
 import Activity from "./components/activity/Main";
 import Msg from "./components/msg/Main";
 import Twins from "./components/twins/Main";
-import TwinsCreate from "./components/twins/Create";
-import TwinsView from "./components/twins/View";
+// import TwinsCreate from "./components/twins/Create";
+// import TwinsView from "./components/twins/View";
 
 export default {
   path: "/",
@@ -46,17 +46,17 @@ export default {
       component: Msg,
       props: true
     },
-    {
-      path: "/iot/twins/create",
-      name: "iot-twins-create",
-      component: TwinsCreate
-    },
-    {
-      path: "/iot/twins/:account",
-      name: "iot-twin-show",
-      component: TwinsView,
-      props: true
-    },
+    // {
+    //   path: "/iot/twins/create",
+    //   name: "iot-twins-create",
+    //   component: TwinsCreate
+    // },
+    // {
+    //   path: "/iot/twins/:account",
+    //   name: "iot-twin-show",
+    //   component: TwinsView,
+    //   props: true
+    // },
     {
       path: "/iot/twins",
       name: "iot-twins",
