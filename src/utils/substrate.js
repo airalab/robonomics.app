@@ -8,6 +8,7 @@ import {
 import {
   u8aToString,
   u8aToU8a,
+  u8aToHex,
   stringToHex,
   compactFromU8a
 } from "@polkadot/util";
@@ -39,16 +40,37 @@ export const config = {
     }
   },
   robonomics: {
-    url: "wss://earth.rpc.robonomics.network",
+    url: "wss://mars.rpc.robonomics.network",
+    // url: "ws://127.0.0.1:9944",
     types: {
       Record: "Vec<u8>",
       Parameter: "Bool",
       Address: "AccountId",
-      LookupSource: "AccountId"
+      LookupSource: "AccountId",
+      CurrencyId: {
+        _enum: ["Native"]
+      },
+      CurrencyIdOf: "CurrencyId",
+
+      LiabilityIndex: "u32",
+      Technics: "Vec<u8>",
+      Economics: "()",
+      SignedAgreement: {
+        technics: "Vec<u8>",
+        economics: "Economics",
+        promisee: "AccountId",
+        promisor: "AccountId",
+        promisee_signature: "MultiSignature",
+        promisor_signature: "MultiSignature"
+      },
+      Agreement: "SignedAgreement<Vec<u8>,Economics,AccountId,MultiSignature>",
+      PalletId: "u64",
+      Lighthouse: "H160"
     },
     keyring: {
       isDevelopment: false,
-      type: "ed25519"
+      // isDevelopment: true,
+      type: "sr25519"
     }
   }
 };
@@ -85,7 +107,7 @@ export async function getInstance(network = "robonomics") {
     return api[network];
   }
   api[network] = await ApiPromise.create({
-    provider: getProvider(),
+    provider: getProvider(network),
     types: config[network].types
   });
   return api[network];
@@ -105,7 +127,7 @@ export async function initAccounts(api) {
         {
           genesisHash: api.genesisHash,
           ss58Format: api.registry.chainSS58,
-          ...config.keyring
+          ...config.robonomics.keyring
         },
         injectedAccounts
       );
@@ -130,9 +152,26 @@ export async function getAccount(api, address) {
   if (account.meta.isInjected) {
     const injected = await web3FromSource(account.meta.source);
     api.setSigner(injected.signer);
-    return account.address;
+    return {
+      ...account,
+      signMsg: async function (data) {
+        return (
+          await injected.signer.signRaw({
+            address: account.address,
+            data: u8aToHex(data),
+            type: "bytes"
+          })
+        ).signature;
+      }
+    };
   }
-  return account;
+
+  return {
+    ...account,
+    signMsg: async function (data) {
+      return Promise.resolve(u8aToHex(account.sign(data)));
+    }
+  };
 }
 
 export function send(api, account, data) {
