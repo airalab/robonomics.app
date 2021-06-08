@@ -10,13 +10,22 @@
         {{ option.meta.name }}
       </option>
     </select>
-    &nbsp;
-    <router-link :to="{ name: 'rws-accounts', params: { account: account } }">
-      Accounts manager
-    </router-link>
-    <button v-if="account" @click="create" style="float: right">
-      Create new
-    </button>
+    <div style="float: right">
+      <button v-if="account" @click="create">Create new</button>
+      &nbsp;
+      <template v-if="bandwidth > 0">
+        <router-link
+          :to="{ name: 'rws-accounts', params: { account: account } }"
+        >
+          Accounts manager
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link :to="{ name: 'rws', params: { account: account } }"
+          >RWS activate
+        </router-link>
+      </template>
+    </div>
     <div v-if="account">
       <table class="container-full" v-for="(list, id) in twins" :key="id">
         <tr>
@@ -71,15 +80,26 @@
                 </b>
               </template>
               &nbsp;
-              <router-link
-                v-if="!twin.hasSubscribe"
-                :to="{
-                  name: 'rws-accounts',
-                  params: { account: account, new: twin.source }
-                }"
-              >
-                add subscribe
-              </router-link>
+              <template v-if="!twin.hasSubscribe">
+                <router-link
+                  v-if="bandwidth > 0"
+                  :to="{
+                    name: 'rws-accounts',
+                    params: { account: account, new: twin.source }
+                  }"
+                >
+                  add subscribe
+                </router-link>
+                <router-link
+                  v-else
+                  :to="{
+                    name: 'rws',
+                    params: { account: account }
+                  }"
+                >
+                  rws activate
+                </router-link>
+              </template>
             </td>
             <td>
               <button @click="showForm(twin.id, twin.index)">Update</button>
@@ -107,6 +127,8 @@ import mh from "multihashing-async";
 import CID from "cids";
 import { getSubscription } from "../../utils/substrate";
 import { checkAddress } from "@polkadot/util-crypto";
+import { getBandwidth } from "../../../rws/utils";
+import BN from "bignumber.js";
 
 // async function getHashByData(hash) {
 //   const buf = Buffer.from(hash);
@@ -143,7 +165,9 @@ export default {
       error: {
         topic: false,
         source: false
-      }
+      },
+      bandwidthListener: null,
+      bandwidth: 0
     };
   },
   async mounted() {
@@ -157,6 +181,19 @@ export default {
       if (old !== value) {
         this.load();
         this.loadAccounts();
+
+        this.bandwidth = 0;
+        clearInterval(this.bandwidthListener);
+        this.bandwidthListener = setInterval(async () => {
+          const bandwidth = await getBandwidth(this.account);
+          if (bandwidth.toHuman()) {
+            const value = new BN(bandwidth)
+              .multipliedBy(new BN("100"))
+              .div(new BN("1000000000"))
+              .toString(10);
+            this.bandwidth = Number(value);
+          }
+        }, 2000);
       }
     },
     sourceSelect: function (value) {

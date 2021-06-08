@@ -29,16 +29,17 @@
             {{ stake.account | labelAddress }}
           </b>
           <br />
-          <router-link
-            :to="{ name: 'rws-accounts', params: { account: stake.account } }"
-          >
-            Accounts manager
-          </router-link>
-          <br />
           <b>Bandwidth Robonomics mars</b>:
           <span :class="[Number(bandwidth) > 0 ? 'green' : 'red']">
             {{ bandwidth }}%
           </span>
+          <br />
+          <router-link
+            v-if="Number(bandwidth) > 0"
+            :to="{ name: 'rws-accounts', params: { account: stake.account } }"
+          >
+            Accounts manager
+          </router-link>
         </template>
         <template v-else>
           {{ status }}
@@ -98,6 +99,7 @@ import { getBandwidth } from "../utils";
 import BN from "bignumber.js";
 
 export default {
+  props: ["account"],
   mixins: [token],
   components: {
     Activate,
@@ -120,6 +122,9 @@ export default {
     };
   },
   created() {
+    if (this.account) {
+      this.action = 1;
+    }
     this.watchToken(
       config.RWS,
       this.$robonomics.account.address,
@@ -241,7 +246,7 @@ export default {
               last_update: "",
               status: 0,
               amount: "",
-              account: ""
+              account: this.account ? this.account : ""
             };
           }
         });

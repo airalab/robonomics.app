@@ -7,9 +7,10 @@ export default {
   component: Page,
   children: [
     {
-      path: "",
+      path: ":account?",
       name: "rws",
-      component: Subscribe
+      component: Subscribe,
+      props: true
     },
     {
       path: "accounts/:account/:new?",
