@@ -32,7 +32,10 @@
       >
         {{ $t("menu.lighthouses") }}
       </router-link>
-      <a href="https://parachain.robonomics.network/" target="_blank">
+      <a
+        href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F#/explorer"
+        target="_blank"
+      >
         {{ $t("menu.parachain") }}
       </a>
     </RSidebarSection>

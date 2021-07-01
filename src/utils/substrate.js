@@ -65,7 +65,12 @@ export const config = {
       },
       Agreement: "SignedAgreement<Vec<u8>,Economics,AccountId,MultiSignature>",
       PalletId: "u64",
-      Lighthouse: "H160"
+      Lighthouse: "H160",
+      RingBufferIndex: {
+        start: "u64",
+        end: "u64"
+      },
+      RingBufferItem: "(Compact<Moment>,Record)"
     },
     keyring: {
       isDevelopment: false,

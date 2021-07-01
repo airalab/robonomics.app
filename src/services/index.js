@@ -18,8 +18,11 @@ import bigBag from "./bigbag";
 import auction from "./auction";
 import fuji from "./fuji";
 import decoded from "./decoded";
+import artShop from "./art-shop";
+import parachain from "./parachain";
 
 export default {
+  parachain,
   decoded,
   devices,
   // fujiWeather,
@@ -39,5 +42,6 @@ export default {
   exodus,
   xrtForVote,
   bigBag,
-  auction
+  auction,
+  artShop
 };

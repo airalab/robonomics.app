@@ -31,6 +31,7 @@
         <tr>
           <th style="width: 50%">Topic</th>
           <th>Source</th>
+          <th>Last datalog used</th>
           <th style="width: 100px">Action</th>
         </tr>
         <tr v-for="(twin, key) in list" :key="key">
@@ -63,6 +64,7 @@
                 :class="{ error: error.source }"
               />
             </td>
+            <td></td>
             <td><button @click="setSource(twin.id)">Set</button></td>
           </template>
           <template v-else-if="twin.topic">
@@ -101,6 +103,7 @@
                 </router-link>
               </template>
             </td>
+            <td>{{ twinsActive[twin.source] }}</td>
             <td>
               <button @click="showForm(twin.id, twin.index)">Update</button>
             </td>
@@ -108,6 +111,7 @@
           <template v-else>
             <td>-</td>
             <td>-</td>
+            <td></td>
             <td><button @click="showForm(twin.id)">Add</button></td>
           </template>
         </tr>
@@ -157,6 +161,7 @@ export default {
       accountsSubscription: [],
       account: null,
       twins: {},
+      twinsActive: {},
       api: null,
       form: null,
       topic: "",
@@ -175,6 +180,7 @@ export default {
     await initAccounts(this.api);
     this.accounts = getAccounts();
     this.account = this.accounts.length ? this.accounts[0].address : null;
+    this.watchLastUsedDatalod();
   },
   watch: {
     account: function (value, old) {
@@ -206,6 +212,34 @@ export default {
     }
   },
   methods: {
+    async watchLastUsedDatalod() {
+      for (const account in this.twinsActive) {
+        this.$set(
+          this.twinsActive,
+          account,
+          await this.getLastUsedDatalod(account)
+        );
+      }
+      setTimeout(() => {
+        this.watchLastUsedDatalod();
+      }, 5000);
+    },
+    async getLastUsedDatalod(account) {
+      try {
+        const index = await this.api.query.datalog.datalogIndex(account);
+        if (index.start.toNumber() > 0) {
+          const count = index.start.toNumber() / 1024;
+          const data = await this.api.query.datalog.datalogItem([
+            account,
+            count - 1
+          ]);
+          return new Date(data[0].toNumber()).toLocaleString();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return "-";
+    },
     async loadAccounts() {
       this.accountsSubscription = [];
       let accountsSubscription = [];
@@ -259,6 +293,7 @@ export default {
     },
     async load() {
       const twins = {};
+      this.twinsActive = {};
       const total = await this.api.query.digitalTwin.total();
       for (let id = 0; id < Number(total); id++) {
         const owner = await this.api.query.digitalTwin.owner(id);
@@ -284,6 +319,7 @@ export default {
                   (item) => item.value === res[topic]
                 )?.hasSubscribe
               });
+              this.$set(this.twinsActive, res[topic], "-");
               index++;
             }
             twins[id].push({
