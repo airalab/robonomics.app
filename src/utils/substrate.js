@@ -30,9 +30,11 @@ export const config = {
     }
   },
   ipci: {
-    url: "wss://substrate.ipci.io",
+    url: "wss://ipci.rpc.robonomics.network/",
     types: {
-      Record: "Vec<u8>"
+      Record: "Vec<u8>",
+      EverUSDBalance: "u64",
+      BondPeriod: "u64"
     },
     keyring: {
       isDevelopment: false,
@@ -51,7 +53,6 @@ export const config = {
         _enum: ["Native"]
       },
       CurrencyIdOf: "CurrencyId",
-
       LiabilityIndex: "u32",
       Technics: "Vec<u8>",
       Economics: "()",

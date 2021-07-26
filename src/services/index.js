@@ -20,6 +20,7 @@ import fuji from "./fuji";
 import decoded from "./decoded";
 import artShop from "./art-shop";
 import parachain from "./parachain";
+import ipciValidator from "./ipci-validator";
 
 export default {
   parachain,
@@ -43,5 +44,6 @@ export default {
   xrtForVote,
   bigBag,
   auction,
-  artShop
+  artShop,
+  ipciValidator
 };
