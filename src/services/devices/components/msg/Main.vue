@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import { getInstance } from "../../../../utils/substrate";
 import { hexToString } from "@polkadot/util";
 import config from "../../config";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   props: ["sensor", "block", "tx"],
@@ -22,12 +22,12 @@ export default {
     };
   },
   async mounted() {
-    const api = await getInstance();
-    api.rpc.chain.getBlock(this.block, (block) => {
+    const robonomics = Robonomics.getInstance();
+    robonomics.api.rpc.chain.getBlock(this.block, (block) => {
       block.block.extrinsics.forEach((item) => {
         if (
-          item.method.sectionName === "datalog" &&
-          item.method.methodName === "record" &&
+          item.method.section === "datalog" &&
+          item.method.method === "record" &&
           item.hash.toString() === this.tx
         ) {
           const props = {};

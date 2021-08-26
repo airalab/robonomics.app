@@ -35,7 +35,7 @@
 <script>
 import robonomicsVC from "robonomics-vc";
 import { checkAddress } from "@polkadot/util-crypto";
-import { getApi } from "../../../utils/substrate";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   mixins: [robonomicsVC.mixins.form],
@@ -57,7 +57,7 @@ export default {
             (v) => {
               return checkAddress(
                 v,
-                getApi("robonomics").registry.chainSS58
+                Robonomics.getInstance().api.registry.chainSS58
               )[0];
             }
           ],

@@ -94,9 +94,8 @@ import SubscriptionAbi from "../abi/Subscription.json";
 import Activate from "./Activate";
 import Deactivate from "./Deactivate";
 import Balance from "./Balance";
-import { getApi } from "../../../utils/substrate";
-import { getBandwidth } from "../utils";
 import BN from "bignumber.js";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   props: ["account"],
@@ -118,7 +117,8 @@ export default {
         account: ""
       },
       bandwidthListener: null,
-      bandwidth: "0"
+      bandwidth: "0",
+      robonomics: null
     };
   },
   created() {
@@ -140,6 +140,7 @@ export default {
         }
       });
     }, 1000);
+    this.robonomics = Robonomics.getInstance();
   },
   mounted() {
     this.upLockDuration();
@@ -167,7 +168,9 @@ export default {
         if (!oldValue && newValue) {
           this.bandwidthListener = setInterval(async () => {
             if (this.stake.account) {
-              const bandwidth = await getBandwidth(this.stake.account);
+              const bandwidth = await this.robonomics.rws.getBandwidth(
+                this.stake.account
+              );
               if (bandwidth.toHuman()) {
                 this.bandwidth = new BN(bandwidth)
                   .multipliedBy(new BN("100"))
@@ -238,7 +241,7 @@ export default {
               amount: r.amount,
               account: encodeAddress(
                 r.account,
-                getApi("robonomics").registry.chainSS58
+                this.robonomics.api.registry.chainSS58
               )
             };
           } else {

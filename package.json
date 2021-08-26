@@ -11,9 +11,9 @@
     "pretty": "prettier --write \"./src/**/*.{js,vue,ts,jsx,json}\""
   },
   "dependencies": {
-    "@polkadot/api": "^4.16.2",
-    "@polkadot/extension-dapp": "^0.37.2",
-    "@polkadot/ui-keyring": "^0.70.1",
+    "@polkadot/api": "^5.6.1",
+    "@polkadot/extension-dapp": "^0.39.3",
+    "@polkadot/ui-keyring": "^0.85.1",
     "@uniswap/sdk": "^2.0.5",
     "axios": "^0.21.0",
     "base-x": "^3.0.8",

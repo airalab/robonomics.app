@@ -35,8 +35,8 @@
 import Row from "./Row";
 import Pagination from "./Pagination";
 import { storageMsg, addByList, storageTwins } from "../../utils/storage";
-import { subscribeDatalog } from "../../../../utils/substrate";
 import { u8aToString } from "@polkadot/util";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   props: ["account"],
@@ -100,15 +100,13 @@ export default {
         ? items[this.addr]
         : [];
 
-      this.unsubscribe = await subscribeDatalog(
-        addr,
-        (res) => {
-          res.forEach((item) => {
-            this.handlerMsg(item);
-          });
-        }
-        // { pos: 0, time: "1606373183000" }
-      );
+      const robonomics = Robonomics.getInstance();
+      this.unsubscribe = await robonomics.datalog.on({}, (res) => {
+        console.log(res);
+        res.forEach((item) => {
+          this.handlerMsg(item);
+        });
+      });
     },
     handlePage(page) {
       this.currentPage = page;

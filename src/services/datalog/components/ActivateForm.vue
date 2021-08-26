@@ -16,12 +16,13 @@
 import robonomicsVC from "robonomics-vc";
 
 export default {
+  props: ["address"],
   mixins: [robonomicsVC.mixins.form],
   data() {
     return {
       fields: {
         account: {
-          value: "4HaijzcsCTayymV5zZPJdPYzwjTfVYe98QRx6R6Zj1NegNE2",
+          value: this.address,
           type: "text",
           rules: ["require", robonomicsVC.validators.length(48)],
           error: false

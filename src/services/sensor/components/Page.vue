@@ -10,36 +10,42 @@
         <span>{{ nameModel }} {{ miniAddrAgent }}</span>
       </h2>
       <modals-container />
-      <SensorResult
-        v-if="result"
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :result="result"
-      />
-      <SensorResultSubstrate
-        v-if="substrateBlock"
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :substrateBlock="substrateBlock"
-        :substrateTx="substrateTx"
-      />
-      <SensorCost
-        v-else-if="cost > 0"
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :tokenAddress="token"
-        :cost="cost"
-      />
-      <SensorFree
-        v-else
-        :lighthouse="lighthouse"
-        :model="model"
-        :agent="agent"
-        :result="result"
-      />
+      <template v-if="robonomics">
+        <SensorResult
+          v-if="result"
+          :lighthouse="lighthouse"
+          :model="model"
+          :agent="agent"
+          :result="result"
+        />
+        <SensorResultSubstrate
+          v-if="substrateBlock"
+          :lighthouse="lighthouse"
+          :model="model"
+          :agent="agent"
+          :substrateBlock="substrateBlock"
+          :substrateTx="substrateTx"
+        />
+        <SensorCost
+          v-else-if="cost > 0"
+          :lighthouse="lighthouse"
+          :model="model"
+          :agent="agent"
+          :tokenAddress="token"
+          :cost="cost"
+        />
+        <SensorFree
+          v-else
+          :lighthouse="lighthouse"
+          :model="model"
+          :agent="agent"
+          :result="result"
+        />
+      </template>
+      <template v-else>
+        <div v-if="error" class="red">{{ error }}</div>
+        <div v-else>...</div>
+      </template>
     </section>
   </Page>
 </template>
@@ -51,6 +57,8 @@ import SensorCost from "./SensorCost";
 import SensorResult from "./SensorResult";
 import SensorResultSubstrate from "./SensorResultSubstrate";
 import config from "~config";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { createInstance } from "@/utils/substrate";
 
 export default {
   props: [
@@ -70,6 +78,12 @@ export default {
     SensorResult,
     SensorResultSubstrate
   },
+  data() {
+    return {
+      robonomics: null,
+      error: null
+    };
+  },
   computed: {
     miniAddrAgent: function () {
       return this.agent.slice(0, 6) + "..." + this.agent.slice(-4);
@@ -83,10 +97,19 @@ export default {
         : "unknown";
     }
   },
-  created() {
+  async created() {
     document.title = `${this.$t("sensors.title")} ${
       this.nameModel
     } – Robonomics Network dApp`;
+    try {
+      this.robonomics = Robonomics.getInstance("ipci");
+    } catch (_) {
+      try {
+        this.robonomics = await createInstance("ipci");
+      } catch (error) {
+        this.error = error.message;
+      }
+    }
   }
 };
 </script>

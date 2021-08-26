@@ -78,16 +78,9 @@ import Pagination from "./Pagination";
 import Message from "./MessageFree";
 import Storage from "../utils/storage";
 import { parseResult, loadScript } from "../utils/utils";
-import {
-  getInstance,
-  getProvider,
-  initAccounts,
-  getAccount,
-  getAccounts
-  // } from "../utils/substrate";
-} from "../../../utils/substrate";
 import config from "~config";
 import Modal from "./Modal";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 import utils from "web3-utils";
 
@@ -273,26 +266,21 @@ export default {
       }
     },
     async modalSelectAccount() {
-      const provider = getProvider("ipci");
-      provider.on("error", () => {
-        this.error = "Error connected api";
-        this.isRequest = false;
-      });
-      const api = await getInstance("ipci");
-      await initAccounts(api);
-      const accounts = await getAccounts(api);
+      const robonomics = Robonomics.getInstance("ipci");
+      const accounts = robonomics.accountManager.getAccounts();
       if (accounts.length === 0) {
         this.error = "Not found accounts";
         this.isRequest = false;
         return;
       }
-
       this.$modal.show(
         Modal,
         {
           accounts: accounts,
           onSend: async (address) => {
-            const account = await getAccount(api, address);
+            const account = await robonomics.accountManager.selectAccountByAddress(
+              address
+            );
             try {
               await this.sendDemand(account);
             } catch (error) {

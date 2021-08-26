@@ -40,12 +40,7 @@
 <script>
 import robonomicsVC from "robonomics-vc";
 import { checkAddress } from "@polkadot/util-crypto";
-import {
-  getInstance,
-  getApi,
-  initAccounts,
-  getAccounts
-} from "../../../utils/substrate";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   mixins: [robonomicsVC.mixins.form],
@@ -74,14 +69,14 @@ export default {
       }
     };
   },
-  async mounted() {
-    await getInstance("ipci");
-    this.api = getApi("ipci");
-    await initAccounts(this.api);
-    this.accounts = getAccounts();
-    this.fields.account.value = this.accounts.length
-      ? this.accounts[0].address
-      : "";
+  async created() {
+    this.robonomics = Robonomics.getInstance("ipci");
+    if (this.robonomics) {
+      this.accounts = this.robonomics.accountManager.getAccounts();
+      this.fields.account.value = this.accounts.length
+        ? this.accounts[0].address
+        : "";
+    }
   }
 };
 </script>

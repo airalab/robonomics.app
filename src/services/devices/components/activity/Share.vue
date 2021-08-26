@@ -26,17 +26,11 @@
 </template>
 
 <script>
-import {
-  getInstance,
-  initAccounts,
-  getAccounts,
-  getAccount,
-  send
-} from "../../../../utils/substrate";
 import { stringToHex } from "@polkadot/util";
 import { updateByList } from "../../utils/storage";
 import Modal from "./Modal";
 import config from "../../config";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 export default {
   props: ["addr", "value"],
@@ -52,24 +46,25 @@ export default {
     async handlePl() {
       this.isWork = true;
       try {
-        const api = await getInstance();
-        await initAccounts(api);
-        const accounts = getAccounts();
-
+        const robonomics = Robonomics.getInstance();
+        const accounts = robonomics.accountManager.getAccounts();
         this.$modal.show(
           Modal,
           {
             accounts: accounts,
             onSend: async (address) => {
-              const account = await getAccount(api, address);
-              const tx = await send(
-                api,
-                account.address,
+              await robonomics.accountManager.selectAccountByAddress(address);
+              const tx = await robonomics.datalog.write(
                 stringToHex(this.value.data)
               );
-              updateByList(this.addr, this.value.id, {
-                substrate: { account: address, ...tx }
-              });
+              try {
+                const result = await robonomics.accountManager.signAndSend(tx);
+                updateByList(this.addr, this.value.id, {
+                  substrate: { account: address, ...result }
+                });
+              } catch (error) {
+                console.log(error.message);
+              }
               this.$modal.hide("modal-select-account");
             }
           },

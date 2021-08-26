@@ -121,18 +121,11 @@
 </template>
 
 <script>
-import {
-  getApi,
-  initAccounts,
-  getAccounts,
-  getAccount
-} from "../../../../utils/substrate";
 import mh from "multihashing-async";
 import CID from "cids";
-import { getSubscription } from "../../utils/substrate";
 import { checkAddress } from "@polkadot/util-crypto";
-import { getBandwidth } from "../../../rws/utils";
 import BN from "bignumber.js";
+import { Robonomics } from "@/utils/robonomics-substrate";
 
 // async function getHashByData(hash) {
 //   const buf = Buffer.from(hash);
@@ -163,6 +156,7 @@ export default {
       twins: {},
       twinsActive: {},
       api: null,
+      robonomics: null,
       form: null,
       topic: "",
       source: "",
@@ -176,9 +170,9 @@ export default {
     };
   },
   async mounted() {
-    this.api = getApi("robonomics");
-    await initAccounts(this.api);
-    this.accounts = getAccounts();
+    this.robonomics = Robonomics.getInstance();
+    this.api = this.robonomics.api;
+    this.accounts = this.robonomics.accountManager.getAccounts();
     this.account = this.accounts.length ? this.accounts[0].address : null;
     this.watchLastUsedDatalod();
   },
@@ -191,7 +185,8 @@ export default {
         this.bandwidth = 0;
         clearInterval(this.bandwidthListener);
         this.bandwidthListener = setInterval(async () => {
-          const bandwidth = await getBandwidth(this.account);
+          const robonomics = Robonomics.getInstance();
+          const bandwidth = await robonomics.rws.getBandwidth(this.account);
           if (bandwidth.toHuman()) {
             const value = new BN(bandwidth)
               .multipliedBy(new BN("100"))
@@ -243,21 +238,16 @@ export default {
     async loadAccounts() {
       this.accountsSubscription = [];
       let accountsSubscription = [];
-      const subscription = await getSubscription(this.account);
-      if (subscription.value.toHuman()) {
-        accountsSubscription = subscription.value.toArray().map((item) => {
-          const acc = this.accounts.find(
-            (acc) => acc.address === item.toHuman()
-          );
-          return {
-            value: item.toHuman(),
-            label: acc
-              ? `${acc.meta.name} (${item.toHuman()})`
-              : item.toHuman(),
-            hasSubscribe: true
-          };
-        });
-      }
+      const robonomics = Robonomics.getInstance();
+      const subscription = await robonomics.rws.getSubscription(this.account);
+      accountsSubscription = subscription.map((item) => {
+        const acc = this.accounts.find((acc) => acc.address === item.toHuman());
+        return {
+          value: item.toHuman(),
+          label: acc ? `${acc.meta.name} (${item.toHuman()})` : item.toHuman(),
+          hasSubscribe: true
+        };
+      });
       for (const acc of this.accounts) {
         if (!accountsSubscription.find((item) => item.value === acc.address)) {
           accountsSubscription.push({
@@ -348,7 +338,9 @@ export default {
       return getIpfsHash(hash);
     },
     async create() {
-      const account = await getAccount(this.api, this.account);
+      const account = await this.robonomics.accountManager.selectAccountByAddress(
+        this.account
+      );
       const tx = this.api.tx.digitalTwin.create();
       tx.signAndSend(
         account.meta.isInjected ? account.address : account,
@@ -381,7 +373,9 @@ export default {
       if (this.error.topic || this.error.source) {
         return;
       }
-      const account = await getAccount(this.api, this.account);
+      const account = await this.robonomics.accountManager.selectAccountByAddress(
+        this.account
+      );
       const topic = getHashFromIpfs(this.topic);
       const source = this.source;
       const tx = this.api.tx.digitalTwin.setSource(id, topic, source);

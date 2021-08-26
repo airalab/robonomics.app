@@ -73,14 +73,10 @@
 </template>
 
 <script>
-import {
-  getInstance,
-  getAccounts,
-  getAccount,
-  sendSubstrate
-} from "../utils/substrate";
 import Storage from "../utils/storage";
 import Modal from "./Modal";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { stringToHex } from "@polkadot/util";
 
 export default {
   props: ["item", "lighthouse", "model", "agent", "isSubstrate"],
@@ -150,8 +146,8 @@ export default {
       )}&ref_src=twsrc%5Etfw`;
     },
     async sendSubstrate(result) {
-      const substrate = await getInstance();
-      const accounts = await getAccounts(substrate);
+      const robonomics = Robonomics.getInstance("ipci");
+      const accounts = robonomics.accountManager.getAccounts();
       const accountsSelects = accounts.map((account) => {
         return {
           value: account.address,
@@ -163,32 +159,28 @@ export default {
       this.$modal.show(Modal, {
         accounts: accountsSelects,
         select: async (address, close, stop) => {
-          const account = await getAccount(substrate, address);
+          await robonomics.accountManager.selectAccountByAddress(address);
+          const tx = await robonomics.datalog.write(stringToHex(result));
+          try {
+            const resultTx = await robonomics.accountManager.signAndSend(tx);
+            console.log("saved block", resultTx.block, resultTx.tx);
+            close();
+            this.substrateBlockHash = resultTx.block;
+            this.substrateTxHash = resultTx.tx;
 
-          await sendSubstrate(
-            substrate,
-            account,
-            result,
-            (block, txHash) => {
-              console.log("saved block", block, txHash);
-              close();
-              this.substrateBlockHash = block;
-              this.substrateTxHash = txHash;
-
-              const id = this.findId(
-                (item) => item.resultHash === this.item.resultHash
-              );
-              if (id) {
-                this.upadte(id, {
-                  substrateBlockHash: this.substrateBlockHash,
-                  substrateTxHash: this.substrateTxHash
-                });
-              }
-            },
-            () => {
-              stop();
+            const id = this.findId(
+              (item) => item.resultHash === this.item.resultHash
+            );
+            if (id) {
+              this.upadte(id, {
+                substrateBlockHash: this.substrateBlockHash,
+                substrateTxHash: this.substrateTxHash
+              });
             }
-          );
+          } catch (error) {
+            console.log(error.message);
+            stop();
+          }
         }
       });
     },

@@ -3,36 +3,44 @@
     <RCard class="item section-light section-centered">
       <div class="item-content" style="text-align: center">
         <h2>DAO IPCI validators rewards by Robonomics team</h2>
-        <CheckForm ref="form" @onChange="onChange" @onSubmit="handleSubmit" />
-        <div style="margin: 20px 0">
-          <b>{{ statusView }}</b>
-          <div v-if="tx">
-            <a :href="`https://rinkeby.etherscan.io/tx/${tx}`" target="_blank">
-              {{ tx }}
-            </a>
+        <template v-if="robonomics">
+          <CheckForm ref="form" @onChange="onChange" @onSubmit="handleSubmit" />
+          <div style="margin: 20px 0">
+            <b>{{ statusView }}</b>
+            <div v-if="tx">
+              <a :href="`https://etherscan.io/tx/${tx}`" target="_blank">
+                {{ tx }}
+              </a>
+            </div>
+            <div v-if="status > 0">
+              Blocks: from 1 to 6241188
+              <br />
+              Your blocks: <b>{{ blocks }}</b>
+              <br />
+              Total amount of reward: <b>{{ rewardWrt }} XRT</b>
+            </div>
+            <div v-if="status > 0"></div>
           </div>
-          <div v-if="status > 0">
-            Your blocks: <b>{{ blocks }}</b>
-            <br />
-            Total amount of reward: <b>{{ rewardWrt }} XRT</b>
-          </div>
-          <div v-if="status > 0"></div>
-        </div>
-        <RButton
-          v-if="status === 1"
-          size="big"
-          fullWidth
-          @click="$refs.form.submit()"
-          :disabled="!validate || blocks <= 0 || status !== 1"
-        >
-          sign and send
-        </RButton>
-        <p v-if="error" class="red">
-          <b>{{ error }}</b>
-        </p>
-        <p v-if="success" class="green">
-          <b>{{ success }}</b>
-        </p>
+          <RButton
+            v-if="status === 1"
+            size="big"
+            fullWidth
+            @click="$refs.form.submit()"
+            :disabled="!validate || blocks <= 0 || status !== 1"
+          >
+            sign and send
+          </RButton>
+          <p v-if="error" class="red">
+            <b>{{ error }}</b>
+          </p>
+          <p v-if="success" class="green">
+            <b>{{ success }}</b>
+          </p>
+        </template>
+        <template v-else>
+          <div v-if="error" class="red">{{ error }}</div>
+          <div v-else>...</div>
+        </template>
       </div>
     </RCard>
   </Page>
@@ -42,9 +50,10 @@
 import axios from "axios";
 import Page from "@/components/layout/Page";
 import CheckForm from "./CheckForm";
-import { getApi, getAccount } from "../../../utils/substrate";
 import { stringToU8a } from "@polkadot/util";
 import config from "../config";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { createInstance } from "@/utils/substrate";
 
 export default {
   components: {
@@ -61,7 +70,8 @@ export default {
       signature: "",
       error: "",
       success: "",
-      interval: null
+      interval: null,
+      robonomics: null
     };
   },
   computed: {
@@ -79,8 +89,23 @@ export default {
       return ((((this.blocks * 100) / 6241188) * 500) / 100).toFixed(4);
     }
   },
-  created() {
+  async created() {
     document.title = `DAO IPCI validators rewards by Robonomics team`;
+    try {
+      this.robonomics = Robonomics.getInstance("ipci");
+    } catch (_) {
+      try {
+        this.robonomics = await createInstance("ipci");
+      } catch (error) {
+        this.error = error.message;
+      }
+    }
+    if (this.robonomics) {
+      this.accounts = this.robonomics.accountManager.getAccounts();
+      this.fields.account.value = this.accounts.length
+        ? this.accounts[0].address
+        : "";
+    }
   },
   destroyed() {
     clearInterval(this.interval);
@@ -118,8 +143,9 @@ export default {
       this.isLoad = true;
       if (!error) {
         try {
-          const api = getApi("ipci");
-          const acc = await getAccount(api, fields.account.value);
+          const acc = await this.robonomics.accountManager.selectAccountByAddress(
+            fields.account.value
+          );
           this.signature = await acc.signMsg(
             stringToU8a(fields.eth_account.value)
           );

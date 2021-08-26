@@ -73,14 +73,10 @@
 </template>
 
 <script>
-import {
-  getInstance,
-  getAccounts,
-  getAccount,
-  sendSubstrate
-} from "../utils/substrate";
 import Storage from "../utils/storage";
 import Modal from "./Modal";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { stringToHex } from "@polkadot/util";
 
 export default {
   props: ["item", "lighthouse", "model", "agent", "isSubstrate"],
@@ -150,30 +146,22 @@ export default {
       )}&ref_src=twsrc%5Etfw`;
     },
     async sendSubstrate(result) {
-      const substrate = await getInstance();
-      const accounts = await getAccounts(substrate);
-      const accountsSelects = accounts.map((account) => {
-        return {
-          value: account.address,
-          text: `${account.meta.name} (${
-            account.meta.isInjected ? "injected" : "dev"
-          })`
-        };
-      });
-      this.$modal.show(Modal, {
-        accounts: accountsSelects,
-        select: async (address, close, stop) => {
-          const account = await getAccount(substrate, address);
+      const robonomics = Robonomics.getInstance("ipci");
+      const accounts = robonomics.accountManager.getAccounts();
+      this.$modal.show(
+        Modal,
+        {
+          accounts: accounts,
+          onSend: async (address) => {
+            await robonomics.accountManager.selectAccountByAddress(address);
+            const tx = await robonomics.datalog.write(stringToHex(result));
+            try {
+              const resultTx = await robonomics.accountManager.signAndSend(tx);
+              console.log("saved block", resultTx.block, resultTx.tx);
 
-          await sendSubstrate(
-            substrate,
-            account,
-            result,
-            (block, txHash) => {
-              console.log("saved block", block, txHash);
-              close();
-              this.substrateBlockHash = block;
-              this.substrateTxHash = txHash;
+              this.$modal.hide("modal-select-account");
+              this.substrateBlockHash = resultTx.block;
+              this.substrateTxHash = resultTx.tx;
 
               const id = this.findId(
                 (item) => item.resultHash === this.item.resultHash
@@ -184,13 +172,19 @@ export default {
                   substrateTxHash: this.substrateTxHash
                 });
               }
-            },
-            () => {
-              stop();
+            } catch (error) {
+              console.log(error.message);
+              this.$modal.hide("modal-select-account");
             }
-          );
+          }
+        },
+        { name: "modal-select-account", height: "auto" },
+        {
+          "before-close": () => {
+            this.isWork = false;
+          }
         }
-      });
+      );
     },
     findId(filter) {
       const items = this.storage.getItems();

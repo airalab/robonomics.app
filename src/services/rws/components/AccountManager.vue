@@ -28,14 +28,8 @@
 </template>
 
 <script>
-import { getSubscription, setSubscription } from "../utils";
-import {
-  getInstance,
-  initAccounts,
-  getAccount
-} from "../../../utils/substrate";
+import { Robonomics } from "@/utils/robonomics-substrate";
 import { checkAddress } from "@polkadot/util-crypto";
-import { getApi } from "../../../utils/substrate";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -82,20 +76,18 @@ export default {
   },
   methods: {
     async loadAccounts() {
-      const subscription = await getSubscription(this.account);
-      if (subscription.value.toHuman()) {
-        this.accounts = subscription.value
-          .toArray()
-          .map((item) => item.toHuman());
-      }
+      const robonomics = Robonomics.getInstance();
+      const subscription = await robonomics.rws.getSubscription(this.account);
+      this.accounts = subscription.map((item) => item.toHuman());
     },
     async save() {
       this.process = true;
       try {
-        const api = await getInstance();
-        await initAccounts(api);
-        const account = await getAccount(api, this.account);
-        await setSubscription(account, this.accounts);
+        const robonomics = Robonomics.getInstance();
+        await robonomics.accountManager.selectAccountByAddress(this.account);
+        const tx = await robonomics.rws.setSubscription(this.accounts);
+        const resultTx = await robonomics.accountManager.signAndSend(tx);
+        console.log("saved block", resultTx.block, resultTx.tx);
         this.loadAccounts();
         this.process = false;
       } catch (e) {
@@ -111,7 +103,7 @@ export default {
         this.accounts.findIndex((i) => i === this.newAccount) < 0 &&
         checkAddress(
           this.newAccount,
-          getApi("robonomics").registry.chainSS58
+          Robonomics.getInstance().api.registry.chainSS58
         )[0]
       ) {
         this.accounts.push(this.newAccount);

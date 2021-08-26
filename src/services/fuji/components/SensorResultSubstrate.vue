@@ -21,8 +21,9 @@
 
 <script>
 import Message from "./MessageFree";
-import { getInstance, hexToString } from "../utils/substrate";
 import { parseResult, loadScript } from "../utils/utils";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { hexToString } from "@polkadot/util";
 
 export default {
   props: ["lighthouse", "model", "agent", "substrateBlock", "substrateTx"],
@@ -41,7 +42,7 @@ export default {
   },
   methods: {
     async init() {
-      const api = await getInstance();
+      const robonomics = Robonomics.getInstance("ipci");
       // console.log(substrate.query.system);
       // substrate.query.system.extrinsicData.at(
       //   "0xcda332716bd86f8a487fc882ed560ba555b6368b2baf3290f0b4492bbac022e9",
@@ -49,7 +50,7 @@ export default {
       //     console.log(r);
       //   }
       // );
-      api.query.system.events.at(this.substrateBlock, (events) => {
+      robonomics.api.query.system.events.at(this.substrateBlock, (events) => {
         // console.log(events);
         events.forEach((record) => {
           const { event /*, phase*/ } = record;
@@ -72,12 +73,12 @@ export default {
         });
       });
 
-      api.rpc.chain.getBlock(this.substrateBlock, (block) => {
+      robonomics.api.rpc.chain.getBlock(this.substrateBlock, (block) => {
         // get extrinsics
         block.block.extrinsics.forEach((item) => {
           if (
-            item.method.sectionName === "datalog" &&
-            item.method.methodName === "record" &&
+            item.method.section === "datalog" &&
+            item.method.method === "record" &&
             item.hash.toString() === this.substrateTx
           ) {
             const obj = {
