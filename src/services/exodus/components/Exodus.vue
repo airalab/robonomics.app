@@ -1,36 +1,28 @@
 <template>
-  <fragment>
-    <!-- <Progress :percent="percent" :amount="totalBurnFormat" /> -->
-    <h2 style="text-align: center">
-      <b>{{ totalBurnFormat }}</b> ERC-20 XRT SWAPPED to XRT on Robonomics
-      Parachain
-    </h2>
+  <div>
+    <div class="grid-3">
+      <div>
+        <span class="strong t-gt">{{ totalBurnFormat }} XRT</span><br />
+        <p class="strong">Swapped from ERC-20 to Robonomics Parachain</p>
+      </div>
 
-    <div class="row" style="margin-top: 30px">
-      <div class="col-md-6" style="text-align: center; font-size: 20px">
-        Ethereum mainnet balance
+      <div>
+        <span class="strong t-gt">{{ balanceXrtFormat }} XRT</span><br />
+        <p class="strong">Your Ethereum mainnet balance</p>
       </div>
-      <div class="col-md-6" style="text-align: center; font-size: 20px">
-        Robonomics Parachain allocation
-      </div>
-    </div>
-    <div class="row">
-      <div
-        class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold"
-      >
-        {{ balanceXrtFormat }}
-      </div>
-      <div
-        class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold"
-      >
-        {{ burnFormat }}
+
+      <div>
+        <span class="strong t-gt">{{ burnFormat }} XRT</span><br />
+        <p class="strong">Your Robonomics Parachain allocation</p>
       </div>
     </div>
+
+    <!-- <Progress :percent="percent" :amount="totalBurn" /> -->
 
     <Activate @upBurn="getBurnAmount" />
+  </div>
 
+  <!-- <fragment>
     <template v-if="Object.keys(list).length > 0">
       <hr />
       <table class="container-full table-hover table-responsive">
@@ -42,13 +34,13 @@
         </tbody>
       </table>
     </template>
-  </fragment>
+  </fragment> -->
 </template>
 
 <script>
 import token from "@/mixins/token";
 import utils from "web3-utils";
-import { encodeAddress } from "@polkadot/util-crypto";
+// import { encodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
 import Activate from "./Activate";
 // import Progress from "./Progress";
@@ -63,35 +55,47 @@ export default {
   data() {
     return {
       burn: "0",
-      totalBurn: "0",
-      list: {}
+      totalBurn: "0"
+      // list: {}
     };
   },
   created() {
-    this.watchToken(config.XRT, this.$robonomics.account.address);
-    this.getBurnAmount();
+    if (this.$robonomics.account) {
+      this.watchToken(config.XRT, this.$robonomics.account.address);
+      this.getBurnAmount();
+    }
   },
   computed: {
     balanceXrt: function () {
-      return this.balance(config.XRT, this.$robonomics.account.address);
+      return this.$robonomics.account
+        ? this.balance(config.XRT, this.$robonomics.account.address)
+        : 0;
     },
     balanceXrtFormat: function () {
-      return this.balanceFormat(config.XRT, this.$robonomics.account.address);
+      return Number(this.$options.filters.fromWei(this.balanceXrt, 9, ""))
+        .toFixed(2)
+        .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     },
     burnFormat: function () {
-      return this.$options.filters.fromWei(this.burn, 9, "XRT");
+      return Number(this.$options.filters.fromWei(this.burn, 9, ""))
+        .toFixed(2)
+        .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     },
     totalBurnFormat: function () {
-      return this.$options.filters.fromWei(this.totalBurn.toString(), 9, "");
-    },
-    percent: function () {
-      return Math.round(
-        new utils.BN(this.totalBurn)
-          .mul(new utils.BN("100"))
-          .div(new utils.BN("1000000000000000"))
-          .toNumber()
-      );
+      return Number(
+        this.$options.filters.fromWei(this.totalBurn.toString(), 9, "")
+      )
+        .toFixed(2)
+        .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     }
+    // percent: function () {
+    //   return Math.round(
+    //     new utils.BN(this.totalBurn)
+    //       .mul(new utils.BN("100"))
+    //       .div(new utils.BN("1000000000000000"))
+    //       .toNumber()
+    //   );
+    // }
   },
   methods: {
     async getBurnAmount() {
@@ -112,25 +116,25 @@ export default {
         toBlock: "latest"
       });
 
-      const listNigative = {};
-      const list = {};
-      events.forEach((event) => {
-        const { amount, account_id } = event.returnValues;
-        if (!Object.prototype.hasOwnProperty.call(listNigative, account_id)) {
-          listNigative[account_id] = new utils.BN("0");
-        }
-        listNigative[account_id] = listNigative[account_id].add(
-          new utils.BN(amount)
-        );
-      });
-      Object.keys(listNigative).forEach((account_id) => {
-        list[encodeAddress(account_id, 32)] = this.$options.filters.fromWei(
-          listNigative[account_id],
-          9,
-          "XRT"
-        );
-      });
-      this.list = list;
+      // const listNigative = {};
+      // const list = {};
+      // events.forEach((event) => {
+      //   const { amount, account_id } = event.returnValues;
+      //   if (!Object.prototype.hasOwnProperty.call(listNigative, account_id)) {
+      //     listNigative[account_id] = new utils.BN("0");
+      //   }
+      //   listNigative[account_id] = listNigative[account_id].add(
+      //     new utils.BN(amount)
+      //   );
+      // });
+      // Object.keys(listNigative).forEach((account_id) => {
+      //   list[encodeAddress(account_id, 32)] = this.$options.filters.fromWei(
+      //     listNigative[account_id],
+      //     9,
+      //     "XRT"
+      //   );
+      // });
+      // this.list = list;
 
       const summ = events.reduce((accumulator, event) => {
         return new utils.BN(accumulator).add(

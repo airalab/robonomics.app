@@ -1,49 +1,182 @@
 <template>
-  <section>
-    <blockquote>
-      Amount of XRT which you want to shift from Ethereum mainnet to Robonomics
-      Parachain (recommend you to read article
-      <a
-        href="https://blog.aira.life/foundation-of-the-robonomics-parachain-390dfac09e5d"
-        target="_blank"
+  <section class="section-light">
+    <h3>Apply for the transferring ERC-20 XRT to Robonomics Parachain</h3>
+    <form v-on:submit.prevent="submit">
+      <section
+        :class="{
+          disabled: process
+        }"
       >
-        Robonomics Exodus
-      </a>
-      )
-    </blockquote>
-    <ActivateForm ref="form" @onChange="onChange" @onSubmit="handleSubmit" />
-    <br />
-    <RButton
-      size="big"
-      fullWidth
-      @click="$refs.form.submit()"
-      :disabled="!canButton"
-      style="margin-bottom: 25px;"
-    >
-      <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
-      &nbsp;
-      <template v-if="!hasApprove">Approve</template>
-      <template v-else>Send</template>
-    </RButton>
+        <label class="container-full">
+          1. Ethereum account:
+          <p class="tip">
+            In your browser wallet choose Ethereum account with XRT you want to
+            transfer
+          </p>
+        </label>
 
-    <p v-if="tx">
-      <b>Watch Tx:&nbsp;</b>
-      <a :href="`https://etherscan.io/tx/${tx}`" target="_blank">{{ tx }}</a>
-    </p>
+        <template v-if="$robonomics.account">
+          <div :class="{ error: Number(myBalance) === 0 }">
+            <div class="account-balance">
+              <RAvatar
+                :address="$robonomics.account.address"
+                class="account-balance-pic"
+              />
+              <span
+                >{{ $robonomics.account.address.substr(0, 6) }}...{{
+                  $robonomics.account.address.substr(-6)
+                }}</span
+              >
+              –
+              <code>{{ myBalanceFormat }} XRT</code>
+            </div>
+            <p v-if="Number(myBalance) === 0">No XRT found here</p>
+          </div>
+        </template>
 
-    <p v-if="proccess === 4">Success</p>
+        <button
+          v-else
+          @click.stop="$store.dispatch('chain/accessAccount', false)"
+          class="btn-outline"
+        >
+          Connect your Ethereum account
+        </button>
+      </section>
+
+      <section
+        :class="{
+          disabled:
+            process || $robonomics.account === null || Number(myBalance) === 0
+        }"
+      >
+        <label class="container-full">
+          2. Parachain account:
+          <p class="tip">Polkadot.js extension required</p>
+        </label>
+
+        <div>
+          <div class="account-balance">
+            <Identicon
+              class="account-balance-pic"
+              :size="36"
+              :theme="'polkadot'"
+              :value="fields.account.value"
+            />
+
+            <select
+              v-model="fields.account.value"
+              :class="{ error: fields.account.error }"
+            >
+              <option
+                v-for="(account, k) in accounts"
+                :key="k"
+                :value="account.address"
+              >
+                {{ account.meta.name }} -
+                {{ account.address.substr(0, 6) }}...{{
+                  account.address.substr(-6)
+                }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section
+        :class="{
+          disabled:
+            process ||
+            fields.account.error ||
+            $robonomics.account === null ||
+            Number(myBalance) === 0
+        }"
+      >
+        <label>3. Value to transfer</label>
+        <p class="tip">
+          You need some amount of ETH to pay for transactions fee: 1) approving;
+          2) applying
+        </p>
+        <div :class="{ error: fields.amount.error }">
+          <div class="input-measured">
+            <input
+              v-model="fields.amount.value"
+              type="text"
+              placeholder
+              class="container-full"
+            /><span class="input-measure">XRT</span>
+          </div>
+          <!-- <p>Insufficient balance on the selected Ethereum account</p> -->
+
+          <template v-if="Number(fields.amount.value) > 0">
+            <button
+              v-if="hasApprove"
+              class="btn-outline m-l-10 green"
+              @click.stop.prevent=""
+            >
+              <span class="i-check"></span>Approved
+              {{ fields.amount.value }} XRT
+            </button>
+            <template v-else>
+              <button
+                v-if="process === 0 || process === 4"
+                class="btn-outline m-l-10"
+                @click.stop.prevent="approve"
+              >
+                Approve {{ fields.amount.value }} XRT
+              </button>
+              <button v-else class="btn-outline m-l-10 disabled">
+                <span class="loader-ring"></span>Approving
+                {{ fields.amount.value }} XRT
+              </button>
+            </template>
+          </template>
+        </div>
+      </section>
+
+      <section>
+        <button v-if="process < 4" class="lg" :class="{ disabled: !canButton }">
+          <template v-if="hasApprove && process > 0 && process < 3"
+            >Applying
+          </template>
+          <template v-else>Apply </template>
+          <div
+            class="loader-ring"
+            v-if="hasApprove && process > 0 && process < 3"
+          ></div>
+        </button>
+
+        <template v-if="process === 4">
+          <p>
+            <button class="lg btn-green" disabled>
+              Your application accepted
+              <div class="i-check"></div>
+            </button>
+          </p>
+
+          <button class="btn-outline" @click.stop.prevent="clearForm">
+            Apply more
+          </button>
+        </template>
+      </section>
+    </form>
   </section>
 </template>
 
 <script>
 import token from "@/mixins/token";
+import robonomicsVC from "robonomics-vc";
+import { checkAddress } from "@polkadot/util-crypto";
+
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
 import TokenABI from "../abi/Token.json";
 import ExodusAbi from "../abi/Exodus.json";
-import ActivateForm from "./ActivateForm";
 import { number } from "../../../utils/tools";
+
+import { Robonomics } from "../../../utils/robonomics-substrate";
+import { createInstance } from "@/utils/substrate";
+import Identicon from "@polkadot/vue-identicon";
 
 const STATUS = {
   EMPTY: 0,
@@ -54,34 +187,77 @@ const STATUS = {
 };
 
 export default {
-  mixins: [token],
-  components: {
-    ActivateForm
-  },
+  mixins: [robonomicsVC.mixins.form, token],
+  components: { Identicon },
   data() {
     return {
+      fields: {
+        amount: {
+          value: "0",
+          type: "text",
+          rules: ["require", "number", (v) => v > 0],
+          error: false
+        },
+        account: {
+          value: "",
+          type: "text",
+          rules: [
+            "require",
+            robonomicsVC.validators.length(48),
+            (v) => {
+              return checkAddress(v, 32)[0];
+            }
+          ],
+          error: false
+        }
+      },
       amount: "0",
-      proccess: STATUS.EMPTY,
-      tx: null
+      process: STATUS.EMPTY,
+      tx: null,
+      robonomics: null,
+      accounts: []
     };
   },
-  created() {
-    this.watchToken(
-      config.XRT,
-      this.$robonomics.account.address,
-      config.EXODUS
-    );
-  },
-  computed: {
-    myBalance: function () {
-      return this.balance(config.XRT, this.$robonomics.account.address);
-    },
-    myAllowance: function () {
-      return this.allowance(
+  async created() {
+    if (this.$robonomics.account) {
+      this.watchToken(
         config.XRT,
         this.$robonomics.account.address,
         config.EXODUS
       );
+    }
+
+    try {
+      this.robonomics = Robonomics.getInstance(config.CHAIN);
+    } catch (_) {
+      try {
+        this.robonomics = await createInstance(config.CHAIN);
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+
+    if (this.robonomics) {
+      this.loadAccounts();
+    }
+
+    this.$on("onChange", this.onChange);
+    this.$on("onSubmit", this.handleSubmit);
+  },
+  computed: {
+    myBalance: function () {
+      return this.$robonomics.account
+        ? this.balance(config.XRT, this.$robonomics.account.address)
+        : 0;
+    },
+    myAllowance: function () {
+      return this.$robonomics.account
+        ? this.allowance(
+            config.XRT,
+            this.$robonomics.account.address,
+            config.EXODUS
+          )
+        : 0;
     },
     hasApprove: function () {
       return Number(this.myAllowance) === Number(this.amount);
@@ -91,15 +267,22 @@ export default {
         return false;
       }
       return (
-        (this.proccess === 0 || this.proccess >= 3) && Number(this.amount) > 0
+        this.hasApprove &&
+        (this.process === 0 || this.process >= 3) &&
+        Number(this.amount) > 0
       );
+    },
+    myBalanceFormat: function () {
+      return Number(this.$options.filters.fromWei(this.myBalance, 9, ""))
+        .toFixed(2)
+        .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     }
   },
   watch: {
     myAllowance: function (value, oldValue) {
       if (oldValue === 0 && Number(value) > 0) {
         this.amount = value;
-        this.$refs.form.fields.amount.value = number.fromWei(
+        this.fields.amount.value = number.fromWei(
           this.amount,
           9
           // this.token(config.XRT).decimals
@@ -108,8 +291,14 @@ export default {
     }
   },
   methods: {
+    async loadAccounts() {
+      this.accounts = this.robonomics.accountManager.getAccounts();
+      if (this.accounts.length) {
+        this.fields.account.value = this.accounts[0].address;
+      }
+    },
     onChange({ fields }) {
-      if (this.$refs.form.validate()) {
+      if (this.validate()) {
         this.amount = number.toWei(
           fields.amount.value,
           9
@@ -120,14 +309,15 @@ export default {
     handleSubmit({ error, fields }) {
       if (!error) {
         if (!this.hasApprove) {
-          this.approve(this.amount);
+          this.approve();
         } else {
           this.subscribe(this.amount, fields.account.value);
         }
       }
     },
-    approve(amount) {
-      this.proccess = STATUS.BTN;
+    approve() {
+      const amount = this.amount;
+      this.process = STATUS.BTN;
       const contract = new this.$robonomics.web3.eth.Contract(
         TokenABI,
         config.XRT
@@ -142,7 +332,7 @@ export default {
             if (error) {
               return;
             }
-            this.proccess = STATUS.TX;
+            this.process = STATUS.TX;
             this.tx = transactionHash;
           }
         )
@@ -160,15 +350,18 @@ export default {
           };
           watch(r.blockNumber, () => {
             this.tx = null;
-            this.proccess = STATUS.SUCCESS;
+            this.process = STATUS.SUCCESS;
           });
         })
         .catch(() => {
-          this.proccess = STATUS.EMPTY;
+          this.process = STATUS.EMPTY;
         });
     },
+    clearForm() {
+      this.process = STATUS.EMPTY;
+    },
     subscribe(amount, account) {
-      this.proccess = STATUS.BTN;
+      this.process = STATUS.BTN;
       const contract = new this.$robonomics.web3.eth.Contract(
         ExodusAbi,
         config.EXODUS
@@ -181,7 +374,7 @@ export default {
             if (error) {
               return;
             }
-            this.proccess = STATUS.TX;
+            this.process = STATUS.TX;
             this.tx = transactionHash;
           }
         )
@@ -199,12 +392,12 @@ export default {
           };
           watch(r.blockNumber, () => {
             this.tx = null;
-            this.proccess = STATUS.FINISH;
+            this.process = STATUS.FINISH;
             this.$emit("upBurn");
           });
         })
         .catch(() => {
-          this.proccess = STATUS.EMPTY;
+          this.process = STATUS.EMPTY;
         });
     }
   }

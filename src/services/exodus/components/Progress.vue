@@ -20,6 +20,15 @@
 </template>
 
 <script>
+// <section>
+//   <div class="progress">
+//     <div class="progress-line"></div>
+//     <div class="progress-status" style="width: 10%"></div>
+//     <div class="progress-left"></div>
+//   </div>
+//   <!-- Если 0, то убираем класс green -->
+//   <p class="strong green">Gathered applications</p>
+// </section>
 export default {
   props: ["percent", "amount"]
 };
