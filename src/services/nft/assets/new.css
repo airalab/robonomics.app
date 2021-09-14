@@ -1,0 +1,84 @@
+body {
+    --space: 1rem;
+}
+
+.layout {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.layout {
+    max-width: 900px;
+}
+
+.window {
+    display: grid;
+    grid-template-columns: 1.5fr 3fr;
+    gap: calc(var(--space)*2);
+    align-items: start;
+    padding: 0;
+    overflow: hidden;
+}
+
+@media screen and (max-width: 400px) {
+    .window {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* .window > div {
+    padding: var(--space)
+} */
+
+.window-left {
+    text-align: right;
+}
+
+.window-right {
+    background-color: #fff;
+    padding: var(--space);
+}
+
+
+/*overwrite*/ 
+a {
+   display: inline;
+}
+
+form section:not(:last-child) {
+    padding: 0;
+    margin: 0;
+    margin-bottom: calc(var(--space)*2);
+}
+
+label {
+    font-size: 1rem;
+    display: inline-block;
+}
+
+img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+label:not(:last-child), p:not(:last-child) {
+    margin-bottom: var(--space);
+}
+
+.loader-ring {
+    margin: 0 var(--space)
+}
+
+button.lg, input[type="submit"].lg {
+    padding: var(--space) calc(var(--space)*2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.error {
+    color: var(--color-orange)
+}
+
+.error input, .error select {
+    border-color: var(--color-orange) !important;
+}

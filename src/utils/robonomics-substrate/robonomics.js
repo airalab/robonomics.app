@@ -78,6 +78,11 @@ export default class Robonomics {
   }
   async on(filter = {}, cb) {
     return await this.api.query.system.events((events) => {
+      // this.api.rpc.chain.getHeader(events.createdAtHash, (header) => {
+      //   const blockNumber = header.number.toNumber();
+      //   // const blockHash = header.hash.toHex();
+      //   console.log(blockNumber);
+      // });
       let result = {};
       events.forEach((record) => {
         const { event, phase } = record;

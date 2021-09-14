@@ -12,12 +12,12 @@
       <router-link :to="{ name: 'iot-activity' }" active-class="active">
         {{ $t("menu.telemetry") }}
       </router-link>
-      <router-link :to="{ name: 'iot-twins' }" active-class="active" exact>
+      <!-- <router-link :to="{ name: 'iot-twins' }" active-class="active" exact>
         Digital twins
       </router-link>
       <router-link :to="{ name: 'rws' }" active-class="active" exact>
         Subscription
-      </router-link>
+      </router-link> -->
     </RSidebarSection>
     <RSidebarSection title="Marketplace">
       <router-link :to="{ name: 'services' }" active-class="active" exact>
@@ -58,6 +58,9 @@
       </router-link>
       <router-link :to="{ name: 'exodus' }" active-class="active" exact>
         {{ $t("menu.exodus") }}
+      </router-link>
+      <router-link :to="{ name: 'pioneer' }" active-class="active" exact>
+        NFT card
       </router-link>
     </RSidebarSection>
     <RSidebarSection title="Wiki and support">

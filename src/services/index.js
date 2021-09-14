@@ -21,6 +21,7 @@ import decoded from "./decoded";
 import artShop from "./art-shop";
 import parachain from "./parachain";
 import ipciValidator from "./ipci-validator";
+import nft from "./nft";
 
 export default {
   parachain,
@@ -45,5 +46,6 @@ export default {
   bigBag,
   auction,
   artShop,
-  ipciValidator
+  ipciValidator,
+  nft
 };

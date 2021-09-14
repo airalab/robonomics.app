@@ -6,7 +6,8 @@ module.exports = {
     resolve: {
       extensions: ["*", ".mjs", ".js", ".vue", ".json", ".gql", ".graphql"],
       alias: {
-        "~config": path.resolve(__dirname, "src/config/", config)
+        "~config": path.resolve(__dirname, "src/config/", config),
+        vue$: "vue/dist/vue.esm.js"
       }
     },
     module: {

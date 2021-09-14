@@ -1,9 +1,32 @@
 import { Robonomics, AccountManager } from "./robonomics-substrate";
 
 const config = {
+  local: {
+    name: "local",
+    endpoint: "ws://127.0.0.1:9944",
+    types: {
+      Record: "Vec<u8>",
+      RingBufferIndex: { start: "Compact<u64>", end: "Compact<u64>" },
+      RingBufferItem: "(Compact<Moment>,Record)",
+      Parameter: "bool",
+      LaunchParameter: "bool",
+      UnlockChunk: {
+        value: "Compact<Balance>",
+        moment: "Compact<Moment>"
+      },
+      StakerLedger: {
+        stash: "AccountId",
+        total: "Compact<Balance>",
+        active: "Compact<Balance>",
+        unlocking: "Vec<UnlockChunk<Balance, BlockNumber>>",
+        claimed_rewards: "BlockNumber"
+      }
+    }
+  },
   robonomics: {
     name: "robonomics",
-    endpoint: "wss://kusama.rpc.robonomics.network/",
+    endpoint: "wss://main.frontier.rpc.robonomics.network/",
+    // endpoint: "wss://kusama.rpc.robonomics.network/",
     // endpoint: "ws://127.0.0.1:9944",
     types: {
       Record: "Vec<u8>",
@@ -46,7 +69,8 @@ export function createInstance(name = "robonomics") {
     robonomics.onReady(async () => {
       try {
         await AccountManager.initPlugin({
-          isDevelopment: true
+          // genesisHash: robonomics.api.genesisHash,
+          isDevelopment: name === "local" ? true : false
         });
         robonomics.accountManager.onReady(() => {
           resolve(robonomics);
