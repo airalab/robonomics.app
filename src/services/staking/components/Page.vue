@@ -1,0 +1,87 @@
+<template>
+  <Page>
+    <section class="grid-1-3 layout-wide">
+      <div class="hyphens">
+        <h1>Staking</h1>
+        <p>
+          Here you can stake XRT transferred from Ethereum to Parachain in
+          <router-link :to="{ name: 'exodus' }">Exodus</router-link> and get
+          extra rewards.
+          <a
+            href="https://robonomics.network/kusama-slot/"
+            target="_blank"
+            rel="noopener"
+            >Crowdloan</a
+          >
+          contributors will get increased reward rate.
+        </p>
+        <p>
+          <code>Rewards Distribution</code>
+          <br />
+          <code>= 40Wn * XRT / block</code>
+        </p>
+        <p>
+          <code>Extra Rewards Distribution</code>
+          <br />
+          <code>= 200Wn * XRT / block</code>
+        </p>
+        <a
+          class="btn-outline"
+          href="https://github.com/airalab/robonomics/issues"
+          target="_blank"
+          rel="noopener"
+          >Troubleshooting</a
+        >
+      </div>
+      <div>
+        <section v-if="error" class="section-light">
+          <b>{{ error }}</b>
+        </section>
+        <template v-else>
+          <router-view v-if="ready"></router-view>
+          <section v-else class="section-light">
+            <div class="t-align--center">
+              <b class="align-vertical t-style_uppercase">Load</b><RLoader />
+            </div>
+          </section>
+          <Bond v-if="ready" />
+        </template>
+      </div>
+    </section>
+  </Page>
+</template>
+
+<script>
+import Page from "@/components/layout/Page";
+import { Robonomics } from "@/utils/robonomics-substrate";
+import { createInstance } from "@/utils/substrate";
+import Bond from "./Bond.vue";
+import config from "../config";
+
+export default {
+  components: {
+    Page,
+    Bond
+  },
+  data() {
+    return {
+      ready: false,
+      error: "",
+      robonomics: null
+    };
+  },
+  async created() {
+    try {
+      Robonomics.getInstance(config.CHAIN);
+      this.ready = true;
+    } catch (_) {
+      try {
+        await createInstance(config.CHAIN);
+        this.ready = true;
+      } catch (error) {
+        this.error = error.message;
+      }
+    }
+  }
+};
+</script>

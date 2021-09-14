@@ -59,6 +59,9 @@
       <router-link :to="{ name: 'exodus' }" active-class="active" exact>
         {{ $t("menu.exodus") }}
       </router-link>
+      <router-link :to="{ name: 'staking' }" active-class="active" exact>
+        Staking
+      </router-link>
       <router-link :to="{ name: 'pioneer' }" active-class="active" exact>
         NFT card
       </router-link>
