@@ -211,7 +211,3 @@ export default {
   }
 };
 </script>
-
-<style>
-@import "../assets/new.css";
-</style>
