@@ -11,7 +11,12 @@
             pays transaction fees, gets rewards
           </p>
         </label>
-        <div>
+
+        <p v-if="accounts.length === 0" class="error">
+          Connected accounts in Polkadot.js extension not found. Please, connect
+          your account and continue.
+        </p>
+        <div v-else>
           <div class="account-balance">
             <Identicon
               class="account-balance-pic"

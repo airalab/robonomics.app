@@ -21,7 +21,7 @@
           <code>= 40Wn * XRT / block</code>
         </p>
         <p>
-          <code>Extra Rewards Distribution</code>
+          <code>Crowdloan Rewards Distribution</code>
           <br />
           <code>= 200Wn * XRT / block</code>
         </p>

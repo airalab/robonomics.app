@@ -53,8 +53,11 @@
           2. Parachain account:
           <p class="tip">Polkadot.js extension required</p>
         </label>
-
-        <div>
+        <p v-if="accounts.length === 0" class="error">
+          Connected accounts in Polkadot.js extension not found. Please, connect
+          your account and continue.
+        </p>
+        <div v-else>
           <div class="account-balance">
             <Identicon
               class="account-balance-pic"
@@ -85,6 +88,7 @@
       <section
         :class="{
           disabled:
+            accounts.length === 0 ||
             process ||
             fields.account.error ||
             $robonomics.account === null ||
