@@ -3,7 +3,7 @@ import robonomicsVC from "robonomics-vc";
 import * as filters from "../utils/filters";
 import { setConfig } from "../config/robonomics";
 import config from "~config";
-import "robonomics-vc/dist/robonomics-vc.css";
+// import "robonomics-vc/dist/robonomics-vc.css";
 
 Vue.use(robonomicsVC);
 

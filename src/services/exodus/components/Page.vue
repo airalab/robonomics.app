@@ -3,7 +3,7 @@
     <section class="grid-1-3 layout-wide">
       <div class="hyphens">
         <h1>Exodus</h1>
-        <img :src="require('../assets/exodus-banner-3.png')" />
+        <ImageLogo />
         <p>
           Here you may input your details in order to transfer your ERC-20 XRT
           to the Robonomics parachain. Periodically, the network technical
@@ -33,11 +33,13 @@
 <script>
 import Page from "@/components/layout/Page";
 import Exodus from "./Exodus";
+import ImageLogo from "./ImageLogo";
 
 export default {
   components: {
     Page,
-    Exodus
+    Exodus,
+    ImageLogo
   }
 };
 </script>
