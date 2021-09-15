@@ -1,5 +1,5 @@
 <template>
-  <section class="section-light" v-if="accounts.length">
+  <section class="section-light">
     <h3>Your bondings</h3>
     <div>
       <div v-if="isStartLoad" class="t-align--center">
@@ -130,9 +130,10 @@ export default {
       this.currentBlock = number;
     });
 
-    this.robonomics.staking.on({}, (r) => {
-      console.log(r[0].data[0].toString());
-      this.loadAccounts();
+    this.robonomics.staking.on({}, () => {
+      setTimeout(() => {
+        this.loadAccounts();
+      }, 2000);
     });
     await this.loadAccounts();
     this.isStartLoad = false;

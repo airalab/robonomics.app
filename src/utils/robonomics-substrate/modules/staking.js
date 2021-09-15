@@ -46,7 +46,12 @@ export default {
       return 0;
     }
     const duration = bnToBn(block_number - ledger.claimed_rewards);
-    const bonus = (await this.bonus(ledger.stash)).toBn();
+    let bonus = await this.bonus(ledger.stash);
+    if (bonus === 0 || bonus.isEmpty) {
+      bonus = bnToBn("0");
+    } else {
+      bonus.toBn();
+    }
     const active = bnToBn(ledger.active);
     let bonus_stake;
     if (bonus.gt(active)) {
