@@ -44,7 +44,6 @@
               <b class="align-vertical t-style_uppercase">Load</b><RLoader />
             </div>
           </section>
-          <Bond v-if="ready" />
         </template>
       </div>
     </section>
@@ -55,13 +54,11 @@
 import Page from "@/components/layout/Page";
 import { Robonomics } from "@/utils/robonomics-substrate";
 import { createInstance } from "@/utils/substrate";
-import Bond from "./Bond.vue";
 import config from "../config";
 
 export default {
   components: {
-    Page,
-    Bond
+    Page
   },
   data() {
     return {

@@ -1,96 +1,104 @@
 <template>
-  <section class="section-light">
-    <h3>Your bondings</h3>
-    <div>
-      <div v-if="isStartLoad" class="t-align--center">
-        <b class="align-vertical t-style_uppercase">Load</b><RLoader />
-      </div>
-      <table v-else class="bonding-table container-full">
-        <thead>
-          <tr>
-            <th>
-              Account
-              <p class="tip">
-                This account holds funds bonded for staking, signalling
-                decisions, pays transaction fees, gets rewards
-              </p>
-            </th>
-            <th>
-              Balance
-              <p class="tip">Here you can bond and unbond your tokens</p>
-            </th>
-            <th>
-              Rewards
-              <p class="tip">Track and claim your rewards here</p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, k) in accounts" :key="k">
-            <td>
-              <div>
-                <span class="strong"
-                  >{{ item.name }} - {{ formatBalance(item.total) }}</span
-                ><br />
-                <span :title="item.stash">{{ formatAddress(item.stash) }}</span>
-              </div>
-            </td>
-            <td>
-              <div>
-                <span class="strong"
-                  >Bonded: {{ formatBalance(item.active) }}</span
-                ><br />
-              </div>
+  <fragment>
+    <section class="section-light">
+      <h3>Your bondings</h3>
+      <div>
+        <div v-if="isStartLoad" class="t-align--center">
+          <b class="align-vertical t-style_uppercase">Load</b><RLoader />
+        </div>
+        <table v-else class="bonding-table container-full">
+          <thead>
+            <tr>
+              <th>
+                Account
+                <p class="tip">
+                  This account holds funds bonded for staking, signalling
+                  decisions, pays transaction fees, gets rewards
+                </p>
+              </th>
+              <th>
+                Balance
+                <p class="tip">Here you can bond and unbond your tokens</p>
+              </th>
+              <th>
+                Rewards
+                <p class="tip">Track and claim your rewards here</p>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, k) in accounts" :key="k">
+              <td>
+                <div>
+                  <span class="strong"
+                    >{{ item.name }} - {{ formatBalance(item.total) }}</span
+                  ><br />
+                  <span :title="item.stash">{{
+                    formatAddress(item.stash)
+                  }}</span>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <span class="strong"
+                    >Bonded: {{ formatBalance(item.active) }}</span
+                  ><br />
+                </div>
 
-              <div v-if="item.unlocking.length > 0">
-                <span class="strong">Unbonding:</span><br />
-                <span v-for="(unlock, k2) in item.unlocking" :key="k2">
-                  <span v-if="unlock.moment - currentBlock > 0" class="strong"
-                    >{{ formatBalance(unlock.value) }} ({{
-                      unlock.moment - currentBlock
-                    }}
-                    blocks left)</span
-                  >
-                  <span v-else class="strong green"
-                    >{{ formatBalance(unlock.value) }} READY</span
-                  >
-                  <br />
-                </span>
-              </div>
+                <div v-if="item.unlocking.length > 0">
+                  <span class="strong">Unbonding:</span><br />
+                  <span v-for="(unlock, k2) in item.unlocking" :key="k2">
+                    <span v-if="unlock.moment - currentBlock > 0" class="strong"
+                      >{{ formatBalance(unlock.value) }} ({{
+                        unlock.moment - currentBlock
+                      }}
+                      blocks left)</span
+                    >
+                    <span v-else class="strong green"
+                      >{{ formatBalance(unlock.value) }} READY</span
+                    >
+                    <br />
+                  </span>
+                </div>
 
-              <Unbond
-                v-if="Number(item.active) > 0"
-                :controller="item.controller"
-              />
-
-              <WithdrawUnbonded
-                v-if="item.unlocking.length > 0 && isWithdraw(item.unlocking)"
-                :controller="item.controller"
-              />
-            </td>
-            <td>
-              <div :class="{ disabled: Number(item.reward) === 0 }">
-                <div v-if="item.reward === null" class="loader-ring"></div>
-                <span
-                  v-else
-                  :title="formatBalance(item.reward, true)"
-                  class="strong"
-                  >{{ formatBalance(item.reward) }}</span
-                >
-              </div>
-
-              <div :class="{ disabled: Number(item.reward) === 0 }">
-                <ClaimRewards
+                <Unbond
+                  v-if="Number(item.active) > 0"
                   :controller="item.controller"
-                  :value="item.reward"
+                  @result="handlerTransaction"
                 />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+
+                <WithdrawUnbonded
+                  v-if="item.unlocking.length > 0 && isWithdraw(item.unlocking)"
+                  :controller="item.controller"
+                  @result="handlerTransaction"
+                />
+              </td>
+              <td>
+                <div :class="{ disabled: Number(item.reward) === 0 }">
+                  <div v-if="item.reward === null" class="loader-ring"></div>
+                  <span
+                    v-else
+                    :title="formatBalance(item.reward, true)"
+                    class="strong"
+                    >{{ formatBalance(item.reward) }}</span
+                  >
+                </div>
+
+                <div :class="{ disabled: Number(item.reward) === 0 }">
+                  <ClaimRewards
+                    :controller="item.controller"
+                    :value="item.reward"
+                    @result="handlerTransaction"
+                  />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <Bond @result="handlerTransaction" />
+  </fragment>
 </template>
 
 <script>
@@ -101,9 +109,10 @@ import WithdrawUnbonded from "./WithdrawUnbonded.vue";
 import { formatBalance } from "../utils/utils";
 import config from "../config";
 // import { getAllBond } from "../utils/api";
+import Bond from "./Bond.vue";
 
 export default {
-  components: { Unbond, ClaimRewards, WithdrawUnbonded },
+  components: { Unbond, ClaimRewards, WithdrawUnbonded, Bond },
   data() {
     return {
       robonomics: null,
@@ -130,11 +139,6 @@ export default {
       this.currentBlock = number;
     });
 
-    this.robonomics.staking.on({}, () => {
-      setTimeout(() => {
-        this.loadAccounts();
-      }, 2000);
-    });
     await this.loadAccounts();
     this.isStartLoad = false;
   },
@@ -232,6 +236,9 @@ export default {
         }
       }
       return false;
+    },
+    handlerTransaction() {
+      this.loadAccounts();
     }
   }
 };

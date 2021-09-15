@@ -182,8 +182,10 @@ export default {
           this.resultWrite = await this.robonomics.accountManager.signAndSend(
             tx
           );
+          this.$emit("result", this.resultWrite);
         } catch (error) {
           this.resultError = error.message;
+          this.$emit("error", error.message);
         }
         this.process = false;
       }
