@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <section class="section-light">
+    <section class="section-light" :class="{ disabled: accounts.length === 0 }">
       <h3>Your bondings</h3>
       <div>
         <div v-if="isStartLoad" class="t-align--center">
@@ -27,6 +27,20 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="accounts.length === 0">
+              <td
+                colspan="3"
+                style="
+                  text-align: center;
+                  font-style: italic;
+                  opacity: 1;
+                  color: #000;
+                "
+              >
+                Here will be your bondings. Reload page, if you expect updates
+                and they are not coming.
+              </td>
+            </tr>
             <tr v-for="(item, k) in accounts" :key="k">
               <td>
                 <div>
