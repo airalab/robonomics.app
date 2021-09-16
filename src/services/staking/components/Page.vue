@@ -6,14 +6,15 @@
         <p>
           Here you can stake XRT transferred from Ethereum to Parachain in
           <router-link :to="{ name: 'exodus' }">Exodus</router-link> and get
-          extra rewards.
-          <a
-            href="https://robonomics.network/kusama-slot/"
-            target="_blank"
-            rel="noopener"
-            >Crowdloan</a
-          >
-          contributors will get increased reward rate.
+          rewards.
+        </p>
+        <p>
+          <b>Important tips:</b>
+          <ul>
+            <li>Unbonding takes approx. 50 000 blocks</li>
+            <li>Once you have bonded any amount, you can't add to your stake more with chosen account. We are working on it and in the future this option should be available.</li>
+            <li><a href="https://robonomics.network/kusama-slot/" target="_blank" rel="noopener">Crowdloan</a> contributors will get increased reward rate.</li>
+          </ul>
         </p>
         <p>
           <code>Rewards Distribution</code>
@@ -21,7 +22,7 @@
           <code>= 40Wn * XRT / block</code>
         </p>
         <p>
-          <code>Crowdloan Rewards Distribution</code>
+          <code>Increased Rewards Distribution</code>
           <br />
           <code>= 200Wn * XRT / block</code>
         </p>
