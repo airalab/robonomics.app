@@ -17,7 +17,7 @@
         }
       "
     />
-    <div class="row" v-if="lighthouse">
+    <section class="row" v-if="lighthouse">
       <div class="col-lg-4 col-md-5 order-md-last">
         <section>
           <LighthouseDetails :lighthouse="lighthouse" />
@@ -27,7 +27,7 @@
         <LighthouseMarket v-if="$robonomics.account" />
         <Providers :lighthouse="lighthouse" />
       </div>
-    </div>
+    </section>
   </section>
 </template>
 

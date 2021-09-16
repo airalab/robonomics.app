@@ -1,7 +1,7 @@
 <template>
   <Page>
-    <section class="window layout">
-      <div class="window-left">
+    <section class="grid-1-2 layout">
+      <div>
         <a
           href="https://opensea.io/assets/0xdc9fe731ce957c14a7b055a34270b2400b0905ec/1"
           target="_blank"
@@ -20,7 +20,7 @@
         </p>
       </div>
 
-      <div class="window-right">
+      <div class="section-light">
         <template v-if="robonomics">
           <CheckForm
             ref="form"
