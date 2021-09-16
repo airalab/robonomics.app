@@ -36,15 +36,16 @@ export default {
     async listen() {
       this.listener = await this.robonomics.account.getBalance(
         this.account,
-        (e) => {
+        (r) => {
+          const transferrable = r.free.sub(r.miscFrozen);
           this.balance = formatBalance(
-            e.free.toString(),
+            transferrable.toString(),
             this.robonomics.api.registry.chainDecimals[0],
             this.robonomics.api.registry.chainTokens[0]
           );
           this.$emit("balance", {
             account: this.account,
-            balance: e.free.toString(),
+            balance: transferrable.toString(),
             chainDecimals: this.robonomics.api.registry.chainDecimals[0],
             chainTokens: this.robonomics.api.registry.chainTokens[0],
             format: this.balance
