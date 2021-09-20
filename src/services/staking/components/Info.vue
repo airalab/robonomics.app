@@ -105,6 +105,8 @@
                     @result="handlerTransaction"
                   />
                 </div>
+
+                <!-- <BondExtra :stash="item.stash" @result="handlerTransaction" /> -->
               </td>
             </tr>
           </tbody>
@@ -117,6 +119,7 @@
 
 <script>
 import { Robonomics } from "../../../utils/robonomics-substrate";
+// import BondExtra from "./BondExtra.vue";
 import Unbond from "./Unbond.vue";
 import ClaimRewards from "./ClaimRewards.vue";
 import WithdrawUnbonded from "./WithdrawUnbonded.vue";

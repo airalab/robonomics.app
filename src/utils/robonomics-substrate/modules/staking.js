@@ -5,6 +5,9 @@ export default {
   bond(controller, value) {
     return this.robonomics.api.tx.staking.bond(controller, value);
   },
+  bondExtra(value) {
+    return this.robonomics.api.tx.staking.bondExtra(value);
+  },
   claimRewards() {
     return this.robonomics.api.tx.staking.claimRewards();
   },
