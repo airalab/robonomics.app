@@ -6,11 +6,11 @@
       :max="ceiling.toString()"
     />
 
-    <div class="row" style="margin-top: 30px;">
-      <div class="col-md-6" style="text-align: center; font-size: 20px;">
+    <div class="row" style="margin-top: 30px">
+      <div class="col-md-6" style="text-align: center; font-size: 20px">
         Sent earlier
       </div>
-      <div class="col-md-6" style="text-align: center; font-size: 20px;">
+      <div class="col-md-6" style="text-align: center; font-size: 20px">
         <span
           class="js-tooltip"
           data-tooltip="real amount of XRT will become known only at last transaction moment"
@@ -22,19 +22,19 @@
     <div class="row">
       <div
         class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold;"
+        style="text-align: center; font-size: 20px; font-weight: bold"
       >
         {{ myBid | fromWei(18, "ETH", 4) }}
       </div>
       <div
         class="col-md-6"
-        style="text-align: center; font-size: 20px; font-weight: bold;"
+        style="text-align: center; font-size: 20px; font-weight: bold"
       >
         {{ myTokens | fromWei(9, "XRT", 4) }}
       </div>
     </div>
 
-    <blockquote style="margin: 20px 0;">
+    <blockquote style="margin: 20px 0">
       Current XRT / ETH auction rate is 1 ETH =
       {{ price | fromWei(9, "XRT", 4) }}
     </blockquote>
@@ -43,7 +43,7 @@
       <div v-if="Number(calcTokenPrice) <= Number(calcStopPrice)">
         The price for the token has dropped too much, the auction is over.
       </div>
-      <Activate v-else @upBurn="getData" />
+      <Activate v-else @up-burn="getData" />
       <!-- maxWei {{ maxWei | fromWei(18, "ETH") }} -->
     </template>
     <!-- <template v-else-if="stage === Stages.AuctionDeployed">

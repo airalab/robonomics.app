@@ -57,11 +57,11 @@ export default {
   methods: {
     nextPage() {
       this.pageNumber++;
-      this.$emit("onPage", this.pageNumber);
+      this.$emit("on-page", this.pageNumber);
     },
     prevPage() {
       this.pageNumber--;
-      this.$emit("onPage", this.pageNumber);
+      this.$emit("on-page", this.pageNumber);
     }
   }
 };

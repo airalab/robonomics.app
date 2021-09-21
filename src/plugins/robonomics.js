@@ -20,9 +20,17 @@ setConfig({
   statusPeers: config.statusPeers,
   robonomics: (networkId) => {
     config.chain.set(networkId);
-    return {
-      version: 5,
-      ...config.chain.get().ROBONOMICS
-    };
+    try {
+      const configChain = config.chain.get();
+      if (configChain) {
+        return {
+          version: 5,
+          ...configChain.ROBONOMICS
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
   }
 });

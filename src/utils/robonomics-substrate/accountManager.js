@@ -7,12 +7,19 @@ import keyring from "@polkadot/ui-keyring";
 import { encodeAddress } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
 
+class ErrorAccount extends Error {
+  constructor(status = null, ...params) {
+    super(...params);
+    this.status = status;
+  }
+}
+
 function onLoad() {
   return new Promise(function (resolve, reject) {
     const timeout = setTimeout(() => {
       clearTimeout(timeout);
       clearInterval(interval);
-      return reject(new Error("Not fount polkadot.extension"));
+      return reject(new ErrorAccount(1, "Not fount polkadot.extension"));
     }, 3000);
     const interval = setInterval(() => {
       if (Object.keys(window.injectedWeb3).length > 0) {
@@ -25,6 +32,7 @@ function onLoad() {
 }
 
 let isReady = false;
+let isError = undefined;
 export default class AccountManager {
   constructor(config = {}) {
     this.api = null;
@@ -39,25 +47,38 @@ export default class AccountManager {
     if (isReady) {
       return;
     }
-    await onLoad();
-    const extensions = await web3Enable("robonomics");
-    if (extensions.length === 0) throw new Error("no extension");
-    const accounts = await web3Accounts();
-    const injectedAccounts = accounts.map(({ address, meta }) => ({
-      address,
-      meta
-    }));
-    keyring.loadAll(
-      {
-        ...config
-      },
-      injectedAccounts
-    );
-    isReady = true;
+    try {
+      await onLoad();
+      const extensions = await web3Enable("robonomics");
+      if (extensions.length === 0) {
+        throw new ErrorAccount(2, "no extension");
+      }
+      const accounts = await web3Accounts();
+      const injectedAccounts = accounts.map(({ address, meta }) => ({
+        address,
+        meta
+      }));
+      keyring.loadAll(
+        {
+          ...config
+        },
+        injectedAccounts
+      );
+      isReady = true;
+    } catch (error) {
+      isError = error;
+      throw error;
+    }
+  }
+  static isReady() {
+    return isReady;
+  }
+  static isError() {
+    return isError;
   }
   onReady(cb) {
-    if (isReady) {
-      cb();
+    if (isReady || isError) {
+      cb(isError);
     } else {
       setTimeout(() => {
         this.onReady(cb);
@@ -117,7 +138,7 @@ export default class AccountManager {
   }
   async signAndSend(tx, options = {}) {
     if (this.account === null) {
-      throw new Error("No account selected");
+      throw new ErrorAccount(3, "No account selected");
     }
     return new Promise((resolve, reject) => {
       tx.signAndSend(
@@ -141,7 +162,7 @@ export default class AccountManager {
                   console.log(name, section, docs);
                   message = docs.join(", ");
                 }
-                return reject(new Error(message));
+                return reject(new ErrorAccount(4, message));
               } else if (
                 section === "system" &&
                 method === "ExtrinsicSuccess"

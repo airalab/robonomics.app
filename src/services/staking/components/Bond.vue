@@ -41,9 +41,9 @@
               </option>
             </select>
 
-            <code
+            <span
               ><Balance :account="fields.stash.value" @balance="handleBalance"
-            /></code>
+            /></span>
           </div>
         </div>
       </section>
@@ -148,7 +148,16 @@ export default {
   },
   async created() {
     this.robonomics = Robonomics.getInstance(config.CHAIN);
-    this.loadAccounts();
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
+      }
+      this.loadAccounts();
+      this.robonomics.accountManager.onChange((account) => {
+        this.fields.stash.value = account.address;
+      });
+    });
 
     this.$on("onChange", this.onChange);
     this.$on("onSubmit", this.bond);

@@ -1,12 +1,14 @@
-export default {
-  robonomics: null,
+export default class Datalog {
+  constructor(robonomics) {
+    this.robonomics = robonomics;
+  }
   write(data) {
     return this.robonomics.api.tx.datalog.record(data);
-  },
+  }
   maxId() {
     const windowSize = this.robonomics.api.consts.datalog.windowSize;
     return windowSize.toNumber() - 1;
-  },
+  }
   async getLastId(address) {
     let id = null;
     let full = false;
@@ -22,20 +24,20 @@ export default {
       }
     }
     return { id, full };
-  },
+  }
   async getIndex(address) {
     const index = await this.robonomics.api.query.datalog.datalogIndex(address);
     return {
       start: index.start.toNumber(),
       end: index.end.toNumber()
     };
-  },
+  }
   async readByIndex(address, index) {
     return await this.robonomics.api.query.datalog.datalogItem([
       address,
       index
     ]);
-  },
+  }
   async read(address, start = 0, end = null) {
     const log = [];
     if (!end) {
@@ -55,13 +57,13 @@ export default {
       }
     }
     return log;
-  },
+  }
   async on(filter = {}, cb) {
     return this.robonomics.on(
       { ...filter, section: "datalog", method: "NewRecord" },
-      result => {
+      (result) => {
         cb(
-          result.map(item => {
+          result.map((item) => {
             return {
               account: item.account,
               success: item.success,
@@ -73,4 +75,4 @@ export default {
       }
     );
   }
-};
+}

@@ -111,8 +111,7 @@ import Page from "@/components/layout/Page";
 import CheckForm from "./CheckForm";
 import { stringToU8a } from "@polkadot/util";
 import config from "../config";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 
 export default {
   components: {
@@ -128,22 +127,16 @@ export default {
       isLoad: false,
       signature: "",
       error: "",
-      // success: "",
       interval: null,
       robonomics: null,
       notFound: false
     };
   },
   async created() {
-    // document.title = ``;
     try {
-      this.robonomics = Robonomics.getInstance();
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance();
-      } catch (error) {
-        this.error = error.message;
-      }
+      this.robonomics = await getInstance("robonomics");
+    } catch (error) {
+      this.error = error.message;
     }
   },
   destroyed() {
@@ -179,7 +172,6 @@ export default {
     },
     async handleSubmit({ error, fields }) {
       this.error = "";
-      // this.success = "";
       this.isLoad = true;
       if (!error) {
         try {
@@ -198,7 +190,6 @@ export default {
             this.error = result.data.error;
           } else if (result.data.result === true) {
             this.status = 2;
-            // this.success = "Ok";
           } else {
             this.error = "Error";
           }

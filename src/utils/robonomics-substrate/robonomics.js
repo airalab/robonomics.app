@@ -40,9 +40,8 @@ export default class Robonomics {
       types: types
     });
     for (const name of this.modules) {
-      const module = require(`./modules/${name}`).default;
-      this[name] = module;
-      this[name].robonomics = this;
+      const module = require(`./modules/${name}`);
+      this[name] = new module.default(this);
     }
   }
   onReady(cb) {

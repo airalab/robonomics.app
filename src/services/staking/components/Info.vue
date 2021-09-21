@@ -16,7 +16,7 @@
                   decisions, pays transaction fees, gets rewards
                 </p>
               </th>
-              <th>
+              <th style="width: 320px">
                 Balance
                 <p class="tip">Here you can bond and unbond your tokens</p>
               </th>
@@ -81,6 +81,8 @@
                   @result="handlerTransaction"
                 />
 
+                <BondExtra :stash="item.stash" @result="handlerTransaction" />
+
                 <WithdrawUnbonded
                   v-if="item.unlocking.length > 0 && isWithdraw(item.unlocking)"
                   :controller="item.controller"
@@ -105,8 +107,6 @@
                     @result="handlerTransaction"
                   />
                 </div>
-
-                <!-- <BondExtra :stash="item.stash" @result="handlerTransaction" /> -->
               </td>
             </tr>
           </tbody>
@@ -119,7 +119,7 @@
 
 <script>
 import { Robonomics } from "../../../utils/robonomics-substrate";
-// import BondExtra from "./BondExtra.vue";
+import BondExtra from "./BondExtra.vue";
 import Unbond from "./Unbond.vue";
 import ClaimRewards from "./ClaimRewards.vue";
 import WithdrawUnbonded from "./WithdrawUnbonded.vue";
@@ -129,7 +129,7 @@ import config from "../config";
 import Bond from "./Bond.vue";
 
 export default {
-  components: { Unbond, ClaimRewards, WithdrawUnbonded, Bond },
+  components: { BondExtra, Unbond, ClaimRewards, WithdrawUnbonded, Bond },
   data() {
     return {
       robonomics: null,
@@ -156,7 +156,13 @@ export default {
       this.currentBlock = number;
     });
 
-    await this.loadAccounts();
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
+      }
+      this.loadAccounts();
+    });
     this.isStartLoad = false;
   },
   destroyed() {

@@ -57,8 +57,9 @@ import SensorCost from "./SensorCost";
 import SensorResult from "./SensorResult";
 import SensorResultSubstrate from "./SensorResultSubstrate";
 import config from "~config";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+// import { Robonomics } from "@/utils/robonomics-substrate";
+// import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 
 export default {
   props: [
@@ -102,13 +103,9 @@ export default {
       this.nameModel
     } – Robonomics Network dApp`;
     try {
-      this.robonomics = Robonomics.getInstance("ipci");
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance("ipci");
-      } catch (error) {
-        this.error = error.message;
-      }
+      this.robonomics = await getInstance("ipci");
+    } catch (error) {
+      this.error = error.message;
     }
   }
 };

@@ -28,7 +28,7 @@
                 }}</span
               >
               –
-              <code>{{ myBalanceFormat }} XRT</code>
+              <span>{{ myBalanceFormat }} XRT</span>
             </div>
             <p v-if="Number(myBalance) === 0">No XRT found here</p>
           </div>
@@ -134,6 +134,11 @@
               </button>
             </template>
           </template>
+          <div>
+            <a href="" class="a-dashed" @click.stop.prevent="setMax"
+              >Apply maximum</a
+            >
+          </div>
         </div>
       </section>
 
@@ -170,16 +175,13 @@
 import token from "@/mixins/token";
 import robonomicsVC from "robonomics-vc";
 import { checkAddress } from "@polkadot/util-crypto";
-
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
 import TokenABI from "../abi/Token.json";
 import ExodusAbi from "../abi/Exodus.json";
 import { number } from "../../../utils/tools";
-
-import { Robonomics } from "../../../utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 import Identicon from "@polkadot/vue-identicon";
 
 const STATUS = {
@@ -231,19 +233,17 @@ export default {
       );
     }
 
-    try {
-      this.robonomics = Robonomics.getInstance(config.CHAIN);
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance(config.CHAIN);
-      } catch (error) {
-        console.log(error.message);
+    this.robonomics = await getInstance(config.CHAIN, false);
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
       }
-    }
-
-    if (this.robonomics) {
       this.loadAccounts();
-    }
+      this.robonomics.accountManager.onChange((account) => {
+        this.fields.account.value = account.address;
+      });
+    });
 
     this.$on("onChange", this.onChange);
     this.$on("onSubmit", this.handleSubmit);
@@ -264,7 +264,7 @@ export default {
         : 0;
     },
     hasApprove: function () {
-      return Number(this.myAllowance) === Number(this.amount);
+      return Number(this.myAllowance) >= Number(this.amount);
     },
     canButton: function () {
       if (Number(this.myBalance) < Number(this.amount)) {
@@ -277,8 +277,8 @@ export default {
       );
     },
     myBalanceFormat: function () {
-      return Number(this.$options.filters.fromWei(this.myBalance, 9, ""))
-        .toFixed(2)
+      return this.$options.filters
+        .fromWei(this.myBalance, 9, "")
         .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     }
   },
@@ -364,6 +364,13 @@ export default {
     clearForm() {
       this.process = STATUS.EMPTY;
     },
+    setMax() {
+      this.fields.amount.value = this.$options.filters.fromWei(
+        this.myBalance,
+        9,
+        ""
+      );
+    },
     subscribe(amount, account) {
       this.process = STATUS.BTN;
       const contract = new this.$robonomics.web3.eth.Contract(
@@ -397,7 +404,7 @@ export default {
           watch(r.blockNumber, () => {
             this.tx = null;
             this.process = STATUS.FINISH;
-            this.$emit("upBurn");
+            this.$emit("up-burn");
           });
         })
         .catch(() => {

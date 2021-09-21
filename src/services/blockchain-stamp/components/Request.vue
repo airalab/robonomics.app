@@ -65,7 +65,7 @@ export default {
         if (msg.objective === this.objective) {
           this.responseError = null;
           this.response = msg;
-          this.$emit("onResponse", this.response);
+          this.$emit("on-response", this.response);
 
           this.$robonomics.messenger.off(this.onResult);
           this.onResult = null;

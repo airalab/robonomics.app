@@ -1,25 +1,26 @@
-export default {
-  robonomics: null,
+export default class Rws {
+  constructor(robonomics) {
+    this.robonomics = robonomics;
+  }
   setSubscription(accounts) {
     return this.robonomics.api.tx.rws.setSubscription(accounts);
-  },
+  }
   async getSubscription(account) {
     const result = await this.robonomics.api.query.rws.subscription(account);
     if (result.isEmpty) {
       return [];
     }
     return result.value.toArray();
-  },
+  }
   async getBandwidth(account) {
     return await this.robonomics.api.query.rws.bandwidth(account);
-  },
+  }
   async getQuota(account) {
     return await this.robonomics.api.query.rws.quota(account);
-  },
+  }
   call(subscription, tx) {
     return this.robonomics.api.tx.rws.call(subscription, tx);
-  },
-
+  }
   async check_quota(account) {
     const CALL_COST = 1000000000;
     const share = await this.getBandwidth(account);
@@ -41,4 +42,4 @@ export default {
     }
     return false;
   }
-};
+}

@@ -1,40 +1,6 @@
 <template>
   <fragment>
-    <template v-if="error">
-      <Loader v-if="error == 1">
-        <p>
-          <b>For work, you need to switch the network.</b>
-        </p>
-      </Loader>
-      <Loader v-else-if="error == 2">
-        <p>Not found account</p>
-      </Loader>
-      <Loader v-else-if="error == 3">
-        <div>
-          <p>No access to account</p>
-          <p v-if="isRequest">
-            Try to refresh browser page or
-            <button @click="requestAccount">request account</button>.
-          </p>
-        </div>
-      </Loader>
-      <Loader v-else>
-        <p>
-          <b>
-            Please, setup:
-            <a
-              class="t-style_uppercase"
-              href="https://metamask.io/"
-              target="_blank"
-              >Metamask</a
-            >
-          </b>
-        </p>
-      </Loader>
-    </template>
-    <template v-else-if="!isReady">
-      <Loader />
-    </template>
+    <template v-if="!isReady && !error"><Loader /></template>
     <Wrapp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
       <router-view />
     </Wrapp>

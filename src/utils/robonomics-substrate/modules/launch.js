@@ -1,14 +1,16 @@
-export default {
-  robonomics: null,
+export default class Launch {
+  constructor(robonomics) {
+    this.robonomics = robonomics;
+  }
   send(address, param) {
     return this.robonomics.api.tx.launch.launch(address, param);
-  },
+  }
   async on(filter = {}, cb) {
     return this.robonomics.on(
       { ...filter, section: "launch", method: "NewLaunch" },
-      result => {
+      (result) => {
         cb(
-          result.map(item => {
+          result.map((item) => {
             return {
               account: item.account,
               success: item.success,
@@ -20,4 +22,4 @@ export default {
       }
     );
   }
-};
+}

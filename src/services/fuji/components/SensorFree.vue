@@ -54,7 +54,7 @@
         <Pagination
           :listData="log"
           :currentPage="currentPage"
-          @onPage="handlePage"
+          @on-page="handlePage"
         >
           <template v-slot:default="props">
             <RCard>
@@ -107,6 +107,10 @@ export default {
   },
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
+
+    if (!this.$robonomics) {
+      return;
+    }
 
     if (this.$robonomics.messenger) {
       this.$robonomics.messenger.stop();

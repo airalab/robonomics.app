@@ -52,8 +52,7 @@ import Page from "@/components/layout/Page";
 import CheckForm from "./CheckForm";
 import { stringToU8a } from "@polkadot/util";
 import config from "../config";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 
 export default {
   components: {
@@ -91,21 +90,7 @@ export default {
   },
   async created() {
     document.title = `DAO IPCI validators rewards by Robonomics team`;
-    try {
-      this.robonomics = Robonomics.getInstance("ipci");
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance("ipci");
-      } catch (error) {
-        this.error = error.message;
-      }
-    }
-    if (this.robonomics) {
-      this.accounts = this.robonomics.accountManager.getAccounts();
-      this.fields.account.value = this.accounts.length
-        ? this.accounts[0].address
-        : "";
-    }
+    this.robonomics = await getInstance("ipci", false);
   },
   destroyed() {
     clearInterval(this.interval);

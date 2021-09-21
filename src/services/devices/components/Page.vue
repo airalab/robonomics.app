@@ -10,8 +10,7 @@
 
 <script>
 import Page from "@/components/layout/Page";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 
 export default {
   components: {
@@ -25,15 +24,10 @@ export default {
   },
   async created() {
     try {
-      Robonomics.getInstance();
+      await getInstance("robonomics", false);
       this.ready = true;
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance();
-        this.ready = true;
-      } catch (error) {
-        this.error = error.message;
-      }
+    } catch (error) {
+      this.error = error.message;
     }
   }
 };

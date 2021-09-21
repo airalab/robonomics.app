@@ -19,7 +19,7 @@
 
     <!-- <Progress :percent="percent" :amount="totalBurn" /> -->
 
-    <Activate @upBurn="getBurnAmount" />
+    <Activate @up-burn="getBurnAmount" />
   </div>
 
   <!-- <fragment>

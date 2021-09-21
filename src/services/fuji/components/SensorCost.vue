@@ -55,7 +55,7 @@
         <Pagination
           :listData="log"
           :currentPage="currentPage"
-          @onPage="handlePage"
+          @on-page="handlePage"
         >
           <template v-slot:default="props">
             <RCard>

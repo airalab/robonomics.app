@@ -8,26 +8,30 @@
       <i>/</i>
       <span>{{ this.$route.params.lighthouse }}</span>
     </h2>
-    <SelectLighthouse
-      :isCreate="false"
-      :selectedLighthouse="lighthouseName"
-      @connect="
-        (lighthouse) => {
-          $router.push({ path: `/lighthouse/${lighthouse}` });
-        }
-      "
-    />
-    <section class="row" v-if="lighthouse">
-      <div class="col-lg-4 col-md-5 order-md-last">
-        <section>
-          <LighthouseDetails :lighthouse="lighthouse" />
-        </section>
-      </div>
-      <div class="col-lg-8 col-md-7">
-        <LighthouseMarket v-if="$robonomics.account" />
-        <Providers :lighthouse="lighthouse" />
-      </div>
-    </section>
+
+    <template v-if="$robonomics.factory !== null">
+      <SelectLighthouse
+        :isCreate="false"
+        :selectedLighthouse="lighthouseName"
+        @connect="
+          (lighthouse) => {
+            $router.push({ path: `/lighthouse/${lighthouse}` });
+          }
+        "
+      />
+      <section class="row" v-if="lighthouse">
+        <div class="col-lg-4 col-md-5 order-md-last">
+          <section>
+            <LighthouseDetails :lighthouse="lighthouse" />
+          </section>
+        </div>
+        <div class="col-lg-8 col-md-7">
+          <LighthouseMarket v-if="$robonomics.account" />
+          <Providers :lighthouse="lighthouse" />
+        </div>
+      </section>
+    </template>
+    <div v-else>Please, switch to Mainnet</div>
   </section>
 </template>
 
@@ -63,6 +67,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$robonomics.factory);
     this.$on("approve", (data) => {
       this.showApprove = data;
     });

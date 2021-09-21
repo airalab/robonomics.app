@@ -26,13 +26,13 @@
           <br />
           <code>= 200Wn * XRT / block</code>
         </p>
-        <a
-          class="btn-outline"
-          href="https://github.com/airalab/robonomics/issues"
-          target="_blank"
-          rel="noopener"
-          >Troubleshooting</a
-        >
+        <hr class="hr-strong"/>
+
+        <ul>
+          <li><a class="strong" href="https://robonomics.network/blog/xrt-staking-tech-committee-treasury-updates-1-2/" target="_blank" rel="noopener">About XRT staking</a></li>
+          <li>For <a class="strong" href="https://github.com/airalab/dapp.robonomics.network" target="_blank" rel="noopener">troubleshooting</a>, please, go to the issues list on GitHub to ask any questions or find answers. Use only this link to avoid scammers in messaging applications.
+          </li>
+        </ul>
       </div>
       <div>
         <section v-if="error" class="section-light">
@@ -53,32 +53,30 @@
 
 <script>
 import Page from "@/components/layout/Page";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 import config from "../config";
 
 export default {
   components: {
-    Page
+    Page,
   },
   data() {
     return {
       ready: false,
-      error: "",
-      robonomics: null
+      error: ""
     };
   },
   async created() {
     try {
-      Robonomics.getInstance(config.CHAIN);
+      await getInstance(config.CHAIN, false);
       this.ready = true;
-    } catch (_) {
-      try {
-        await createInstance(config.CHAIN);
-        this.ready = true;
-      } catch (error) {
-        this.error = error.message;
-      }
+    } catch (error) {
+      this.error = error.message;
+    }
+  },
+  methods:{
+    upBurn(r) {
+      console.log(r);
     }
   }
 };

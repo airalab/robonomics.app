@@ -38,8 +38,7 @@
 <script>
 import Page from "@/components/layout/Page";
 import ActivateForm from "./ActivateForm";
-import { Robonomics } from "@/utils/robonomics-substrate";
-import { createInstance } from "@/utils/substrate";
+import { getInstance } from "@/utils/substrate";
 
 export default {
   components: {
@@ -57,19 +56,15 @@ export default {
     };
   },
   async created() {
-    try {
-      this.robonomics = Robonomics.getInstance();
-    } catch (_) {
-      try {
-        this.robonomics = await createInstance();
-      } catch (error) {
-        this.error = error.message;
+    this.robonomics = await getInstance(undefined, false);
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
       }
-    }
-    if (this.robonomics) {
       const accounts = this.robonomics.accountManager.getAccounts();
       this.address = accounts[0]?.address;
-    }
+    });
   },
   methods: {
     async handleSubmit({ error, fields }) {

@@ -1,7 +1,7 @@
 <template>
   <div :class="{ disabled: process }">
     <button v-if="!isOpenForm" class="btn-outline" @click="openForm">
-      BondExtra
+      Bond more
     </button>
 
     <template v-else>
@@ -17,11 +17,16 @@
         </p>
         &nbsp;
         <button class="btn-outline" v-if="!process" :disabled="error">
-          BondExtra
+          Bond
         </button>
         <button class="btn-outline" v-else disabled>
           <span class="loader-ring"></span> Bonding
         </button>
+        <p>
+          <b>Note:</b> all rewards credited to your account before adding more
+          funds to stake, will be automatically paid out. New rewards will be
+          calculated according to new bonding balance.
+        </p>
       </form>
     </template>
   </div>
@@ -67,7 +72,6 @@ export default {
       this.validate();
     },
     async bond() {
-      console.log(this.stash);
       if (!this.error) {
         this.process = true;
         try {

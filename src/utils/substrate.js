@@ -62,21 +62,40 @@ const config = {
   }
 };
 
+export async function initPlugin(isDevelopment = false) {
+  if (AccountManager.isReady() || AccountManager.isError()) {
+    return;
+  }
+  await AccountManager.initPlugin({
+    // genesisHash: robonomics.api.genesisHash,
+    isDevelopment
+  });
+}
+
 export function createInstance(name = "robonomics") {
+  const robonomics = new Robonomics(config[name]);
+  robonomics.setAccountManager(new AccountManager());
+  return robonomics;
+}
+
+export function getInstance(name = "robonomics", isWaitingAccount = true) {
   return new Promise((resolve, reject) => {
-    const robonomics = new Robonomics(config[name]);
-    robonomics.setAccountManager(new AccountManager());
-    robonomics.onReady(async () => {
-      try {
-        await AccountManager.initPlugin({
-          // genesisHash: robonomics.api.genesisHash,
-          isDevelopment: name === "local" ? true : false
-        });
-        robonomics.accountManager.onReady(() => {
+    let robonomics = null;
+    try {
+      robonomics = Robonomics.getInstance(name);
+    } catch (_) {
+      robonomics = createInstance(name);
+    }
+    robonomics.onReady(() => {
+      if (isWaitingAccount) {
+        robonomics.accountManager.onReady((e) => {
+          if (e) {
+            reject(e, robonomics);
+          }
           resolve(robonomics);
         });
-      } catch (error) {
-        reject(error);
+      } else {
+        resolve(robonomics);
       }
     });
   });

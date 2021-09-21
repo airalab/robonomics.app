@@ -1,5 +1,7 @@
-export default {
-  robonomics: null,
+export default class Account {
+  constructor(robonomics) {
+    this.robonomics = robonomics;
+  }
   async getBalance(account, cb = null) {
     if (cb === null) {
       const { data } = await this.robonomics.api.query.system.account(account);
@@ -9,4 +11,4 @@ export default {
       cb(data);
     });
   }
-};
+}

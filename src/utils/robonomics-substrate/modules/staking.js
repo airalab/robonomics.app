@@ -1,49 +1,51 @@
 import { bnToBn } from "@polkadot/util";
 
-export default {
-  robonomics: null,
+export default class Staking {
+  constructor(robonomics) {
+    this.robonomics = robonomics;
+  }
   bond(controller, value) {
     return this.robonomics.api.tx.staking.bond(controller, value);
-  },
+  }
   bondExtra(value) {
     return this.robonomics.api.tx.staking.bondExtra(value);
-  },
+  }
   claimRewards() {
     return this.robonomics.api.tx.staking.claimRewards();
-  },
+  }
   unbond(value) {
     return this.robonomics.api.tx.staking.unbond(value);
-  },
+  }
   withdrawUnbonded() {
     return this.robonomics.api.tx.staking.withdrawUnbonded();
-  },
+  }
   async bonded(account) {
     return await this.robonomics.api.query.staking.bonded(account);
-  },
+  }
   async bonus(account) {
     try {
       return (await this.robonomics.api.query.staking.bonus(account)).value;
     } catch (error) {
       return 0;
     }
-  },
+  }
   async ledger(account) {
     return await this.robonomics.api.query.staking.ledger(account);
-  },
+  }
   async on(filter = {}, cb) {
     return this.robonomics.on({ ...filter, section: "staking" }, (result) => {
       cb(result);
     });
-  },
+  }
   bondingDuration() {
     return this.robonomics.api.consts.staking.bondingDuration;
-  },
+  }
   bonusReward() {
     return this.robonomics.api.consts.staking.bonusReward;
-  },
+  }
   stakeReward() {
     return this.robonomics.api.consts.staking.stakeReward;
-  },
+  }
   async getReward(ledger, block_number) {
     if (block_number <= ledger.claimed_rewards) {
       return 0;
@@ -71,4 +73,4 @@ export default {
       .div(bnToBn("1000000000"))
       .toString();
   }
-};
+}

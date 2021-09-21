@@ -14,7 +14,7 @@
           :token="tokenAddress"
           :validator="validator"
           @submit="$refs.form.submit()"
-          @onResponse="handleResponse"
+          @on-response="handleResponse"
         />
         <template v-else>
           <section>

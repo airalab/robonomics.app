@@ -44,8 +44,6 @@ export default {
   },
   methods: {
     async init(config) {
-      const robonomics = config.robonomics(this.networkId);
-
       Vue.prototype.$ipfs = await initIpfs(config.ipfs);
       const info = await this.$ipfs.id();
       if (/go/i.test(info.agentVersion)) {
@@ -53,30 +51,40 @@ export default {
       }
 
       const account = this.account ? { address: this.account } : null;
-      Vue.prototype.$robonomics = initRobonomics(
-        {
-          account: account,
-          ens: {
-            address: robonomics.ens,
-            suffix: robonomics.ensSuffix,
-            version: robonomics.version
+      const robonomics = config.robonomics(this.networkId);
+      if (robonomics) {
+        Vue.prototype.$robonomics = initRobonomics(
+          {
+            account: account,
+            ens: {
+              address: robonomics.ens,
+              suffix: robonomics.ensSuffix,
+              version: robonomics.version
+            },
+            lighthouse: robonomics.lighthouse
           },
-          lighthouse: robonomics.lighthouse
-        },
-        this.web3,
-        this.$ipfs
-      );
+          this.web3,
+          this.$ipfs
+        );
+        await this.$robonomics.ready();
+        this.isReadyRobonomics = true;
+        window.statusPeers = (timeout = 0) => {
+          console.log("Peers search", config.statusPeers);
+          statusPeers(
+            this.$ipfs,
+            this.$robonomics,
+            config.statusPeers,
+            timeout
+          );
+        };
+      } else {
+        Vue.prototype.$robonomics = null;
+        this.isReadyRobonomics = true;
+      }
 
       // state.web3.currentProvider.setMaxListeners(300); // or more :)
 
-      await this.$robonomics.ready();
-      this.isReadyRobonomics = true;
-      referral();
-
-      window.statusPeers = (timeout = 0) => {
-        console.log("Peers search", config.statusPeers);
-        statusPeers(this.$ipfs, this.$robonomics, config.statusPeers, timeout);
-      };
+      // referral();
     }
   }
 };

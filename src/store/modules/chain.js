@@ -153,6 +153,8 @@ const actions = {
       } catch (_) {
         error = 2;
       }
+    } else if (typeProvider === 3) {
+      error = 4;
     }
     if (isGlobal) {
       if (error > 0) {

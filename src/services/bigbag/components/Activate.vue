@@ -111,7 +111,7 @@ export default {
             watch(r.blockNumber, () => {
               this.tx = null;
               this.proccess = STATUS.FINISH;
-              this.$emit("upBurn");
+              this.$emit("up-burn");
             });
           })
           .catch(() => {

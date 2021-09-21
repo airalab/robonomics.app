@@ -1,23 +1,29 @@
 <template>
   <div
-    style="position: absolute; top: 20px; right: 20px;"
-    title="RWS: PubSub Message Broker"
+    class="techstatus"
+    :class="{ on: status == statuses.OK || status == statuses.WARNING }"
+    title="IPFS"
   >
-    <span v-if="status == statuses.OK" class="label label-green t-sm"
-      >pubsub connected</span
-    >
-    <span v-else-if="status == statuses.WARNING" class="label label-orange t-sm"
-      >pubsub connected</span
-    >
-    <span v-else class="label label-orange t-sm">pubsub disconnected</span>
+    <div class="techstatus-logo">
+      <IconIpfs />
+    </div>
+    <div class="techstatus-actions">
+      <div class="tip">IPFS services</div>
+      <template v-if="status == statuses.OK || status == statuses.WARNING"
+        >Pubsub connected</template
+      >
+      <template v-else>Pubsub disconnected</template>
+    </div>
   </div>
 </template>
 
 <script>
-import { getStatusPeers } from "../utils/tools";
-import getConfigRobonomics from "../config/robonomics";
+import { getStatusPeers } from "@/utils/tools";
+import getConfigRobonomics from "@/config/robonomics";
+import IconIpfs from "./IconIpfs";
 
 export default {
+  components: { IconIpfs },
   data() {
     return {
       required: [],

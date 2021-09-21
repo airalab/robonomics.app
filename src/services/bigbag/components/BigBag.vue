@@ -32,7 +32,7 @@
           :contract="address"
           :amount_wei="amount_wei"
           :isApprove="isApprove"
-          @upBurn="upVesting"
+          @up-burn="upVesting"
         />
         <hr />
 

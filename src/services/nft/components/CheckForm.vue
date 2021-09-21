@@ -90,13 +90,20 @@ export default {
     };
   },
   async created() {
-    this.robonomics = Robonomics.getInstance();
-    if (this.robonomics) {
+    this.robonomics = Robonomics.getInstance("robonomics");
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
+      }
       this.accounts = this.robonomics.accountManager.getAccounts();
       this.fields.account.value = this.accounts.length
         ? this.encodeAddress(this.accounts[0].address)
         : "";
-    }
+      this.robonomics.accountManager.onChange((account) => {
+        this.fields.account.value = this.encodeAddress(account.address);
+      });
+    });
   },
   watch: {
     ethAddress: {

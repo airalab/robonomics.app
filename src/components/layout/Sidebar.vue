@@ -98,9 +98,9 @@ export default {
   },
   async created() {
     this.isBrave = await isBrave();
-  },
-  mounted() {
-    window.sidebar();
   }
+  // mounted() {
+  //   window.sidebar();
+  // }
 };
 </script>

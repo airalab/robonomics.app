@@ -70,13 +70,17 @@ export default {
     };
   },
   async created() {
-    this.robonomics = Robonomics.getInstance("ipci");
-    if (this.robonomics) {
+    this.robonomics = Robonomics.getInstance("ipci", false);
+    this.robonomics.accountManager.onReady((e) => {
+      if (e) {
+        console.log(e.message);
+        return;
+      }
       this.accounts = this.robonomics.accountManager.getAccounts();
       this.fields.account.value = this.accounts.length
         ? this.accounts[0].address
         : "";
-    }
+    });
   }
 };
 </script>

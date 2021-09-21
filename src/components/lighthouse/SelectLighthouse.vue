@@ -1,55 +1,58 @@
 <template>
   <div class="input-size--lg">
-    <select id="select-lighthouseConnect"></select>
-    <div v-if="createForm && $robonomics.account" class="m-t-5">
-      <p>
-        <label class="t-sm">{{ $t("lighthouse.select.new.name") }}</label>
-        <br />
-        <input
-          type="text"
-          v-model="form.name"
-          @input="form.name = $event.target.value.toLowerCase().split('.')[0]"
-          class="input-size--lg"
-        />
-      </p>
-      <p>
-        <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
-        <br />
-        <input
-          type="number"
-          v-model="form.minimalStake"
-          class="input-size--md"
-        />
-      </p>
-      <p>
-        <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
-        <br />
-        <input
-          type="number"
-          v-model="form.timeoutInBlocks"
-          @input="form.timeoutInBlocks = Number($event.target.value)"
-          class="input-size--sm"
-        />
-      </p>
-      <RButton color="green" disabled v-if="create">
-        {{ $t("lighthouse.select.new.create") }}
-      </RButton>
-      <RButton color="green" @click.native="sendCreateLighthouse" v-else>
-        {{ $t("lighthouse.select.new.create") }}
-      </RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">
-        {{ $t("lighthouse.select.cancel") }}
-      </a>
-      <div v-if="createMsg">{{ createMsg }}</div>
-    </div>
-    <div v-if="isBtnConnect" class="m-t-5">
-      <RButton @click.native="connect">
-        {{ $t("lighthouse.select.connect") }}
-      </RButton>
-      <a href="javascript:;" class="m-l-20" @click="reset">
-        {{ $t("lighthouse.select.cancel") }}
-      </a>
-    </div>
+    <template v-if="$robonomics && $robonomics.factory">
+      <select id="select-lighthouseConnect"></select>
+      <div v-if="createForm && $robonomics.account" class="m-t-5">
+        <p>
+          <label class="t-sm">{{ $t("lighthouse.select.new.name") }}</label>
+          <br />
+          <input
+            type="text"
+            v-model="form.name"
+            @input="form.name = $event.target.value.toLowerCase().split('.')[0]"
+            class="input-size--lg"
+          />
+        </p>
+        <p>
+          <label class="t-sm">{{ $t("lighthouse.select.new.stake") }}</label>
+          <br />
+          <input
+            type="number"
+            v-model="form.minimalStake"
+            class="input-size--md"
+          />
+        </p>
+        <p>
+          <label class="t-sm">{{ $t("lighthouse.select.new.blocks") }}</label>
+          <br />
+          <input
+            type="number"
+            v-model="form.timeoutInBlocks"
+            @input="form.timeoutInBlocks = Number($event.target.value)"
+            class="input-size--sm"
+          />
+        </p>
+        <RButton color="green" disabled v-if="create">
+          {{ $t("lighthouse.select.new.create") }}
+        </RButton>
+        <RButton color="green" @click.native="sendCreateLighthouse" v-else>
+          {{ $t("lighthouse.select.new.create") }}
+        </RButton>
+        <a href="javascript:;" class="m-l-20" @click="reset">
+          {{ $t("lighthouse.select.cancel") }}
+        </a>
+        <div v-if="createMsg">{{ createMsg }}</div>
+      </div>
+      <div v-if="isBtnConnect" class="m-t-5">
+        <RButton @click.native="connect">
+          {{ $t("lighthouse.select.connect") }}
+        </RButton>
+        <a href="javascript:;" class="m-l-20" @click="reset">
+          {{ $t("lighthouse.select.cancel") }}
+        </a>
+      </div>
+    </template>
+    <div v-else>Please, switch to Mainnet</div>
   </div>
 </template>
 
@@ -87,7 +90,9 @@ export default {
     };
   },
   mounted() {
-    this.slim();
+    if (this.$robonomics && this.$robonomics.factory) {
+      this.slim();
+    }
     return this.fetchData();
   },
   methods: {
@@ -169,6 +174,9 @@ export default {
     },
     getLighthouses(options = { fromBlock: 0, toBlock: "latest" }) {
       return new Promise((resolve, reject) => {
+        if (!this.$robonomics || !this.$robonomics.factory) {
+          return resolve([]);
+        }
         this.$robonomics.factory.getPastEvents(
           "NewLighthouse",
           options,
