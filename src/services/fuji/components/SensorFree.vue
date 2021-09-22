@@ -21,14 +21,30 @@
             <RButton v-else @click.native="hadlerSend('eth')" color="green">
               Sign with ethereum account
             </RButton>
-            &nbsp;
           </template>
-          <RButton v-if="isRequest" color="green" disabled>
-            Sign with substrate account
-          </RButton>
-          <RButton v-else @click.native="hadlerSend('substrate')" color="green">
-            Sign with substrate account
-          </RButton>
+          <template v-else>
+            <RButton color="green" disabled>
+              Sign with ethereum account
+            </RButton>
+          </template>
+          &nbsp; &nbsp;
+          <template v-if="robonomics">
+            <RButton v-if="isRequest" color="green" disabled>
+              Sign with substrate account
+            </RButton>
+            <RButton
+              v-else
+              @click.native="hadlerSend('substrate')"
+              color="green"
+            >
+              Sign with substrate account
+            </RButton>
+          </template>
+          <template v-else>
+            <RButton color="green" disabled>
+              Sign with substrate account
+            </RButton>
+          </template>
         </div>
       </section>
       <div v-if="error" class="red" style="margin: 20px 0">{{ error }}</div>
@@ -80,7 +96,7 @@ import Storage from "../utils/storage";
 import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
 import Modal from "./Modal";
-import { Robonomics } from "@/utils/robonomics-substrate";
+import { getInstance } from "@/utils/substrate";
 
 import utils from "web3-utils";
 
@@ -102,8 +118,16 @@ export default {
       currentPage: 0,
       storage: new Storage(
         `sn_${this.lighthouse}_${this.model}_${this.agent}_free_fuji`
-      )
+      ),
+      robonomics: null
     };
+  },
+  async created() {
+    try {
+      this.robonomics = await getInstance("ipci");
+    } catch (error) {
+      console.log(error.message);
+    }
   },
   mounted() {
     loadScript("https://platform.twitter.com/widgets.js");
@@ -270,8 +294,7 @@ export default {
       }
     },
     async modalSelectAccount() {
-      const robonomics = Robonomics.getInstance("ipci");
-      const accounts = robonomics.accountManager.getAccounts();
+      const accounts = this.robonomics.accountManager.getAccounts();
       if (accounts.length === 0) {
         this.error = "Not found accounts";
         this.isRequest = false;
@@ -282,7 +305,7 @@ export default {
         {
           accounts: accounts,
           onSend: async (address) => {
-            const account = await robonomics.accountManager.selectAccountByAddress(
+            const account = await this.robonomics.accountManager.selectAccountByAddress(
               address
             );
             try {
