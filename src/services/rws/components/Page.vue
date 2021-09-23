@@ -19,6 +19,7 @@
 <script>
 import Page from "@/components/layout/Page";
 import { getInstance } from "@/utils/substrate";
+import config from "../config";
 
 export default {
   components: {
@@ -32,7 +33,7 @@ export default {
   },
   async created() {
     try {
-      await getInstance();
+      await getInstance(config.CHAIN);
       this.isApi = true;
     } catch (error) {
       this.error = error.message;

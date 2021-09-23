@@ -29,7 +29,7 @@
             {{ stake.account | labelAddress }}
           </b>
           <br />
-          <b>Bandwidth Robonomics mars</b>:
+          <b>Bandwidth Robonomics</b>:
           <span :class="[Number(bandwidth) > 0 ? 'green' : 'red']">
             {{ bandwidth }}%
           </span>
@@ -140,7 +140,7 @@ export default {
         }
       });
     }, 1000);
-    this.robonomics = Robonomics.getInstance();
+    this.robonomics = Robonomics.getInstance(config.CHAIN);
   },
   mounted() {
     this.upLockDuration();

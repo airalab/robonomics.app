@@ -23,6 +23,7 @@
         <div class="loader-ring" v-if="process"></div>
         Save
       </button>
+      <div v-if="error" class="red" style="margin-top: 10px">{{ error }}</div>
     </div>
   </div>
 </template>
@@ -30,6 +31,7 @@
 <script>
 import { Robonomics } from "@/utils/robonomics-substrate";
 import { checkAddress } from "@polkadot/util-crypto";
+import config from "../config";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -65,6 +67,7 @@ export default {
       accounts: [],
       newAccount: "",
       err: false,
+      error: null,
       process: false
     };
   },
@@ -76,14 +79,15 @@ export default {
   },
   methods: {
     async loadAccounts() {
-      const robonomics = Robonomics.getInstance();
+      const robonomics = Robonomics.getInstance(config.CHAIN);
       const subscription = await robonomics.rws.getSubscription(this.account);
       this.accounts = subscription.map((item) => item.toHuman());
     },
     async save() {
+      this.error = null;
       this.process = true;
       try {
-        const robonomics = Robonomics.getInstance();
+        const robonomics = Robonomics.getInstance(config.CHAIN);
         await robonomics.accountManager.selectAccountByAddress(this.account);
         const tx = await robonomics.rws.setSubscription(this.accounts);
         const resultTx = await robonomics.accountManager.signAndSend(tx);
@@ -92,6 +96,7 @@ export default {
         this.process = false;
       } catch (e) {
         console.log(e);
+        this.error = e.message;
         this.process = false;
       }
     },
@@ -103,7 +108,7 @@ export default {
         this.accounts.findIndex((i) => i === this.newAccount) < 0 &&
         checkAddress(
           this.newAccount,
-          Robonomics.getInstance().api.registry.chainSS58
+          Robonomics.getInstance(config.CHAIN).api.registry.chainSS58
         )[0]
       ) {
         this.accounts.push(this.newAccount);

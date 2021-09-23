@@ -17,7 +17,10 @@
     <RFormField>
       <RFieldLabel :isError="fields.account.error"
         >Parachain Account (Use
-        <a href="https://parachain.robonomics.network/" target="_blank">
+        <a
+          href="https://parachain.robonomics.network/?rpc=wss%3A%2F%2Fmain.frontier.rpc.robonomics.network%2F"
+          target="_blank"
+        >
           Substrate portal
         </a>
         to create)</RFieldLabel
@@ -36,6 +39,7 @@
 import robonomicsVC from "robonomics-vc";
 import { checkAddress } from "@polkadot/util-crypto";
 import { Robonomics } from "@/utils/robonomics-substrate";
+import config from "../config";
 
 export default {
   mixins: [robonomicsVC.mixins.form],
@@ -57,7 +61,7 @@ export default {
             (v) => {
               return checkAddress(
                 v,
-                Robonomics.getInstance().api.registry.chainSS58
+                Robonomics.getInstance(config.CHAIN).api.registry.chainSS58
               )[0];
             }
           ],

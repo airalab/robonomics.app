@@ -60,7 +60,15 @@ export default {
 printf '%*s\n' "\${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 
 if ! [ -x "$(command -v node)" ]; then
-  printf "Error: node.js is not installed."
+  printf "Error: node.js is not installed.\n"
+  printf "To install Node.js 14.x from the command line.\n"
+  printf "curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -\n"
+  printf "sudo apt install nodejs\n"
+  exit 1
+fi
+
+if ! [ -x "$(command -v npm)" ]; then
+  printf "Error: npm is not installed.\n"
   exit 1
 fi
 
@@ -79,7 +87,10 @@ node_version=$(node -v)
 check_version=$(semver $node_version -r $min_version)
 if [ -x $check_version ]
 then
-  printf "Error: node.js min version $min_version."
+  printf "Error: node.js min version $min_version.\n"
+  printf "To install Node.js 14.x from the command line.\n"
+  printf "curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -\n"
+  printf "sudo apt install nodejs\n"
   exit 1
 fi
 
@@ -104,7 +115,7 @@ node index.js
   "main": "index.js",
   "license": "MIT",
   "engines": {
-    "node": ">=14"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "start": "node index.js"
