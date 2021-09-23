@@ -36,11 +36,10 @@
           Before your device can connect and publish messages, you will need to
           download the connection kit.
         </p>
-        <button @click="download">Download connection kit for</button>
       </div>
       <div class="nav-wiz">
         <button @click="$emit('prev')">Prev</button>
-        <button @click="$emit('next')" :disabled="!isDownload">Next</button>
+        <button @click="download">Download connection kit for</button>
       </div>
     </div>
   </div>
@@ -52,30 +51,49 @@ import { saveAs } from "file-saver";
 
 export default {
   props: ["lang", "name"],
-  data() {
-    return {
-      isDownload: false
-    };
-  },
   methods: {
     download() {
       const zip = new JSZip();
 
-      const sh = `# stop script on error
-set -e
+      const sh = `#!/usr/bin/env bash
 
-if ! [ -x "$(command -v npm)" ]; then
-  echo 'Error: npm is not installed.' >&2
+printf '%*s\n' "\${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+
+if ! [ -x "$(command -v node)" ]; then
+  printf "Error: node.js is not installed."
   exit 1
 fi
 
-if npm ls ipfs | grep "empty"; then
-  printf "\nInstalling ...\n"
+printf "NODE VERSION:  "
+node -v
+printf "NPM VERSION:  "
+npm -v
+
+if [ ! -x "$(command -v semver)" ]
+then
+  npm i -g semver
+fi
+
+min_version="$(node -pe "require('./package.json')['engines'].node")"
+node_version=$(node -v)
+check_version=$(semver $node_version -r $min_version)
+if [ -x $check_version ]
+then
+  printf "Error: node.js min version $min_version."
+  exit 1
+fi
+
+if [ ! -d node_modules/ ]
+then
   npm install
 fi
 
-printf "\nRunning pub/sub sample application...\n"
-node index.js`;
+printf '%*s\n' "\${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+
+printf "Running pub/sub sample application... \n"
+
+node index.js
+`;
 
       zip.file("start.sh", sh);
 
@@ -85,6 +103,9 @@ node index.js`;
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
     "start": "node index.js"
   },
@@ -236,7 +257,7 @@ _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
 
       zip.generateAsync({ type: "blob" }).then((content) => {
         saveAs(content, "connect_device_package.zip");
-        this.isDownload = true;
+        this.$emit("next");
       });
 
       // const blob = new Blob([script], {
