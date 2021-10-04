@@ -41,7 +41,7 @@
     <RCard class="item">
       <div class="item-content" style="text-align: center">
         <h2>Payment address</h2>
-        <div>0x2C224565126E4EF4a1065F6324a6828B1dd0541f</div>
+        <div>0x128Fba3E5315118ba075f591b54F8139193663a5</div>
       </div>
     </RCard>
   </Page>

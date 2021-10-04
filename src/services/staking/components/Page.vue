@@ -12,7 +12,6 @@
           <b>Important tips:</b>
           <ul>
             <li>Unbonding takes 54 000 blocks (approx. 7 days)</li>
-            <li>Once you have bonded any amount, you can't add to your stake more with chosen account. We are working on it and in the future this option should be available.</li>
             <li><a href="https://robonomics.network/kusama-slot/" target="_blank" rel="noopener">Crowdloan</a> contributors will get increased reward rate.</li>
           </ul>
         </p>
@@ -26,6 +25,7 @@
           <br />
           <code>= 200Wn * XRT / block</code>
         </p>
+        <p><code>1Wn = 1 XRT * 10<sup>-9</sup></code></p>
         <hr class="hr-strong"/>
 
         <ul>
