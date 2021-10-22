@@ -14,23 +14,36 @@
         </select>
       </div>
       <div class="item">
-        <button @click="send" :disabled="isWork">
+        <button @click="send" :disabled="isWork || !isBalance">
           <div class="loader-ring" v-if="isWork"></div>
           &nbsp;{{ $t("sensor.modalBtn") }}
         </button>
+      </div>
+      <div style="width: 100%"></div>
+      <div>
+        Balance: <b><Balance :account="selected" @balance="handleBalance" /></b>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Balance from "./Balance";
+
 export default {
   props: ["accounts", "select"],
+  components: { Balance },
   data() {
     return {
       selected: null,
-      isWork: false
+      isWork: false,
+      balance: 0
     };
+  },
+  computed: {
+    isBalance() {
+      return Number(this.balance) > 0;
+    }
   },
   created() {
     this.selected = this.accounts[0].value;
@@ -45,6 +58,9 @@ export default {
           this.isWork = false;
         }
       );
+    },
+    handleBalance(r) {
+      this.balance = r.balance;
     }
   }
 };
@@ -62,6 +78,7 @@ export default {
   font-size: 16px;
   /* height: 100%; */
   display: flex;
+  flex-flow: wrap;
   justify-content: center;
   align-items: center;
   align-content: center;

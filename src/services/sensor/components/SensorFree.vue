@@ -13,16 +13,24 @@
       </h4>
       <section v-if="$robonomics.account">
         <div class="input-size--md">
-          <RButton v-if="isRequest" fullWidth color="green" disabled>{{
-            $t("sensor.requested")
-          }}</RButton>
-          <RButton
-            v-else
-            @click.native="sendMsgDemand"
-            fullWidth
-            color="green"
-            >{{ $t("sensor.isRequest") }}</RButton
-          >
+          <template v-if="peersIpfs > 0">
+            <RButton v-if="isRequest" fullWidth color="green" disabled>{{
+              $t("sensor.requested")
+            }}</RButton>
+            <RButton
+              v-else
+              @click.native="sendMsgDemand"
+              fullWidth
+              color="green"
+              >{{ $t("sensor.isRequest") }}</RButton
+            >
+          </template>
+          <template v-else>
+            <RButton fullWidth color="green" disabled>{{
+              $t("sensor.requested")
+            }}</RButton>
+            <p class="red">Not found ipfs peers</p>
+          </template>
         </div>
       </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
@@ -72,6 +80,8 @@ import Message from "./MessageFree";
 import Storage from "../utils/storage";
 import { parseResult, loadScript } from "../utils/utils";
 import config from "~config";
+import { getStatusPeers } from "@/utils/tools";
+import getConfigRobonomics from "@/config/robonomics";
 
 const MAX_ROW_HISTORY = 100;
 
@@ -83,6 +93,7 @@ export default {
   },
   data() {
     return {
+      peersIpfs: 0,
       ready: false,
       isRequest: false,
       log: [],
@@ -151,7 +162,26 @@ export default {
       });
     });
   },
+  created() {
+    this.getPeers();
+  },
   methods: {
+    async getPeers() {
+      try {
+        const peers = await getStatusPeers(
+          this.$ipfs,
+          this.$robonomics,
+          getConfigRobonomics().statusPeers
+        );
+        this.peersIpfs = peers.required.length;
+      } catch (error) {
+        this.peersIpfs = 0;
+      }
+
+      setTimeout(() => {
+        this.getPeers();
+      }, 5000);
+    },
     upLog() {
       const items = this.storage.getItems();
       const keys = Object.keys(items);

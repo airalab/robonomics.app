@@ -24,6 +24,7 @@ import Message from "./MessageFree";
 import { parseResult, loadScript } from "../utils/utils";
 import { Robonomics } from "@/utils/robonomics-substrate";
 import { hexToString } from "@polkadot/util";
+import config from "../config";
 
 export default {
   props: ["lighthouse", "model", "agent", "substrateBlock", "substrateTx"],
@@ -42,7 +43,7 @@ export default {
   },
   methods: {
     async init() {
-      const robonomics = Robonomics.getInstance("ipci");
+      const robonomics = Robonomics.getInstance(config.CHAIN);
       // console.log(substrate.query.system);
       // substrate.query.system.extrinsicData.at(
       //   "0xcda332716bd86f8a487fc882ed560ba555b6368b2baf3290f0b4492bbac022e9",

@@ -77,6 +77,7 @@ import Storage from "../utils/storage";
 import Modal from "./Modal";
 import { Robonomics } from "@/utils/robonomics-substrate";
 import { stringToHex } from "@polkadot/util";
+import config from "../config";
 
 export default {
   props: ["item", "lighthouse", "model", "agent", "isSubstrate"],
@@ -146,7 +147,7 @@ export default {
       )}&ref_src=twsrc%5Etfw`;
     },
     async sendSubstrate(result) {
-      const robonomics = Robonomics.getInstance("ipci");
+      const robonomics = Robonomics.getInstance(config.CHAIN);
       const accounts = robonomics.accountManager.getAccounts();
       const accountsSelects = accounts.map((account) => {
         return {

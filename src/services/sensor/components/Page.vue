@@ -60,6 +60,7 @@ import config from "~config";
 // import { Robonomics } from "@/utils/robonomics-substrate";
 // import { createInstance } from "@/utils/substrate";
 import { getInstance } from "@/utils/substrate";
+import configService from "../config";
 
 export default {
   props: [
@@ -103,7 +104,7 @@ export default {
       this.nameModel
     } – Robonomics Network dApp`;
     try {
-      this.robonomics = await getInstance("ipci");
+      this.robonomics = await getInstance(configService.CHAIN);
     } catch (error) {
       this.error = error.message;
     }
