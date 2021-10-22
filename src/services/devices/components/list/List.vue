@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { storageDevices } from "../../utils/storage";
+import { storageDevices, storageMsg } from "../../utils/storage";
 
 export default {
   data() {
@@ -52,6 +52,7 @@ export default {
     remove(name) {
       storageDevices.removeItem(name);
       this.list = storageDevices.getItems();
+      storageMsg.removeItem(name);
     }
   }
 };

@@ -5,11 +5,14 @@
       <p>To configure and test the device, perform the following steps.</p>
       <div class="block-wiz">
         <h3>Step 1: Unzip the connection kit on the device</h3>
-        <code> unzip connect_device_package.zip </code>
+        <code
+          >unzip connect_device_package.zip -d connect_device_package && cd
+          connect_device_package</code
+        >
       </div>
       <div class="block-wiz">
         <h3>Step 2: Add execution permissions</h3>
-        <code> chmod +x start.sh </code>
+        <code>chmod +x start.sh </code>
       </div>
       <div class="block-wiz">
         <h3>
