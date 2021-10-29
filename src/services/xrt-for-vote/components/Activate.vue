@@ -16,7 +16,7 @@
         fullWidth
         @click="$refs.form.submit()"
         :disabled="!canButton"
-        style="margin-bottom: 25px;"
+        style="margin-bottom: 25px"
       >
         <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
         &nbsp;
@@ -30,7 +30,7 @@
         fullWidth
         @click="exit"
         :disabled="!canButtonExit"
-        style="margin-bottom: 25px;"
+        style="margin-bottom: 25px"
       >
         <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
         &nbsp;

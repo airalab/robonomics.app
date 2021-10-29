@@ -78,7 +78,11 @@ export function createInstance(name = "robonomics") {
   return robonomics;
 }
 
-export function getInstance(name = "robonomics", isWaitingAccount = true) {
+export function getInstance(
+  name = "robonomics",
+  isWaitingAccount = true,
+  providerListener = undefined
+) {
   return new Promise((resolve, reject) => {
     let robonomics = null;
     try {
@@ -86,6 +90,19 @@ export function getInstance(name = "robonomics", isWaitingAccount = true) {
     } catch (_) {
       robonomics = createInstance(name);
     }
+
+    if (providerListener) {
+      robonomics.provider.on("error", (e) => {
+        providerListener("error", e);
+      });
+      robonomics.provider.on("connected", () => {
+        providerListener("connected");
+      });
+      robonomics.provider.on("disconnected", () => {
+        providerListener("disconnected");
+      });
+    }
+
     robonomics.onReady(() => {
       if (isWaitingAccount) {
         robonomics.accountManager.onReady((e) => {

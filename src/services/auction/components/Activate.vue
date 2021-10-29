@@ -7,11 +7,10 @@
       fullWidth
       @click="$refs.form.submit()"
       :disabled="!canButton"
-      style="margin-bottom: 25px;"
+      style="margin-bottom: 25px"
     >
       <div class="loader-ring" v-if="proccess > 0 && proccess < 3"></div>
-      &nbsp;
-      <template v-else>Send</template>
+      <template v-else> Send</template>
     </RButton>
 
     <p v-if="tx">
