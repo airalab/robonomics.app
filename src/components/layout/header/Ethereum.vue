@@ -1,5 +1,5 @@
 <template>
-  <div class="techstatus" :class="{ on: isReady }" title="Ethereum">
+  <div class="techstatus" :class="{ on: isReady && account }" title="Ethereum">
     <div class="techstatus-logo">
       <IconEth />
     </div>
