@@ -1,6 +1,5 @@
 const chains = {
   1: {
-    STATISTICS_API: "https://devjs-01.corp.aira.life:3004",
     ROBONOMICS: {
       ens: "",
       ensSuffix: "eth",
@@ -31,7 +30,6 @@ const chains = {
     DEFAULT_LIGHTHOUSE: "airalab"
   },
   4451: {
-    STATISTICS_API: "https://devjs-01.corp.aira.life:3007",
     ROBONOMICS: {
       ens: "0xaC4Ac4801b50b74aa3222B5Ba282FF54407B3941",
       ensSuffix: "sid",

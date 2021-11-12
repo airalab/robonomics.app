@@ -1,7 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-// import Home from "@/views/Home";
-import Telemetry from "@/views/Telemetry";
 import SelectLighthouse from "@/views/SelectLighthouse";
 import Lighthouse from "@/views/Lighthouse";
 import Ambix from "@/views/Ambix";
@@ -17,16 +15,6 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
-    // {
-    //   path: "/",
-    //   name: "home",
-    //   component: Home
-    // },
-    {
-      path: "/telemetry",
-      name: "telemetry",
-      component: Telemetry
-    },
     {
       path: "/lighthouse",
       name: "lighthouseSelect",
