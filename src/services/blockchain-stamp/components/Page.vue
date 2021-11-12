@@ -102,7 +102,7 @@
 <script>
 import Page from "@/components/layout/Page";
 import Approve from "@/components/approve/Form";
-import Steps from "@/components/Steps";
+import Steps from "./Steps";
 import Form from "./Form";
 import Request from "./Request";
 import Response from "./Response";
