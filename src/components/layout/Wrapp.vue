@@ -9,7 +9,7 @@
 import Vue from "vue";
 import { init as initRobonomics } from "../../utils/robonomics";
 import { init as initIpfs } from "../../utils/ipfs";
-import { statusPeers, referral } from "../../utils/tools";
+import { statusPeers } from "../../utils/tools";
 import getConfig from "../../config/robonomics";
 import Loader from "./Loader";
 
@@ -32,7 +32,6 @@ export default {
         });
         setTimeout(() => {
           this.isReadyRobonomics = true;
-          referral();
         }, 300);
       } else if (old !== null && account !== old) {
         window.location.reload(false);
@@ -81,10 +80,6 @@ export default {
         Vue.prototype.$robonomics = null;
         this.isReadyRobonomics = true;
       }
-
-      // state.web3.currentProvider.setMaxListeners(300); // or more :)
-
-      // referral();
     }
   }
 };
