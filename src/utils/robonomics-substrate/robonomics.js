@@ -34,10 +34,10 @@ export default class Robonomics {
   createProvider(endpoint) {
     this.provider = new WsProvider(endpoint);
   }
-  async createApi(types) {
+  async createApi(config) {
     this.api = await ApiPromise.create({
       provider: this.provider,
-      types: types
+      ...config
     });
     for (const name of this.modules) {
       const module = require(`./modules/${name}`);
@@ -58,7 +58,7 @@ export default class Robonomics {
       return;
     }
     this.createProvider(this.config.endpoint);
-    await this.createApi(this.config.types);
+    await this.createApi(this.config.api);
     this.isReady = true;
     if (this.accountManager && this.accountManager.api === null) {
       this.accountManager.setApi(this.api);
