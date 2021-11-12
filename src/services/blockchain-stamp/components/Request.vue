@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { genRosbagIpfs } from "@/utils/utils";
+import { genRosbagIpfs } from "@/utils/rosBag";
 import { addByFile } from "./add";
 
 export default {

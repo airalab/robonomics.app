@@ -106,7 +106,7 @@
 import axios from "axios";
 import { Liability } from "robonomics-js";
 import iconv from "iconv-lite";
-import { readRosbagIpfs } from "@/utils/utils";
+import { readRosbagIpfs } from "@/utils/rosBag";
 import config from "~config";
 
 function loadScript(src) {

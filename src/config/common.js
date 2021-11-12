@@ -3,9 +3,6 @@ export default {
   AMBIX2: "0x06d77D039a6bD049fc9E651b7ecBB2694AC1F96f",
   AMBIX_PRIVATE:
     "0x72F6F86574496313E26B0C8F5183C32FC8A660B85D88622043B5895194C7AD9F",
-  CIVIC_APP_ID: "WUja346hS",
-  START_NODES: [],
-  NET_TOPICS: ["graph.5.robonomics.eth", "graph.5.robonomics.sid"],
   IPFS_GATEWAY: "https://ipfs.io/ipfs/",
   // IPFS_GATEWAY: "https://ipfs.infura.io/ipfs/",
   ROBONOMICS: {

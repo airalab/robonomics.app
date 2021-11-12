@@ -1,15 +1,18 @@
 import { open } from "rosbag";
 import Bag, { Time, messages } from "rosbag-write";
+import axios from "axios";
+import { tools } from "./ipfs";
+import config from "../config";
 
-export default (data, cb, options = {}) => {
+export default function rosBag(data, cb, options = {}) {
   return open(data).then((bag) => {
     return bag.readMessages(options, (result) => {
       cb(result);
     });
   });
-};
+}
 
-export const getRosbag = async (data) => {
+export async function getRosbag(data) {
   const bag = new Bag();
   await messages.init();
   const Message = await messages.getMessage("std_msgs/String");
@@ -27,4 +30,16 @@ export const getRosbag = async (data) => {
   });
   bag.close();
   return bag.file.getBuffer();
-};
+}
+
+export async function genRosbagIpfs(data) {
+  const bag = await getRosbag(data);
+  const hash = (await tools.add(bag)).toString();
+  await axios.get(`${config.IPFS_GATEWAY}${hash}`);
+  return hash;
+}
+
+export async function readRosbagIpfs(hash, cb, topics = {}) {
+  const r = await tools.cat(hash);
+  return rosBag(new Blob([r]), cb, topics);
+}
