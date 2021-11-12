@@ -153,10 +153,6 @@ export async function statusPeers(ipfs, robonomics, lookPeers, timeout = 0) {
   }
 }
 
-export async function isBrave() {
-  return (navigator.brave && (await navigator.brave.isBrave())) || false;
-}
-
 export async function referral(address = null, referrer = null) {
   const r = getRobonomics();
   let store = null;

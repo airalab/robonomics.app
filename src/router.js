@@ -8,7 +8,6 @@ import Sensors from "@/views/Sensors";
 import Liability from "@/views/Liability";
 import Approve from "@/views/Approve";
 import Results from "@/views/Results";
-import Uniswap from "@/views/Uniswap";
 import services from "@/services";
 
 Vue.use(Router);
@@ -56,12 +55,6 @@ export default new Router({
       path: "/results",
       name: "results",
       component: Results
-    },
-    {
-      path: "/uniswap/:referral?",
-      name: "uniswap",
-      component: Uniswap,
-      props: true
     },
     ...Object.values(services)
       .filter((item) => item.router)

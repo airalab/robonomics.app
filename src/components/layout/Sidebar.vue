@@ -41,15 +41,11 @@
     </RSidebarSection>
     <RSidebarSection title="For tokenholders">
       <a
-        v-if="isBrave"
-        href="https://uniswap.exchange/swap?outputCurrency=0x7dE91B204C1C737bcEe6F000AAA6569Cf7061cb7"
+        href="https://app.uniswap.org/#/swap?inputCurrency=0x7de91b204c1c737bcee6f000aaa6569cf7061cb7&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
         target="_blank"
       >
         {{ $t("menu.uniswap") }}
       </a>
-      <router-link v-else :to="{ name: 'uniswap' }" active-class="active" exact>
-        {{ $t("menu.uniswap") }}
-      </router-link>
       <router-link :to="{ name: 'xrt-for-vote' }" active-class="active" exact>
         {{ $t("menu.votes") }}
       </router-link>
@@ -86,21 +82,3 @@
     </RSidebarSection>
   </RSidebar>
 </template>
-
-<script>
-import { isBrave } from "@/utils/tools";
-
-export default {
-  data() {
-    return {
-      isBrave: true
-    };
-  },
-  async created() {
-    this.isBrave = await isBrave();
-  }
-  // mounted() {
-  //   window.sidebar();
-  // }
-};
-</script>
