@@ -4,7 +4,11 @@
       <IconEth />
     </div>
     <div class="techstatus-actions">
-      <template v-if="isReady || error === 2 || error === 3">
+      <template
+        v-if="
+          isReady && (error === null || error.code === 2 || error.code === 3)
+        "
+      >
         <div class="tip">{{ network }}</div>
         <div v-if="account" class="flexline flexline-smallgap flexline-center">
           <span>{{ accountView }}</span>
@@ -18,10 +22,10 @@
         </div>
         <a v-else href="" @click.stop.prevent="connect">Connect account</a>
       </template>
-      <template v-if="error === 1">
+      <template v-if="error && error.code === 1">
         <div class="tip">Please, switch to Mainnet</div>
       </template>
-      <template v-if="error === 4">
+      <template v-if="error && error.code === 4">
         <a href="https://metamask.io" target="_blank">Metamask</a> not found
       </template>
     </div>
@@ -29,14 +33,24 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import IconCopy from "./IconCopy";
 import IconEth from "./IconEth";
 
 export default {
   components: { IconCopy, IconEth },
   computed: {
-    ...mapState("chain", ["error", "isReady", "networkId", "account"]),
+    isReady: function () {
+      return this.$web3.isReady();
+    },
+    error: function () {
+      return this.$web3.error();
+    },
+    account: function () {
+      return this.$web3.account();
+    },
+    networkId: function () {
+      return this.$web3.networkId();
+    },
     accountView: function () {
       if (this.account) {
         return `${this.account.substr(0, 6)}...${this.account.substr(-6)}`;
@@ -55,7 +69,7 @@ export default {
   },
   methods: {
     async connect() {
-      this.$store.dispatch("chain/accessAccount");
+      await this.$web3.initAccount();
     }
   }
 };

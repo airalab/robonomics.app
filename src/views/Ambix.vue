@@ -32,13 +32,13 @@
     </RCard>
     <RCard v-else>
       <h3>{{ $t("action") }}</h3>
-      <div style="text-align: center;">
+      <div style="text-align: center">
         <a
           href="javascript:;"
           @click="connect"
           :title="$t('sidebar.connect')"
           class="btn-green"
-          style="font-size: 30px;"
+          style="font-size: 30px"
         >
           {{ $t("sidebar.connect") }}
         </a>
@@ -49,7 +49,7 @@
 
 <script>
 import Page from "@/components/layout/Page";
-import { mapState, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import TextBlockEn from "../components/ambix/TextBlockEn";
 import TextBlockRu from "../components/ambix/TextBlockRu";
 import Ambix from "../components/ambix/Ambix";
@@ -71,7 +71,9 @@ export default {
   },
   computed: {
     ...mapGetters("tokens", ["balance", "allowance"]),
-    ...mapState("chain", ["networkId"]),
+    networkId: function () {
+      return this.$web3.networkId();
+    },
     air() {
       const token = config.chain.get().TOKEN.air;
       return {
@@ -121,7 +123,7 @@ export default {
       };
     }
   },
-  mounted() {
+  created() {
     if (this.networkId !== 1) {
       this.$router.push({ path: "/" });
     } else {
@@ -144,7 +146,7 @@ export default {
   },
   methods: {
     async connect() {
-      this.$store.dispatch("chain/accessAccount", false);
+      await this.$web3.initAccount();
     }
   }
 };

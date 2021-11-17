@@ -1,7 +1,12 @@
 <template>
   <fragment>
     <template v-if="!isReady && !error"><Loader /></template>
-    <Wrapp v-else :networkId="networkId" :account="account" :web3="getWeb3()">
+    <Wrapp
+      v-else
+      :networkId="networkId"
+      :account="account"
+      :web3="$web3.library"
+    >
       <router-view />
     </Wrapp>
     <modals-container />
@@ -10,7 +15,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import Wrapp from "./components/layout/Wrapp";
 import Loader from "./components/layout/Loader";
 import config from "~config";
@@ -21,13 +25,18 @@ export default {
     Loader
   },
   computed: {
-    ...mapState("chain", [
-      "error",
-      "isReady",
-      "networkId",
-      "account",
-      "getWeb3"
-    ])
+    isReady: function () {
+      return this.$web3.isReady();
+    },
+    error: function () {
+      return this.$web3.error();
+    },
+    account: function () {
+      return this.$web3.account();
+    },
+    networkId: function () {
+      return this.$web3.networkId();
+    }
   },
   watch: {
     networkId(networkId, old) {
@@ -37,12 +46,13 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("chain/init", config.chain.getListId());
-  },
-  methods: {
-    requestAccount() {
-      this.$store.dispatch("chain/accessAccount");
-    }
+    this.$web3.init({
+      networks: config.chain.getListId().map((item) => Number(item)),
+      infura: {
+        networkId: 1,
+        key: config.INFURA_KEY
+      }
+    });
   }
 };
 </script>

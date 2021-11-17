@@ -3,7 +3,6 @@ import Vuex from "vuex";
 import createLogger from "vuex/dist/logger";
 import providers from "./modules/providers";
 import tokens from "./modules/tokens";
-import chain from "./modules/chain";
 
 Vue.use(Vuex);
 
@@ -12,8 +11,7 @@ const debug = false;
 export default new Vuex.Store({
   modules: {
     providers,
-    tokens,
-    chain
+    tokens
   },
   strict: true, // debug,
   plugins: debug ? [createLogger()] : []

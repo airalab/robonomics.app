@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import Page from "@/components/layout/Page";
 import services from "../services";
 
@@ -76,9 +75,6 @@ export default {
           .map((item) => item.meta)
       ]
     };
-  },
-  computed: {
-    ...mapState("chain", ["networkId"])
   },
   created() {
     document.title = `${this.$t("services.title")} – Robonomics Network dApp`;
