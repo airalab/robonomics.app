@@ -146,9 +146,6 @@ export default {
         .refill(this.minimalStake * Number(this.fields.count.value))
         .send({
           from: this.$robonomics.account.address
-        })
-        .then(() => {
-          this.$store.dispatch("providers/fetchData");
         });
     }
   }

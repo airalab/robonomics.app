@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
 import WorkerForm from "./WorkerForm";
 import WithdrawForm from "./WithdrawForm";
 
@@ -50,12 +49,63 @@ export default {
   },
   data() {
     return {
-      showWorkers: false
+      showWorkers: false,
+      timeoutInBlocks: 0,
+      keepAliveBlock: 0,
+      currentBlock: 0,
+      lighthouseBalance: 0,
+      minimalStake: 0,
+      listenerBlock: null
     };
   },
   computed: {
-    ...mapGetters("providers", ["isSleeping"]),
-    ...mapState("providers", ["lighthouseBalance", "minimalStake"])
+    downtime: function () {
+      return this.currentBlock - this.keepAliveBlock;
+    },
+    isSleeping: function () {
+      return this.downtime > this.timeoutInBlocks;
+    }
+  },
+  created() {
+    this.watchBlock();
+    this.fetchData();
+  },
+  destroyed() {
+    if (this.listenerBlock) {
+      this.listenerBlock.unsubscribe();
+    }
+  },
+  methods: {
+    async watchBlock() {
+      this.currentBlock = await this.$robonomics.web3.eth.getBlockNumber();
+      this.listenerBlock = this.$robonomics.web3.eth.subscribe(
+        "newBlockHeaders",
+        function (error, result) {
+          if (!error) {
+            if (result.number > this.currentBlock) {
+              this.currentBlock = result.number;
+              this.fetchData();
+            }
+          }
+        }
+      );
+    },
+    async fetchData() {
+      this.lighthouseBalance = Number(
+        await this.$robonomics.xrt.methods
+          .balanceOf(this.$robonomics.lighthouse.address)
+          .call()
+      );
+      this.minimalStake = Number(
+        await this.$robonomics.lighthouse.methods.minimalStake().call()
+      );
+      this.keepAliveBlock = Number(
+        await this.$robonomics.lighthouse.methods.keepAliveBlock().call()
+      );
+      this.timeoutInBlocks = Number(
+        await this.$robonomics.lighthouse.methods.timeoutInBlocks().call()
+      );
+    }
   }
 };
 </script>

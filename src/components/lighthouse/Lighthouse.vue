@@ -67,7 +67,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$robonomics.factory);
     this.$on("approve", (data) => {
       this.showApprove = data;
     });
@@ -84,11 +83,9 @@ export default {
         lighthouseAddr !== this.$robonomics.lighthouse.address
       ) {
         this.$robonomics.initLighthouse(this.lighthouseName).then(() => {
-          this.$store.dispatch("providers/init");
           this.lighthouse = lighthouseAddr;
         });
       } else {
-        this.$store.dispatch("providers/init");
         this.lighthouse = lighthouseAddr;
       }
     }
