@@ -34,11 +34,7 @@
           </div>
         </template>
 
-        <button
-          v-else
-          @click.stop="$store.dispatch('chain/accessAccount', false)"
-          class="btn-outline"
-        >
+        <button v-else @click.stop="$web3.initAccount()" class="btn-outline">
           Connect your Ethereum account
         </button>
       </section>

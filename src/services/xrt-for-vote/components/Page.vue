@@ -6,7 +6,7 @@
         href="https://client.aragon.org/#/dao.robonomics.eth"
         target="_blank"
         class="item-avatar"
-        style="margin-bottom: 20px;"
+        style="margin-bottom: 20px"
       >
         <span
           class="item-avatar--image"
@@ -15,13 +15,13 @@
       </a>
       <Exchange v-if="$robonomics.account" />
       <p v-else class="t-align--center">
-        <RButton @click="$store.dispatch('chain/accessAccount', false)">
+        <RButton @click="$web3.initAccount()">
           Connect ethereum account
         </RButton>
       </p>
       <blockquote
         class="t-align--center"
-        style="font-weight: 400; border-color: #222222; opacity: 0.8;"
+        style="font-weight: 400; border-color: #222222; opacity: 0.8"
       >
         After XRT to DAO VOTES convertation you can
         <a

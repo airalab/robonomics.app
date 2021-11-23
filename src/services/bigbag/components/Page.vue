@@ -18,7 +18,7 @@
         <br />
         <BigBag v-if="address" :address="address" />
       </div>
-      <RButton v-else @click="$store.dispatch('chain/accessAccount', false)">
+      <RButton v-else @click="$web3.initAccount()">
         Connect ethereum account
       </RButton>
     </RCard>

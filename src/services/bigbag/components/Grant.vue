@@ -11,7 +11,7 @@
       <div v-if="$robonomics.account">
         <Vesting :address="address" />
       </div>
-      <RButton v-else @click="$store.dispatch('chain/accessAccount', false)">
+      <RButton v-else @click="$web3.initAccount()">
         Connect ethereum account
       </RButton>
     </RCard>
