@@ -35,7 +35,7 @@ import { storageDevices } from "../../utils/storage";
 const list = storageDevices.getItems();
 
 export default {
-  props: ["name"],
+  props: ["platform", "lang", "name"],
   mixins: [robonomicsVC.mixins.form],
   data() {
     return {
@@ -60,7 +60,11 @@ export default {
   methods: {
     onSubmit(result) {
       if (!result.error) {
-        this.$emit("next", { name: result.fields.name.value });
+        this.$emit("next", {
+          platform: this.platform,
+          lang: this.lang,
+          name: result.fields.name.value
+        });
       }
     }
   }

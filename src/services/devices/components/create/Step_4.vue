@@ -51,21 +51,41 @@ import { saveAs } from "file-saver";
 import axios from "axios";
 
 export default {
-  props: ["lang", "name"],
+  props: ["platform", "lang", "name"],
   methods: {
     async download() {
-      const zip = new JSZip();
-      const defaultFile = (
-        await axios.get("/connect_device_package.zip", { responseType: "blob" })
-      ).data;
-      await zip.loadAsync(defaultFile);
-      const file = await zip.file("config.json").async("string");
-      const newFile = file.replaceAll("DEVICE_NAME", this.name);
-      zip.file("config.json", newFile);
-      zip.generateAsync({ type: "blob" }).then((content) => {
-        saveAs(content, "connect_device_package.zip");
-        this.$emit("next");
-      });
+      if (this.lang === "python") {
+        const zip = new JSZip();
+        const defaultFile = (
+          await axios.get(
+            "https://raw.githubusercontent.com/tubleronchik/rws/main/docker/start.sh"
+          )
+        ).data;
+        const newFile = defaultFile.replaceAll(
+          'DEVICE_ID=""',
+          `DEVICE_ID="${this.name}"`
+        );
+        zip.file("start.sh", newFile);
+        zip.generateAsync({ type: "blob" }).then((content) => {
+          saveAs(content, "connect_device_package.zip");
+          this.$emit("next");
+        });
+      } else if (this.lang === "nodejs") {
+        const zip = new JSZip();
+        const defaultFile = (
+          await axios.get("/examples_connect_device/nodejs.zip", {
+            responseType: "blob"
+          })
+        ).data;
+        await zip.loadAsync(defaultFile);
+        const file = await zip.file("config.json").async("string");
+        const newFile = file.replaceAll("DEVICE_NAME", this.name);
+        zip.file("config.json", newFile);
+        zip.generateAsync({ type: "blob" }).then((content) => {
+          saveAs(content, "connect_device_package.zip");
+          this.$emit("next");
+        });
+      }
     }
   }
 };

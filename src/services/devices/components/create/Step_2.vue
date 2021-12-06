@@ -9,14 +9,18 @@
       <div class="block-wiz">
         <h3>Choose a platform</h3>
         <label>
-          <input type="radio" name="platform" value="linux" checked />
+          <input type="radio" v-model="platform" value="linux" />
           Linux
         </label>
       </div>
       <div class="block-wiz">
         <h3>Choose a RWS IoT Device SDK</h3>
         <label>
-          <input type="radio" name="lang" value="node" checked />
+          <input type="radio" v-model="lang" value="python" />
+          Python
+        </label>
+        <label>
+          <input type="radio" v-model="lang" value="nodejs" />
           Node.js
         </label>
       </div>
@@ -30,9 +34,15 @@
 
 <script>
 export default {
+  data() {
+    return {
+      platform: "linux",
+      lang: "python"
+    };
+  },
   methods: {
     next() {
-      this.$emit("next", { platform: "linux", lang: "nodejs" });
+      this.$emit("next", { platform: this.platform, lang: this.lang });
     }
   }
 };
