@@ -78,6 +78,7 @@
 
 <script>
 import _sortBy from "lodash/sortBy";
+import { number } from "@/utils/tools";
 
 export default {
   props: ["lighthouse"],
@@ -164,9 +165,7 @@ export default {
           })
           .then((res) => {
             res.forEach((balance, i) => {
-              members[i].balance = Number(
-                this.$robonomics.web3.utils.fromWei(balance)
-              ).toFixed(3);
+              members[i].balance = Number(number.fromWei(balance)).toFixed(3);
             });
             members.forEach((item, i) => {
               const index = this.members.findIndex((member) => {
