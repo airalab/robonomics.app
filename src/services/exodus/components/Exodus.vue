@@ -45,6 +45,7 @@ import config from "../config";
 import Activate from "./Activate";
 // import Progress from "./Progress";
 import ExodusAbi from "../abi/Exodus.json";
+import filters from "@/utils/filters";
 
 export default {
   mixins: [token],
@@ -72,19 +73,17 @@ export default {
         : 0;
     },
     balanceXrtFormat: function () {
-      return Number(this.$options.filters.fromWei(this.balanceXrt, 9, ""))
+      return Number(filters.fromWei(this.balanceXrt, 9, ""))
         .toFixed(2)
         .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     },
     burnFormat: function () {
-      return Number(this.$options.filters.fromWei(this.burn, 9, ""))
+      return Number(filters.fromWei(this.burn, 9, ""))
         .toFixed(2)
         .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     },
     totalBurnFormat: function () {
-      return Number(
-        this.$options.filters.fromWei(this.totalBurn.toString(), 9, "")
-      )
+      return Number(filters.fromWei(this.totalBurn.toString(), 9, ""))
         .toFixed(2)
         .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     }
@@ -128,7 +127,7 @@ export default {
       //   );
       // });
       // Object.keys(listNigative).forEach((account_id) => {
-      //   list[encodeAddress(account_id, 32)] = this.$options.filters.fromWei(
+      //   list[encodeAddress(account_id, 32)] = filters.fromWei(
       //     listNigative[account_id],
       //     9,
       //     "XRT"

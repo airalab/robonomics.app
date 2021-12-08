@@ -50,6 +50,7 @@ import Vesting from "./Vesting";
 import BigBagAbi from "../abi/BigBag.json";
 import TokenAbi from "../abi/Token.json";
 import config from "../config";
+import filters from "@/utils/filters";
 
 export default {
   props: ["address"],
@@ -80,10 +81,10 @@ export default {
   },
   computed: {
     amountWeiFormat: function () {
-      return this.$options.filters.fromWei(this.amount_wei, 18, "ETH");
+      return filters.fromWei(this.amount_wei, 18, "ETH");
     },
     amountWnFormat: function () {
-      return this.$options.filters.fromWei(this.amount_wn, 9, "XRT");
+      return filters.fromWei(this.amount_wn, 9, "XRT");
     },
     priceFormat: function () {
       return this.price + " ETH";

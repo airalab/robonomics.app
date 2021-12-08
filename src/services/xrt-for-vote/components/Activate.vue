@@ -54,6 +54,7 @@ import TokenABI from "../abi/Token.json";
 import MinterAbi from "../abi/Minter.json";
 import ActivateForm from "./ActivateForm";
 import { number } from "../../../utils/tools";
+import filters from "@/utils/filters";
 
 const STATUS = {
   EMPTY: 0,
@@ -99,7 +100,7 @@ export default {
       );
     },
     amountXrtFormat: function () {
-      return this.$options.filters.fromWei(this.amountXrt, 9, "XRT");
+      return filters.fromWei(this.amountXrt, 9, "XRT");
     },
     hasApprove: function () {
       return Number(this.myAllowance) >= Number(this.amountXrt);

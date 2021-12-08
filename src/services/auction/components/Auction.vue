@@ -24,19 +24,19 @@
         class="col-md-6"
         style="text-align: center; font-size: 20px; font-weight: bold"
       >
-        {{ myBid | fromWei(18, "ETH", 4) }}
+        {{ $filters.fromWei(myBid, 18, "ETH", 4) }}
       </div>
       <div
         class="col-md-6"
         style="text-align: center; font-size: 20px; font-weight: bold"
       >
-        {{ myTokens | fromWei(9, "XRT", 4) }}
+        {{ $filters.fromWei(myTokens, 9, "XRT", 4) }}
       </div>
     </div>
 
     <blockquote style="margin: 20px 0">
       Current XRT / ETH auction rate is 1 ETH =
-      {{ price | fromWei(9, "XRT", 4) }}
+      {{ $filters.fromWei(price, 9, "XRT", 4) }}
     </blockquote>
 
     <template v-if="stage === Stages.AuctionStarted">
@@ -44,7 +44,7 @@
         The price for the token has dropped too much, the auction is over.
       </div>
       <Activate v-else @up-burn="getData" />
-      <!-- maxWei {{ maxWei | fromWei(18, "ETH") }} -->
+      <!-- maxWei {{ $filters.fromWei(maxWei, 18, "ETH") }} -->
     </template>
     <!-- <template v-else-if="stage === Stages.AuctionDeployed">
       AuctionDeployed
@@ -65,8 +65,8 @@
       <p>Exodus made for account {{ exodus.account }}</p>
       <p>
         details tx:
-        <a :href="exodus.tx | urlChainExplorer('tx')" target="_blank">{{
-          exodus.tx | labelAddress
+        <a :href="$filters.urlChainExplorer(exodus.tx, 'tx')" target="_blank">{{
+          $filters.labelAddress(exodus.tx)
         }}</a>
       </p>
     </template>

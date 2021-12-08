@@ -20,7 +20,7 @@
         {{ $t("steps.contract") }}
         <a
           v-if="status >= statuses.CONTRACT"
-          :href="liability | urlChainExplorer"
+          :href="$filters.urlChainExplorer(liability)"
           target="_blank"
         >
           {{ $t("steps.view_contract") }}

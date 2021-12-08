@@ -19,7 +19,7 @@
     <p v-if="$wait.is([actionForm, actionTx]) && actionTx" class="t-sm">
       Wait for
       <a
-        :href="actionTx.replace('tx.', '') | urlChainExplorer('tx')"
+        :href="$filters.urlChainExplorer(actionTx.replace('tx.', ''), 'tx')"
         target="_blank"
         >transaction</a
       >
@@ -27,7 +27,7 @@
     </p>
     <p></p>
     <p class="t-sm" :style="{ color: isApprove ? '#54CE63' : '#E84004' }">
-      Current allowance: {{ current | fromWei(decimals, fromLabel) }}
+      Current allowance: {{ $filters.fromWei(current, decimals, fromLabel) }}
     </p>
     <p v-if="error !== ''" class="t-sm" style="color: #e84004">{{ error }}</p>
     <p></p>

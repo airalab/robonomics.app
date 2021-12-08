@@ -4,7 +4,7 @@
       <TradeForm ref="form" @onChange="onChange" @onSubmit="onSubmit" />
 
       <section class="m-b-0">
-        <div v-if="error" style="margin: 5px 0;">
+        <div v-if="error" style="margin: 5px 0">
           {{ $t("lighthouse.market.error") }}
         </div>
         <Approve
@@ -37,7 +37,7 @@
         <div
           v-for="(item, i) in log"
           :key="`${i}-${item.date}`"
-          style="margin: 5px 0;"
+          style="margin: 5px 0"
         >
           <template v-if="item.type == 'liability'">
             <RAvatar
@@ -46,9 +46,11 @@
             />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a :href="item.address | urlChainExplorer" target="_blank">{{
-              item.address | labelAddress
-            }}</a>
+            <a
+              :href="$filters.urlChainExplorer(item.address)"
+              target="_blank"
+              >{{ $filters.labelAddress(item.address) }}</a
+            >
           </template>
           <template v-else-if="item.type == 'result'">
             <RAvatar
@@ -57,8 +59,8 @@
             />
             <b>[{{ item.date.toLocaleString() }}]</b>
             New {{ item.type }}&nbsp;
-            <a :href="item.hash | urlIpfsExplorer" target="_blank">{{
-              item.hash | labelAddress
+            <a :href="$filters.urlIpfsExplorer(item.hash)" target="_blank">{{
+              $filters.labelAddress(item.hash)
             }}</a>
           </template>
           <template v-else>
@@ -70,8 +72,8 @@
             New {{ item.type }} from
             <span v-if="item.type == 'demand'">dapp account</span>
             <span v-else>Aira</span>&nbsp;
-            <a :href="item.sender | urlChainExplorer" target="_blank">{{
-              item.sender | labelAddress
+            <a :href="$filters.urlChainExplorer(item.sender)" target="_blank">{{
+              $filters.labelAddress(item.sender)
             }}</a>
           </template>
           <hr />

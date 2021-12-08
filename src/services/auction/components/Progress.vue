@@ -2,7 +2,7 @@
   <div class="">
     <div class="info">
       <div class="left">0 ETH</div>
-      <div class="right">{{ max | fromWei(18, "ETH", 4) }}</div>
+      <div class="right">{{ $filters.fromWei(max, 18, "ETH", 4) }}</div>
     </div>
     <div class="progress">
       <div
@@ -14,7 +14,7 @@
       class="current"
       :style="{ 'padding-left': (percent > 84 ? 84 : percent) + '%' }"
     >
-      {{ amount | fromWei(18, "ETH", 4) }}
+      {{ $filters.fromWei(amount, 18, "ETH", 4) }}
     </div>
   </div>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <div class="t-align--center">
     <div>{{ $t("passport.priceTitle") }}:</div>
-    <b class="t-gt">{{ cost | fromWei(decimals, symbol) }}</b>
+    <b class="t-gt">{{ $filters.fromWei(cost, decimals, symbol) }}</b>
     <p>
       <a href="javascript:;" @click="details = !details">
         <template v-if="details">{{ $t("passport.detailsLess") }}</template>
         <template v-else>{{ $t("passport.details") }}</template>
       </a>
     </p>
-    <div v-show="details" style="max-width: 600px; margin: 10px auto;">
+    <div v-show="details" style="max-width: 600px; margin: 10px auto">
       <div class="row">
         <div class="col-sm-6">
           <div class="m-b-5">

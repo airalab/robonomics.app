@@ -1,4 +1,3 @@
-import Vue from "vue";
 import {
   getContract,
   watchToken,
@@ -9,6 +8,7 @@ import {
   watchAllowance,
   toChecksumAddress
 } from "../../utils/token";
+import filters from "@/utils/filters";
 
 // initial state
 const state = {
@@ -43,7 +43,7 @@ const getters = {
     account = toChecksumAddress(account);
     const balance = getters.balance(token, account);
     const info = getters.token(token);
-    return Vue.options.filters.fromWei(
+    return filters.fromWei(
       balance,
       info ? info.decimals : 0,
       info ? info.symbol : ""
@@ -68,7 +68,7 @@ const getters = {
     to = toChecksumAddress(to);
     const allowance = getters.allowance(token, from, to);
     const info = getters.token(token);
-    return Vue.options.filters.fromWei(
+    return filters.fromWei(
       allowance,
       info ? info.decimals : 0,
       info ? info.symbol : ""

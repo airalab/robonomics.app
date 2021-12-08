@@ -5,8 +5,11 @@ import store from "./store";
 import i18n from "./plugins/i18n";
 import wait from "./plugins/wait";
 import "./plugins";
+import filters from "./utils/filters";
 
 Vue.config.productionTip = false;
+
+Vue.prototype.$filters = filters;
 
 new Vue({
   store,

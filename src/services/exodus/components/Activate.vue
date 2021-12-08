@@ -179,6 +179,7 @@ import ExodusAbi from "../abi/Exodus.json";
 import { number } from "../../../utils/tools";
 import { getInstance } from "@/utils/substrate";
 import Identicon from "@polkadot/vue-identicon";
+import filters from "@/utils/filters";
 
 const STATUS = {
   EMPTY: 0,
@@ -273,7 +274,7 @@ export default {
       );
     },
     myBalanceFormat: function () {
-      return this.$options.filters
+      return filters
         .fromWei(this.myBalance, 9, "")
         .replace(/\d(?=(\d{3})+\.)/g, "$& ");
     }
@@ -361,11 +362,7 @@ export default {
       this.process = STATUS.EMPTY;
     },
     setMax() {
-      this.fields.amount.value = this.$options.filters.fromWei(
-        this.myBalance,
-        9,
-        ""
-      );
+      this.fields.amount.value = filters.fromWei(this.myBalance, 9, "");
     },
     subscribe(amount, account) {
       this.process = STATUS.BTN;

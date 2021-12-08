@@ -4,7 +4,7 @@
     <blockquote>
       <a
         class="t-lg content-overflow"
-        :href="address | urlChainExplorer"
+        :href="$filters.urlChainExplorer(address)"
         target="_blank"
         >{{ address }}</a
       >
@@ -42,12 +42,12 @@
             <pre class="pre__overflow" v-else>{{ json }}</pre>
             <a
               class="btn-blue btn-sm ptint-hidden"
-              :href="passport.meta | urlIpfsExplorer"
+              :href="$filters.urlIpfsExplorer(passport.meta)"
               target="_blank"
               >{{ $t("passport.openIpfs") }}</a
             >
             <div class="print-show">
-              Link in IPFS: {{ passport.meta | urlIpfsExplorer }}
+              Link in IPFS: {{ $filters.urlIpfsExplorer(passport.meta) }}
             </div>
           </div>
         </section>
@@ -62,15 +62,19 @@
               >{{ image.sliceHash }}</a
             >
             <div v-if="image.show">
-              <img class="i-block" alt :src="image.hash | urlIpfsExplorer" />
+              <img
+                class="i-block"
+                alt
+                :src="$filters.urlIpfsExplorer(image.hash)"
+              />
               <a
                 class="btn-blue btn-sm m-t-5 ptint-hidden"
-                :href="image.hash | urlIpfsExplorer"
+                :href="$filters.urlIpfsExplorer(image.hash)"
                 target="_blank"
                 >{{ $t("passport.openIpfs") }}</a
               >
               <div class="print-show">
-                Link in IPFS: {{ image.hash | urlIpfsExplorer }}
+                Link in IPFS: {{ $filters.urlIpfsExplorer(image.hash) }}
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
     <p>
       <span class="t-sm">{{ $t("lighthouse.approve.value") }}:</span>
       <br />
-      <b>{{ myAllowance | fromWei(9, "XRT") }}</b>
+      <b>{{ $filters.fromWei(myAllowance, 9, "XRT") }}</b>
     </p>
     <hr />
     <p>

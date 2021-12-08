@@ -21,13 +21,13 @@
       <p>
         <span class="t-sm">{{ $t("lighthouse.details.balance") }}:</span>
         <br />
-        <b>{{ lighthouseBalance | fromWei(9, "XRT") }}</b>
+        <b>{{ $filters.fromWei(lighthouseBalance, 9, "XRT") }}</b>
       </p>
       <hr />
       <p>
         <span class="t-sm">{{ $t("lighthouse.details.stake") }}:</span>
         <br />
-        <b>{{ minimalStake | fromWei(9, "XRT") }}</b>
+        <b>{{ $filters.fromWei(minimalStake, 9, "XRT") }}</b>
       </p>
       <hr />
       <WorkerForm v-if="$robonomics.account" />

@@ -18,16 +18,16 @@
         <div v-else v-for="(grant, index) in grants" :key="index">
           <h4>Grant</h4>
           <div>
-            Start time: <b>{{ grant.startTime | dateFormat }}</b>
+            Start time: <b>{{ $filters.dateFormat(grant.startTime) }}</b>
           </div>
           <div>
-            Amount: <b>{{ grant.amount | fromWei(9, "XRT") }}</b>
+            Amount: <b>{{ $filters.fromWei(grant.amount, 9, "XRT") }}</b>
           </div>
           <!-- <div>
             Days claimed: <b>{{ grant.daysClaimed }}</b>
           </div>
           <div>
-            Total claimed: <b>{{ grant.totalClaimed | fromWei(9, "XRT") }}</b>
+            Total claimed: <b>{{ $filters.fromWei(grant.totalClaimed, 9, "XRT") }}</b>
           </div> -->
           <div>
             Vesting duration: <b>{{ grant.vestingDuration }} days</b>
@@ -40,7 +40,8 @@
             Days vested: <b>{{ grant.daysVested }}</b>
           </div>
           <div>
-            Amount vested: <b>{{ grant.amountVested | fromWei(9, "XRT") }}</b>
+            Amount vested:
+            <b>{{ $filters.fromWei(grant.amountVested, 9, "XRT") }}</b>
           </div>
           <div></div>
           <Claim
@@ -67,7 +68,6 @@
 
 <script>
 import Claim from "./Claim";
-import moment from "moment";
 import ContractForm from "./ContractForm";
 import VestingAbi from "../abi/Vesting.json";
 
@@ -84,11 +84,6 @@ export default {
       grants: [],
       addressContract: this.address
     };
-  },
-  filters: {
-    dateFormat: function (v) {
-      return moment(v, "X").format("DD.MM.YYYY HH:mm:ss");
-    }
   },
   mounted() {
     this.$refs.form.fields.address.value = this.address;
