@@ -52,7 +52,7 @@
         :class="{ disabled: process || fields.stash.error || balance <= 0 }"
       >
         <label>2. Value to be bonded</label>
-        <p class="tip">Don't forget about transaction fee</p>
+        <p class="tip alert" v-if="balance >= 0 && accounts.length !== 0">Please save some XRT tokens for transaction fees, don't bond all your XRT. You will need it to operate with bonded tokens in the future: claim rewards, bond more, unbond.</p>
 
         <div :class="{ error: fields.value.error }">
           <div class="input-measured">
@@ -63,7 +63,7 @@
               class="container-full"
             /><span class="input-measure">XRT</span>
           </div>
-          <p v-if="balance <= 0">
+          <p v-if="balance <= 0 && accounts.length !== 0">
             Insufficient balance on choosen account. It needs to be at least the
             value you specified here plus supposed transaction fee.
           </p>
@@ -209,5 +209,27 @@ export default {
 <style scoped>
 .mt15 {
   margin-top: 15px;
+}
+
+.tip {
+  max-width: 600px;
+}
+
+.tip.alert:before {
+  content: "!";
+  font-weight: bold;
+  color: var(--color-blue);
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-blue);
+  border-radius: 20px;
+  text-align: center;
+  margin-right: var(--space);
+  float: left;
+  clear: both
+}
+
+.tip.alert {
+  color: var(--color-blue)
 }
 </style>
