@@ -52,7 +52,11 @@
         :class="{ disabled: process || fields.stash.error || balance <= 0 }"
       >
         <label>2. Value to be bonded</label>
-        <p class="tip alert" v-if="balance >= 0 && accounts.length !== 0">Please save some XRT tokens for transaction fees, don't bond all your XRT. You will need it to operate with bonded tokens in the future: claim rewards, bond more, unbond.</p>
+        <p class="tip alert" v-if="balance >= 0 && accounts.length !== 0">
+          Please save some XRT tokens for transaction fees, don't bond all your
+          XRT. You will need it to operate with bonded tokens in the future:
+          claim rewards, bond more, unbond.
+        </p>
 
         <div :class="{ error: fields.value.error }">
           <div class="input-measured">
@@ -63,7 +67,7 @@
               class="container-full"
             /><span class="input-measure">XRT</span>
           </div>
-          <p v-if="balance <= 0 && accounts.length !== 0">
+          <p v-if="(balance <= 0 || !maxBond) && accounts.length !== 0">
             Insufficient balance on choosen account. It needs to be at least the
             value you specified here plus supposed transaction fee.
           </p>
@@ -77,7 +81,7 @@
             <div class="loader-ring"></div>
           </button>
           <template v-else>
-            <button v-if="!error && balance > 0" class="lg">Bond</button>
+            <button v-if="canBond" class="lg">Bond</button>
             <button v-else class="lg disabled" disabled>Bond</button>
           </template>
         </template>
@@ -113,7 +117,7 @@
 
 <script>
 import { Robonomics } from "../../../utils/robonomics-substrate";
-import { toUnit } from "../utils/utils";
+import { toUnit, toDecimal } from "../utils/utils";
 import robonomicsVC from "robonomics-vc";
 import Balance from "./Balance";
 import config from "../config";
@@ -134,7 +138,27 @@ export default {
         value: {
           value: "0",
           type: "text",
-          rules: ["require", (v) => Number(v) > 0],
+          rules: [
+            "require",
+            (v) => Number(v) > 0,
+            (v) => {
+              return (
+                this.balance >=
+                Number(
+                  toDecimal(
+                    toUnit(v, this.robonomics.api.registry.chainDecimals)
+                  ).add(
+                    toDecimal(
+                      toUnit(
+                        config.REST,
+                        this.robonomics.api.registry.chainDecimals
+                      )
+                    )
+                  )
+                )
+              );
+            }
+          ],
           error: false
         }
       },
@@ -161,6 +185,28 @@ export default {
 
     this.$on("onChange", this.onChange);
     this.$on("onSubmit", this.bond);
+  },
+  computed: {
+    maxBond() {
+      return (
+        this.balance >=
+        Number(
+          toDecimal(
+            toUnit(
+              this.fields.value.value,
+              this.robonomics.api.registry.chainDecimals
+            )
+          ).add(
+            toDecimal(
+              toUnit(config.REST, this.robonomics.api.registry.chainDecimals)
+            )
+          )
+        )
+      );
+    },
+    canBond() {
+      return !this.error && this.balance > 0 && this.maxBond;
+    }
   },
   methods: {
     onChange() {
@@ -226,10 +272,10 @@ export default {
   text-align: center;
   margin-right: var(--space);
   float: left;
-  clear: both
+  clear: both;
 }
 
 .tip.alert {
-  color: var(--color-blue)
+  color: var(--color-blue);
 }
 </style>

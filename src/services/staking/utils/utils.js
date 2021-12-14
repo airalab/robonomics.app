@@ -50,7 +50,11 @@ export function formatBalance(v, decimals = 9, unit = "XRT", full = false) {
 }
 
 export function toUnit(v, decimals) {
-  return new Decimal(v.toString())
+  return new Decimal(v?.toString() || 0)
     .mul(new Decimal(10).pow(decimals.toString()))
     .toString();
+}
+
+export function toDecimal(v) {
+  return new Decimal(v?.toString() || 0);
 }
