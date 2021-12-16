@@ -1,6 +1,11 @@
 import { formatBalance as fb } from "@polkadot/util";
 import Decimal from "decimal.js-light";
 
+Decimal.set({
+  toExpNeg: -31,
+  toExpPos: 31
+});
+
 // packages/react-query/src/FormatBalance.tsx 59
 // for million, 2 * 3-grouping + comma
 const M_LENGTH = 6 + 1;

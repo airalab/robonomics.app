@@ -5,6 +5,11 @@ import { formatBalance as fb } from "@polkadot/util";
 import Decimal from "decimal.js-light";
 import config from "~config";
 
+Decimal.set({
+  toExpNeg: -31,
+  toExpPos: 31
+});
+
 export async function parseResult(result, options = { topics: ["/data"] }) {
   axios.get(`${config.IPFS_GATEWAY}${result}`).then(() => {
     console.log("result ipfs hash resolved");

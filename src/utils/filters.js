@@ -1,6 +1,11 @@
 import Decimal from "decimal.js-light";
 import moment from "moment";
 
+Decimal.set({
+  toExpNeg: -31,
+  toExpPos: 31
+});
+
 function urlChainExplorer(address, type = "address", chainid = 1) {
   let domain = "etherscan.io";
   if (type === "") {
