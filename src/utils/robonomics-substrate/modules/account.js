@@ -11,4 +11,11 @@ export default class Account {
       cb(data);
     });
   }
+  async listenBalance(account, cb) {
+    const listener = await this.robonomics.account.getBalance(account, (r) => {
+      const transferrable = r.free.sub(r.miscFrozen);
+      cb(transferrable);
+    });
+    return listener;
+  }
 }

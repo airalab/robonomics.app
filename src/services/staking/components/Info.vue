@@ -212,7 +212,7 @@ export default {
                 moment: item.moment.toString()
               };
             }),
-            claimed_rewards: ledger.value.claimed_rewards.toNumber(),
+            claimed_rewards: ledger.value.claimedRewards.toNumber(),
             reward: null
           });
         }

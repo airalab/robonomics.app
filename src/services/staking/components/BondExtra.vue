@@ -16,12 +16,14 @@
           /><span class="input-measure">XRT</span>
         </p>
         &nbsp;
-        <button class="btn-outline" v-if="!process" :disabled="error">
-          Bond
+        <button v-if="process" class="btn-outline" disabled>
+          <div class="loader-ring"></div>
+          Bonding
         </button>
-        <button class="btn-outline" v-else disabled>
-          <span class="loader-ring"></span> Bonding
-        </button>
+        <template v-else>
+          <button v-if="canBond" class="btn-outline">Bond</button>
+          <button v-else class="btn-outline" disabled>Bond</button>
+        </template>
         <p>
           <b>Note:</b> all rewards credited to your account before adding more
           funds to stake, will be automatically paid out. New rewards will be
@@ -34,7 +36,7 @@
 
 <script>
 import { Robonomics } from "../../../utils/robonomics-substrate";
-import { toUnit } from "../utils/utils";
+import { toUnit, toDecimal } from "../utils/utils";
 import robonomicsVC from "robonomics-vc";
 import config from "../config";
 
@@ -54,7 +56,9 @@ export default {
       robonomics: null,
       accounts: [],
       process: false,
-      isOpenForm: false
+      isOpenForm: false,
+      balance: "",
+      listener: null
     };
   },
   async created() {
@@ -63,6 +67,29 @@ export default {
     this.$on("onChange", this.onChange);
     this.$on("onSubmit", this.bond);
     this.onChange();
+    this.listenBalance();
+  },
+  computed: {
+    maxBond() {
+      return (
+        this.balance >=
+        Number(
+          toDecimal(
+            toUnit(
+              this.fields.value.value,
+              this.robonomics.api.registry.chainDecimals
+            )
+          ).add(
+            toDecimal(
+              toUnit(config.REST, this.robonomics.api.registry.chainDecimals)
+            )
+          )
+        )
+      );
+    },
+    canBond() {
+      return !this.error && this.balance > 0 && this.maxBond;
+    }
   },
   methods: {
     openForm() {
@@ -93,6 +120,27 @@ export default {
         }
         this.process = false;
       }
+    },
+    async listenBalance() {
+      this.listener = await this.robonomics.account.getBalance(
+        this.stash,
+        (r) => {
+          this.balance = Number(r.free.sub(r.miscFrozen).toString());
+        }
+      );
+    }
+  },
+  watch: {
+    stash: function () {
+      if (this.listener) {
+        this.listener();
+        this.listenBalance();
+      }
+    }
+  },
+  destroyed() {
+    if (this.listener) {
+      this.listener();
     }
   }
 };
