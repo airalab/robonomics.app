@@ -125,7 +125,7 @@ export default {
       this.listener = await this.robonomics.account.getBalance(
         this.stash,
         (r) => {
-          this.balance = Number(r.free.sub(r.miscFrozen).toString());
+          this.balance = Number(r.free.sub(r.feeFrozen).toString());
         }
       );
     }

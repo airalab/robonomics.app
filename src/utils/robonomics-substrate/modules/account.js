@@ -13,7 +13,7 @@ export default class Account {
   }
   async listenBalance(account, cb) {
     const listener = await this.robonomics.account.getBalance(account, (r) => {
-      const transferrable = r.free.sub(r.miscFrozen);
+      const transferrable = r.free.sub(r.feeFrozen);
       cb(transferrable);
     });
     return listener;

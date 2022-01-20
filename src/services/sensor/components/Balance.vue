@@ -37,7 +37,7 @@ export default {
       this.listener = await this.robonomics.account.getBalance(
         this.account,
         (r) => {
-          const transferrable = r.free.sub(r.miscFrozen);
+          const transferrable = r.free.sub(r.feeFrozen);
           this.balance = formatBalance(
             transferrable.toString(),
             this.robonomics.api.registry.chainDecimals[0],
