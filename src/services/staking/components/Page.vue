@@ -11,8 +11,8 @@
         <p>
           <b>Important tips:</b>
           <ul>
-            <li>Unbonding takes 54 000 blocks (approx. 7 days)</li>
-            <li><a href="https://robonomics.network/kusama-slot/" target="_blank" rel="noopener">Crowdloan</a> contributors will get increased reward rate.</li>
+            <li>Unbonding takes 216 000 blocks (approx. 30 days)</li>
+            <li>Winning <a href="https://robonomics.network/kusama-slot/" target="_blank" rel="noopener">crowdloan</a> contributors will get increased reward rate.</li>
           </ul>
         </p>
         <p>
