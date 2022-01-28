@@ -33,6 +33,11 @@
           </template>
         </div>
       </section>
+      <section v-else>
+        <RButton @click="$web3.initAccount()">
+          Connect ethereum account
+        </RButton>
+      </section>
       <RWindow v-if="log.length > 0" id="window-sensornetwork-requests">
         <template slot="header">
           <span>
