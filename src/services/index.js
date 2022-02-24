@@ -21,6 +21,7 @@ import parachain from "./parachain";
 import ipciValidator from "./ipci-validator";
 import staking from "./staking";
 import nft from "./nft";
+import bonusForPioneer from "./bonus-for-pioneer";
 
 export default {
   parachain,
@@ -45,5 +46,6 @@ export default {
   artShop,
   ipciValidator,
   staking,
-  nft
+  nft,
+  bonusForPioneer
 };
