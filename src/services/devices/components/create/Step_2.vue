@@ -15,10 +15,10 @@
       </div>
       <div class="block-wiz">
         <h3>Choose a RWS IoT Device SDK</h3>
-        <label>
+        <!-- <label>
           <input type="radio" v-model="lang" value="python" />
           Python
-        </label>
+        </label> -->
         <label>
           <input type="radio" v-model="lang" value="nodejs" />
           Node.js
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       platform: "linux",
-      lang: "python"
+      lang: "nodejs"
     };
   },
   methods: {

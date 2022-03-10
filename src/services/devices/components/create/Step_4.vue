@@ -73,14 +73,15 @@ export default {
       } else if (this.lang === "nodejs") {
         const zip = new JSZip();
         const defaultFile = (
-          await axios.get("/examples_connect_device/nodejs.zip", {
-            responseType: "blob"
-          })
+          await axios.get(
+            "https://raw.githubusercontent.com/vol4tim/rws-example/main/start.sh"
+          )
         ).data;
-        await zip.loadAsync(defaultFile);
-        const file = await zip.file("config.json").async("string");
-        const newFile = file.replaceAll("DEVICE_NAME", this.name);
-        zip.file("config.json", newFile);
+        const newFile = defaultFile.replaceAll(
+          'DEVICE_ID=""',
+          `DEVICE_ID="${this.name}"`
+        );
+        zip.file("start.sh", newFile);
         zip.generateAsync({ type: "blob" }).then((content) => {
           saveAs(content, "connect_device_package.zip");
           this.$emit("next");

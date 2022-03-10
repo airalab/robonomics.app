@@ -1,12 +1,8 @@
 <template>
   <Page>
     <RCard class="section-centered">
-      <h2>Robonomics Web Services dashboard</h2>
       <template v-if="isApi">
-        <router-view v-if="$robonomics.account"></router-view>
-        <RButton v-else @click="$store.dispatch('chain/accessAccount', false)">
-          Connect ethereum account
-        </RButton>
+        <router-view></router-view>
       </template>
       <template v-else>
         <div v-if="error" class="red">{{ error }}</div>

@@ -4,6 +4,26 @@
     <div v-if="ready">
       <form v-on:submit.prevent="submit">
         <RFormField>
+          <RFieldLabel :isError="fields.subscription.error"
+            >Subscription</RFieldLabel
+          >
+          <select
+            v-model="fields.subscription.value"
+            class="container-full"
+            :class="{ error: fields.subscription.error }"
+          >
+            <option
+              v-for="(item, k) in subscriptions"
+              :key="k"
+              :value="item.subscription"
+            >
+              {{ item.subscription.substr(0, 6) }}...{{
+                item.subscription.substr(-6)
+              }}
+            </option>
+          </select>
+        </RFormField>
+        <RFormField>
           <RFieldLabel :isError="fields.sender.error">Sender</RFieldLabel>
           <select
             v-model="fields.sender.value"
@@ -11,12 +31,12 @@
             :class="{ error: fields.sender.error }"
           >
             <option
-              v-for="(account, k) in accounts"
+              v-for="(device, k) in devices"
               :key="k"
-              :value="account.address"
+              :value="device.address"
             >
-              {{ account.meta.name }} - {{ account.address.substr(0, 6) }}...{{
-                account.address.substr(-6)
+              {{ device.name }} - {{ device.address.substr(0, 6) }}...{{
+                device.address.substr(-6)
               }}
             </option>
           </select>
@@ -85,6 +105,9 @@ import robonomicsVC from "robonomics-vc";
 import { storageDevices } from "../../utils/storage";
 import { checkAddress } from "@polkadot/util-crypto";
 import config from "../../config";
+import Storage from "@/utils/storage";
+
+export const devicesStore = new Storage("rws-devices");
 
 export default {
   props: ["id"],
@@ -100,6 +123,12 @@ export default {
       currentPage: 0,
       robonomics: null,
       fields: {
+        subscription: {
+          value: "",
+          type: "text",
+          rules: ["require"],
+          error: false
+        },
         sender: {
           value: "",
           type: "text",
@@ -124,7 +153,7 @@ export default {
           error: false
         }
       },
-      accounts: [],
+      subscriptions: [],
       resultError: "",
       resultWrite: null,
       process: false,
@@ -144,10 +173,10 @@ export default {
           console.log(e.message);
           return;
         }
-        this.loadAccounts();
-        this.robonomics.accountManager.onChange((account) => {
-          this.fields.sender.value = account.address;
-        });
+        this.loadSubscriptions();
+        // this.robonomics.accountManager.onChange((account) => {
+        //   this.fields.sender.value = account.address;
+        // });
       });
       this.ready = true;
       const items = storageDevices.getItems();
@@ -172,6 +201,27 @@ export default {
       this.listenerDatalog();
     }
   },
+  computed: {
+    devices: function () {
+      const subscription = this.subscriptions.find((item) => {
+        return item.subscription === this.fields.subscription.value;
+      });
+      if (subscription) {
+        const devicesStoreItems =
+          devicesStore.getItems()[subscription.subscription] || [];
+        return subscription.devices.map((item) => {
+          return {
+            name:
+              devicesStoreItems.find(
+                (device) => device.address === item.toString()
+              ).name || "",
+            address: item.toString()
+          };
+        });
+      }
+      return [];
+    }
+  },
   methods: {
     onChange({ name, fields }) {
       if (name === "device" && this.listenerDatalog) {
@@ -186,10 +236,21 @@ export default {
         storageDevices.addItem(this.id, list);
       }
     },
-    async loadAccounts() {
-      this.accounts = this.robonomics.accountManager.getAccounts();
-      if (this.accounts.length) {
-        this.fields.sender.value = this.accounts[0].address;
+    async loadSubscriptions() {
+      const accounts = this.robonomics.accountManager.getAccounts();
+      for (const account of accounts) {
+        const ledger = await this.robonomics.rws.getLedger(account.address);
+        if (!ledger.isNone) {
+          const devices = await this.robonomics.rws.getDevices(account.address);
+          this.subscriptions.push({
+            subscription: account.address,
+            devices
+          });
+        }
+      }
+      if (this.subscriptions.length) {
+        this.fields.subscription.value = this.subscriptions[0].subscription;
+        this.fields.sender.value = this.subscriptions[0].devices[0].toString();
       }
     },
     async datalog() {
@@ -235,9 +296,13 @@ export default {
         await this.robonomics.accountManager.selectAccountByAddress(
           this.fields.sender.value
         );
-        const tx = this.robonomics.launch.send(
+        const call = this.robonomics.launch.send(
           this.fields.device.value,
           this.fields.status.value
+        );
+        const tx = this.robonomics.rws.call(
+          this.fields.subscription.value,
+          call
         );
         this.resultWrite = await this.robonomics.accountManager.signAndSend(tx);
         this.fields.status.value = !this.fields.status.value;

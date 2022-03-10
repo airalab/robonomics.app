@@ -14,10 +14,8 @@
       <button v-if="account" @click="create">Create new</button>
       &nbsp;
       <template v-if="bandwidth > 0">
-        <router-link
-          :to="{ name: 'rws-accounts', params: { account: account } }"
-        >
-          Accounts manager
+        <router-link :to="{ name: 'rws-devices', params: { owner: account } }">
+          Devices manager
         </router-link>
       </template>
       <template v-else>
