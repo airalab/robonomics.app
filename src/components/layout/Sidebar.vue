@@ -61,6 +61,13 @@
       <router-link :to="{ name: 'pioneer' }" active-class="active" exact>
         NFT card
       </router-link>
+      <router-link
+        :to="{ name: 'bonus-for-pioneer' }"
+        active-class="active"
+        exact
+      >
+        Pioneers rewards
+      </router-link>
     </RSidebarSection>
     <RSidebarSection title="Wiki and support">
       <a href="https://robonomics.network/" target="_blank">
