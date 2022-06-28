@@ -25,11 +25,33 @@
             <robo-card-title size="3">
               Get Home Assistant password:
             </robo-card-title>
-            <robo-text weight="bold">crypted password:</robo-text>
-            <robo-text v-if="secret" break gap size="small">{{
-              secret
-            }}</robo-text>
-            <robo-loader v-else />
+
+            <template v-if="!isSubscription">
+              <robo-list-item>
+                <robo-text size="big" weight="bold">
+                  <robo-status
+                    type="warning"
+                    textRight="No active subscription"
+                  />
+                </robo-text>
+                <robo-text>
+                  Ask the
+                  <robo-link href="https://t.me/robonomics_free_rws_bot">
+                    @robonomics_free_rws
+                  </robo-link>
+                  Telegram bot to add your account to the Workshop IoT
+                  Subscription
+                </robo-text>
+              </robo-list-item>
+            </template>
+            <template v-else>
+              <robo-text weight="bold">crypted password:</robo-text>
+              <robo-text v-if="secret" break gap size="small">
+                {{ secret }}
+              </robo-text>
+              <robo-loader v-else />
+            </template>
+
             <robo-text weight="light">
               Enter your seed phrase to decrypt the password
             </robo-text>
@@ -85,6 +107,7 @@ export default {
     return {
       ha: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
       subAdmin: "4D6GaVUbg6TXDup7gdvHWyERQDK99vyreRU2hjdwptyuQUpP",
+      isSubscription: false,
       sender: null,
       unsubscribeAccount: null,
       error: null,
@@ -120,10 +143,12 @@ export default {
   async created() {
     if (robonomics.accountManager.account) {
       this.sender = robonomics.accountManager.account.address;
+      this.hasSubscription();
       this.read();
     }
     this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
       this.sender = account.address;
+      this.hasSubscription();
       this.read();
     });
 
@@ -147,6 +172,14 @@ export default {
     }
   },
   methods: {
+    async hasSubscription() {
+      const devices = await robonomics.rws.getDevices(this.ha);
+      if (devices.includes(this.sender)) {
+        this.isSubscription = true;
+        return;
+      }
+      this.isSubscription = false;
+    },
     async read() {
       const log = await robonomics.datalog.read(this.ha);
       for (const item of log) {

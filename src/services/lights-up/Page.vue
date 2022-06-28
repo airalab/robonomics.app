@@ -23,14 +23,35 @@
 
             <robo-list-item>
               <robo-card-title size="3">Get IoT Subscription:</robo-card-title>
-              <robo-text>
-                Ask the
-                <robo-link href="https://t.me/robonomics_free_rws_bot">
-                  @robonomics_free_rws
-                </robo-link>
-                Telegram bot to add your account to the Workshop IoT
-                Subscription
-              </robo-text>
+              <template v-if="!isSubscription">
+                <robo-text size="big" weight="bold">
+                  <robo-status
+                    type="warning"
+                    textRight="No active subscription"
+                  />
+                </robo-text>
+                <robo-text>
+                  Ask the
+                  <robo-link href="https://t.me/robonomics_free_rws_bot">
+                    @robonomics_free_rws
+                  </robo-link>
+                  Telegram bot to add your account to the Workshop IoT
+                  Subscription
+                </robo-text>
+              </template>
+              <template v-else>
+                <robo-text size="big" weight="bold">
+                  <robo-status
+                    type="success"
+                    textRight="Your Workshop IoT Subscription is active"
+                  />
+                </robo-text>
+                <robo-text>
+                  <robo-link href="https://t.me/robonomics_free_rws_bot">
+                    @robonomics_free_rws
+                  </robo-link>
+                </robo-text>
+              </template>
             </robo-list-item>
 
             <robo-list-item>
@@ -51,14 +72,18 @@
               >
                 Waiting for ipfs node
               </robo-button>
-              <robo-button
-                v-else
-                @click="send"
-                :disabled="process"
-                :loading="process"
-              >
-                Submit a transaction
-              </robo-button>
+              <template v-else>
+                <robo-button
+                  v-if="!tx"
+                  @click="send"
+                  :disabled="process || !isSubscription"
+                  :loading="process"
+                  >Submit a transaction
+                </robo-button>
+                <robo-button v-else type="ok" iconLeft="check">
+                  Transaction submitted
+                </robo-button>
+              </template>
             </robo-list-item>
           </robo-list>
         </robo-grid>
@@ -82,15 +107,24 @@ export default {
       colorLightUp: "#8CD517",
       error: null,
       process: false,
-      isOnlineIpfs: false
+      isOnlineIpfs: false,
+      isSubscription: false,
+      tx: false
     };
+  },
+  watch: {
+    colorLightUp() {
+      this.tx = false;
+    }
   },
   async created() {
     if (robonomics.accountManager.account) {
       this.sender = robonomics.accountManager.account.address;
+      this.hasSubscription();
     }
     this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
       this.sender = account.address;
+      this.hasSubscription();
     });
 
     const ipfs = await this.$ipfs;
@@ -102,6 +136,14 @@ export default {
     }
   },
   methods: {
+    async hasSubscription() {
+      const devices = await robonomics.rws.getDevices(this.rwsOwner);
+      if (devices.includes(this.sender)) {
+        this.isSubscription = true;
+        return;
+      }
+      this.isSubscription = false;
+    },
     hexToRgb(hex) {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result
@@ -126,6 +168,7 @@ export default {
     async send() {
       this.error = null;
       this.process = true;
+      this.tx = false;
       try {
         const msg = this.getParameter();
         const hash = await addFile("launch", msg);
@@ -138,6 +181,7 @@ export default {
         const resultTx = await robonomics.accountManager.signAndSend(tx);
         console.log(resultTx);
         this.process = false;
+        this.tx = true;
         // this.message = `Saved to block ${resultTx.blockNumber}`;
       } catch (e) {
         console.log(e);
