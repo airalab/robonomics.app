@@ -4,7 +4,7 @@
       <robo-card-label-section
         ><robo-icon icon="signal"
       /></robo-card-label-section>
-      <robo-card-label-section>Statuses</robo-card-label-section>
+      <robo-card-label-section>Status</robo-card-label-section>
     </robo-card-label>
 
     <robo-card-section>

@@ -4,6 +4,9 @@
       <robo-sidebar-item :router="{ name: 'dashboard' }" current>
         Dashboard
       </robo-sidebar-item>
+      <robo-sidebar-item href="https://old.dapp.robonomics.network/">
+        Old version
+      </robo-sidebar-item>
       <!-- <robo-sidebar-item to="/settings">Settings</robo-sidebar-item> -->
     </robo-sidebar>
 
