@@ -25,22 +25,24 @@
             <robo-card-title size="3">
               Get Home Assistant password:
             </robo-card-title>
-
-            <div>
-              crypt: <b>{{ secret }}</b>
-            </div>
-            <div>
-              password: <b>{{ password }}</b>
-            </div>
+            <robo-text weight="bold">crypted password:</robo-text>
+            <robo-text v-if="secret" break gap size="small">{{
+              secret
+            }}</robo-text>
+            <robo-loader v-else />
             <robo-text weight="light">
-              Enter your test seed phrase to decrypt the password:
+              Enter your seed phrase to decrypt the password
             </robo-text>
             <robo-textarea
               v-model="uri"
               placeholder="Place your test seed here"
               offset="x1"
             />
-            <robo-button @click="decrypt" outlined>
+            <robo-button
+              @click="decrypt"
+              outlined
+              :disabled="!validateUri || !secret"
+            >
               Decrypt password
             </robo-button>
           </robo-list-item>
@@ -49,7 +51,21 @@
             <robo-card-title size="3">
               Sign in your Home assistant account using autorization link:
             </robo-card-title>
-            <robo-link href="#">Sign in Home Assistant</robo-link>
+
+            <template v-if="password">
+              <robo-text weight="bold">login:</robo-text>
+              <robo-text gap size="small">
+                <robo-account-polkadot copy />
+              </robo-text>
+
+              <robo-text weight="bold">password:</robo-text>
+              <robo-text break copy gap size="small">{{ password }}</robo-text>
+            </template>
+            <robo-text gap>
+              <robo-link href="http://192.168.98.239:8123/">
+                Sign in Home Assistant
+              </robo-link>
+            </robo-text>
           </robo-list-item>
         </robo-list>
       </robo-card-section>
@@ -61,7 +77,7 @@
 import robonomics from "../../robonomics";
 import { Keyring } from "@polkadot/keyring";
 import { u8aToString, u8aToHex } from "@polkadot/util";
-import { decodeAddress } from "@polkadot/util-crypto";
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 
 export default {
   data() {
@@ -89,6 +105,15 @@ export default {
         }
       }
       return null;
+    },
+    validateUri() {
+      if (
+        this.account &&
+        encodeAddress(this.sender) === encodeAddress(this.account.address)
+      ) {
+        return true;
+      }
+      return false;
     }
   },
   async created() {
