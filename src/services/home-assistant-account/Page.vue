@@ -60,12 +60,14 @@
 <script>
 import robonomics from "../../robonomics";
 import { Keyring } from "@polkadot/keyring";
-import { u8aToString } from "@polkadot/util";
+import { u8aToString, u8aToHex } from "@polkadot/util";
+import { decodeAddress } from "@polkadot/util-crypto";
 
 export default {
   data() {
     return {
-      ha: "4GzMLepDF5nKTWDM6XpB3CrBcFmwgazcVFAD3ZBNAjKT6hQJ",
+      ha: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
+      subAdmin: "4D6GaVUbg6TXDup7gdvHWyERQDK99vyreRU2hjdwptyuQUpP",
       sender: null,
       unsubscribeAccount: null,
       error: null,
@@ -82,15 +84,6 @@ export default {
         try {
           const k = new Keyring();
           return k.addFromUri(this.uri, {}, "ed25519");
-          // const a1 = k.addFromUri(this.uri, {}, "ed25519");
-          // if (encodeAddress(this.address) === encodeAddress(a1.address)) {
-          //   return a1;
-          // }
-          // const a2 = k.addFromUri(this.uri, {}, "sr25519");
-          // if (encodeAddress(this.address) === encodeAddress(a2.address)) {
-          //   return a2;
-          // }
-          // return a1;
         } catch (error) {
           console.log(error);
         }
@@ -129,24 +122,21 @@ export default {
   },
   methods: {
     async read() {
-      // this.isLoad = true;
       const log = await robonomics.datalog.read(this.ha);
       for (const item of log) {
         try {
           const json = JSON.parse(item[1].toHuman());
           if (json.address && json.password && json.address === this.sender) {
             this.secret = json.password;
-            // return;
           }
           // eslint-disable-next-line no-empty
         } catch (_) {}
       }
-      // this.isLoad = false;
     },
     decrypt() {
       const decryptMessage = this.account.decryptMessage(
         this.secret,
-        this.account.publicKey
+        u8aToHex(decodeAddress(this.subAdmin))
       );
       this.password = u8aToString(decryptMessage);
     }

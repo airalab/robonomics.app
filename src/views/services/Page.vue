@@ -32,7 +32,7 @@
             IoT cloud alternative.
           </robo-template-services-item>
 
-          <!-- <robo-template-services-item
+          <robo-template-services-item
             :router="{ name: 'home-assistant-account' }"
             label="demo"
             picture="./images/services-ha.jpg"
@@ -45,7 +45,7 @@
             title="Home Assistant account"
           >
             Get Home Assistant account for Robonomics Parachain usage
-          </robo-template-services-item> -->
+          </robo-template-services-item>
 
           <robo-template-services-item
             href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F#/explorer"
