@@ -61,6 +61,7 @@
                 (deleteStarted, deleteStatus) =>
                   remove(device.address, deleteStarted, deleteStatus)
               "
+              @on-edit="editName"
               :disabled="process"
             />
             <robo-template-subsription-item
@@ -237,6 +238,11 @@ export default {
       const devices = this.devices.filter((item) => item.address !== device);
       await this.save(devices);
       deleteStatus(true);
+    },
+    editName(editStarted, editStatus) {
+      editStarted();
+      storage.addItem(this.owner, this.devices);
+      editStatus(true);
     }
   }
 };
