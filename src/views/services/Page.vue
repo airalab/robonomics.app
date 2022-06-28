@@ -141,7 +141,7 @@
                 link: 'https://www.evercity.io/'
               }
             ]"
-            title="The autonomous telescope mints NFT"
+            title="Smart building offsetting"
           >
             Carbon footprint clearance for smart buildings based on geolocation
             and energy consumption information.
