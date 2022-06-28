@@ -1,3 +1,0 @@
-export default {
-  CHAIN: "robonomics"
-};

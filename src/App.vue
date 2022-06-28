@@ -1,58 +1,31 @@
 <template>
-  <fragment>
-    <template v-if="!isReady && !error"><Loader /></template>
-    <Wrapp
-      v-else
-      :networkId="networkId"
-      :account="account"
-      :web3="$web3.library"
-    >
-      <router-view />
-    </Wrapp>
-    <modals-container />
-    <notifications />
-  </fragment>
+  <layout-main v-if="isReady">
+    <router-view />
+  </layout-main>
+  <robo-layout v-else>
+    <robo-grid screen>
+      <robo-grid-item valign="center" align="center">
+        <robo-logo title animate />
+      </robo-grid-item>
+    </robo-grid>
+  </robo-layout>
 </template>
 
 <script>
-import Wrapp from "./components/layout/Wrapp";
-import Loader from "./components/layout/Loader";
-import config from "~config";
+import LayoutMain from "./layouts/Main.vue";
+import robonomics from "./robonomics";
 
 export default {
-  components: {
-    Wrapp,
-    Loader
+  components: { LayoutMain },
+  data() {
+    return {
+      isReady: false
+    };
   },
-  computed: {
-    isReady: function () {
-      return this.$web3.isReady();
-    },
-    error: function () {
-      return this.$web3.error();
-    },
-    account: function () {
-      return this.$web3.account();
-    },
-    networkId: function () {
-      return this.$web3.networkId();
-    }
-  },
-  watch: {
-    networkId(networkId, old) {
-      if (old !== null && networkId !== old) {
-        window.location.reload(false);
-      }
-    }
-  },
-  created() {
-    this.$web3.init({
-      networks: config.chain.getListId().map((item) => Number(item)),
-      infura: {
-        networkId: 1,
-        key: config.INFURA_KEY
-      }
-    });
+  async created() {
+    document.documentElement.setAttribute("lang", "en");
+    await robonomics.run();
+    this.isReady = true;
   }
 };
 </script>

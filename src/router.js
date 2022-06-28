@@ -1,74 +1,103 @@
-import Vue from "vue";
-import Router from "vue-router";
-import SelectLighthouse from "@/views/SelectLighthouse";
-import Lighthouse from "@/views/Lighthouse";
-import Ambix from "@/views/Ambix";
-import Services from "@/views/Services";
-import Sensors from "@/views/Sensors";
-import Liability from "@/views/Liability";
-import Approve from "@/views/Approve";
-import Results from "@/views/Results";
-import services from "@/services";
+import { createRouter, createWebHashHistory } from "vue-router";
+import Subscription from "./views/subscription/Page.vue";
+import Bid from "./views/subscription/Bid.vue";
+import DevicesManager from "./views/subscription/DevicesManager.vue";
+import Services from "./views/services/Page.vue";
+import ServiceLightsUp from "./services/lights-up/Page.vue";
+import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
 
-Vue.use(Router);
-
-export default new Router({
-  routes: [
-    {
-      path: "/lighthouse",
-      name: "lighthouseSelect",
-      component: SelectLighthouse
-    },
-    {
-      path: "/lighthouse/:lighthouse",
-      name: "lighthouse",
-      component: Lighthouse
-    },
-    {
-      path: "/alembic",
-      name: "ambix",
-      component: Ambix
-    },
-    {
-      path: "/services",
-      name: "services",
-      component: Services
-    },
-    {
-      path: "/sensors/:lighthouse?",
-      name: "sensors",
-      component: Sensors,
-      props: true
-    },
-    {
-      path: "/liability/:liability",
-      name: "liability",
-      component: Liability,
-      props: true
-    },
-    {
-      path: "/approve",
-      name: "approve",
-      component: Approve
-    },
-    {
-      path: "/results",
-      name: "results",
-      component: Results
-    },
-    ...Object.values(services)
-      .filter((item) => item.router)
-      .map((item) => item.router)
-      .reduce((acc, item) => {
-        if (Array.isArray(item)) {
-          item.forEach((item) => {
-            acc.push(item);
-          });
-        } else {
-          acc.push(item);
+const routes = [
+  {
+    path: "/",
+    name: "dashboard",
+    component: Subscription,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Dashboard",
+          active: true
         }
-        return acc;
-      }, []),
-    { path: "*", redirect: "/" }
-  ]
+      ]
+    }
+  },
+  {
+    path: "/subscription",
+    name: "subscription-bid",
+    component: Bid,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Subscription",
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: "/subscription/devices",
+    name: "subscription-devices",
+    component: DevicesManager,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Subscription",
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: "/services",
+    name: "services",
+    component: Services,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Services",
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: "/lights-up",
+    name: "lights-up",
+    component: ServiceLightsUp,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Services",
+          href: "/#/services"
+        },
+        {
+          text: "Lights up",
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: "/home-assistant",
+    name: "home-assistant-account",
+    component: ServiceHomeAssistantAccount,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Services",
+          href: "/#/services"
+        },
+        {
+          text: "Home Assistant Account",
+          active: true
+        }
+      ]
+    }
+  }
+];
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
 });
+
+export default router;
