@@ -118,7 +118,7 @@ export default {
         name: "turn_on",
         params: {
           entity_id: "light.0x00158d000127fd62_light",
-          color: this.hexToRgb(this.colorLightUp)
+          rgb_color: this.hexToRgb(this.colorLightUp)
         }
       };
       return JSON.stringify(parameter);
