@@ -33,10 +33,11 @@
             <robo-text weight="light">
               Enter your seed phrase to decrypt the password
             </robo-text>
-            <robo-textarea
-              v-model="uri"
+            <robo-input
               placeholder="Place your test seed here"
               offset="x1"
+              v-model="uri"
+              type="password"
             />
             <robo-button
               @click="decrypt"
