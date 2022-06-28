@@ -43,10 +43,18 @@ export default {
   watch: {
     $route: function (newRoute) {
       this.breadcrumbs = newRoute.meta.breadcrumbs;
+      document.title = `Dapp Robonomics network | ${newRoute.meta.title}`;
+      document
+        .querySelector('meta[name="description"]')
+        .setAttribute("content", newRoute.meta.description);
     }
   },
   async created() {
     this.breadcrumbs = this.$route.meta.breadcrumbs;
+    document.title = `Dapp Robonomics network | ${this.$route.meta.title}`;
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute("content", this.$route.meta.description);
     try {
       const result = await axios.get(
         "https://api.github.com/repos/airalab/robonomics/releases/latest"

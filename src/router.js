@@ -17,7 +17,9 @@ const routes = [
           text: "Dashboard",
           active: true
         }
-      ]
+      ],
+      title: "Dashboard",
+      description: ""
     }
   },
   {
@@ -30,7 +32,9 @@ const routes = [
           text: "Subscription",
           active: true
         }
-      ]
+      ],
+      title: "New subscription",
+      description: ""
     }
   },
   {
@@ -43,7 +47,9 @@ const routes = [
           text: "Subscription",
           active: true
         }
-      ]
+      ],
+      title: "Subscription",
+      description: ""
     }
   },
   {
@@ -56,7 +62,9 @@ const routes = [
           text: "Services",
           active: true
         }
-      ]
+      ],
+      title: "Services",
+      description: ""
     }
   },
   {
@@ -73,7 +81,10 @@ const routes = [
           text: "Lights up",
           active: true
         }
-      ]
+      ],
+      title: "Lights up!",
+      description:
+        "Set color for smart lamp via Robonomics Subscription - Decentrilized IoT cloud alternative."
     }
   },
   {
@@ -90,7 +101,9 @@ const routes = [
           text: "Home Assistant Account",
           active: true
         }
-      ]
+      ],
+      title: "Home Assistant account",
+      description: "Get Home Assistant account for Robonomics Parachain usage"
     }
   }
 ];
