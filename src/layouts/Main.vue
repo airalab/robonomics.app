@@ -14,7 +14,7 @@
       <robo-layout-section>
         <robo-text size="small">
           Robonomics release {{ version }}
-          <robo-link :to="link">View changelog</robo-link>
+          <robo-link :href="link">View changelog</robo-link>
         </robo-text>
       </robo-layout-section>
     </robo-layout-footer>
