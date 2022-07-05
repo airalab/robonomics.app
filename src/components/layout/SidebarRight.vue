@@ -22,13 +22,13 @@
             <robo-grid embed gap="x05">
               <robo-link
                 href="https://github.com/airalab/dapp.robonomics.network/issues"
-                >Open issue on GitHub</robo-link
+                >GitHub</robo-link
               >
               <robo-link href="https://wiki.robonomics.network/"
-                >Read Robonomics WIKI</robo-link
+                >Robonomics Wiki</robo-link
               >
               <robo-link href="https://discord.com/invite/5UWNGNaAUf"
-                >Chat in Discord</robo-link
+                >Discord Chat</robo-link
               >
             </robo-grid>
           </robo-text>

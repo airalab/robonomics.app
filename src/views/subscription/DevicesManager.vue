@@ -11,9 +11,7 @@
             Subscription summary
           </robo-card-label-section>
           <robo-card-label-section info>
-            With this subscription you can interact with smart devices and
-            robots via Robonomics parachain instead of centilized cloud services
-            and providers.
+            {{$apptextSubscriptionInfo}}
           </robo-card-label-section>
         </robo-card-label>
         <robo-card-section>
