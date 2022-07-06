@@ -6,7 +6,12 @@
       media-mobile="no-cols"
     >
       <robo-grid-item>
-        <robo-logo title light media-mobile="collapse" />
+        <robo-logo
+          :router="isMainPage ? null : { name: 'dashboard' }"
+          title
+          light
+          media-mobile="collapse"
+        />
       </robo-grid-item>
 
       <robo-grid-item>
@@ -25,6 +30,12 @@ export default defineComponent({
   props: {
     items: {
       type: Object
+    }
+  },
+
+  computed: {
+    isMainPage() {
+      return this.$route.name === "dashboard";
     }
   }
 });
