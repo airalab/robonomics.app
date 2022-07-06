@@ -35,7 +35,7 @@
             />
           </robo-text>
           <!-- <template v-if="$store.state.robonomicsUIvue.polkadot.address">
-            <robo-text size="tiny"> Chain format: </robo-text>
+            <robo-text size="tiny">Display address format for: </robo-text>
             <robo-text size="small" weight="bold">
               <robo-account-polkadot-chain />
             </robo-text>
