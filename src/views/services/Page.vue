@@ -17,6 +17,21 @@
       <robo-card-section>
         <robo-grid columnsRepeat="3" offset="x0">
           <robo-template-services-item
+            href="https://vol4tim.github.io/account-manager/#/"
+            label="demo"
+            picture="./images/services-telemetry.jpg"
+            :providers="[
+              {
+                name: 'Robonomics Core Team',
+                link: 'https://robonomics.network'
+              }
+            ]"
+            title="SmartHome Telemetry"
+          >
+            Recieve and decrypt the telemetry from your smart home IoT devices
+          </robo-template-services-item>
+
+          <robo-template-services-item
             :router="{ name: 'lights-up' }"
             label="demo"
             picture="./images/services-lights-up.jpg"
