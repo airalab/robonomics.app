@@ -61,6 +61,7 @@
               "
               @on-edit="editName"
               :disabled="process"
+              tipName="The name will be saved only for this browser"
             />
             <robo-template-subsription-item
               v-model:address="newDeviceAddress"
@@ -68,6 +69,7 @@
               @on-add="add"
               :disabled="process"
               :key="itemKey"
+              tipName="The name will be saved only for this browser"
             />
           </robo-section>
         </robo-card-section>
