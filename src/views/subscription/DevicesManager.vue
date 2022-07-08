@@ -177,6 +177,8 @@ export default {
       const subscription = await robonomics.rws.getLedger(this.owner);
       if (!subscription.isEmpty) {
         this.subscription = subscription.value;
+      } else {
+        this.$router.push({ name: "subscription-bid" });
       }
     },
     async loadDevices() {

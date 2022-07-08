@@ -4,7 +4,7 @@
       <robo-card-label>
         <robo-card-label-section>New subscription</robo-card-label-section>
         <robo-card-label-section info>
-          {{$apptextSubscriptionInfo}}
+          {{ $apptextSubscriptionInfo }}
         </robo-card-label-section>
       </robo-card-label>
       <robo-card-section>
@@ -55,10 +55,15 @@
 
             <robo-section>
               <robo-text size="small" gap>
-                By activating the subscription, the address of any of your devices will have the right to send priority transactions within the Robonomics parachain, which guarantees the ability to send transactions stably every block.
+                By activating the subscription, the address of any of your
+                devices will have the right to send priority transactions within
+                the Robonomics parachain, which guarantees the ability to send
+                transactions stably every block.
               </robo-text>
               <robo-text size="small" gap>
-                During the entire period of an active subscription, the device has guaranteed block inclusion to send one transaction per block for free.
+                During the entire period of an active subscription, the device
+                has guaranteed block inclusion to send one transaction per block
+                for free.
               </robo-text>
             </robo-section>
           </robo-list-item>
