@@ -84,6 +84,9 @@ export default {
       if (this.unsubscribeBalance) {
         this.unsubscribeBalance();
       }
+      if (!address) {
+        return;
+      }
       await robonomics.accountManager.selectAccountByAddress(address);
       this.unsubscribeBalance = await robonomics.account.getBalance(
         address,
@@ -99,7 +102,7 @@ export default {
       this.unit = robonomics.api.registry.chainTokens[0];
       try {
         await AccountManager.initPlugin(robonomics.accountManager.keyring, {
-          isDevelopment: false
+          isDevelopment: process.env.NODE_ENV !== "production"
         });
         this.account = this.$store.state.robonomicsUIvue.polkadot.address;
       } catch (error) {
