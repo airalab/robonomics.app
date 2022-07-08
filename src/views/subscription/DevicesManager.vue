@@ -11,7 +11,7 @@
             Subscription summary
           </robo-card-label-section>
           <robo-card-label-section info>
-            {{$apptextSubscriptionInfo}}
+            {{ $apptextSubscriptionInfo }}
           </robo-card-label-section>
         </robo-card-label>
         <robo-card-section>
@@ -191,6 +191,7 @@ export default {
           address: item.toHuman()
         };
       });
+      this.newDeviceName = `Account-${this.devices.length + 1}`;
     },
     async save(devices) {
       this.error = null;
@@ -226,7 +227,7 @@ export default {
         address: this.newDeviceAddress
       });
       await this.save(devices);
-      this.newDeviceName = "";
+      this.newDeviceName = `Account-${devices.length + 1}`;
       this.newDeviceAddress = "";
       addStatus(true);
       this.itemKey += 1;
