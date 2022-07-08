@@ -72,7 +72,8 @@
 
           <robo-list-item>
             <robo-card-title size="3">
-              Sign in your Home assistant account using autorization link:
+              Sign in your Home assistant account using login and password for
+              autorization:
             </robo-card-title>
 
             <template v-if="password">
@@ -84,11 +85,7 @@
               <robo-text weight="bold">password:</robo-text>
               <robo-text break copy gap size="small">{{ password }}</robo-text>
             </template>
-            <robo-text gap>
-              <robo-link href="http://192.168.98.239:8123/">
-                Sign in Home Assistant
-              </robo-link>
-            </robo-text>
+            <robo-text gap>http://192.168.xx.xx:xxxx/</robo-text>
           </robo-list-item>
         </robo-list>
       </robo-card-section>
