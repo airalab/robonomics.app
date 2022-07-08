@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:production": "vue-cli-service serve --mode production",
     "serve-m1": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -18,7 +19,7 @@
     "decimal.js-light": "^2.5.1",
     "ipfs-core": "0.14.1",
     "robonomics-interface": "^0.2.3",
-    "robonomics-ui-vue": "^0.0.1-21",
+    "robonomics-ui-vue": "^0.0.1-22",
     "vue": "^3.0.0",
     "vue-router": "^4.0.16",
     "vuex": "^4.0.2"
