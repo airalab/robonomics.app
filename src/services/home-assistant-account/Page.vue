@@ -22,29 +22,18 @@
           </robo-list-item>
 
           <robo-list-item>
+            <robo-text weight="light">
+              Enter address of subscription owner
+            </robo-text>
+            <robo-input v-model="ha" />
+          </robo-list-item>
+
+          <robo-list-item>
             <robo-card-title size="3">
               Get Home Assistant password:
             </robo-card-title>
 
-            <template v-if="!isSubscription">
-              <robo-list-item>
-                <robo-text size="big" weight="bold">
-                  <robo-status
-                    type="warning"
-                    textRight="No active subscription"
-                  />
-                </robo-text>
-                <robo-text>
-                  Ask the
-                  <robo-link href="https://t.me/robonomics_free_rws_bot">
-                    @robonomics_free_rws
-                  </robo-link>
-                  Telegram bot to add your account to the Workshop IoT
-                  Subscription
-                </robo-text>
-              </robo-list-item>
-            </template>
-            <template v-else>
+            <template v-if="isSubscription">
               <robo-text weight="bold">crypted password:</robo-text>
               <robo-text v-if="secret" break gap size="small">
                 {{ secret }}
@@ -53,10 +42,18 @@
             </template>
 
             <robo-text weight="light">
-              Enter your seed phrase to decrypt the password
+              Enter address of the account that encrypted the password
             </robo-text>
             <robo-input
-              placeholder="Place your test seed here"
+              placeholder="Place address here"
+              offset="x1"
+              v-model="subAdmin"
+            />
+            <robo-text weight="light">
+              Enter seed phrase of the account that encrypted the password
+            </robo-text>
+            <robo-input
+              placeholder="Place seed here"
               offset="x1"
               v-model="uri"
               type="password"
@@ -102,8 +99,8 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 export default {
   data() {
     return {
-      ha: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
-      subAdmin: "4D6GaVUbg6TXDup7gdvHWyERQDK99vyreRU2hjdwptyuQUpP",
+      ha: "",
+      subAdmin: "",
       isSubscription: false,
       sender: null,
       unsubscribeAccount: null,
@@ -130,7 +127,7 @@ export default {
     validateUri() {
       if (
         this.account &&
-        encodeAddress(this.sender) === encodeAddress(this.account.address)
+        encodeAddress(this.subAdmin) === encodeAddress(this.account.address)
       ) {
         return true;
       }
@@ -162,6 +159,15 @@ export default {
           } catch (_) {}
         });
     });
+  },
+  watch: {
+    ha(value) {
+      if (this.subAdmin === "") {
+        this.subAdmin = value;
+      }
+      this.hasSubscription();
+      this.read();
+    }
   },
   unmounted() {
     if (this.unsubscribeAccount) {
