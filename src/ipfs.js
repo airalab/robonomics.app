@@ -47,10 +47,10 @@ export async function addFile(name, content) {
   return file.cid.toString();
 }
 
-// export async function catFile(hash) {
-//   const result = await axios.get(`https://ipfs.io/ipfs/${hash}`);
-//   return result.data;
-// }
+export async function catFile(hash) {
+  const result = await axios.get(`https://ipfs.io/ipfs/${hash}`);
+  return result.data;
+}
 
 export default {
   install: (app, options) => {
