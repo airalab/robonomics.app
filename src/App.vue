@@ -9,6 +9,7 @@
       </robo-grid-item>
     </robo-grid>
   </robo-layout>
+  <modals-container></modals-container>
 </template>
 
 <script>
