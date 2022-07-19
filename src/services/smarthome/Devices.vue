@@ -123,6 +123,11 @@ export default {
       this.loadDevices();
     });
   },
+  unmounted() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  },
   methods: {
     async loadLadger() {
       const subscription = await robonomics.rws.getLedger(this.owner);

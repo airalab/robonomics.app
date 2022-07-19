@@ -127,7 +127,7 @@ export default {
     }
   },
   async created() {
-    this.read();
+    await this.read();
     this.unsubscribe = await robonomics.datalog.on({}, (result) => {
       result
         .filter((item) => item.account.toHuman() === this.address)
