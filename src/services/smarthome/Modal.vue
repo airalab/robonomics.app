@@ -4,10 +4,14 @@
     v-bind="$attrs"
     classes="modal-container"
     content-class="modal-content"
-    :max-height="100"
-    :resize="true"
   >
-    <button class="btn modal__close" @click="close">x</button>
+    <robo-button
+      iconLeft="xmark"
+      size="small"
+      class="modal__close"
+      @click="close"
+    />
+    <h4>Launch</h4>
     <div class="modal__content">
       <Launch :address="address" :sender="sender" />
     </div>
@@ -39,24 +43,20 @@ export default {
   border-radius: 0.25rem;
   background: #fff;
   width: 600px;
-
-  /* overflow: scroll;
-  height: 300px; */
 }
 .modal__content {
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   max-height: 500px;
+  margin-right: -2px;
+  padding-right: 10px;
 }
+</style>
+
+<style>
 .modal__close {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
 }
-</style>
-
-<style scoped>
-/* .dark-mode div::v-deep .modal-content {
-  border-color: #2d3748;
-  background-color: #1a202c;
-} */
 </style>

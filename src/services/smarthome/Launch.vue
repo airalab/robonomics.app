@@ -1,58 +1,70 @@
 <template>
   <div>
-    <h4>Launch</h4>
-    <div>
-      <robo-list gap="x2" fullLine>
-        <robo-list-item>
-          <robo-text weight="light">Platform</robo-text>
-          <robo-input v-model="platform" />
-        </robo-list-item>
-        <robo-list-item>
-          <robo-text weight="light">Name</robo-text>
-          <robo-input v-model="name" />
-        </robo-list-item>
-      </robo-list>
+    <robo-list gap="x2" fullLine>
+      <robo-list-item>
+        <robo-text weight="light">Platform</robo-text>
+        <robo-input v-model="platform" />
+      </robo-list-item>
+      <robo-list-item>
+        <robo-text weight="light">Name</robo-text>
+        <robo-input v-model="name" />
+      </robo-list-item>
+    </robo-list>
 
-      <h5>Params</h5>
-      <robo-list gap="x2" fullLine>
-        <robo-list-item v-for="(item, key) in params" :key="key">
-          <robo-text weight="light">Name</robo-text>
-          <robo-input v-model="item.name" />
-          <robo-text weight="light">Value</robo-text>
-          <robo-input v-model="item.value" />
-          <robo-button @click="removeParam(key)" :disabled="key === 0">
+    <h5>Params</h5>
+    <robo-list gap="x2" fullLine>
+      <robo-list-item v-for="(item, key) in params" :key="key">
+        <robo-text weight="light">Name</robo-text>
+        <robo-input v-model="item.name" />
+        <robo-text weight="light">Value</robo-text>
+        <robo-input v-model="item.value" />
+        <div style="text-align: right">
+          <robo-button
+            iconLeft="xmark"
+            type="alarm"
+            size="small"
+            @click="removeParam(key)"
+            :disabled="key === 0"
+          >
             remove
           </robo-button>
-        </robo-list-item>
-      </robo-list>
+        </div>
+      </robo-list-item>
+    </robo-list>
 
-      <div style="margin-bottom: 20px">
-        <robo-button @click="addParam">add</robo-button>
-      </div>
+    <div
+      style="
+        margin-bottom: 20px;
+        text-align: right;
+        margin-top: -20px;
+        padding-bottom: 20px;
+      "
+    >
+      <robo-button iconLeft="plus" size="small" type="ok" @click="addParam" />
+    </div>
 
+    <div>
       <div>
-        <div>
-          <input v-model="isCrypto" type="checkbox" id="isCrypto" />
-          <label for="isCrypto">crypto</label>
-        </div>
-
-        <div v-if="isCrypto">
-          <h5>Your secret key for crypt message</h5>
-          <robo-input v-model="uri" type="password" placeholder="secret" />
-          <div v-if="!validateUri">Input your secret key</div>
-          <robo-input v-if="validateUri" v-model="encryptMessage" disabled />
-        </div>
+        <input v-model="isCrypto" type="checkbox" id="isCrypto" />
+        <label for="isCrypto">crypto</label>
       </div>
 
-      <div v-if="message" class="alert alert-info">{{ message }}</div>
-      <div v-if="error" class="alert alert-danger">{{ error }}</div>
-
-      <div style="margin-top: 20px">
-        <robo-button @click="save" :disabled="process || !canSend">
-          <span v-if="process">...</span>
-          <template v-else>Send</template>
-        </robo-button>
+      <div v-if="isCrypto">
+        <h5>Your secret key for crypt message</h5>
+        <robo-input v-model="uri" type="password" placeholder="secret" />
+        <div v-if="!validateUri">Input your secret key</div>
+        <robo-input v-if="validateUri" v-model="encryptMessage" disabled />
       </div>
+    </div>
+
+    <div v-if="message" class="alert alert-info">{{ message }}</div>
+    <div v-if="error" class="alert alert-danger">{{ error }}</div>
+
+    <div style="margin-top: 20px">
+      <robo-button @click="save" :disabled="process || !canSend">
+        <span v-if="process">...</span>
+        <template v-else>Send</template>
+      </robo-button>
     </div>
   </div>
 </template>

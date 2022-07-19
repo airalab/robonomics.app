@@ -53,11 +53,9 @@
               <table>
                 <tbody>
                   <tr v-for="(device, i) in devices" :key="i">
-                    <td>
+                    <td style="width: 100%">
                       <span>
-                        {{ device.address.substr(0, 5) }}...{{
-                          device.address.substr(-5)
-                        }}
+                        {{ device.address }}
                       </span>
                     </td>
                     <td>

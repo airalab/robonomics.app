@@ -18,80 +18,82 @@
             </robo-list-item>
           </robo-list>
 
-          <table>
-            <tbody>
-              <Pagination :size="5" :listData="log" :currentPage="currentPage">
-                <template v-slot:default="props">
-                  <tr>
-                    <td style="width: 150px">{{ props.item[0] }}</td>
-                    <td>
-                      <div v-if="props.item[2] === null" :title="props.item[1]">
-                        {{ props.item[1].substr(0, 5) }}...{{
-                          props.item[1].substr(-5)
-                        }}
-                      </div>
-                      <div
-                        v-if="props.item[2] && props.item[3] === null"
-                        :title="props.item[2]"
-                      >
-                        {{ props.item[2].substr(0, 5) }}...{{
-                          props.item[2].substr(-5)
-                        }}
-                      </div>
-                      <pre
-                        style="max-height: 200px"
-                      ><code v-if="props.item[3]"> {{ props.item[3] }} </code></pre>
-                    </td>
-                    <td style="width: 100px">
-                      <robo-button
-                        v-if="
-                          props.item[2] === null &&
-                          props.item[1].substr(0, 2) === 'Qm'
-                        "
-                        @click="readByIndex(props.item[5])"
-                        :disabled="props.item[4]"
-                      >
-                        <span v-if="props.item[4]">...</span>
-                        <template v-else>read</template>
-                      </robo-button>
-                      <robo-button
-                        v-if="
-                          validateUri && props.item[2] && props.item[3] === null
-                        "
-                        @click="decryptByIndex(props.item[5])"
-                      >
-                        decrypt
-                      </robo-button>
-                    </td>
-                  </tr>
-                </template>
+          <table class="table">
+            <Pagination :size="5" :listData="log" :currentPage="currentPage">
+              <template v-slot:default="props">
+                <tr>
+                  <td style="width: 150px">
+                    {{ props.item.time }}
+                  </td>
+                  <td style="width: 100%">
+                    <div
+                      v-if="props.item.crypt === null"
+                      :title="props.item.data"
+                    >
+                      {{ props.item.data.substr(0, 5) }}...{{
+                        props.item.data.substr(-5)
+                      }}
+                    </div>
+                    <div
+                      v-if="props.item.crypt && props.item.decrypt === null"
+                      :title="props.item.crypt"
+                    >
+                      {{ props.item.crypt.substr(0, 5) }}...{{
+                        props.item.crypt.substr(-5)
+                      }}
+                    </div>
+                    <pre
+                      style="max-height: 200px"
+                    ><code v-if="props.item.decrypt"> {{ props.item.decrypt }} </code></pre>
+                  </td>
+                  <td style="width: 100px">
+                    <robo-button
+                      v-if="
+                        props.item.crypt === null &&
+                        props.item.data.substr(0, 2) === 'Qm'
+                      "
+                      @click="readByIndex(props.item.id)"
+                      :disabled="props.item.load"
+                      :loading="props.item.load"
+                    >
+                      read
+                    </robo-button>
+                    <robo-button
+                      v-if="props.item.crypt && props.item.decrypt === null"
+                      @click="decryptByIndex(props.item.id)"
+                      :disabled="!validateUri"
+                    >
+                      decrypt
+                    </robo-button>
+                  </td>
+                </tr>
+              </template>
 
-                <template v-slot:pagination="props">
-                  <tr>
-                    <td colspan="3">
-                      <robo-button
-                        :disabled="props.pageNumber === 0"
-                        @click="prevPage"
-                      >
-                        Previous
-                      </robo-button>
-                      &nbsp;
-                      <b>
-                        {{ props.pageCount > 0 ? props.pageNumber + 1 : 0 }} /
-                        {{ props.pageCount }}
-                      </b>
-                      &nbsp;
-                      <robo-button
-                        :disabled="props.pageNumber >= props.pageCount - 1"
-                        @click="nextPage"
-                      >
-                        Next
-                      </robo-button>
-                    </td>
-                  </tr>
-                </template>
-              </Pagination>
-            </tbody>
+              <template v-slot:pagination="props">
+                <tr>
+                  <td colspan="3" style="text-align: center">
+                    <robo-button
+                      :disabled="props.pageNumber === 0"
+                      @click="prevPage"
+                    >
+                      Previous
+                    </robo-button>
+                    &nbsp;
+                    <b>
+                      {{ props.pageCount > 0 ? props.pageNumber + 1 : 0 }} /
+                      {{ props.pageCount }}
+                    </b>
+                    &nbsp;
+                    <robo-button
+                      :disabled="props.pageNumber >= props.pageCount - 1"
+                      @click="nextPage"
+                    >
+                      Next
+                    </robo-button>
+                  </td>
+                </tr>
+              </template>
+            </Pagination>
           </table>
         </div>
       </robo-card-section>
@@ -112,11 +114,11 @@ export default {
   props: ["address"],
   data() {
     return {
-      // address: null,
       isLoad: false,
       log: [],
       uri: "",
-      currentPage: 0
+      currentPage: 0,
+      unsubscribe: null
     };
   },
   watch: {
@@ -124,16 +126,27 @@ export default {
       this.read();
     }
   },
-  created() {
-    //   if (robonomics.accountManager.account) {
-    //     this.address = robonomics.accountManager.account.address;
-    //     this.read();
-    //   }
-    //   this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
-    //     this.address = account.address;
-    //     this.read();
-    //   });
+  async created() {
     this.read();
+    this.unsubscribe = await robonomics.datalog.on({}, (result) => {
+      result
+        .filter((item) => item.account.toHuman() === this.address)
+        .forEach((item) => {
+          this.log.unshift({
+            time: new Date(item.moment.toNumber()).toLocaleString(),
+            data: item.data.toHuman(),
+            crypt: null,
+            decrypt: null,
+            load: false,
+            id: this.log.length + 2
+          });
+        });
+    });
+  },
+  unmounted() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   },
   computed: {
     account() {
@@ -179,35 +192,37 @@ export default {
       this.isLoad = true;
       const log = await robonomics.datalog.read(this.address);
       this.log = log.reverse().map((item, id) => {
-        return [
-          new Date(item[0].toNumber()).toLocaleString(),
-          item[1].toHuman(),
-          null,
-          null,
-          false,
+        return {
+          time: new Date(item[0].toNumber()).toLocaleString(),
+          data: item[1].toHuman(),
+          crypt: null,
+          decrypt: null,
+          load: false,
           id
-        ];
+        };
       });
       this.isLoad = false;
     },
-    async readByIndex(i) {
-      this.log[i][4] = true;
+    async readByIndex(id) {
+      const i = this.log.findIndex((item) => item.id === id);
+      this.log[i].load = true;
       try {
-        this.log[i][2] = await catFile(this.log[i][1]);
-        this.log[i][4] = false;
+        this.log[i].crypt = await catFile(this.log[i].data);
+        this.log[i].load = false;
       } catch (error) {
         console.log(error);
         this.readByIndex(i);
       }
     },
-    decryptByIndex(i) {
+    decryptByIndex(id) {
+      const i = this.log.findIndex((item) => item.id === id);
       try {
-        const msg = this.decrypt(this.log[i][2]);
+        const msg = this.decrypt(this.log[i].crypt);
         try {
-          this.log[i][3] = JSON.stringify(JSON.parse(msg), null, 4);
+          this.log[i].decrypt = JSON.stringify(JSON.parse(msg), null, 4);
         } catch (error) {
           console.log(error);
-          this.log[i][3] = msg;
+          this.log[i].decrypt = msg;
         }
       } catch (error) {
         console.log(error);
@@ -223,3 +238,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.table tr {
+  border-bottom: 1px solid #eee;
+}
+.table td {
+  padding: 10px;
+}
+</style>
