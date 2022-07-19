@@ -29,6 +29,17 @@
           </robo-list-item>
 
           <robo-list-item>
+            <robo-text weight="light">
+              Enter address of the account that encrypted the password
+            </robo-text>
+            <robo-input
+              placeholder="Place address here"
+              offset="x1"
+              v-model="subAdmin"
+            />
+          </robo-list-item>
+
+          <robo-list-item>
             <robo-card-title size="3">
               Get Home Assistant password:
             </robo-card-title>
@@ -42,15 +53,7 @@
             </template>
 
             <robo-text weight="light">
-              Enter address of the account that encrypted the password
-            </robo-text>
-            <robo-input
-              placeholder="Place address here"
-              offset="x1"
-              v-model="subAdmin"
-            />
-            <robo-text weight="light">
-              Enter seed phrase of the account that encrypted the password
+              Enter the seed phrase of your account to decrypt the password
             </robo-text>
             <robo-input
               placeholder="Place seed here"
@@ -61,7 +64,7 @@
             <robo-button
               @click="decrypt"
               outlined
-              :disabled="!validateUri || !secret"
+              :disabled="!validateUri || !secret || !subAdmin"
             >
               Decrypt password
             </robo-button>
@@ -104,6 +107,7 @@ export default {
       isSubscription: false,
       sender: null,
       unsubscribeAccount: null,
+      unsubscribeDatalog: null,
       error: null,
       process: false,
       log: [],
@@ -127,7 +131,7 @@ export default {
     validateUri() {
       if (
         this.account &&
-        encodeAddress(this.subAdmin) === encodeAddress(this.account.address)
+        encodeAddress(this.sender) === encodeAddress(this.account.address)
       ) {
         return true;
       }
@@ -146,7 +150,7 @@ export default {
       this.read();
     });
 
-    robonomics.datalog.on({}, (result) => {
+    this.unsubscribeDatalog = robonomics.datalog.on({}, (result) => {
       result
         .filter((item) => item.account.toHuman() === this.ha)
         .forEach((item) => {
@@ -161,10 +165,7 @@ export default {
     });
   },
   watch: {
-    ha(value) {
-      if (this.subAdmin === "") {
-        this.subAdmin = value;
-      }
+    ha() {
       this.hasSubscription();
       this.read();
     }
@@ -172,6 +173,9 @@ export default {
   unmounted() {
     if (this.unsubscribeAccount) {
       this.unsubscribeAccount();
+    }
+    if (this.unsubscribeDatalog) {
+      this.unsubscribeDatalog();
     }
   },
   methods: {
