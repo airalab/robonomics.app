@@ -67,6 +67,12 @@ export default {
         return "-";
       }
       return new Date(this.validUntil).toLocaleDateString();
+    },
+    isActive() {
+      if (this.subscription === null || Date.now() > this.validUntil) {
+        return false;
+      }
+      return true;
     }
   },
   async created() {
@@ -94,10 +100,15 @@ export default {
   methods: {
     async updateLedger() {
       const subscription = await robonomics.rws.getLedger(this.account);
-      this.isLedger = !subscription.isNone;
-      if (this.isLedger) {
+      if (!subscription.isNone) {
         this.subscription = subscription.value;
+        if (this.isActive) {
+          this.isLedger = true;
+          return;
+        }
       }
+      this.subscription = null;
+      this.isLedger = false;
     }
   }
 };

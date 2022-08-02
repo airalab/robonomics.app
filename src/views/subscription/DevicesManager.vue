@@ -179,6 +179,9 @@ export default {
       const subscription = await robonomics.rws.getLedger(this.owner);
       if (!subscription.isEmpty) {
         this.subscription = subscription.value;
+        if (!this.isActive) {
+          this.$router.push({ name: "subscription-bid" });
+        }
       } else {
         this.$router.push({ name: "subscription-bid" });
       }

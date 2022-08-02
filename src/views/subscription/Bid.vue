@@ -108,7 +108,8 @@ export default {
       unsubscribeBlock: null,
       process: false,
       error: "",
-      accounts: []
+      accounts: [],
+      subscription: null
     };
   },
   computed: {
@@ -117,6 +118,23 @@ export default {
     },
     isDisabled() {
       return this.process || this.balance <= 0 || !this.canBid;
+    },
+    validUntil() {
+      if (this.subscription === null) {
+        return false;
+      }
+      const issue_time = this.subscription.issueTime.toNumber();
+      let days = 0;
+      if (this.subscription.kind.isDaily) {
+        days = this.subscription.kind.value.days.toNumber();
+      }
+      return issue_time + days * (24 * 60 * 60 * 1000);
+    },
+    isActive() {
+      if (this.subscription === null || Date.now() > this.validUntil) {
+        return false;
+      }
+      return true;
     }
   },
   watch: {
@@ -186,12 +204,18 @@ export default {
       }
     },
     async updateLedger() {
-      const ledger = await robonomics.rws.getLedger(this.account);
-      this.isLedger = !ledger.isNone;
-      if (this.isLedger) {
+      const subscription = await robonomics.rws.getLedger(this.account);
+      if (!subscription.isNone) {
         this.process = false;
-        this.$router.push({ name: "subscription-devices" });
+        this.subscription = subscription.value;
+        if (this.isActive) {
+          this.isLedger = true;
+          this.$router.push({ name: "subscription-devices" });
+          return;
+        }
       }
+      this.subscription = null;
+      this.isLedger = false;
     }
   }
 };
