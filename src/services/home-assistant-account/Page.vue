@@ -160,10 +160,8 @@ import {
 
 export default {
   setup() {
-    const subscriptionOwner = ref(
-      "4HQk933sAspxah4pP9kHmxLZNHjxrFLa1vM1VC4ESsSLyos4"
-    );
-    const adminHA = ref("4HQk933sAspxah4pP9kHmxLZNHjxrFLa1vM1VC4ESsSLyos4");
+    const subscriptionOwner = ref("");
+    const adminHA = ref("");
     const hasSubscription = ref(false);
     const encryptedPassword = ref(null);
     const correctAccountType = ref(false);
@@ -244,7 +242,7 @@ export default {
       error: null,
       process: false,
       message: "",
-      uri: "draw judge type apart dad knee live flag area song grid burger",
+      uri: "",
       passwordInput: "",
       passwordForAdmin: "",
       passwordForRecovery: "",
