@@ -7,7 +7,7 @@
     <robo-card-label>
       <robo-card-label-section>Your subscription</robo-card-label-section>
       <robo-card-label-section info>
-        {{$apptextSubscriptionInfo}}
+        {{ $apptextSubscriptionInfo }}
       </robo-card-label-section>
     </robo-card-label>
     <robo-card-section>

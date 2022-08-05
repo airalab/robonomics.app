@@ -1,6 +1,9 @@
 <template>
   <robo-grid-item>
-    <Info v-if="isLedger" :date="validUntilFormat" />
+    <Info
+      v-if="subscription.isActive.value"
+      :date="subscription.validUntilFormat"
+    />
     <InfoNew v-else />
 
     <!-- <robo-grid columnsRepeat="2">
@@ -32,6 +35,9 @@
 </template>
 
 <script>
+import { onUnmounted } from "vue";
+import { useAccount } from "@/hooks/useAccount";
+import { useSubscription } from "@/hooks/useSubscription";
 import InfoNew from "./InfoNew.vue";
 import Info from "./Info.vue";
 import robonomics from "../../robonomics";
@@ -41,75 +47,30 @@ export default {
     InfoNew,
     Info
   },
-  data() {
-    return {
-      account: null,
-      unsubscribeAccount: null,
-      unsubscribeBlock: null,
-      subscription: null,
-      isLedger: false
-    };
-  },
-  computed: {
-    validUntil() {
-      if (this.subscription === null) {
-        return false;
+  setup() {
+    const { account, unsubscribe } = useAccount();
+
+    onUnmounted(() => {
+      unsubscribe();
+      if (unsubscribeBlock) {
+        unsubscribeBlock();
       }
-      const issue_time = this.subscription.issueTime.toNumber();
-      let days = 0;
-      if (this.subscription.kind.isDaily) {
-        days = this.subscription.kind.value.days.toNumber();
-      }
-      return issue_time + days * (24 * 60 * 60 * 1000);
-    },
-    validUntilFormat() {
-      if (this.subscription === null) {
-        return "-";
-      }
-      return new Date(this.validUntil).toLocaleDateString();
-    },
-    isActive() {
-      if (this.subscription === null || Date.now() > this.validUntil) {
-        return false;
-      }
-      return true;
-    }
-  },
-  async created() {
-    if (robonomics.accountManager.account) {
-      this.account = robonomics.accountManager.account.address;
-    }
-    this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
-      this.account = account.address;
-      this.updateLedger();
     });
 
-    this.updateLedger();
-    this.unsubscribeBlock = await robonomics.onBlock(async () => {
-      this.updateLedger();
-    });
-  },
-  unmounted() {
-    if (this.unsubscribeAccount) {
-      this.unsubscribeAccount();
-    }
-    if (this.unsubscribeBlock) {
-      this.unsubscribeBlock();
-    }
-  },
-  methods: {
-    async updateLedger() {
-      const subscription = await robonomics.rws.getLedger(this.account);
-      if (!subscription.isNone) {
-        this.subscription = subscription.value;
-        if (this.isActive) {
-          this.isLedger = true;
-          return;
-        }
-      }
-      this.subscription = null;
-      this.isLedger = false;
-    }
+    const subscription = useSubscription(account);
+
+    let unsubscribeBlock;
+    const updateBlock = async () => {
+      unsubscribeBlock = await robonomics.onBlock(async () => {
+        subscription.loadLedger(account.value);
+      });
+    };
+    updateBlock();
+
+    return {
+      account,
+      subscription
+    };
   }
 };
 </script>

@@ -90,26 +90,54 @@
 </template>
 
 <script>
+import { onUnmounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useAccount } from "@/hooks/useAccount";
+import { useSubscription } from "@/hooks/useSubscription";
 import { toUnit, fromUnit } from "../../utils/tools";
 import { bnToBn } from "@polkadot/util";
 import robonomics from "../../robonomics";
 
 export default {
+  setup() {
+    const { account, unsubscribe } = useAccount();
+    onUnmounted(() => {
+      unsubscribe();
+    });
+
+    const subscription = useSubscription(account);
+    const router = useRouter();
+
+    watch(
+      subscription.subscription,
+      (newValue, oldValue) => {
+        if (oldValue === undefined) {
+          return;
+        }
+        if (newValue !== null || subscription.isActive.value) {
+          router.push({ name: "subscription-devices" });
+        }
+      },
+      { immediate: true }
+    );
+
+    return {
+      account,
+      subscription
+    };
+  },
+
   data() {
     return {
       plan: "1 month",
       price: 0,
       freeAuctions: 0,
-      account: null,
       balance: 0,
       isLedger: false,
-      unsubscribeAccount: null,
       unsubscribeBalance: null,
       unsubscribeBlock: null,
       process: false,
-      error: "",
-      accounts: [],
-      subscription: null
+      error: ""
     };
   },
   computed: {
@@ -118,23 +146,6 @@ export default {
     },
     isDisabled() {
       return this.process || this.balance <= 0 || !this.canBid;
-    },
-    validUntil() {
-      if (this.subscription === null) {
-        return false;
-      }
-      const issue_time = this.subscription.issueTime.toNumber();
-      let days = 0;
-      if (this.subscription.kind.isDaily) {
-        days = this.subscription.kind.value.days.toNumber();
-      }
-      return issue_time + days * (24 * 60 * 60 * 1000);
-    },
-    isActive() {
-      if (this.subscription === null || Date.now() > this.validUntil) {
-        return false;
-      }
-      return true;
     }
   },
   watch: {
@@ -153,14 +164,6 @@ export default {
     }
   },
   async created() {
-    if (robonomics.accountManager.account) {
-      this.account = robonomics.accountManager.account.address;
-    }
-    this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
-      this.account = account.address;
-      this.updateLedger();
-    });
-
     const minimalBid = await robonomics.rws.getMinimalBid();
     this.price = fromUnit(
       minimalBid.add(bnToBn(1)),
@@ -172,14 +175,10 @@ export default {
     this.unsubscribeBlock = await robonomics.onBlock(async () => {
       const freeAuctions = await robonomics.rws.getFreeAuctions();
       this.freeAuctions = freeAuctions.length;
-      this.updateLedger();
+      this.subscription.loadLedger(this.account);
     });
-    this.updateLedger();
   },
   unmounted() {
-    if (this.unsubscribeAccount) {
-      this.unsubscribeAccount();
-    }
     if (this.unsubscribeBlock) {
       this.unsubscribeBlock();
     }
@@ -202,20 +201,6 @@ export default {
         this.error = e.message;
         this.process = false;
       }
-    },
-    async updateLedger() {
-      const subscription = await robonomics.rws.getLedger(this.account);
-      if (!subscription.isNone) {
-        this.process = false;
-        this.subscription = subscription.value;
-        if (this.isActive) {
-          this.isLedger = true;
-          this.$router.push({ name: "subscription-devices" });
-          return;
-        }
-      }
-      this.subscription = null;
-      this.isLedger = false;
     }
   }
 };

@@ -16,12 +16,15 @@
         </robo-card-label>
         <robo-card-section>
           <robo-card-title>
-            <robo-status type="success" :textRight="`${countMonth} month`" />
+            <robo-status
+              type="success"
+              :textRight="`${subscription.countMonth.value} month`"
+            />
           </robo-card-title>
           <robo-list>
             <robo-list-item>
               <robo-text weight="bold">
-                Active till: {{ validUntilFormat }}
+                Active till: {{ subscription.validUntilFormat }}
               </robo-text>
             </robo-list-item>
             <robo-list-item>
@@ -79,60 +82,61 @@
 </template>
 
 <script>
+import { onUnmounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useAccount } from "@/hooks/useAccount";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useDevices, storage } from "@/hooks/useDevices";
 import { checkAddress } from "@polkadot/util-crypto";
-import Storage from "@/utils/storage";
 import robonomics from "../../robonomics";
 
-export const storage = new Storage("rws-devices");
-
 export default {
+  setup() {
+    const { account: owner, unsubscribe } = useAccount();
+    onUnmounted(() => {
+      unsubscribe();
+    });
+
+    const subscription = useSubscription(owner);
+    const { devices, loadDevices } = useDevices(owner);
+    const router = useRouter();
+
+    watch(
+      subscription.subscription,
+      (newValue, oldValue) => {
+        if (oldValue === undefined) {
+          return;
+        }
+        if (newValue === null || !subscription.isActive.value) {
+          router.push({ name: "subscription-bid" });
+        }
+      },
+      { immediate: true }
+    );
+
+    return {
+      owner,
+      subscription,
+      devices,
+      loadDevices
+    };
+  },
+
   data() {
     return {
-      owner: null,
-      subscription: null,
-      devices: [],
       newDeviceName: "",
       newDeviceAddress: "",
       error: null,
       process: false,
-      unsubscribeAccount: null,
       itemKey: 1
     };
   },
+  watch: {
+    devices() {
+      this.newDeviceName = `Account-${this.devices.length + 1}`;
+    }
+  },
   computed: {
-    countMonth() {
-      if (this.subscription === null) {
-        return 0;
-      }
-      let days = 0;
-      if (this.subscription.kind.isDaily) {
-        days = this.subscription.kind.value.days.toNumber();
-      }
-      return days / 30;
-    },
-    validUntil() {
-      if (this.subscription === null) {
-        return false;
-      }
-      const issue_time = this.subscription.issueTime.toNumber();
-      let days = 0;
-      if (this.subscription.kind.isDaily) {
-        days = this.subscription.kind.value.days.toNumber();
-      }
-      return issue_time + days * (24 * 60 * 60 * 1000);
-    },
-    validUntilFormat() {
-      if (this.subscription === null) {
-        return "-";
-      }
-      return new Date(this.validUntil).toLocaleDateString();
-    },
-    isActive() {
-      if (this.subscription === null || Date.now() > this.validUntil) {
-        return false;
-      }
-      return true;
-    },
     isAddressExists() {
       if (
         this.devices.findIndex(
@@ -157,49 +161,7 @@ export default {
       return false;
     }
   },
-  created() {
-    if (robonomics.accountManager.account) {
-      this.owner = robonomics.accountManager.account.address;
-      this.loadLadger();
-      this.loadDevices();
-    }
-    this.unsubscribeAccount = robonomics.accountManager.onChange((account) => {
-      this.owner = account.address;
-      this.loadLadger();
-      this.loadDevices();
-    });
-  },
-  unmounted() {
-    if (this.unsubscribeAccount) {
-      this.unsubscribeAccount();
-    }
-  },
   methods: {
-    async loadLadger() {
-      const subscription = await robonomics.rws.getLedger(this.owner);
-      if (!subscription.isEmpty) {
-        this.subscription = subscription.value;
-        if (!this.isActive) {
-          this.$router.push({ name: "subscription-bid" });
-        }
-      } else {
-        this.$router.push({ name: "subscription-bid" });
-      }
-    },
-    async loadDevices() {
-      const devicesStore = storage.getItems()[this.owner] || [];
-      const devices = await robonomics.rws.getDevices(this.owner);
-      this.devices = devices.map((item) => {
-        const device = devicesStore.find(
-          (device) => device.address === item.toHuman()
-        );
-        return {
-          name: device ? device.name : "",
-          address: item.toHuman()
-        };
-      });
-      this.newDeviceName = `Account-${this.devices.length + 1}`;
-    },
     async save(devices) {
       this.error = null;
       this.process = true;
@@ -210,7 +172,7 @@ export default {
         const resultTx = await robonomics.accountManager.signAndSend(tx);
         console.log("saved block", resultTx.block, resultTx.tx);
         storage.addItem(this.owner, devices);
-        await this.loadDevices();
+        await this.loadDevices(this.owner);
         this.process = false;
       } catch (e) {
         console.log(e);
