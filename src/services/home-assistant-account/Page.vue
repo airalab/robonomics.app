@@ -216,6 +216,14 @@ export default {
       findPassword(sender.value);
     });
 
+    watch(adminHA, () => {
+      try {
+        validateAddress(adminHA.value);
+        findPassword(sender.value);
+        // eslint-disable-next-line no-empty
+      } catch (_) {}
+    });
+
     watch(sender, () => {
       const acc = store.state.robonomicsUIvue.polkadot.accounts.find(
         (item) => item.address === sender.value
