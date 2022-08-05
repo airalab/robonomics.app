@@ -78,6 +78,7 @@
         </robo-card-section>
       </robo-card>
     </robo-section>
+    <related-services />
   </robo-grid-item>
 </template>
 
@@ -89,8 +90,10 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useDevices, storage } from "@/hooks/useDevices";
 import { checkAddress } from "@polkadot/util-crypto";
 import robonomics from "../../robonomics";
+import RelatedServices from "./RelatedServices.vue";
 
 export default {
+  components: { RelatedServices },
   setup() {
     const { account: owner, unsubscribe } = useAccount();
     onUnmounted(() => {
