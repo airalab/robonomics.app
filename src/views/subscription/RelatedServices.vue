@@ -8,7 +8,7 @@
       <robo-card-section>
         <robo-grid columnsRepeat="3" offset="x0">
           <robo-template-services-item
-            href="https://vol4tim.github.io/account-manager/"
+            :router="{ name: 'home-assistant-account' }"
             label="demo"
             picture="./images/services-ha.jpg"
             :providers="[
@@ -23,7 +23,7 @@
           </robo-template-services-item>
 
           <robo-template-services-item
-            :router="{ name: 'smarthome-telemetry' }"
+            href="https://vol4tim.github.io/account-manager/"
             label="demo"
             picture="./images/services-ha.jpg"
             :providers="[
