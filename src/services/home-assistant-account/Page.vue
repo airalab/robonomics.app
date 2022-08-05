@@ -35,7 +35,7 @@
           </robo-list-item>
 
           <robo-text
-            v-if="!validateUri"
+            v-if="uri && !validateUri"
             highlight="error"
             style="margin-bottom: 30px"
           >
