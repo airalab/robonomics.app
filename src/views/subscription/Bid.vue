@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { onUnmounted, watch } from "vue";
+import { onUnmounted, watch, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAccount } from "@/hooks/useAccount";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -100,10 +100,30 @@ import robonomics from "../../robonomics";
 
 export default {
   setup() {
+    const balance = ref(0);
+    const unsubscribeBalance = ref(null);
     const { account, unsubscribe } = useAccount();
+
     onUnmounted(() => {
       unsubscribe();
+      unsubscribeBalance.value();
     });
+
+    watch(
+      account,
+      async () => {
+        if (unsubscribeBalance.value) {
+          unsubscribeBalance.value();
+        }
+        unsubscribeBalance.value = await robonomics.account.getBalance(
+          account.value,
+          (r) => {
+            balance.value = r.free.sub(r.feeFrozen);
+          }
+        );
+      },
+      { immediate: true }
+    );
 
     const subscription = useSubscription(account);
     const router = useRouter();
@@ -123,7 +143,8 @@ export default {
 
     return {
       account,
-      subscription
+      subscription,
+      balance
     };
   },
 
@@ -132,9 +153,7 @@ export default {
       plan: "1 month",
       price: 0,
       freeAuctions: 0,
-      balance: 0,
       isLedger: false,
-      unsubscribeBalance: null,
       unsubscribeBlock: null,
       process: false,
       error: ""
@@ -146,21 +165,6 @@ export default {
     },
     isDisabled() {
       return this.process || this.balance <= 0 || !this.canBid;
-    }
-  },
-  watch: {
-    async account() {
-      this.error = "";
-      this.process = false;
-      if (this.unsubscribeBalance) {
-        this.unsubscribeBalance();
-      }
-      this.unsubscribeBalance = await robonomics.account.listenBalance(
-        this.account,
-        (r) => {
-          this.balance = r;
-        }
-      );
     }
   },
   async created() {
@@ -181,9 +185,6 @@ export default {
   unmounted() {
     if (this.unsubscribeBlock) {
       this.unsubscribeBlock();
-    }
-    if (this.unsubscribeBalance) {
-      this.unsubscribeBalance();
     }
   },
   methods: {
