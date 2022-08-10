@@ -134,7 +134,7 @@ export default {
         if (oldValue === undefined) {
           return;
         }
-        if (newValue !== null || subscription.isActive.value) {
+        if (newValue !== null && subscription.isActive.value) {
           router.push({ name: "subscription-devices" });
         }
       },
