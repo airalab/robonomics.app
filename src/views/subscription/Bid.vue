@@ -134,7 +134,6 @@ export default {
         if (oldValue === undefined) {
           return;
         }
-        console.log(newValue, subscription.isActive.value);
         if (newValue !== null && subscription.isActive.value) {
           router.push({ name: "subscription-devices" });
         }
