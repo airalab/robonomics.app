@@ -67,8 +67,7 @@
               </robo-text>
             </robo-section>
           </robo-list-item>
-
-          <robo-list-item v-if="process">
+          <robo-list-item v-if="tx.process.value">
             <robo-text weight="bold" size="medium">
               Please wait for activation <robo-loader />
             </robo-text>
@@ -80,7 +79,7 @@
           block
           size="big"
         >
-          <template v-if="process">Submitting</template>
+          <template v-if="tx.process.value">Submitting</template>
           <template v-else-if="isLedger">Submitted</template>
           <template v-else>Submit</template>
         </robo-button>
@@ -94,6 +93,7 @@ import { onUnmounted, watch, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAccount } from "@/hooks/useAccount";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useSend } from "@/hooks/useSend";
 import { toUnit, fromUnit } from "../../utils/tools";
 import { bnToBn } from "@polkadot/util";
 import robonomics from "../../robonomics";
@@ -134,6 +134,7 @@ export default {
         if (oldValue === undefined) {
           return;
         }
+        console.log(newValue, subscription.isActive.value);
         if (newValue !== null && subscription.isActive.value) {
           router.push({ name: "subscription-devices" });
         }
@@ -141,22 +142,40 @@ export default {
       { immediate: true }
     );
 
+    const price = ref(0);
+    (async () => {
+      const minimalBid = await robonomics.rws.getMinimalBid();
+      price.value = fromUnit(
+        minimalBid.add(bnToBn(1)),
+        robonomics.api.registry.chainDecimals
+      );
+    })();
+
+    const tx = useSend();
+    const bid = async () => {
+      const call = await robonomics.rws.bid(
+        Number(await robonomics.rws.getFirtsFreeAuction()),
+        Number(toUnit(price.value, robonomics.api.registry.chainDecimals))
+      );
+      await tx.send(call);
+    };
+
     return {
       account,
       subscription,
-      balance
+      balance,
+      price,
+      tx,
+      bid
     };
   },
 
   data() {
     return {
       plan: "1 month",
-      price: 0,
       freeAuctions: 0,
       isLedger: false,
-      unsubscribeBlock: null,
-      process: false,
-      error: ""
+      unsubscribeBlock: null
     };
   },
   computed: {
@@ -164,16 +183,10 @@ export default {
       return this.freeAuctions > 0;
     },
     isDisabled() {
-      return this.process || this.balance <= 0 || !this.canBid;
+      return this.tx.process.value || this.balance <= 0 || !this.canBid;
     }
   },
   async created() {
-    const minimalBid = await robonomics.rws.getMinimalBid();
-    this.price = fromUnit(
-      minimalBid.add(bnToBn(1)),
-      robonomics.api.registry.chainDecimals
-    );
-
     const freeAuctions = await robonomics.rws.getFreeAuctions();
     this.freeAuctions = freeAuctions.length;
     this.unsubscribeBlock = await robonomics.onBlock(async () => {
@@ -185,23 +198,6 @@ export default {
   unmounted() {
     if (this.unsubscribeBlock) {
       this.unsubscribeBlock();
-    }
-  },
-  methods: {
-    async bid() {
-      this.error = "";
-      this.process = true;
-      try {
-        const tx = await robonomics.rws.bid(
-          Number(await robonomics.rws.getFirtsFreeAuction()),
-          Number(toUnit(this.price, robonomics.api.registry.chainDecimals))
-        );
-        const resultTx = await robonomics.accountManager.signAndSend(tx);
-        console.log("saved block", resultTx.block, resultTx.tx);
-      } catch (e) {
-        this.error = e.message;
-        this.process = false;
-      }
     }
   }
 };

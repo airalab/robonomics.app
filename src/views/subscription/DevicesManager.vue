@@ -63,14 +63,14 @@
                   remove(device.address, deleteStarted, deleteStatus)
               "
               @on-edit="editName"
-              :disabled="process"
+              :disabled="tx.process.value"
               tipName="The name will be saved only for this browser"
             />
             <robo-template-subsription-item
               v-model:address="newDeviceAddress"
               v-model:name="newDeviceName"
               @on-add="add"
-              :disabled="process"
+              :disabled="tx.process.value"
               :key="itemKey"
               tipName="The name will be saved only for this browser"
             />
@@ -88,6 +88,7 @@ import { useRouter } from "vue-router";
 import { useAccount } from "@/hooks/useAccount";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useDevices, storage } from "@/hooks/useDevices";
+import { useSend } from "@/hooks/useSend";
 import { checkAddress } from "@polkadot/util-crypto";
 import robonomics from "../../robonomics";
 import RelatedServices from "./RelatedServices.vue";
@@ -110,6 +111,7 @@ export default {
         if (oldValue === undefined) {
           return;
         }
+        console.log(newValue, !subscription.isActive.value);
         if (newValue === null || !subscription.isActive.value) {
           router.push({ name: "subscription-bid" });
         }
@@ -117,11 +119,23 @@ export default {
       { immediate: true }
     );
 
+    const tx = useSend();
+    const save = async (devices) => {
+      const call = await robonomics.rws.setDevices(
+        devices.map((item) => item.address)
+      );
+      await tx.send(call);
+      storage.addItem(owner.value, devices);
+      await loadDevices(owner.value);
+    };
+
     return {
       owner,
       subscription,
       devices,
-      loadDevices
+      loadDevices,
+      tx,
+      save
     };
   },
 
@@ -129,8 +143,6 @@ export default {
     return {
       newDeviceName: "",
       newDeviceAddress: "",
-      error: null,
-      process: false,
       itemKey: 1
     };
   },
@@ -165,24 +177,6 @@ export default {
     }
   },
   methods: {
-    async save(devices) {
-      this.error = null;
-      this.process = true;
-      try {
-        const tx = await robonomics.rws.setDevices(
-          devices.map((item) => item.address)
-        );
-        const resultTx = await robonomics.accountManager.signAndSend(tx);
-        console.log("saved block", resultTx.block, resultTx.tx);
-        storage.addItem(this.owner, devices);
-        await this.loadDevices(this.owner);
-        this.process = false;
-      } catch (e) {
-        console.log(e);
-        this.error = e.message;
-        this.process = false;
-      }
-    },
     async add(addStarted, addStatus) {
       addStarted();
       if (!this.validNewAddress) {
