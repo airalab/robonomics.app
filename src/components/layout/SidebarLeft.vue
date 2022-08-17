@@ -35,5 +35,18 @@
         About XRT
       </robo-sidebar-item>
     </robo-sidebar>
+    <robo-sidebar title="Tools" icon="circle-exclamation">
+      <robo-sidebar-item
+        href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F#/explorer"
+      >
+        Substrate Portal
+      </robo-sidebar-item>
+      <robo-sidebar-item href="https://robonomics.subscan.io/">
+        Subscan
+      </robo-sidebar-item>
+      <robo-sidebar-item href="https://robonomics.polkassembly.io">
+        Polkassembly
+      </robo-sidebar-item>
+    </robo-sidebar>
   </robo-grid-item>
 </template>
