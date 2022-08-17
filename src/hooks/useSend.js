@@ -15,14 +15,14 @@ export const useSend = () => {
       }
       result.value = await robonomics.accountManager.signAndSend(tx);
       console.log("tx", result.value.block, result.value.tx);
-      return result;
     } catch (e) {
       error.value = e.message;
-      process.value = false;
     }
+    process.value = false;
     if (subscription) {
       robonomics.accountManager.useSubscription(false);
     }
+    return result;
   };
   return { error, process, result, send };
 };
