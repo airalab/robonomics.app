@@ -17,7 +17,7 @@
       <robo-card-section>
         <robo-grid columnsRepeat="3" offset="x0">
           <robo-template-services-item
-            href="https://vol4tim.github.io/account-manager/#/"
+            :router="{ name: 'smarthome-telemetry' }"
             label="demo"
             picture="./images/services-telemetry.jpg"
             :providers="[
@@ -43,7 +43,8 @@
             ]"
             title="Lights Up"
           >
-            Set the colour of your smart lamp with your Robonomics Subscription - a Decentralized IoT cloud alternative.
+            Set the colour of your smart lamp with your Robonomics Subscription
+            - a Decentralized IoT cloud alternative.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -58,7 +59,8 @@
             ]"
             title="HomeAssistant Account"
           >
-            Register a HomeAssistant account and start using the Robonomics Parachain with your IoT devices.
+            Register a HomeAssistant account and start using the Robonomics
+            Parachain with your IoT devices.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -72,7 +74,10 @@
             ]"
             title="Robonomics Kusama Parachain"
           >
-            Robonomics won a parachain slot on Kusama, which created an excellent opportunity for Robonomics to scale the network up to 1 million IoT systems connected in real-time without any centralized regulators.
+            Robonomics won a parachain slot on Kusama, which created an
+            excellent opportunity for Robonomics to scale the network up to 1
+            million IoT systems connected in real-time without any centralized
+            regulators.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -90,7 +95,10 @@
             ]"
             title="Decentralized Sensor Map"
           >
-            The Sensors Robonomics Network is a civilian network of sensors to monitor air quality. Anyone can build their own sensor or use an off-the-shelf solution from the development team and set it up in their home.
+            The Sensors Robonomics Network is a civilian network of sensors to
+            monitor air quality. Anyone can build their own sensor or use an
+            off-the-shelf solution from the development team and set it up in
+            their home.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -108,7 +116,9 @@
             ]"
             title="Boston Dynamics Spot SDK lessons"
           >
-            Learn and practice with the Boston Dynamics Spot robot wherever you are. After each lesson you will receive a captured video of the robot movements and a printable PDF certificate.
+            Learn and practice with the Boston Dynamics Spot robot wherever you
+            are. After each lesson you will receive a captured video of the
+            robot movements and a printable PDF certificate.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -126,7 +136,9 @@
             ]"
             title="An Autonomous Telescope Minting RMRK NFT's"
           >
-            Connect to an autonomous telescope in the dark night of the Atacama desert in Chile to capture an astronomical object and mint unique NFTs in a few clicks.
+            Connect to an autonomous telescope in the dark night of the Atacama
+            desert in Chile to capture an astronomical object and mint unique
+            NFTs in a few clicks.
           </robo-template-services-item>
 
           <robo-template-services-item
@@ -148,7 +160,8 @@
             ]"
             title="Smart Building Offsetting"
           >
-            Carbon footprint clearance for smart buildings based on geolocation and energy consumption information.
+            Carbon footprint clearance for smart buildings based on geolocation
+            and energy consumption information.
           </robo-template-services-item>
         </robo-grid>
       </robo-card-section>

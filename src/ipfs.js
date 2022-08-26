@@ -47,8 +47,13 @@ export async function addFile(name, content) {
   return file.cid.toString();
 }
 
-export async function catFile(hash) {
-  const result = await axios.get(`https://ipfs.io/ipfs/${hash}`);
+export async function catFile(hash, gateway = "https://ipfs.io") {
+  const url = new URL(gateway);
+  gateway = url.origin;
+  if (url.protocol === "http") {
+    gateway = gateway.replace("http://", "https://");
+  }
+  const result = await axios.get(`${gateway}/ipfs/${hash}`);
   return result.data;
 }
 

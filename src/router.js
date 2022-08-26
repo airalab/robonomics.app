@@ -5,8 +5,7 @@ import DevicesManager from "./views/subscription/DevicesManager.vue";
 import Services from "./views/services/Page.vue";
 import ServiceLightsUp from "./services/lights-up/Page.vue";
 import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
-import ServiceSmartHomeTelemetryLaunch from "./services/smarthome/Devices.vue";
-import ServiceSmartHomeTelemetryDatalog from "./services/smarthome/Datalog.vue";
+import ServiceSmartHomeTelemetry from "./services/smarthome/Page.vue";
 
 const routes = [
   {
@@ -111,28 +110,7 @@ const routes = [
   {
     path: "/smarthome-telemetry",
     name: "smarthome-telemetry",
-    component: ServiceSmartHomeTelemetryLaunch,
-    meta: {
-      breadcrumbs: [
-        {
-          text: "Services",
-          href: "/#/services"
-        },
-        {
-          text: "SmartHome Telemetry",
-          active: true
-        }
-      ],
-      title: "SmartHome Telemetry",
-      description:
-        "Recieve and decrypt the telemetry from your smart home IoT devices"
-    }
-  },
-  {
-    path: "/smarthome-telemetry/datalog/:address",
-    name: "smarthome-telemetry-datalog",
-    component: ServiceSmartHomeTelemetryDatalog,
-    props: true,
+    component: ServiceSmartHomeTelemetry,
     meta: {
       breadcrumbs: [
         {
