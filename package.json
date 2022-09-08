@@ -19,7 +19,7 @@
     "decimal.js-light": "^2.5.1",
     "ipfs-core": "0.14.1",
     "robonomics-interface": "^0.2.3",
-    "robonomics-ui-vue": "^0.0.1-32",
+    "robonomics-ui-vue": "^0.0.1-34",
     "vue": "^3.0.0",
     "vue-final-modal": "^3.4.4",
     "vue-router": "^4.0.16",

@@ -1,4 +1,4 @@
-import { u8aToHex } from "@polkadot/util";
+import { u8aToHex, u8aWrapBytes } from "@polkadot/util";
 import { AccountManager } from "robonomics-interface";
 
 export default class AccountManagerDapp extends AccountManager {
@@ -23,11 +23,11 @@ export default class AccountManagerDapp extends AccountManager {
   async mixin() {
     if (this.account.meta.isInjected && this.extension) {
       this.api.setSigner(this.extension.signer);
-      this.account.signMsg = async function (data) {
+      this.account.signMsg = async (data) => {
         return (
           await this.extension.signer.signRaw({
             address: this.account.address,
-            data: u8aToHex(data),
+            data: u8aToHex(u8aWrapBytes(data)),
             type: "bytes"
           })
         ).signature;

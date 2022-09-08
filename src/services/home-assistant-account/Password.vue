@@ -66,6 +66,7 @@
             <robo-section offset="x05">
               <robo-account-polkadot
                 :addressLocal="subscriptionOwner"
+                v-model="subscriptionOwner"
                 addressLocalAllowEdit
                 inputLabel="Subscription owner"
                 inputTip="ED25519 type Parachain account address"
@@ -75,6 +76,7 @@
             <robo-section offset="x05">
               <robo-account-polkadot
                 :addressLocal="adminHA"
+                v-model="adminHA"
                 addressLocalAllowEdit
                 inputLabel="Subscription controller"
                 inputTip="ED25519 type Parachain account address"
@@ -305,6 +307,7 @@ export default {
 
   data() {
     return {
+      adminHAH: "",
       uri: "",
       passwordInput: "",
       passwordRepeatInput: "",
