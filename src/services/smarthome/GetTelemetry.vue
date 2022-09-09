@@ -33,9 +33,15 @@
               log[selectedIndex].load ||
               log[selectedIndex].data
             "
+            :loading="selectedIndex >= 0 && log[selectedIndex].load"
           >
             Download telemetry
           </robo-button>
+          <robo-notification
+            v-if="selectedIndex >= 0 && log[selectedIndex].error"
+            title="Error"
+            type="error"
+          />
         </robo-section>
       </robo-card-section>
     </robo-card>
@@ -106,7 +112,8 @@ export default {
           date: new Date(item[0].toNumber()).toLocaleString(),
           hash: hash,
           data: data,
-          load: false
+          load: false,
+          error: false
         };
       });
       if (this.log.length) {
@@ -124,6 +131,7 @@ export default {
       if (!this.log[this.selectedIndex].hash) {
         return;
       }
+      this.log[this.selectedIndex].error = false;
       this.log[this.selectedIndex].load = true;
       try {
         const result = await catFile(
@@ -139,6 +147,8 @@ export default {
         this.log[this.selectedIndex].load = false;
       } catch (error) {
         console.log(error);
+        this.log[this.selectedIndex].load = false;
+        this.log[this.selectedIndex].error = true;
       }
       this.$emit("telemetry", this.log[this.selectedIndex].data);
     },
