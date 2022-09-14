@@ -100,7 +100,7 @@ import { utils } from "robonomics-interface";
 export default {
   data() {
     return {
-      subAdmin: "4D6GaVUbg6TXDup7gdvHWyERQDK99vyreRU2hjdwptyuQUpP",
+      subAdmin: "4ENpuPc63MmzZoore5cd2x1deDXYMi6jMzpGjWSNJDaBUViX",
       rwsOwner: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
       sender: null,
       unsubscribeAccount: null,
