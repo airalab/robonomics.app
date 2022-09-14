@@ -110,7 +110,7 @@ import { utils } from "robonomics-interface";
 export default {
   data() {
     return {
-      subAdmin: "4ENpuPc63MmzZoore5cd2x1deDXYMi6jMzpGjWSNJDaBUViX",
+      subAdmin: "4DCZ2PsH9jFzW9PwiodkkXNxLTF9S1JSq6vZXB2CMMaM4cQQ",
       rwsOwner: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
       sender: null,
       unsubscribeAccount: null,
@@ -169,7 +169,7 @@ export default {
         platform: "light",
         name: "turn_on",
         params: {
-          entity_id: "light.0x00158d000127fd62_light",
+          entity_id: "light.0x00158d000127fd62_light_color",
           rgb_color: this.hexToRgb(this.colorLightUp)
         }
       };
