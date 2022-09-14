@@ -16,9 +16,7 @@
         }
       "
     />
-    <robo-section>
-      <robo-template-telemetry :data="telemetry" />
-    </robo-section>
+    <ViewTelemetry v-if="telemetry" :telemetry="telemetry" />
   </robo-grid-item>
 </template>
 
@@ -26,9 +24,10 @@
 import Overview from "./Overview.vue";
 import Subscription from "./Subscription.vue";
 import GetTelemetry from "./GetTelemetry.vue";
+import ViewTelemetry from "./ViewTelemetry.vue";
 
 export default {
-  components: { Overview, Subscription, GetTelemetry },
+  components: { Overview, Subscription, GetTelemetry, ViewTelemetry },
   data() {
     return {
       controller: null,

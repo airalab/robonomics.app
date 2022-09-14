@@ -5466,6 +5466,11 @@ file-loader@^4.2.0:
     loader-utils "^1.2.3"
     schema-utils "^2.5.0"
 
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
+
 file-uri-to-path@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
@@ -10240,10 +10245,10 @@ robonomics-interface@^0.2.3:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.0.1-34:
-  version "0.0.1-34"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.0.1-34.tgz#a7dcb12be15f2fe0180c59a71d70b5222ca62add"
-  integrity sha512-nfvFX/bBDdccbJxzct+15x1YMPSs53kS1nyjXNWhjRMFarQeOEtYdSthbmo0NxCQNfe3j+uEccOSbLT+PuxEEQ==
+robonomics-ui-vue@^0.0.1-35:
+  version "0.0.1-35"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.0.1-35.tgz#44c3dbcb97f20dc217a53a635d38c158a065317c"
+  integrity sha512-qeUKk8bbGOl5PrC+aTKGMvGLM+MFq9KvcJvuDk8TZd41P1nYI87w7mW4sYh8RyS/wDOZ8/frWEuX2WOQa1MynA==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^6.1.1"
     "@fortawesome/free-solid-svg-icons" "^6.1.1"
