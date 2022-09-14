@@ -9,6 +9,16 @@
         </robo-card-label-section>
       </robo-card-label>
 
+      <iframe
+        width="100%"
+        height="450"
+        src="https://www.youtube.com/embed/live_stream?channel=UCkemsNJWaCmvF1Oi50C-hAg&amp;autoplay=1&amp;mute=1&amp;controls=0"
+        title="YouTube video player"
+        frameborder="0"
+        allowfullscreen=""
+        data-v-4b799bde=""
+      ></iframe>
+
       <robo-card-section>
         <robo-grid columns="4rem 5fr">
           <div>
