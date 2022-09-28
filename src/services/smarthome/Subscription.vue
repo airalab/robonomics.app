@@ -2,34 +2,8 @@
   <robo-section>
     <robo-card>
       <robo-card-label>
-        <robo-card-label-section>Your subscription</robo-card-label-section>
+        <robo-card-label-section>Your controller</robo-card-label-section>
       </robo-card-label>
-
-      <robo-card-section>
-        <robo-card-title
-          size="3"
-          offset="x05"
-          tooltip="Choose account that owns subsription"
-          tooltipIcon="circle-question"
-        >
-          1. Subscription
-        </robo-card-title>
-
-        <robo-account-polkadot extensionAllowShift selectable short />
-
-        <robo-notification
-          v-if="subscription.isActive.value"
-          :title="`Subscription active till ${subscription.validUntilFormat.value}`"
-          type="success"
-          offset="x1"
-        />
-        <robo-notification
-          v-else
-          title="No active subsription"
-          type="warning"
-          offset="x1"
-        />
-      </robo-card-section>
 
       <robo-card-section>
         <robo-card-title
@@ -38,21 +12,16 @@
           tooltip="Controller is an account, added in subscription accounts list and is used for decrypting chain data."
           tooltipIcon="circle-question"
         >
-          2. Controller
+          Controller
         </robo-card-title>
 
         <robo-section offset="x05">
-          <robo-select
-            :options="
-              devices.map((item) => {
-                return `${item.address.substr(0, 5)}...${item.address.substr(
-                  -5
-                )}`;
-              })
-            "
-            :values="devices.map((item) => item.address)"
+          <robo-account-polkadot
+            :addressLocal="controller"
             v-model="controller"
-            block
+            addressLocalAllowEdit
+            inputLabel="Controller account"
+            inputTip="ED25519 type Parachain account address"
           />
         </robo-section>
 
@@ -79,10 +48,7 @@
 </template>
 
 <script>
-import { onUnmounted, ref, watch } from "vue";
-import { useAccount } from "@/hooks/useAccount";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useDevices } from "@/hooks/useDevices";
+import { ref } from "vue";
 import { Keyring } from "@polkadot/keyring";
 import { encodeAddress } from "@polkadot/util-crypto";
 
@@ -90,31 +56,10 @@ export default {
   setup() {
     const controller = ref("");
     const seed = ref("");
-    const { account, unsubscribe } = useAccount();
-
-    onUnmounted(() => {
-      unsubscribe();
-    });
-
-    const subscription = useSubscription(account);
-
-    const { devices, loadDevices } = useDevices(account);
-
-    watch(devices, () => {
-      if (devices.value.length) {
-        controller.value = devices.value[0].address;
-      } else {
-        controller.value = "";
-      }
-    });
 
     return {
       controller,
-      seed,
-      account,
-      subscription,
-      devices,
-      loadDevices
+      seed
     };
   },
   emits: ["controller"],

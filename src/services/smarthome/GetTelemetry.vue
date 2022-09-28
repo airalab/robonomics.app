@@ -27,12 +27,7 @@
           <robo-button
             block
             @click="download"
-            :disabled="
-              selectedIndex < 0 ||
-              !log[selectedIndex].hash ||
-              log[selectedIndex].load ||
-              log[selectedIndex].data
-            "
+            :disabled="canDownload"
             :loading="selectedIndex >= 0 && log[selectedIndex].load"
           >
             Download telemetry
@@ -73,6 +68,14 @@ export default {
     }
   },
   computed: {
+    canDownload() {
+      return (
+        this.selectedIndex < 0 ||
+        !this.log[this.selectedIndex].hash ||
+        this.log[this.selectedIndex].load ||
+        !!this.log[this.selectedIndex].data
+      );
+    },
     dates() {
       return this.log.map((item) => item.date);
     },
