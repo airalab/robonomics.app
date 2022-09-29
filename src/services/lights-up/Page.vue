@@ -76,11 +76,12 @@
                 Sign and send a transaction to the Robonomics Parachain:
               </robo-card-title>
               <robo-button
-                v-if="!isOnlineIpfs"
-                :disabled="true"
-                :loading="true"
+                v-if="!isCrustAuth"
+                @click="crustAuth"
+                :disabled="processCrustAuth"
+                :loading="processCrustAuth"
               >
-                Waiting for ipfs node
+                Crust auth
               </robo-button>
               <template v-else>
                 <robo-button
@@ -88,7 +89,8 @@
                   @click="send"
                   :disabled="process || !isSubscription"
                   :loading="process"
-                  >Submit a transaction
+                >
+                  Submit a transaction
                 </robo-button>
                 <robo-button v-else type="ok" iconLeft="check">
                   Transaction submitted
@@ -104,8 +106,8 @@
 
 <script>
 import robonomics from "../../robonomics";
-import { addFile } from "../../ipfs";
 import { utils } from "robonomics-interface";
+import { encodeAddress } from "@polkadot/util-crypto";
 
 export default {
   data() {
@@ -117,9 +119,10 @@ export default {
       colorLightUp: "#8CD517",
       error: null,
       process: false,
-      isOnlineIpfs: false,
       isSubscription: false,
-      tx: false
+      tx: false,
+      isCrustAuth: false,
+      processCrustAuth: false
     };
   },
   watch: {
@@ -136,9 +139,7 @@ export default {
       this.sender = account.address;
       this.hasSubscription();
     });
-
-    const ipfs = await this.$ipfs;
-    this.isOnlineIpfs = ipfs.isOnline();
+    this.isCrustAuth = !!this.$crust.authHeader;
   },
   unmounted() {
     if (this.unsubscribeAccount) {
@@ -175,13 +176,35 @@ export default {
       };
       return JSON.stringify(parameter);
     },
+    async crustAuth() {
+      try {
+        this.processCrustAuth = true;
+        const address = encodeAddress(
+          robonomics.accountManager.account.address,
+          66
+        );
+        const signature = await robonomics.accountManager.account.signMsg(
+          address
+        );
+        this.$crust.auth(address, signature);
+        this.isCrustAuth = true;
+        this.processCrustAuth = false;
+      } catch (error) {
+        this.isCrustAuth = false;
+        this.processCrustAuth = false;
+      }
+    },
+    async uploadDataToIpfs(data) {
+      return await this.$crust.add(data);
+    },
     async send() {
       this.error = null;
       this.process = true;
       this.tx = false;
       try {
         const msg = this.getParameter();
-        const hash = await addFile("launch", msg);
+        const hash = await this.uploadDataToIpfs(msg);
+        console.log({ hash });
         robonomics.accountManager.useSubscription(this.rwsOwner);
         console.log("sender", robonomics.accountManager.account.address);
         const tx = await robonomics.launch.send(

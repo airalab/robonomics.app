@@ -1,5 +1,6 @@
 import { create } from "ipfs-core";
 import axios from "axios";
+import Crust from "./utils/crust";
 
 let node = null;
 
@@ -60,5 +61,6 @@ export async function catFile(hash, gateway = "https://ipfs.io") {
 export default {
   install: (app, options) => {
     app.config.globalProperties.$ipfs = createNode(options);
+    app.config.globalProperties.$crust = new Crust();
   }
 };
