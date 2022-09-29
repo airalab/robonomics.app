@@ -11,6 +11,7 @@
     "pretty": "prettier --write \"./src/**/*.{js,vue,ts,jsx,json}\""
   },
   "dependencies": {
+    "@jaames/iro": "^5.5.2",
     "@polkadot/api": "^8.9.1",
     "@polkadot/extension-dapp": "^0.44.1",
     "@polkadot/ui-keyring": "^2.5.1",

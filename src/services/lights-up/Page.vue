@@ -68,7 +68,7 @@
               <robo-card-title size="3">
                 Choose any color you like:
               </robo-card-title>
-              <robo-input type="color" v-model="colorLightUp" />
+              <color-picker v-model="colorLightUp" />
             </robo-list-item>
 
             <robo-list-item>
@@ -108,15 +108,17 @@
 import robonomics from "../../robonomics";
 import { utils } from "robonomics-interface";
 import { encodeAddress } from "@polkadot/util-crypto";
+import ColorPicker from "./ColorPicker.vue";
 
 export default {
+  components: { ColorPicker },
   data() {
     return {
       subAdmin: "4DCZ2PsH9jFzW9PwiodkkXNxLTF9S1JSq6vZXB2CMMaM4cQQ",
       rwsOwner: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
       sender: null,
       unsubscribeAccount: null,
-      colorLightUp: "#8CD517",
+      colorLightUp: "#7bff00",
       error: null,
       process: false,
       isSubscription: false,
