@@ -53,7 +53,7 @@
 
           <robo-section offset="x1">
             <robo-template-subsription-item
-              v-for="(device, i) in devices"
+              v-for="(device, i) in tmpDevices"
               :key="i"
               v-model:address="device.address"
               v-model:name="device.name"
@@ -74,6 +74,17 @@
               :key="itemKey"
               tipName="The name will be saved only for this browser"
             />
+          </robo-section>
+          <robo-section offset="x1">
+            <robo-button
+              block
+              size="big"
+              type="ok"
+              @click="saveToChain"
+              :disabled="!hasChanged || process"
+              :loading="process"
+              >Save</robo-button
+            >
           </robo-section>
         </robo-card-section>
       </robo-card>
@@ -140,6 +151,8 @@ export default {
 
   data() {
     return {
+      tmpDevices: [],
+      process: false,
       newDeviceName: "",
       newDeviceAddress: "",
       itemKey: 1
@@ -147,10 +160,28 @@ export default {
   },
   watch: {
     devices() {
-      this.newDeviceName = `Account-${this.devices.length + 1}`;
+      this.newDeviceName = `Account-${this.maxIndex(this.devices) + 1}`;
+      this.tmpDevices = [...this.devices];
     }
   },
   computed: {
+    hasChanged() {
+      function diff(a, b) {
+        return [
+          ...a.filter((x) => !b.includes(x)),
+          ...b.filter((x) => !a.includes(x))
+        ];
+      }
+      if (
+        diff(
+          this.tmpDevices.map((a) => a.address),
+          this.devices.map((a) => a.address)
+        ).length
+      ) {
+        return true;
+      }
+      return false;
+    },
     isAddressExists() {
       if (
         this.devices.findIndex(
@@ -176,6 +207,26 @@ export default {
     }
   },
   methods: {
+    maxIndex(list) {
+      let maxIndex = 0;
+      if (list.length > 0) {
+        const asd = list.map((a) => Number(a.name.replaceAll(/[^0-9]/gi, "")));
+        let max = Math.max(...asd);
+        if (max > 0) {
+          maxIndex = max;
+        }
+      }
+      return maxIndex;
+    },
+    async saveToChain() {
+      this.process = true;
+      try {
+        await this.save(this.tmpDevices);
+      } catch (error) {
+        console.log(error);
+      }
+      this.process = false;
+    },
     async add(addStarted, addStatus) {
       addStarted();
       if (!this.validNewAddress) {
@@ -186,26 +237,25 @@ export default {
         addStatus(false, "This address already exists");
         return;
       }
-      const devices = [...this.devices];
-      devices.push({
+      this.tmpDevices.push({
         name: this.newDeviceName,
         address: this.newDeviceAddress
       });
-      await this.save(devices);
-      this.newDeviceName = `Account-${devices.length + 1}`;
+      this.newDeviceName = `Account-${this.maxIndex(this.tmpDevices) + 1}`;
       this.newDeviceAddress = "";
       addStatus(true);
       this.itemKey += 1;
     },
-    async remove(device, deleteStarted, deleteStatus) {
-      deleteStarted();
-      const devices = this.devices.filter((item) => item.address !== device);
-      await this.save(devices);
-      deleteStatus(true);
+    async remove(device) {
+      this.tmpDevices = this.tmpDevices.filter(
+        (item) => item.address !== device
+      );
+      this.newDeviceName = `Account-${this.maxIndex(this.tmpDevices) + 1}`;
     },
     editName(editStarted, editStatus) {
       editStarted();
       storage.addItem(this.owner, this.devices);
+      this.newDeviceName = `Account-${this.maxIndex(this.tmpDevices) + 1}`;
       editStatus(true);
     }
   }
