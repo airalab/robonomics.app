@@ -1,10 +1,18 @@
 import robonomics from "../robonomics";
 import { ref } from "vue";
 
-export const useAccount = async () => {
+export const useBlock = () => {
   const block = ref(null);
-  const unsubscribe = await robonomics.onBlock(async (res) => {
+
+  (async () => {
+    block.value = (
+      await robonomics.api.rpc.chain.getBlock()
+    ).block.header.number.toString();
+  })();
+
+  const unsubscribe = robonomics.onBlock((res) => {
     block.value = res;
   });
+
   return { block, unsubscribe };
 };

@@ -6,6 +6,7 @@ import Services from "./views/services/Page.vue";
 import ServiceLightsUp from "./services/lights-up/Page.vue";
 import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
 import ServiceSmartHomeTelemetry from "./services/smarthome/Page.vue";
+import ServiceStaking from "./services/staking/Page.vue";
 
 const routes = [
   {
@@ -125,6 +126,21 @@ const routes = [
       title: "SmartHome Telemetry",
       description:
         "Recieve and decrypt the telemetry from your smart home IoT devices"
+    }
+  },
+  {
+    path: "/staking",
+    name: "staking",
+    component: ServiceStaking,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Staking",
+          active: true
+        }
+      ],
+      title: "Staking",
+      description: "Staking"
     }
   }
 ];
