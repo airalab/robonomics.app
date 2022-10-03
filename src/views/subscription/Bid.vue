@@ -135,6 +135,7 @@ export default {
           return;
         }
         if (newValue !== null && subscription.isActive.value) {
+          tx.process.value = false;
           router.push({ name: "subscription-devices" });
         }
       },
@@ -157,6 +158,7 @@ export default {
         Number(toUnit(price.value, robonomics.api.registry.chainDecimals))
       );
       await tx.send(call);
+      tx.process.value = true;
     };
 
     return {
