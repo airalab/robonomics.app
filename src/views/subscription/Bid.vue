@@ -27,7 +27,12 @@
           <robo-list-item>
             <robo-section>
               <robo-text size="small" gap>Price and terms:</robo-text>
-              <robo-grid columnsRepeat="3" align="fit-content" embed>
+              <robo-grid
+                columnsRepeat="3"
+                align="fit-content"
+                embed
+                mediaMobile="transfer"
+              >
                 <robo-grid-item>
                   <robo-text weight="light" size="small">
                     Price from
