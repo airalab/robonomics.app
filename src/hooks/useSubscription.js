@@ -1,6 +1,47 @@
 import robonomics from "../robonomics";
 import { ref, watchEffect, computed } from "vue";
 
+const getReferenceCallWeight = () => {
+  return robonomics.api.consts.rws.referenceCallWeight;
+};
+
+const getLedger = async (owner) => {
+  const res = await robonomics.rws.getLedger(owner);
+  if (!res.isEmpty) {
+    return res.value;
+  }
+  return;
+};
+
+const DAYS_TO_MS = 24 * 60 * 60 * 1000;
+
+export const getFreeWeightCalc = async (owner) => {
+  const ledger = await getLedger(owner);
+  if (!ledger) {
+    return -1;
+  }
+
+  const freeWeight = ledger.freeWeight.toNumber();
+  const lastUpdate = ledger.lastUpdate.toNumber();
+  const issueTime = ledger.issueTime.toNumber();
+
+  const referenceCallWeight = getReferenceCallWeight();
+  const now = Date.now();
+
+  let utps = (() => {
+    let duration_ms = 30 * DAYS_TO_MS;
+    if (now < issueTime + duration_ms) {
+      return 10000;
+    }
+    return 0;
+  })();
+
+  const delta = now - lastUpdate;
+  return Math.floor(
+    freeWeight + (referenceCallWeight * utps * delta) / 1000000000
+  );
+};
+
 export const useSubscription = (owner) => {
   const subscription = ref(null);
 
@@ -13,7 +54,7 @@ export const useSubscription = (owner) => {
     if (subscription.value.kind.isDaily) {
       days = subscription.value.kind.value.days.toNumber();
     }
-    return issue_time + days * (24 * 60 * 60 * 1000);
+    return issue_time + days * DAYS_TO_MS;
   });
   const validUntilFormat = computed(() => {
     if (subscription.value === null) {
@@ -38,9 +79,9 @@ export const useSubscription = (owner) => {
     return true;
   });
   const loadLedger = async (owner) => {
-    const res = await robonomics.rws.getLedger(owner);
-    if (!res.isEmpty) {
-      subscription.value = res.value;
+    const ledger = await getLedger(owner);
+    if (ledger) {
+      subscription.value = ledger;
       return;
     }
     subscription.value = null;

@@ -176,6 +176,11 @@
               title="Passwords are not equal"
               type="error"
             />
+            <robo-notification
+              v-if="tx.error.value"
+              :title="tx.error.value"
+              type="error"
+            />
           </robo-tab>
 
           <robo-tab label="Restore">
