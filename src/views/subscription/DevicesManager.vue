@@ -1,42 +1,48 @@
 <template>
   <robo-grid-item>
-    <robo-section>
-      <robo-card
-        back-image="images/card-back-sample.png"
-        back-position="100% 100%"
-        back-size="contain"
-      >
-        <robo-card-label>
-          <robo-card-label-section>
-            Subscription summary
-          </robo-card-label-section>
-          <robo-card-label-section info>
-            {{ $apptextSubscriptionInfo }}
-          </robo-card-label-section>
-        </robo-card-label>
-        <robo-card-section>
-          <robo-card-title>
-            <robo-status
-              type="success"
-              :textRight="`${subscription.countMonth.value} month`"
-            />
-          </robo-card-title>
-          <robo-list>
-            <robo-list-item>
-              <robo-text weight="bold">
-                Active till: {{ subscription.validUntilFormat }}
-              </robo-text>
-            </robo-list-item>
-            <robo-list-item>
-              <robo-text weight="bold">
-                Owner:
-                <robo-account-polkadot short inline />
-              </robo-text>
-            </robo-list-item>
-          </robo-list>
-        </robo-card-section>
-      </robo-card>
-    </robo-section>
+    <robo-card>
+      <robo-card-label>
+        <robo-card-label-section>Subscription summary</robo-card-label-section>
+        <robo-card-label-section info>
+          {{ $apptextSubscriptionInfo }}
+        </robo-card-label-section>
+      </robo-card-label>
+
+      <robo-card-section>
+        <robo-grid columnsRepeat="2" offset="x0" valign="center">
+          <div>
+            <robo-card-title>
+              <robo-status
+                type="success"
+                :textRight="`${subscription.countMonth.value} month`"
+              />
+            </robo-card-title>
+
+            <robo-section>
+              <robo-list>
+                <robo-list-item>
+                  <robo-text weight="bold"
+                    >Active till: {{ subscription.validUntilFormat }}</robo-text
+                  >
+                </robo-list-item>
+                <robo-list-item>
+                  <robo-text weight="bold">
+                    Owner:
+                    <robo-account-polkadot short inline />
+                  </robo-text>
+                </robo-list-item>
+              </robo-list>
+            </robo-section>
+          </div>
+
+          <robo-image
+            src="images/man-subscription.png"
+            aria-hidden="true"
+            max="400px"
+          />
+        </robo-grid>
+      </robo-card-section>
+    </robo-card>
 
     <robo-section>
       <robo-card>
