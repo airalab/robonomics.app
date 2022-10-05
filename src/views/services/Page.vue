@@ -15,7 +15,7 @@
       </robo-card-label>
 
       <robo-card-section>
-        <robo-grid columnsRepeat="3" offset="x0">
+        <robo-grid columnsRepeat="3" offset="x0" mediaMobile="transfer">
           <robo-template-services-item
             :router="{ name: 'smarthome-telemetry' }"
             label="demo"
