@@ -29,9 +29,18 @@
 
       <robo-section offset="x05">
         <robo-text size="small">Rewards</robo-text>
-        <robo-text size="large" weight="bold" highlight="success">{{
-          formatBalance(account.reward)
-        }}</robo-text>
+        <robo-button
+          v-if="account.reward"
+          type="ok"
+          @click="getReward(k)"
+          :disabled="account.proccess"
+          :loading="account.proccess"
+        >
+          {{ formatBalance(account.reward) }}
+        </robo-button>
+        <robo-text v-else size="large" weight="bold" highlight="error">
+          -
+        </robo-text>
       </robo-section>
 
       <div v-if="account.unlocking.length > 0 && isWithdraw(account.unlocking)">
@@ -118,7 +127,8 @@ export default {
               };
             }),
             claimed_rewards: ledger.value.claimedRewards.toNumber(),
-            reward: null
+            reward: null,
+            proccess: false
           });
         }
       }
@@ -160,6 +170,35 @@ export default {
         }
       }
       return false;
+    },
+    async getReward(index) {
+      try {
+        this.accounts[index].proccess = true;
+        const accountSender =
+          this.$store.state.robonomicsUIvue.polkadot.accounts.find(
+            (item) => item.address === this.accounts[index].controller
+          );
+        await robonomics.accountManager.setAccount(
+          accountSender,
+          this.$store.state.robonomicsUIvue.polkadot.extensionObj
+        );
+        const tx = robonomics.staking.claimRewards();
+        await robonomics.accountManager.signAndSend(tx);
+        this.loadAccounts();
+        // eslint-disable-next-line no-empty
+      } catch (_) {
+        console.log(_);
+      }
+      const accountRevert =
+        this.$store.state.robonomicsUIvue.polkadot.accounts.find(
+          (item) =>
+            item.address === this.$store.state.robonomicsUIvue.polkadot.address
+        );
+      await robonomics.accountManager.setAccount(
+        accountRevert,
+        this.$store.state.robonomicsUIvue.polkadot.extensionObj
+      );
+      this.accounts[index].proccess = false;
     }
   }
 };

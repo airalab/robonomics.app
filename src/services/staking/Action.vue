@@ -2,7 +2,9 @@
   <robo-section>
     <robo-card :loading="process">
       <robo-card-label>
-        <robo-card-label-section>Bond / Unbond</robo-card-label-section>
+        <robo-card-label-section>
+          Get Rewards / Bond / Unbond
+        </robo-card-label-section>
       </robo-card-label>
 
       <robo-card-section>
@@ -12,8 +14,11 @@
 
         <robo-section offset="x1">
           <robo-select
-            :options="['Unbond', 'Bond more', 'Get Rewards']"
+            :options="
+              isBond ? ['Unbond', 'Bond more', 'Get Rewards'] : ['Bond']
+            "
             v-model="selectAction"
+            :disabled="!isBond"
             block
           />
         </robo-section>
@@ -26,7 +31,7 @@
           />
 
           <robo-input
-            v-if="selectAction == 'Bond more'"
+            v-if="selectAction == 'Bond more' || selectAction == 'Bond'"
             v-model="amount"
             label="How much XRT"
             tip="Please save some XRT tokens for transaction fees, don't bond all your XRT. You will need it to operate with bonded tokens in the future: claim rewards, bond more, unbond."
@@ -52,7 +57,7 @@
             Submit
           </robo-button>
           <robo-button
-            v-if="selectAction === 'Bond more'"
+            v-if="selectAction === 'Bond more' || selectAction === 'Bond'"
             block
             size="big"
             @click="bond"
@@ -72,7 +77,11 @@
             Submit
           </robo-button>
         </robo-section>
-        {{ resultError }}
+        <robo-notification
+          v-if="resultError"
+          :title="resultError"
+          type="warning"
+        />
       </robo-card-section>
     </robo-card>
   </robo-section>
@@ -91,6 +100,7 @@ export default {
     const balance = ref(0);
     const reward = ref(0);
     const isBond = ref(false);
+    const selectAction = ref("Bond more");
     const unsubscribeBalance = ref(null);
     const { block, unsubscribe: unsubscribeBlock } = useBlock();
     const { account, unsubscribe } = useAccount();
@@ -134,6 +144,20 @@ export default {
     }
 
     watch(
+      isBond,
+      (newValue, oldValue) => {
+        if (oldValue !== newValue) {
+          if (newValue) {
+            selectAction.value = "Bond more";
+          } else {
+            selectAction.value = "Bond";
+          }
+        }
+      },
+      { immediate: true }
+    );
+
+    watch(
       account,
       async () => {
         if (unsubscribeBalance.value) {
@@ -156,12 +180,12 @@ export default {
       isBond,
       reward,
       checkIsBonded,
-      block
+      block,
+      selectAction
     };
   },
   data() {
     return {
-      selectAction: "Bond more",
       amount: 0,
       process: false,
       resultError: null,
