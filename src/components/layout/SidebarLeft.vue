@@ -50,5 +50,13 @@
         Polkassembly
       </robo-sidebar-item>
     </robo-sidebar>
+    <robo-sidebar title="Kusama XCM" icon="circle-exclamation">
+      <robo-sidebar-item href="https://apps.moonbeam.network/moonriver">
+        Moonriver
+      </robo-sidebar-item>
+      <robo-sidebar-item href="https://app.solarbeam.io/exchange/swap">
+        Solarbeam
+      </robo-sidebar-item>
+    </robo-sidebar>
   </robo-grid-item>
 </template>
