@@ -54,7 +54,9 @@
       <robo-sidebar-item href="https://apps.moonbeam.network/moonriver">
         Moonriver
       </robo-sidebar-item>
-      <robo-sidebar-item href="https://app.solarbeam.io/exchange/swap">
+      <robo-sidebar-item
+        href="https://analytics.solarbeam.io/pairs/0x5261e0ce96289e6c3a16da45a2e52d1ab1a0e9c3"
+      >
         Solarbeam
       </robo-sidebar-item>
     </robo-sidebar>
