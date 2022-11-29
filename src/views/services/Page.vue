@@ -18,7 +18,7 @@
         <robo-grid columnsRepeat="3" offset="x0" mediaMobile="transfer">
           <robo-template-services-item
             :router="{ name: 'smarthome-telemetry' }"
-            label="demo"
+            label="academy"
             picture="./images/services-telemetry.jpg"
             :providers="[
               {
@@ -33,7 +33,7 @@
 
           <robo-template-services-item
             :router="{ name: 'lights-up' }"
-            label="demo"
+            label="academy"
             picture="./images/services-lights-up.jpg"
             :providers="[
               {
@@ -49,7 +49,6 @@
 
           <robo-template-services-item
             :router="{ name: 'home-assistant-account' }"
-            label="demo"
             picture="./images/services-ha.jpg"
             :providers="[
               {
@@ -61,23 +60,6 @@
           >
             Register a HomeAssistant account and start using the Robonomics
             Parachain with your IoT devices.
-          </robo-template-services-item>
-
-          <robo-template-services-item
-            href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F#/explorer"
-            picture="./images/services-kusama-parachain.jpg"
-            :providers="[
-              {
-                name: 'Robonomics Core Team',
-                link: 'https://robonomics.network'
-              }
-            ]"
-            title="Robonomics Kusama Parachain"
-          >
-            Robonomics won a parachain slot on Kusama, which created an
-            excellent opportunity for Robonomics to scale the network up to 1
-            million IoT systems connected in real-time without any centralized
-            regulators.
           </robo-template-services-item>
 
           <robo-template-services-item
