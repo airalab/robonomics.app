@@ -25,6 +25,31 @@
         <robo-text size="large" weight="bold">{{
           formatBalance(account.active)
         }}</robo-text>
+
+        <div v-if="account.unlocking.length > 0">
+          <robo-text size="small">Unbonding</robo-text>
+          <robo-text
+            size="small"
+            v-for="(unlock, k2) in account.unlocking"
+            :key="k2"
+          >
+            <span
+              v-if="unlock.moment - currentBlock > 0"
+              class="strong"
+              :title="`${Math.ceil(
+                ((unlock.moment - currentBlock) * 12) / 60 / 60 / 24
+              )} days`"
+            >
+              {{ formatBalance(unlock.value) }} (
+              {{ unlock.moment - currentBlock }}
+              blocks left )
+            </span>
+            <span v-else class="strong green">
+              {{ formatBalance(unlock.value) }} READY
+            </span>
+            <br />
+          </robo-text>
+        </div>
       </robo-section>
 
       <robo-section offset="x05">
@@ -55,8 +80,8 @@
 </template>
 
 <script>
-import robonomics from "../../robonomics";
 import { fromUnit } from "@/utils/tools";
+import robonomics from "../../robonomics";
 
 export default {
   data() {
