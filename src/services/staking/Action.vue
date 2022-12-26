@@ -15,7 +15,9 @@
         <robo-section offset="x1">
           <robo-select
             :options="
-              isBond ? ['Unbond', 'Bond more', 'Get Rewards'] : ['Bond']
+              isBond
+                ? ['Unbond', 'Bond more', 'Get Rewards', 'Withdraw Unbonded']
+                : ['Bond']
             "
             v-model="selectAction"
             :disabled="!isBond"
@@ -43,6 +45,21 @@
             v-model="reward"
             disabled
           />
+
+          <div
+            v-if="selectAction == 'Withdraw Unbonded' && unlocking.length > 0"
+          >
+            <span v-for="(unlock, k2) in unlocking" :key="k2">
+              <span v-if="unlock.moment - block > 0" class="strong">
+                {{ unlock.valueFormat }} XRT ({{ unlock.moment - block }}
+                blocks left)
+              </span>
+              <span v-else class="strong green">
+                {{ unlock.valueFormat }} XRT READY
+              </span>
+              <br />
+            </span>
+          </div>
         </robo-section>
 
         <robo-section offset="x1">
@@ -76,6 +93,16 @@
           >
             Submit
           </robo-button>
+          <robo-button
+            v-if="selectAction === 'Withdraw Unbonded'"
+            block
+            size="big"
+            @click="withdrawUnbonded"
+            :disabled="!isWithdraw || process"
+            :loading="process"
+          >
+            Submit
+          </robo-button>
         </robo-section>
         <robo-notification
           v-if="resultError"
@@ -88,17 +115,18 @@
 </template>
 
 <script>
-import { onUnmounted, watch, watchEffect, ref } from "vue";
 import { useAccount } from "@/hooks/useAccount";
 import { useBlock } from "@/hooks/useBlock";
-import { toDecimal, toUnit, fromUnit } from "../../utils/tools";
+import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
 import robonomics from "../../robonomics";
+import { fromUnit, toDecimal, toUnit } from "../../utils/tools";
 
 export default {
   emits: ["update"],
   setup() {
     const balance = ref(0);
     const reward = ref(0);
+    const unlocking = ref([]);
     const isBond = ref(false);
     const selectAction = ref("Bond more");
     const unsubscribeBalance = ref(null);
@@ -129,10 +157,36 @@ export default {
       }
     }
 
+    async function getUnlocking(account) {
+      const bonded = (await robonomics.staking.bonded(account)).toHuman();
+      if (bonded) {
+        const ledger = await robonomics.staking.ledger(bonded);
+        unlocking.value = ledger.value.unlocking.toArray().map((item) => {
+          return {
+            value: item.value.toString(),
+            valueFormat: fromUnit(item.value.toString(), 9),
+            moment: item.moment.toString()
+          };
+        });
+      } else {
+        unlocking.value = [];
+      }
+    }
+
+    const isWithdraw = computed(() => {
+      for (const item of unlocking.value) {
+        if (Number(block.value) >= Number(item.moment)) {
+          return true;
+        }
+      }
+      return false;
+    });
+
     watchEffect(
       () => {
         if (account.value && block.value) {
           getReward(account.value, block.value);
+          getUnlocking(account.value);
         }
       },
       { immediate: true }
@@ -179,6 +233,8 @@ export default {
       balance,
       isBond,
       reward,
+      unlocking,
+      isWithdraw,
       checkIsBonded,
       block,
       selectAction
@@ -249,6 +305,19 @@ export default {
         this.resultError = null;
         this.resultWrite = null;
         const tx = robonomics.staking.claimRewards();
+        this.resultWrite = await robonomics.accountManager.signAndSend(tx);
+        this.$emit("update");
+      } catch (error) {
+        this.resultError = error.message;
+      }
+      this.process = false;
+    },
+    async withdrawUnbonded() {
+      try {
+        this.process = true;
+        this.resultError = null;
+        this.resultWrite = null;
+        const tx = robonomics.staking.withdrawUnbonded();
         this.resultWrite = await robonomics.accountManager.signAndSend(tx);
         this.$emit("update");
       } catch (error) {
