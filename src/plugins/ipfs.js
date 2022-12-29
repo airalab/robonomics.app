@@ -1,6 +1,6 @@
-import { create } from "ipfs-core";
 import axios from "axios";
-import Crust from "./utils/crust";
+import { create } from "ipfs-core";
+import Crust from "../utils/crust";
 
 let node = null;
 
@@ -48,14 +48,21 @@ export async function addFile(name, content) {
   return file.cid.toString();
 }
 
-export async function catFile(hash, gateway = "https://ipfs.io") {
+export async function catFile(hash, gateway = "https://ipfs.io", attempts = 5) {
   const url = new URL(gateway);
   gateway = url.origin;
   if (url.protocol === "http") {
     gateway = gateway.replace("http://", "https://");
   }
-  const result = await axios.get(`${gateway}/ipfs/${hash}`);
-  return result.data;
+  try {
+    const result = await axios.get(`${gateway}/ipfs/${hash}`);
+    return result.data;
+  } catch (error) {
+    if (attempts <= 0) {
+      throw error;
+    }
+  }
+  return await catFile(hash, gateway, attempts - 1);
 }
 
 export default {

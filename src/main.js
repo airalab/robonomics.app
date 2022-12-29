@@ -1,11 +1,13 @@
+import { robonomicsUI } from "robonomics-ui-vue";
 import { createApp } from "vue";
+import { vfmPlugin } from "vue-final-modal";
 import App from "./App.vue";
+import filters from "./plugins/filters";
+import Ipfs from "./plugins/ipfs";
 import router from "./router";
 import store from "./store";
-import Ipfs from "./ipfs";
-import { robonomicsUI } from "robonomics-ui-vue";
+
 import "robonomics-ui-vue/style.css";
-import { vfmPlugin } from "vue-final-modal";
 
 const app = createApp(App);
 
@@ -33,4 +35,5 @@ app
     }
   })
   .use(vfmPlugin)
+  .use(filters)
   .mount("#app");

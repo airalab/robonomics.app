@@ -1,5 +1,7 @@
+import { validateAddress } from "@polkadot/util-crypto";
+import { computed, ref, watch } from "vue";
 import robonomics from "../robonomics";
-import { ref, watchEffect, computed } from "vue";
+import { useDevices } from "./useDevices";
 
 const getReferenceCallWeight = () => {
   return robonomics.api.consts.rws.referenceCallWeight;
@@ -36,66 +38,96 @@ export const getFreeWeightCalc = async (owner) => {
     return 0;
   })();
 
+  // let utps = match subscription.kind {
+  //     Subscription::Lifetime { tps } => tps,
+  //     Subscription::Daily { days } => {
+  //         let duration_ms = <T::Time as Time>::Moment::from(days * DAYS_TO_MS);
+  //         // If subscription active then 0.01 TPS else 0 TPS
+  //         if now < subscription.issue_time.clone() + duration_ms {
+  //             10_000 // uTPS
+  //         } else {
+  //             0u32
+  //         }
+  //     }
+  // };
+
   const delta = now - lastUpdate;
   return Math.floor(
     freeWeight + (referenceCallWeight * utps * delta) / 1000000000
   );
 };
 
-export const useSubscription = (owner) => {
-  const subscription = ref(null);
+export const useSubscription = (initialOwner = null) => {
+  const owner = ref(initialOwner);
+  const rawData = ref(null);
+
+  const { devices, loadDevices } = useDevices(owner);
 
   const validUntil = computed(() => {
-    if (subscription.value === null) {
+    if (rawData.value === null) {
       return "";
     }
-    const issue_time = subscription.value.issueTime.toNumber();
+    const issue_time = rawData.value.issueTime.toNumber();
     let days = 0;
-    if (subscription.value.kind.isDaily) {
-      days = subscription.value.kind.value.days.toNumber();
+    if (rawData.value.kind.isDaily) {
+      days = rawData.value.kind.value.days.toNumber();
     }
     return issue_time + days * DAYS_TO_MS;
   });
-  const validUntilFormat = computed(() => {
-    if (subscription.value === null) {
-      return "-";
-    }
-    return new Date(validUntil.value).toLocaleDateString();
-  });
+
   const countMonth = computed(() => {
-    if (subscription.value === null) {
+    if (rawData.value === null) {
       return 0;
     }
     let days = 0;
-    if (subscription.value.kind.isDaily) {
-      days = subscription.value.kind.value.days.toNumber();
+    if (rawData.value.kind.isDaily) {
+      days = rawData.value.kind.value.days.toNumber();
     }
     return days / 30;
   });
+
   const isActive = computed(() => {
-    if (subscription.value === null || Date.now() > validUntil.value) {
+    if (rawData.value === null || Date.now() > validUntil.value) {
       return false;
     }
     return true;
   });
-  const loadLedger = async (owner) => {
-    const ledger = await getLedger(owner);
-    if (ledger) {
-      subscription.value = ledger;
-      return;
+
+  const loadLedger = async () => {
+    if (owner.value) {
+      try {
+        validateAddress(owner.value);
+        const ledger = await getLedger(owner.value);
+        if (ledger) {
+          rawData.value = ledger;
+          return;
+        }
+        // eslint-disable-next-line no-empty
+      } catch (error) {
+        console.log(error);
+      }
     }
-    subscription.value = null;
+    rawData.value = null;
   };
-  watchEffect(async () => {
-    await loadLedger(owner.value);
-  });
+
+  watch(
+    owner,
+    async () => {
+      await loadLedger();
+    },
+    {
+      immediate: true
+    }
+  );
 
   return {
-    subscription,
+    owner,
+    rawData,
     isActive,
     countMonth,
     validUntil,
-    validUntilFormat,
-    loadLedger
+    loadLedger,
+    devices,
+    loadDevices
   };
 };

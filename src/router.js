@@ -1,12 +1,12 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Subscription from "./views/subscription/dashboard/Page.vue";
-import Bid from "./views/subscription/Bid.vue";
-import DevicesManager from "./views/subscription/DevicesManager.vue";
-import Services from "./views/services/Page.vue";
-import ServiceLightsUp from "./services/lights-up/Page.vue";
 import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
+import ServiceLightsUp from "./services/lights-up/Page.vue";
 import ServiceSmartHomeTelemetry from "./services/smarthome/Page.vue";
 import ServiceStaking from "./services/staking/Page.vue";
+import Services from "./views/services/Page.vue";
+import Bid from "./views/subscription/Bid.vue";
+import Subscription from "./views/subscription/dashboard/Page.vue";
+import DevicesManager from "./views/subscription/DevicesManager.vue";
 
 const routes = [
   {

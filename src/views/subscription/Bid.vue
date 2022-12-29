@@ -94,14 +94,14 @@
 </template>
 
 <script>
-import { onUnmounted, watch, ref } from "vue";
-import { useRouter } from "vue-router";
 import { useAccount } from "@/hooks/useAccount";
-import { useSubscription } from "@/hooks/useSubscription";
 import { useSend } from "@/hooks/useSend";
-import { toUnit, fromUnit } from "../../utils/tools";
+import { useSubscription } from "@/hooks/useSubscription";
 import { bnToBn } from "@polkadot/util";
+import { onUnmounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import robonomics from "../../robonomics";
+import { fromUnit, toUnit } from "../../utils/tools";
 
 export default {
   setup() {
@@ -134,7 +134,7 @@ export default {
     const router = useRouter();
 
     watch(
-      subscription.subscription,
+      subscription.rawData,
       (newValue, oldValue) => {
         if (oldValue === undefined) {
           return;
@@ -198,7 +198,7 @@ export default {
     this.unsubscribeBlock = await robonomics.onBlock(async () => {
       const freeAuctions = await robonomics.rws.getFreeAuctions();
       this.freeAuctions = freeAuctions.length;
-      this.subscription.loadLedger(this.account);
+      this.subscription.loadLedger();
     });
   },
   unmounted() {

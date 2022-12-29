@@ -21,9 +21,10 @@
             <robo-section>
               <robo-list>
                 <robo-list-item>
-                  <robo-text weight="bold"
-                    >Active till: {{ subscription.validUntilFormat }}</robo-text
-                  >
+                  <robo-text weight="bold">
+                    Active till:
+                    {{ $filters.date(subscription.validUntil.value) }}
+                  </robo-text>
                 </robo-list-item>
                 <robo-list-item>
                   <robo-text weight="bold">
@@ -100,13 +101,13 @@
 </template>
 
 <script>
+import { useAccount } from "@/hooks/useAccount";
+import { storage } from "@/hooks/useDevices";
+import { useSend } from "@/hooks/useSend";
+import { useSubscription } from "@/hooks/useSubscription";
+import { checkAddress } from "@polkadot/util-crypto";
 import { onUnmounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useAccount } from "@/hooks/useAccount";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useDevices, storage } from "@/hooks/useDevices";
-import { useSend } from "@/hooks/useSend";
-import { checkAddress } from "@polkadot/util-crypto";
 import robonomics from "../../robonomics";
 import RelatedServices from "./RelatedServices.vue";
 
@@ -119,11 +120,10 @@ export default {
     });
 
     const subscription = useSubscription(owner);
-    const { devices, loadDevices } = useDevices(owner);
     const router = useRouter();
 
     watch(
-      subscription.subscription,
+      subscription.rawData,
       (newValue, oldValue) => {
         if (oldValue === undefined) {
           return;
@@ -142,14 +142,13 @@ export default {
       );
       await tx.send(call);
       storage.addItem(owner.value, devices);
-      await loadDevices(owner.value);
+      await subscription.loadDevices();
     };
 
     return {
       owner,
       subscription,
-      devices,
-      loadDevices,
+      devices: subscription.devices,
       tx,
       save
     };

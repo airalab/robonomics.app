@@ -12,16 +12,16 @@
 
       <robo-card-section>
         <robo-grid columnsRepeat="2" offset="x0" valign="center">
-          <template v-if="subscription.subscription.value">
+          <template v-if="subscription.rawData.value">
             <!-- Есть активная подписка -->
             <manage-subscription
               v-if="subscription.isActive.value"
-              :date="subscription.validUntilFormat"
+              :date="$filters.date(subscription.validUntil.value)"
             />
             <!-- Подписка просрочена -->
             <reactivate-subscription
               v-else
-              :date="subscription.validUntilFormat"
+              :date="$filters.date(subscription.validUntil.value)"
             />
           </template>
           <!-- Не было и нет активной подписки -->
@@ -57,11 +57,11 @@
 </template>
 
 <script>
-import { onUnmounted } from "vue";
 import { useAccount } from "@/hooks/useAccount";
 import { useSubscription } from "@/hooks/useSubscription";
-import NotSubscription from "./NotSubscription.vue";
+import { onUnmounted } from "vue";
 import ManageSubscription from "./ManageSubscription.vue";
+import NotSubscription from "./NotSubscription.vue";
 import ReactivateSubscription from "./ReactivateSubscription.vue";
 // import Statistic from "./Statistic.vue";
 import robonomics from "../../../robonomics";
@@ -88,7 +88,7 @@ export default {
     let unsubscribeBlock;
     const updateBlock = async () => {
       unsubscribeBlock = await robonomics.onBlock(async () => {
-        subscription.loadLedger(account.value);
+        subscription.loadLedger();
       });
     };
     updateBlock();

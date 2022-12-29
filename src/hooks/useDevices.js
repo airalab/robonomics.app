@@ -1,30 +1,48 @@
+import { validateAddress } from "@polkadot/util-crypto";
+import { ref, watch } from "vue";
 import robonomics from "../robonomics";
-import { ref, watchEffect } from "vue";
 import Storage from "../utils/storage";
 
 export const storage = new Storage("rws-devices");
 
-export const useDevices = (owner) => {
+export const useDevices = (initialOwner = null) => {
+  const owner = ref(initialOwner);
   const devices = ref([]);
 
-  const loadDevices = async (owner) => {
-    const devicesStore = storage.getItems()[owner] || [];
-    const result = await robonomics.rws.getDevices(owner);
-    devices.value = result.map((item) => {
-      const device = devicesStore.find(
-        (device) => device.address === item.toHuman()
-      );
-      return {
-        name: device ? device.name : "",
-        address: item.toHuman()
-      };
-    });
+  const loadDevices = async () => {
+    if (owner.value) {
+      try {
+        validateAddress(owner.value);
+        const devicesStore = storage.getItems()[owner.value] || [];
+        const result = await robonomics.rws.getDevices(owner.value);
+        devices.value = result.map((item) => {
+          const device = devicesStore.find(
+            (device) => device.address === item.toHuman()
+          );
+          return {
+            name: device ? device.name : "",
+            address: item.toHuman()
+          };
+        });
+        return;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    devices.value = [];
   };
-  watchEffect(async () => {
-    await loadDevices(owner.value);
-  });
+  watch(
+    owner,
+    async () => {
+      await loadDevices();
+    },
+    {
+      immediate: true
+    }
+  );
 
   return {
+    owner,
     devices,
     loadDevices
   };
