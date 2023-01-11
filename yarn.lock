@@ -10298,10 +10298,10 @@ robonomics-interface@^0.2.3:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.0.1-38:
-  version "0.0.1-38"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.0.1-38.tgz#93f3116399deb1586cecdb7cbd940c9911b9586b"
-  integrity sha512-TinzEIbz4re/5UcAlW7GsaTmssDjt1q/B18o42V6HvXoe0MF+f9zCg4Z10Jhv/C1OQxvR5rhwb3ZYjyuixALHw==
+robonomics-ui-vue@^0.0.1-39:
+  version "0.0.1-39"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.0.1-39.tgz#e7acea5847e59723389b8f3a4c7b7597891d6a32"
+  integrity sha512-Rg7RVNBrJ5XhjzwCPT/tKAYTu2eoI46dlbv6YAZZNEB4axD7m7PHLrErxfPslauVbN/DlfnylllLdAWCFGkgKQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^6.1.1"
     "@fortawesome/free-solid-svg-icons" "^6.1.1"
