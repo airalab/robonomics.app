@@ -35,24 +35,6 @@
         </robo-grid>
       </robo-card-section>
     </robo-card>
-
-    <robo-grid columnsRepeat="1" mediaMobile="transfer">
-      <!-- <statistic /> -->
-      <robo-card>
-        <robo-card-title size="2">For holders of parachain XRT</robo-card-title>
-        <robo-section>
-          Bond your XRT in Robonomics parachain and earn approx. 10% annual
-          revenue.
-        </robo-section>
-        <robo-button
-          :router="{ name: 'staking' }"
-          icon-left="chart-pie"
-          outlined
-        >
-          Stake XRT
-        </robo-button>
-      </robo-card>
-    </robo-grid>
   </robo-grid-item>
 </template>
 
