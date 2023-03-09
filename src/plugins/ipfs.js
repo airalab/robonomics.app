@@ -48,21 +48,46 @@ export async function addFile(name, content) {
   return file.cid.toString();
 }
 
-export async function catFile(hash, gateway = "https://ipfs.io", attempts = 5) {
+const CancelToken = axios.CancelToken;
+
+let cancel;
+
+export async function catFile(
+  hash,
+  gateway = "https://ipfs.io",
+  options = {},
+  attempts = 5
+) {
   const url = new URL(gateway);
   gateway = url.origin;
   if (url.protocol === "http") {
     gateway = gateway.replace("http://", "https://");
   }
   try {
-    const result = await axios.get(`${gateway}/ipfs/${hash}`);
+    console.log("gett");
+    cancel = undefined;
+    const result = await axios.get(`${gateway}/ipfs/${hash}`, {
+      ...options,
+      cancelToken: new CancelToken((c) => {
+        cancel = c;
+      })
+    });
     return result.data;
   } catch (error) {
+    if (axios.isCancel(error)) {
+      return;
+    }
     if (attempts <= 0) {
       throw error;
     }
   }
-  return await catFile(hash, gateway, attempts - 1);
+  return await catFile(hash, gateway, options, attempts - 1);
+}
+
+export function cancelCatFile() {
+  if (cancel) {
+    cancel();
+  }
 }
 
 export default {

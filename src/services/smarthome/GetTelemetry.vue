@@ -65,6 +65,13 @@
           >
             Download telemetry
           </robo-button>
+          <robo-button
+            block
+            v-if="selectedIndex >= 0 && log[selectedIndex].load"
+            @click="cancelDownload"
+          >
+            Cancel download
+          </robo-button>
           <robo-notification
             v-if="selectedIndex >= 0 && log[selectedIndex].error"
             :title="log[selectedIndex].error"
@@ -79,7 +86,7 @@
 <script>
 import { u8aToString } from "@polkadot/util";
 import { encodeAddress } from "@polkadot/util-crypto";
-import { catFile } from "../../plugins/ipfs";
+import { cancelCatFile, catFile } from "../../plugins/ipfs";
 import robonomics from "../../robonomics";
 
 export default {
@@ -189,7 +196,12 @@ export default {
       this.log[this.selectedIndex].load = true;
       let result;
       try {
-        result = await catFile(this.log[this.selectedIndex].hash, this.gateway);
+        result = await catFile(
+          this.log[this.selectedIndex].hash,
+          this.gateway,
+          { timeout: 15000 },
+          2
+        );
       } catch (error) {
         console.log(error);
         this.log[this.selectedIndex].load = false;
@@ -211,8 +223,17 @@ export default {
           this.log[this.selectedIndex].load = false;
           this.log[this.selectedIndex].error = "Data decryption error.";
         }
+      } else {
+        this.log[this.selectedIndex].load = false;
       }
       this.$emit("telemetry", this.log[this.selectedIndex].data);
+    },
+    cancelDownload() {
+      if (this.selectedIndex < 0) {
+        return;
+      }
+      cancelCatFile();
+      this.log[this.selectedIndex].load = false;
     },
     decrypt(encryptMessage) {
       const decryptMessage = this.controller.decryptMessage(
