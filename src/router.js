@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
+import ServiceLightsUpDemo from "./services/lights-up-demo/Page.vue";
 import ServiceLightsUp from "./services/lights-up/Page.vue";
 import ServiceSmartHomeTelemetry from "./services/smarthome/Page.vue";
 import CreateAccount from "./views/CreateAccount";
@@ -73,6 +74,26 @@ const routes = [
     path: "/lights-up",
     name: "lights-up",
     component: ServiceLightsUp,
+    meta: {
+      breadcrumbs: [
+        {
+          text: "Services",
+          href: "/#/services"
+        },
+        {
+          text: "Lights up",
+          active: true
+        }
+      ],
+      title: "Lights up!",
+      description:
+        "Set color for smart lamp via Robonomics Subscription - Decentrilized IoT cloud alternative."
+    }
+  },
+  {
+    path: "/lights-up-demo",
+    name: "lights-up-demo",
+    component: ServiceLightsUpDemo,
     meta: {
       breadcrumbs: [
         {
