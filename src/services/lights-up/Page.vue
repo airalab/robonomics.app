@@ -28,26 +28,6 @@
   </robo-grid-item>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      subAdmin: "4DCZ2PsH9jFzW9PwiodkkXNxLTF9S1JSq6vZXB2CMMaM4cQQ",
-      rwsOwner: "4F6E8k2L4dpUx5Nu1uZDrKfLQxETGG5WkgsZm8PP6EE6Qnyh",
-      sender: null,
-      unsubscribeAccount: null,
-      colorLightUp: "#7bff00",
-      error: null,
-      process: false,
-      isSubscription: false,
-      tx: false,
-      isCrustAuth: false,
-      processCrustAuth: false
-    };
-  }
-};
-</script>
-
 <style scoped>
 .tabs {
   margin-bottom: 15px;

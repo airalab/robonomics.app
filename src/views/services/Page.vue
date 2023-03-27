@@ -32,7 +32,7 @@
           </robo-template-services-item>
 
           <robo-template-services-item
-            :router="{ name: 'lights-up' }"
+            href="/#/lights-up"
             label="academy"
             picture="./images/services-lights-up.jpg"
             :providers="[
