@@ -1,122 +1,104 @@
 <template>
-  <robo-grid-item>
-    <robo-card allowExpand>
-      <robo-card-label>
-        <robo-card-label-section>Lights up</robo-card-label-section>
-        <robo-card-label-section info>
-          Set color for smart lamp via Robonomics Subscription - Decentrilized
-          IoT cloud alternative.
-        </robo-card-label-section>
-      </robo-card-label>
+  <robo-card-section>
+    <robo-grid columns="4rem 5fr">
+      <div>
+        <robo-icon icon="lightbulb" :color="colorLightUp" size="huge" />
+      </div>
 
-      <robo-card-section>
-        <robo-grid columns="4rem 5fr">
-          <div>
-            <robo-icon icon="lightbulb" :color="colorLightUp" size="huge" />
-          </div>
+      <robo-list gap="x2" fullLine>
+        <robo-list-item>
+          <robo-card-title size="3">Choose an account:</robo-card-title>
+          <robo-account-polkadot extensionAllowShift inline short />
+        </robo-list-item>
 
-          <robo-list gap="x2" fullLine>
-            <robo-list-item>
-              <robo-card-title size="3">Choose an account:</robo-card-title>
-              <robo-account-polkadot extensionAllowShift inline short />
-            </robo-list-item>
+        <robo-list-item>
+          <robo-card-title size="3">IoT Subscription:</robo-card-title>
 
-            <robo-list-item>
-              <robo-card-title size="3">IoT Subscription:</robo-card-title>
+          <robo-input v-model="rwsOwner" label="Your address rws owner" />
 
-              <robo-input v-model="rwsOwner" label="Your address rws owner" />
+          <robo-status
+            v-if="!validateAddress(rwsOwner)"
+            textRight="Address is incorrect"
+            type="warning"
+          />
 
+          <template v-if="!isSubscription">
+            <robo-text size="big" weight="bold">
+              <robo-status type="warning" textRight="No active subscription" />
+            </robo-text>
+          </template>
+          <template v-else>
+            <robo-text size="big" weight="bold">
               <robo-status
-                v-if="!validateAddress(rwsOwner)"
-                textRight="Address is incorrect"
-                type="warning"
+                type="success"
+                textRight="Your IoT Subscription is active"
               />
+            </robo-text>
+          </template>
+        </robo-list-item>
 
-              <template v-if="!isSubscription">
-                <robo-text size="big" weight="bold">
-                  <robo-status
-                    type="warning"
-                    textRight="No active subscription"
-                  />
-                </robo-text>
-              </template>
-              <template v-else>
-                <robo-text size="big" weight="bold">
-                  <robo-status
-                    type="success"
-                    textRight="Your IoT Subscription is active"
-                  />
-                </robo-text>
-              </template>
-            </robo-list-item>
+        <robo-list-item>
+          <robo-card-title size="3">Controller:</robo-card-title>
 
-            <robo-list-item>
-              <robo-card-title size="3">Controller:</robo-card-title>
+          <robo-input v-model="subAdmin" label="Your address controller HA" />
+          <robo-status
+            v-if="!validateAddress(subAdmin)"
+            textRight="Address is incorrect"
+            type="warning"
+          />
+        </robo-list-item>
 
-              <robo-input
-                v-model="subAdmin"
-                label="Your address controller HA"
-              />
-              <robo-status
-                v-if="!validateAddress(subAdmin)"
-                textRight="Address is incorrect"
-                type="warning"
-              />
-            </robo-list-item>
+        <robo-list-item>
+          <robo-card-title size="3">
+            Choose light device id and any color you like:
+          </robo-card-title>
 
-            <robo-list-item>
-              <robo-card-title size="3">
-                Choose light device id and any color you like:
-              </robo-card-title>
+          <robo-input v-model="deviceId" label="Your device Id" />
 
-              <robo-input v-model="deviceId" label="Your device Id" />
+          <color-picker v-model="colorLightUp" />
+        </robo-list-item>
 
-              <color-picker v-model="colorLightUp" />
-            </robo-list-item>
-
-            <robo-list-item>
-              <robo-card-title size="3">
-                Sign and send a transaction to the Robonomics Parachain:
-              </robo-card-title>
-              <robo-button
-                v-if="!isCrustAuth"
-                @click="crustAuth"
-                :disabled="processCrustAuth"
-                :loading="processCrustAuth"
-              >
-                Crust auth
-              </robo-button>
-              <template v-else>
-                <robo-button
-                  v-if="!tx"
-                  @click="send"
-                  :disabled="
-                    process ||
-                    !isSubscription ||
-                    !validateAddress(rwsOwner) ||
-                    !validateAddress(subAdmin)
-                  "
-                  :loading="process"
-                >
-                  Submit a transaction
-                </robo-button>
-                <robo-button v-else type="ok" iconLeft="check">
-                  Transaction submitted
-                </robo-button>
-              </template>
-            </robo-list-item>
-          </robo-list>
-        </robo-grid>
-      </robo-card-section>
-    </robo-card>
-  </robo-grid-item>
+        <robo-list-item>
+          <robo-card-title size="3">
+            Sign and send a transaction to the Robonomics Parachain:
+          </robo-card-title>
+          <robo-button
+            v-if="!isCrustAuth"
+            @click="crustAuth"
+            :disabled="processCrustAuth"
+            :loading="processCrustAuth"
+          >
+            Crust auth
+          </robo-button>
+          <template v-else>
+            <robo-button
+              v-if="!tx"
+              @click="send"
+              :disabled="
+                process ||
+                !isSubscription ||
+                !validateAddress(rwsOwner) ||
+                !validateAddress(subAdmin)
+              "
+              :loading="process"
+            >
+              Submit a transaction
+            </robo-button>
+            <robo-button v-else type="ok" iconLeft="check">
+              Transaction submitted
+            </robo-button>
+          </template>
+        </robo-list-item>
+      </robo-list>
+    </robo-grid>
+  </robo-card-section>
 </template>
 
 <script>
 import { encodeAddress, validateAddress } from "@polkadot/util-crypto";
 import { utils } from "robonomics-interface";
 import robonomics from "../../robonomics";
-import ColorPicker from "../lights-up/ColorPicker.vue";
+import ColorPicker from "./ColorPicker.vue";
 
 export default {
   components: { ColorPicker },
