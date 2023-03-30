@@ -77,6 +77,9 @@ export default {
       this.colorLightUp = color.hexString;
       this.$emit("update:modelValue", this.colorPicker.color.hexString);
     });
+  },
+  beforeUnmount() {
+    document.querySelector(".IroColorPicker").remove();
   }
 };
 </script>
