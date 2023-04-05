@@ -52,7 +52,7 @@
         Moonriver
       </robo-sidebar-item>
       <robo-sidebar-item
-        href="https://analytics.solarbeam.io/pairs/0x5261e0ce96289e6c3a16da45a2e52d1ab1a0e9c3"
+        href="https://analytics.solarbeam.io/pairs/0xd9ebab0c85bc2f873642f25cbf18a10996ccb0f7"
       >
         Solarbeam
       </robo-sidebar-item>
