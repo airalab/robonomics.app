@@ -47,21 +47,5 @@
         Polkassembly
       </robo-sidebar-item>
     </robo-sidebar>
-    <robo-sidebar title="Crosschain" icon="circle-exclamation">
-      <robo-sidebar-item href="https://apps.moonbeam.network/moonriver">
-        Moonriver
-      </robo-sidebar-item>
-      <robo-sidebar-item
-        href="https://analytics.solarbeam.io/pairs/0xd9ebab0c85bc2f873642f25cbf18a10996ccb0f7"
-      >
-        Solarbeam
-      </robo-sidebar-item>
-      <robo-sidebar-item href="https://app.multichain.org/#/router">
-        Multichain
-      </robo-sidebar-item>
-      <robo-sidebar-item href="https://app.basilisk.cloud/">
-        Basilisk
-      </robo-sidebar-item>
-    </robo-sidebar>
   </robo-grid-item>
 </template>
