@@ -1,59 +1,77 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import ServiceHomeAssistantAccount from "./services/home-assistant-account/Page.vue";
-import ServiceLightsUpCustom from "./services/lights-up/Custom.vue";
-import ServiceLightsUpLive from "./services/lights-up/Live.vue";
-import ServiceLightsUp from "./services/lights-up/Page.vue";
-import ServiceSmartHomeTelemetry from "./services/smarthome/Page.vue";
-import CreateAccount from "./views/CreateAccount";
-import Services from "./views/services/Page.vue";
-import Bid from "./views/subscription/Bid.vue";
-import Subscription from "./views/subscription/dashboard/Page.vue";
-import DevicesManager from "./views/subscription/DevicesManager.vue";
+import Home from "./views/Home.vue";
+import RwsActivate from "./views/RwsActivate.vue";
+import RwsSetup from "./views/RwsSetup.vue";
+import RwsSetupsList from "./views/RwsSetupsList.vue";
+import RwsUserSetup from "./views/RwsUserSetup.vue";
+import RwsUsersList from "./views/RwsUsersList.vue";
+import Services from "./views/Services.vue";
+import Telemetry from "./views/Telemetry.vue";
+import HaSetup from "./views/haSetup/Page.vue";
 
 const routes = [
   {
     path: "/",
-    name: "dashboard",
-    component: Subscription,
+    name: "Home",
+    component: Home,
     meta: {
-      breadcrumbs: [
-        {
-          text: "Dashboard",
-          active: true
-        }
-      ],
-      title: "Dashboard",
-      description: ""
+      title: "Dashboard"
     }
   },
   {
-    path: "/subscription",
-    name: "subscription-bid",
-    component: Bid,
+    path: "/rws-activate",
+    name: "rwsActivate",
+    component: RwsActivate,
     meta: {
-      breadcrumbs: [
-        {
-          text: "Subscription",
-          active: true
-        }
-      ],
-      title: "New subscription",
-      description: ""
+      title: "RWS activation"
     }
   },
   {
-    path: "/subscription/devices",
-    name: "subscription-devices",
-    component: DevicesManager,
+    path: "/rws-setup",
+    name: "rwsSetup",
+    component: RwsSetup,
     meta: {
-      breadcrumbs: [
-        {
-          text: "Subscription",
-          active: true
-        }
-      ],
-      title: "Subscription",
-      description: ""
+      title: "RWS setup"
+    }
+  },
+  {
+    path: "/rws-setups-list",
+    name: "rwsSetupsList",
+    component: RwsSetupsList,
+    meta: {
+      title: "Your RWS setups"
+    }
+  },
+  {
+    path: "/rws-user-setup",
+    name: "rwsUserSetup",
+    component: RwsUserSetup,
+    meta: {
+      title: "RWS add user"
+    }
+  },
+  {
+    path: "/rws-users-list",
+    name: "rwsUsersList",
+    component: RwsUsersList,
+    meta: {
+      title: "Users in your RWS"
+    }
+  },
+  {
+    path: "/telemetry",
+    name: "telemetry",
+    component: Telemetry,
+    meta: {
+      title: "Smart devices"
+    }
+  },
+  {
+    path: "/hasetup",
+    name: "haSetup",
+    component: HaSetup,
+    meta: {
+      title: "HA setup"
     }
   },
   {
@@ -61,98 +79,7 @@ const routes = [
     name: "services",
     component: Services,
     meta: {
-      breadcrumbs: [
-        {
-          text: "Services",
-          active: true
-        }
-      ],
-      title: "Services",
-      description: ""
-    }
-  },
-  {
-    path: "/lights-up",
-    name: "lights-up",
-    component: ServiceLightsUp,
-    meta: {
-      breadcrumbs: [
-        {
-          text: "Services",
-          href: "/#/services"
-        },
-        {
-          text: "Lights up",
-          active: true
-        }
-      ],
-      title: "Lights up!",
-      description:
-        "Set color for smart lamp via Robonomics Subscription - Decentrilized IoT cloud alternative."
-    },
-    children: [
-      {
-        path: "",
-        component: ServiceLightsUpLive
-      },
-      {
-        path: "custom",
-        component: ServiceLightsUpCustom
-      }
-    ]
-  },
-  {
-    path: "/home-assistant",
-    name: "home-assistant-account",
-    component: ServiceHomeAssistantAccount,
-    meta: {
-      breadcrumbs: [
-        {
-          text: "Services",
-          href: "/#/services"
-        },
-        {
-          text: "Home Assistant Account",
-          active: true
-        }
-      ],
-      title: "Home Assistant account",
-      description: "Get Home Assistant account for Robonomics Parachain usage"
-    }
-  },
-  {
-    path: "/smarthome-telemetry",
-    name: "smarthome-telemetry",
-    component: ServiceSmartHomeTelemetry,
-    meta: {
-      breadcrumbs: [
-        {
-          text: "Services",
-          href: "/#/services"
-        },
-        {
-          text: "SmartHome Telemetry",
-          active: true
-        }
-      ],
-      title: "SmartHome Telemetry",
-      description:
-        "Recieve and decrypt the telemetry from your smart home IoT devices"
-    }
-  },
-  {
-    path: "/create-account",
-    name: "create-account",
-    component: CreateAccount,
-    meta: {
-      breadcrumbs: [
-        {
-          text: "Generate account",
-          active: true
-        }
-      ],
-      title: "Generate account",
-      description: "Generate account"
+      title: "Services"
     }
   }
 ];

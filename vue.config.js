@@ -1,15 +1,8 @@
-module.exports = {
+const { defineConfig } = require("@vue/cli-service");
+module.exports = defineConfig({
+  transpileDependencies: true,
   publicPath: "",
-  transpileDependencies: ["@polkadot"],
-  parallel: false,
   configureWebpack: {
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          loader: require.resolve("@open-wc/webpack-import-meta-loader")
-        }
-      ]
-    }
+    resolve: { fallback: { crypto: false } }
   }
-};
+});

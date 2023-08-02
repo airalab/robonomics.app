@@ -1,98 +1,87 @@
+// import { Buffer } from "buffer";
 import axios from "axios";
-import { create } from "ipfs-core";
-import Crust from "../utils/crust";
+import { create } from "ipfs-http-client";
+import { ref } from "vue";
 
-let node = null;
-
-async function createNode(options) {
-  if (node === null) {
-    node = await create(options);
+class IpfsApiClient {
+  constructor(endpoint) {
+    this.endpoint = endpoint;
+    this.authHeader = null;
+    this.robonomics = null;
+    this._create();
   }
-  return node;
-}
-
-export async function addToInfura(content) {
-  try {
-    const formdata = new FormData();
-    formdata.append("file", content);
-
-    const result = await axios.post(
-      `https://ipfs.infura.io:5001/api/v0/add?stream-channels=true`,
-      formdata,
-      {
-        headers: { "Content-Type": "multipart/form-data" }
-      }
-    );
-
-    console.log("infura add file", result.data.Hash);
-    return result.data.Hash;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function addFile(name, content) {
-  if (node === null) {
-    throw new Error("ipfs not initialized");
-  }
-  try {
-    await addToInfura(content);
-  } catch (error) {
-    console.log(error);
-  }
-  const fileToAdd = {
-    path: name,
-    content: content
-  };
-  const file = await node.add(fileToAdd);
-  return file.cid.toString();
-}
-
-const CancelToken = axios.CancelToken;
-
-let cancel;
-
-export async function catFile(
-  hash,
-  gateway = "https://ipfs.io",
-  options = {},
-  attempts = 5
-) {
-  const url = new URL(gateway);
-  gateway = url.origin;
-  if (url.protocol === "http") {
-    gateway = gateway.replace("http://", "https://");
-  }
-  try {
-    console.log("gett");
-    cancel = undefined;
-    const result = await axios.get(`${gateway}/ipfs/${hash}`, {
-      ...options,
-      cancelToken: new CancelToken((c) => {
-        cancel = c;
-      })
+  _create() {
+    this.client = create({
+      ...this._options()
     });
-    return result.data;
-  } catch (error) {
-    if (axios.isCancel(error)) {
-      return;
-    }
-    if (attempts <= 0) {
-      throw error;
-    }
   }
-  return await catFile(hash, gateway, options, attempts - 1);
-}
-
-export function cancelCatFile() {
-  if (cancel) {
-    cancel();
+  _options() {
+    return {
+      url: this.endpoint,
+      headers: {
+        authorization: `Basic ${this.authHeader}`,
+        robonomics: this.robonomics
+      }
+    };
+  }
+  isAuth() {
+    return !!this.authHeader && !!this.robonomics;
+  }
+  auth(owner, address, signature) {
+    const authHeaderRaw = `sub-${address}:${signature}`;
+    this.authHeader = Buffer.from(authHeaderRaw).toString("base64");
+    this.robonomics = owner;
+    this._create();
+  }
+  authClear() {
+    this.authHeader = null;
+    this.robonomics = null;
+    this._create();
+  }
+  async ls(cid) {
+    const files = [];
+    for await (const file of this.client.ls(cid)) {
+      if (file.type === "file") {
+        files.push(file);
+      }
+    }
+    return files;
+  }
+  async cat(cid) {
+    const cat = async (cid) => {
+      const decoder = new TextDecoder();
+      let content = "";
+      for await (const chunk of this.client.cat(cid)) {
+        content += decoder.decode(chunk, {
+          stream: true
+        });
+      }
+      return content;
+    };
+    return await cat(cid);
+  }
+  async add(data) {
+    return await this.client.add(data);
+  }
+  async catViaGateway(gateway, cid, attempts = 5) {
+    for (let index = 1; index <= attempts; index++) {
+      try {
+        return (await axios.get(`${gateway}${cid}`)).data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    throw new Error("File not available");
   }
 }
 
 export default {
-  install: (app, options) => {
-    app.config.globalProperties.$ipfs = createNode(options);
-    app.config.globalProperties.$crust = new Crust();
+  install: (app, params) => {
+    const instance = ref();
+    app.provide("IpfsProvider", {
+      instance,
+      gateways: params.gateways || []
+    });
+    instance.value = new IpfsApiClient(params.api.gateway);
   }
 };

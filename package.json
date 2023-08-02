@@ -1,41 +1,35 @@
 {
   "name": "dapp-robonomics.network",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve:production": "vue-cli-service serve --mode production",
-    "serve-m1": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "pretty": "prettier --write \"./src/**/*.{js,vue,ts,jsx,json}\""
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@jaames/iro": "^5.5.2",
-    "@polkadot/api": "^8.9.1",
-    "@polkadot/extension-dapp": "^0.44.1",
-    "@polkadot/ui-keyring": "^2.5.1",
-    "axios": "^0.27.2",
-    "core-js": "^3.6.5",
+    "@polkadot/api": "^9.14.1",
+    "@polkadot/ui-keyring": "^2.11.1",
+    "axios": "^1.4.0",
+    "core-js": "^3.32.0",
+    "dayjs": "^1.11.9",
     "decimal.js-light": "^2.5.1",
-    "file-saver": "^2.0.5",
-    "ipfs-core": "0.14.1",
-    "robonomics-interface": "^0.2.3",
-    "robonomics-ui-vue": "^0.0.1-39",
-    "vue": "^3.0.0",
-    "vue-final-modal": "^3.4.4",
-    "vue-router": "^4.0.16",
-    "vuex": "^4.0.2"
+    "ipfs-http-client": "^60.0.0",
+    "robonomics-interface": "^0.3.0",
+    "robonomics-ui-vue": "^0.1.43",
+    "vue": "^3.2.13",
+    "vue-router": "^4.1.6",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@open-wc/webpack-import-meta-loader": "^0.4.7",
-    "@vue/cli-plugin-babel": "~4.5.15",
-    "@vue/cli-plugin-eslint": "~4.5.15",
-    "@vue/cli-service": "~4.5.15",
-    "@vue/compiler-sfc": "^3.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0"
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "url": "^0.11.0"
   },
   "eslintConfig": {
     "root": true,
@@ -47,14 +41,16 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "warn"
+    }
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
-  ],
-  "license": "BSD-3-Clause"
+    "not dead",
+    "not ie 11"
+  ]
 }
