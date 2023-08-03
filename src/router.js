@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./views/Home.vue";
+import PathNotFound from "./views/PathNotFound.vue";
 import RwsActivate from "./views/RwsActivate.vue";
 import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupsList from "./views/RwsSetupsList.vue";
@@ -81,7 +82,8 @@ const routes = [
     meta: {
       title: "Services"
     }
-  }
+  },
+  { path: "/:pathMatch(.*)*", component: PathNotFound }
 ];
 
 const router = createRouter({
