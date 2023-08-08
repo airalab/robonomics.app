@@ -83,23 +83,41 @@ export default {
       if (!cid) {
         return false;
       }
+      let result;
       try {
-        const result = await ipfs.catViaGateway(
+        result = await ipfs.catViaGateway(
           store.state.robonomicsUIvue.ipfs.activegateway,
-          cid
+          cid,
+          2
         );
-        const seed = decryptMsg(
-          result[controller.address],
-          controller.publicKey,
-          controller
-        );
-        const admin = keyring.addFromUri(seed, {}, "ed25519");
-        const data = decryptMsg(result.data, controller.publicKey, admin);
-        return parseJson(data);
-      } catch (error) {
-        console.log(error.message);
-        return false;
+      } catch (_) {
+        try {
+          const res = await ipfs.catViaGateways(
+            store.state.robonomicsUIvue.ipfs.gateways,
+            cid
+          );
+          store.commit("ipfs/setActiveGateway", res.gateway);
+          result = res.result;
+        } catch (error) {
+          console.log(error.message);
+        }
       }
+
+      if (result) {
+        try {
+          const seed = decryptMsg(
+            result[controller.address],
+            controller.publicKey,
+            controller
+          );
+          const admin = keyring.addFromUri(seed, {}, "ed25519");
+          const data = decryptMsg(result.data, controller.publicKey, admin);
+          return parseJson(data);
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+      return false;
     };
 
     const loadSetup = () => {

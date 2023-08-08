@@ -107,17 +107,6 @@ export default {
           return enddate;
         };
 
-        if (
-          this.$store.state.robonomicsUIvue.ipfs.gateways.length &&
-          this.$store.state.robonomicsUIvue.ipfs.activegateway !==
-            this.$store.state.robonomicsUIvue.ipfs.gateways[0]
-        ) {
-          localStorage.setItem(
-            "robonomicsUIipfsActivegateway",
-            this.$store.state.robonomicsUIvue.ipfs.gateways[0]
-          );
-        }
-
         const arr = [];
         for (const item of this.$store.state.robonomicsUIvue.rws.list) {
           arr.push({

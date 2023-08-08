@@ -73,6 +73,19 @@ class IpfsApiClient {
     }
     throw new Error("File not available");
   }
+  async catViaGateways(gateways, cid) {
+    for (const gateway of gateways) {
+      try {
+        return {
+          gateway,
+          result: await this.catViaGateway(gateway, cid)
+        };
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    throw new Error("File not available");
+  }
 }
 
 export default {
