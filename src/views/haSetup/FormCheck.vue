@@ -9,6 +9,14 @@
         <robo-template-rws-activeselect size="small" block label="Choose RWS" />
       </robo-grid-item>
 
+      <robo-grid-item v-if="!hasRwsSetup">
+        <robo-address-polkadot
+          v-model:address="controllerAddress"
+          chain="32"
+          label="Controller address"
+        />
+      </robo-grid-item>
+
       <robo-grid-item>
         <robo-address-polkadot
           v-model:address="address"
@@ -40,6 +48,9 @@
             Oops! It seems like your address has not been added to the RWS
             subscription.
           </template>
+          <template v-if="error === 'bad-type'">
+            Oops! Address should be ed25519 type
+          </template>
           <template v-if="error === 'bad-seed'">
             Oops! Seed does not match user address.
           </template>
@@ -62,11 +73,12 @@ export default {
     const address = ref("");
     const seed = ref("");
     const error = ref(false);
+    const hasRwsSetup = ref(false);
+    const controllerAddress = ref("");
 
     const robonomics = useRobonomics();
 
     let ownerAddress;
-    let controllerAddress;
     const store = useStore();
     watch(
       () => store.state.robonomicsUIvue.rws.active,
@@ -76,10 +88,19 @@ export default {
         );
         if (controller) {
           ownerAddress = controller.owner;
-          controllerAddress = controller.controller;
-          console.log(ownerAddress);
-          console.log(controllerAddress);
+          controllerAddress.value = controller.controller;
+        } else {
+          ownerAddress = store.state.robonomicsUIvue.rws.active;
         }
+      },
+      {
+        immediate: true
+      }
+    );
+    watch(
+      () => store.state.robonomicsUIvue.rws.list,
+      async () => {
+        hasRwsSetup.value = !!store.state.robonomicsUIvue.rws.list.length;
       },
       {
         immediate: true
@@ -87,7 +108,7 @@ export default {
     );
 
     const validateRequired = () => {
-      if (seed.value && address.value) {
+      if (seed.value && address.value && controllerAddress.value) {
         return true;
       }
       return false;
@@ -107,10 +128,10 @@ export default {
       return false;
     };
 
-    const validateSeed = () => {
+    const validateSeed = (type = "ed25519") => {
       try {
         const k = new Keyring();
-        const account = k.addFromUri(seed.value, {}, "ed25519");
+        const account = k.addFromUri(seed.value, {}, type);
         if (encodeAddress(address.value) === encodeAddress(account.address)) {
           return true;
         }
@@ -123,6 +144,8 @@ export default {
     const validate = async () => {
       if (!validateRequired()) {
         error.value = "require";
+      } else if (validateSeed("sr25519")) {
+        error.value = "bad-type";
       } else if (!(await hasDeviceSubscription(ownerAddress, address.value))) {
         error.value = "not-user-subscription";
       } else if (!validateSeed()) {
@@ -142,13 +165,15 @@ export default {
         emit("check", {
           isCheсk: true,
           ownerAddress,
-          controllerAddress,
+          controllerAddress: controllerAddress.value,
           userSeed: seed.value
         });
       }
     };
 
     return {
+      hasRwsSetup,
+      controllerAddress,
       address,
       seed,
       error,
