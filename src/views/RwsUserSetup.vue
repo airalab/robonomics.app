@@ -34,12 +34,28 @@ export default {
     const devices = useDevices(owner);
 
     const onSetup = async (setStatus) => {
+      if (
+        owner.value &&
+        owner.value !== store.state.robonomicsUIvue.polkadot.address
+      ) {
+        setStatus("error", "You do not have access to this action.");
+        return;
+      }
+
       if (!devices.devices.value.includes(addressNew.value)) {
         const call = await robonomics.rws.setDevices([
           ...devices.devices.value,
           addressNew.value
         ]);
-        await tx.send(call);
+        if (
+          devices.devices.value.includes(
+            store.state.robonomicsUIvue.polkadot.address
+          )
+        ) {
+          await tx.send(call, owner.value);
+        } else {
+          await tx.send(call);
+        }
         if (tx.error.value) {
           if (tx.error.value !== "Cancelled") {
             setStatus("error", tx.error.value);

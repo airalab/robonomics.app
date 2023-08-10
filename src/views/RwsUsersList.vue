@@ -83,7 +83,15 @@ const onDelete = async (address, setStatus) => {
       return item !== address;
     });
     const call = await robonomics.rws.setDevices(newListDevices);
-    await tx.send(call);
+    if (
+      devices.devices.value.includes(
+        store.state.robonomicsUIvue.polkadot.address
+      )
+    ) {
+      await tx.send(call, rwsactive.value);
+    } else {
+      await tx.send(call);
+    }
     if (tx.error.value) {
       if (tx.error.value !== "Cancelled") {
         setStatus("error", tx.error.value);
