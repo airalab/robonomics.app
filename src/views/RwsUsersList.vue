@@ -92,6 +92,7 @@ const onDelete = async (address, setStatus) => {
       }
       return;
     }
+    await devices.loadDevices();
   }
   setStatus("ok");
 };
