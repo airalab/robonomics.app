@@ -23,7 +23,7 @@
           v-model:address="user.address"
           v-model:name="user.name"
           :onEdit="onEdit"
-          @on-user-delete="onDelete"
+          @onUserDelete="(setStatus) => onDelete(user.address, setStatus)"
         />
       </robo-grid>
       <robo-button
@@ -38,6 +38,8 @@
 
 <script setup>
 import { useDevices } from "@/hooks/useDevices";
+import { useRobonomics } from "@/hooks/useRobonomics";
+import { useSend } from "@/hooks/useSend";
 import { computed, watch } from "vue";
 import { useStore } from "vuex";
 
@@ -63,11 +65,37 @@ const onEdit = (setStatus) => {
   setStatus("ok");
 };
 
-const onDelete = (setStatus) => {
+const robonomics = useRobonomics();
+const tx = useSend();
+const devices = useDevices(rwsactive);
+
+const onDelete = async (address, setStatus) => {
+  if (
+    rwsactive.value &&
+    rwsactive.value !== store.state.robonomicsUIvue.polkadot.address
+  ) {
+    setStatus("error", "You do not have access to this action.");
+    return;
+  }
+
+  if (devices.devices.value.includes(address)) {
+    const newListDevices = devices.devices.value.filter((item) => {
+      return item !== address;
+    });
+    const call = await robonomics.rws.setDevices(newListDevices);
+    await tx.send(call);
+    if (tx.error.value) {
+      if (tx.error.value !== "Cancelled") {
+        setStatus("error", tx.error.value);
+      } else {
+        setStatus("calcel");
+      }
+      return;
+    }
+  }
   setStatus("ok");
 };
 
-const devices = useDevices(rwsactive);
 const fillStorage = () => {
   for (const address of devices.devices.value) {
     if (
