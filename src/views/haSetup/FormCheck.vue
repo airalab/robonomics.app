@@ -38,6 +38,14 @@
         <robo-button block>Check</robo-button>
       </robo-grid-item>
 
+      <robo-grid-item v-if="warn">
+        <robo-text highlight="attention">
+          <template v-if="warn === 'user-exist'">
+            Warn! The specified account address is already registered.
+          </template>
+        </robo-text>
+      </robo-grid-item>
+
       <robo-grid-item v-if="error">
         <robo-text highlight="error">
           <template v-if="error === 'require'">
@@ -61,7 +69,9 @@
 </template>
 
 <script>
+import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
+import { getLastDatalog } from "@/utils/telemetry";
 import { Keyring } from "@polkadot/keyring";
 import { encodeAddress, validateAddress } from "@polkadot/util-crypto";
 import { ref, watch } from "vue";
@@ -73,10 +83,12 @@ export default {
     const address = ref("");
     const seed = ref("");
     const error = ref(false);
+    const warn = ref(false);
     const hasRwsSetup = ref(false);
     const controllerAddress = ref("");
 
     const robonomics = useRobonomics();
+    const ipfs = useIpfs();
 
     let ownerAddress;
     const store = useStore();
@@ -142,6 +154,8 @@ export default {
     };
 
     const validate = async () => {
+      error.value = false;
+      warn.value = false;
       if (!validateRequired()) {
         error.value = "require";
       } else if (validateSeed("sr25519")) {
@@ -151,7 +165,22 @@ export default {
       } else if (!validateSeed()) {
         error.value = "bad-seed";
       } else {
-        error.value = false;
+        const datalog = await getLastDatalog(
+          robonomics,
+          controllerAddress.value
+        );
+        const result = await ipfs.catViaGateway(
+          store.state.robonomicsUIvue.ipfs.activegateway,
+          datalog.cid,
+          5
+        );
+        if (result && result[address.value]) {
+          warn.value = "user-exist";
+        } else {
+          if (!result) {
+            console.log("Error: datalog not found in ipfs");
+          }
+        }
       }
 
       if (error.value) {
@@ -177,6 +206,7 @@ export default {
       address,
       seed,
       error,
+      warn,
       validate
     };
   }

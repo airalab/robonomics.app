@@ -29,16 +29,17 @@ export default {
     const configCid = ref("");
     const updateTime = ref(null);
     const setup = reactive({ controller: null, admin: null });
+    const users = ref([]);
 
     const robonomics = useRobonomics();
     const store = useStore();
     const ipfs = useIpfs();
     const tx = useSend();
 
-    const notify = (text) => {
+    const notify = (text, timeout = 3000) => {
       store.dispatch("app/setStatus", {
         value: text,
-        timeout: 3000
+        timeout
       });
       console.log(text);
     };
@@ -104,6 +105,7 @@ export default {
       }
 
       if (result) {
+        users.value = Object.keys(result).filter((key) => key !== "data");
         try {
           const seed = decryptMsg(
             result[controller.address],
@@ -117,6 +119,7 @@ export default {
           console.log(error.message);
         }
       }
+      users.value = [];
       return false;
     };
 
@@ -255,6 +258,12 @@ export default {
 
       notify(`Launch command`);
       logger(`command ${JSON.stringify(command)}`);
+
+      if (!users.value.includes(robonomics.accountManager.account.address)) {
+        notify(`Error: You do not have access to device management.`);
+        setStatusLaunch(command, "error");
+        return;
+      }
 
       if (!ipfs.isAuth()) {
         notify(`Authorization on ipfs node`);
