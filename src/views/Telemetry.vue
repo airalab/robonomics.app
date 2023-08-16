@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { useDevices } from "@/hooks/useDevices";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
@@ -29,12 +30,12 @@ export default {
     const configCid = ref("");
     const updateTime = ref(null);
     const setup = reactive({ controller: null, admin: null });
-    const users = ref([]);
 
     const robonomics = useRobonomics();
     const store = useStore();
     const ipfs = useIpfs();
     const tx = useSend();
+    const devices = useDevices();
 
     const notify = (text, timeout = 3000) => {
       store.dispatch("app/setStatus", {
@@ -105,7 +106,6 @@ export default {
       }
 
       if (result) {
-        users.value = Object.keys(result).filter((key) => key !== "data");
         try {
           const seed = decryptMsg(
             result[controller.address],
@@ -119,7 +119,6 @@ export default {
           console.log(error.message);
         }
       }
-      users.value = [];
       return false;
     };
 
@@ -174,6 +173,7 @@ export default {
     watch(
       () => store.state.robonomicsUIvue.rws.active,
       () => {
+        devices.owner.value = store.state.robonomicsUIvue.rws.active;
         loadSetup();
       },
       { immediate: true }
@@ -259,7 +259,13 @@ export default {
       notify(`Launch command`);
       logger(`command ${JSON.stringify(command)}`);
 
-      if (!users.value.includes(robonomics.accountManager.account.address)) {
+      if (
+        robonomics.accountManager.account.address !==
+          store.state.robonomicsUIvue.rws.active &&
+        !devices.devices.value.includes(
+          robonomics.accountManager.account.address
+        )
+      ) {
         notify(`Error: You do not have access to device management.`);
         setStatusLaunch(command, "error");
         return;
