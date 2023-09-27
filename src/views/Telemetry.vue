@@ -34,7 +34,7 @@ export default {
     const robonomics = useRobonomics();
     const store = useStore();
     const ipfs = useIpfs();
-    const tx = useSend();
+    const transaction = useSend();
     const devices = useDevices();
 
     const notify = (text, timeout = 3000) => {
@@ -308,7 +308,8 @@ export default {
 
       notify(`Send launch`);
       const call = robonomics.launch.send(setup.controller.address, cid.path);
-      await tx.send(call, setup.admin);
+      const tx = transaction.createTx();
+      await transaction.send(tx, call, setup.admin);
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
           setStatusLaunch(command, "error");
@@ -334,7 +335,7 @@ export default {
       }
     );
 
-    return { datalog, config, updateTime, configCid, launch, tx };
+    return { datalog, config, updateTime, configCid, launch };
   }
 };
 </script>

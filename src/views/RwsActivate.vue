@@ -74,7 +74,7 @@ export default {
       unsubscribeAccount();
     });
 
-    const tx = useSend();
+    const transaction = useSend();
     const onActivate = async () => {
       const oldStatus = status.value;
       status.value = "processing";
@@ -109,7 +109,8 @@ export default {
           robonomics.rws.setDevices([...devices.devices.value, account.value])
         ]);
       }
-      await tx.send(call);
+      const tx = transaction.createTx();
+      await transaction.send(tx, call);
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
           status.value = "error";

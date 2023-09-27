@@ -66,7 +66,7 @@ const onEdit = (setStatus) => {
 };
 
 const robonomics = useRobonomics();
-const tx = useSend();
+const transaction = useSend();
 const devices = useDevices(rwsactive);
 
 const onDelete = async (address, setStatus) => {
@@ -83,14 +83,15 @@ const onDelete = async (address, setStatus) => {
       return item !== address;
     });
     const call = await robonomics.rws.setDevices(newListDevices);
+    const tx = transaction.createTx();
     if (
       devices.devices.value.includes(
         store.state.robonomicsUIvue.polkadot.address
       )
     ) {
-      await tx.send(call, rwsactive.value);
+      await transaction.send(tx, call, rwsactive.value);
     } else {
-      await tx.send(call);
+      await transaction.send(tx, call);
     }
     if (tx.error.value) {
       if (tx.error.value !== "Cancelled") {

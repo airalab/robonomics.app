@@ -30,7 +30,7 @@ export default {
     );
 
     const robonomics = useRobonomics();
-    const tx = useSend();
+    const transaction = useSend();
     const devices = useDevices(owner);
 
     const onSetup = async (setStatus) => {
@@ -47,14 +47,15 @@ export default {
           ...devices.devices.value,
           addressNew.value
         ]);
+        const tx = transaction.createTx();
         if (
           devices.devices.value.includes(
             store.state.robonomicsUIvue.polkadot.address
           )
         ) {
-          await tx.send(call, owner.value);
+          await transaction.send(tx, call, owner.value);
         } else {
-          await tx.send(call);
+          await transaction.send(tx, call);
         }
         if (tx.error.value) {
           if (tx.error.value !== "Cancelled") {

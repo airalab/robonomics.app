@@ -55,8 +55,10 @@ export default {
     const error = ref("");
 
     const robonomics = useRobonomics();
-    const tx = useSend();
+    const transaction = useSend();
     const store = useStore();
+
+    const tx = transaction.createTx();
 
     let accountUser;
     watch(
@@ -152,7 +154,7 @@ export default {
           user: passwordForRecovery
         })
       );
-      await tx.send(call, ownerAddress.value);
+      await transaction.send(tx, call, ownerAddress.value);
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
           error.value = tx.error.value;

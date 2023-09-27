@@ -5,9 +5,6 @@ import { useSubscription } from "./useSubscription";
 export const useSend = () => {
   const robonomics = useRobonomics();
   const { getFreeWeightCalc } = useSubscription();
-  const result = ref(null);
-  const error = ref(null);
-  const process = ref(false);
 
   const getCallWeight = async (tx, signer) => {
     if (!signer) {
@@ -33,26 +30,39 @@ export const useSend = () => {
     }
   };
 
-  const send = async (tx, subscription = false) => {
-    result.value = null;
-    error.value = null;
-    process.value = true;
+  const createTx = () => {
+    const result = ref(null);
+    const error = ref(null);
+    const process = ref(false);
+    return { error, process, result };
+  };
+
+  const send = async (tx, call, subscription = false) => {
+    tx.result.value = null;
+    tx.error.value = null;
+    tx.process.value = true;
     try {
       if (subscription) {
-        await checkWeight(tx, subscription);
+        await checkWeight(call, subscription);
         robonomics.accountManager.useSubscription(subscription);
       }
-      result.value = await robonomics.accountManager.signAndSend(tx);
-      console.log("tx", result.value.block, result.value.tx);
+      const nonce = await robonomics.api.rpc.system.accountNextIndex(
+        robonomics.accountManager.account.address
+      );
+      tx.result.value = await robonomics.accountManager.signAndSend(call, {
+        nonce
+      });
+      console.log("tx", tx.result.value.block, tx.result.value.tx);
     } catch (e) {
       console.log(e);
-      error.value = e.message;
+      tx.error.value = e.message;
     }
-    process.value = false;
+    tx.process.value = false;
     if (subscription) {
       robonomics.accountManager.useSubscription(false);
     }
-    return result;
+    return tx.result;
   };
-  return { error, process, result, send };
+
+  return { createTx, send };
 };
