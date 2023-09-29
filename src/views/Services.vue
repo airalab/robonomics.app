@@ -1,6 +1,6 @@
 <template>
   <robo-layout-section>
-    <robo-grid offset="x0" gap="x1" galign="start" minColumnWidth="350px">
+    <robo-grid offset="x0" gap="x1" galign="start" minColumnWidth="450px">
       <robo-card>
         <robo-link router="/telemetry">
           <robo-image src="images/services-ha.jpg" />
