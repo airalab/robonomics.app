@@ -1,19 +1,11 @@
 <template>
-  <robo-layout-section
-    v-if="rws?.length < 1 || !users || users.length < 1"
-    rwsrecover
-  >
+  <robo-layout-section v-if="rws?.length < 1 || !users || users.length < 1">
     <robo-section width="narrow" gcenter>
-      <robo-template-rws-activeselect
-        v-if="rws?.length > 1"
-        block
-        label="Selected RWS"
-      />
       <robo-template-rws-users-empty />
     </robo-section>
   </robo-layout-section>
 
-  <robo-layout-section v-else rwsrecover rwssave>
+  <robo-layout-section v-else rwssave>
     <robo-section offset="x0" width="narrow">
       <robo-grid offset="x1" gap="x1">
         <robo-template-rws-user-listitem
