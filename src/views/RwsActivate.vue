@@ -1,12 +1,11 @@
 <template>
   <robo-layout-section>
-    <robo-template-rws-activate
+    <robo-template-rws-buy
       :price="price"
       activationtime="2"
       :available="freeAuctions"
+      :rwsExpiration="expiredate"
       @on-activate="onActivate"
-      :rwsStatus="status"
-      :rwsMessage="message"
     />
   </robo-layout-section>
 </template>
@@ -20,14 +19,12 @@ import { useSend } from "@/hooks/useSend";
 import { useSubscription } from "@/hooks/useSubscription";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
-import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
+import { computed, onUnmounted, ref, watchEffect } from "vue";
 
 export default {
   setup() {
     const price = ref(0);
     const freeAuctions = ref(0);
-    const status = ref("new");
-    const message = ref("");
     let unsubscribeBlock = null;
 
     const robonomics = useRobonomics();
@@ -35,24 +32,6 @@ export default {
     const { balance, unsubscribe: unsubscribeBalance } = useBalance(account);
     const subscription = useSubscription(account);
     const devices = useDevices(account);
-
-    watch(
-      [subscription.hasSubscription, subscription.isActive, account],
-      () => {
-        if (subscription.hasSubscription.value) {
-          if (subscription.isActive.value) {
-            status.value = "ok";
-            message.value = "You already have subsription";
-          } else {
-            status.value = "renew";
-            message.value = "";
-          }
-        } else {
-          status.value = "new";
-          message.value = "";
-        }
-      }
-    );
 
     (async () => {
       freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
@@ -75,27 +54,23 @@ export default {
     });
 
     const transaction = useSend();
-    const onActivate = async () => {
-      const oldStatus = status.value;
-      status.value = "processing";
-      message.value = "";
+    const onActivate = async (setStatus) => {
       if (
         !balance.value ||
         bnToBn(balance.value).add(bnToBn(1000000000)).lt(price.value)
       ) {
-        status.value = "error";
-        message.value =
-          "Subscription can not be activated due to unsuffcicient XRT balance";
+        setStatus(
+          "error",
+          "Subscription can not be activated due to unsuffcicient XRT balance"
+        );
         return;
       }
       if (freeAuctions.value <= 0) {
-        status.value = "error";
-        message.value = "There are no available subscriptions";
+        setStatus("error", "There are no available subscriptions");
         return;
       }
       if (subscription.hasSubscription.value && subscription.isActive.value) {
-        status.value = "error";
-        message.value = "You have an active subscription";
+        setStatus("error", "You have an active subscription");
         return;
       }
 
@@ -113,10 +88,9 @@ export default {
       await transaction.send(tx, call);
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
-          status.value = "error";
-          message.value = tx.error.value;
+          setStatus("error", tx.error.value);
         } else {
-          status.value = oldStatus;
+          setStatus("cancel");
         }
         return;
       }
@@ -128,7 +102,7 @@ export default {
         if (subscription.hasSubscription.value && subscription.isActive.value) {
           stopWatchEffect();
           unsubscribeBlock();
-          status.value = "ok";
+          setStatus("ok");
         }
       });
     };
@@ -140,8 +114,7 @@ export default {
     return {
       freeAuctions,
       price: priceFormat,
-      status,
-      message,
+      expiredate: subscription.validUntil,
       onActivate
     };
   }

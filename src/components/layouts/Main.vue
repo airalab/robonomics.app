@@ -1,18 +1,39 @@
 <template>
   <robo-layout>
-    <dapp-header :title="props.title" />
+    <dapp-header :title="title" />
     <slot />
   </robo-layout>
 </template>
 
-<script setup>
+<script>
 import DappHeader from "@/components/Header";
-import { defineProps } from "vue";
+import { useSubscription } from "@/hooks/useSubscription";
+import { watch } from "vue";
+import { useStore } from "vuex";
 
-const props = defineProps({
-  title: {
-    type: String,
-    default: "Robonomics Dapp"
+export default {
+  components: {
+    DappHeader
+  },
+  setup() {
+    const store = useStore();
+    const subscription = useSubscription();
+
+    watch(
+      () => store.state.robonomicsUIvue.rws.active,
+      (v) => {
+        subscription.owner.value = v;
+      },
+      { immediate: true }
+    );
+
+    watch(
+      [subscription.owner, subscription.validUntil],
+      () => {
+        store.commit("rws/setExpiredate", subscription.validUntil.value);
+      },
+      { immediate: true }
+    );
   }
-});
+};
 </script>

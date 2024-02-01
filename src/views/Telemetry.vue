@@ -11,14 +11,9 @@ import { useDevices } from "@/hooks/useDevices";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
-import {
-  decryptMsg,
-  getConfigCid,
-  getLastDatalog,
-  parseJson
-} from "@/utils/telemetry";
-import { Keyring } from "@polkadot/keyring";
-import { stringToU8a } from "@polkadot/util";
+import { encryptor } from "@/utils/encryptor";
+import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
+import { stringToU8a, u8aToString } from "@polkadot/util";
 import { onUnmounted, reactive, ref, watch, watchEffect } from "vue";
 import { useStore } from "vuex";
 
@@ -77,10 +72,6 @@ export default {
       }
     });
 
-    const keyring = new Keyring({
-      ss58Format: robonomics.api?.registry.chainSS58
-    });
-
     const catFileContoller = async (controller, cid) => {
       if (!cid) {
         return false;
@@ -107,14 +98,16 @@ export default {
 
       if (result) {
         try {
-          const seed = decryptMsg(
+          const seed = controller.decryptMessage(
             result[controller.address],
-            controller.publicKey,
-            controller
+            controller.pair.publicKey
           );
-          const admin = keyring.addFromUri(seed, {}, "ed25519");
-          const data = decryptMsg(result.data, controller.publicKey, admin);
-          return parseJson(data);
+          const admin = encryptor(u8aToString(seed));
+          const data = admin.decryptMessage(
+            result.data,
+            controller.pair.publicKey
+          );
+          return parseJson(u8aToString(data));
         } catch (error) {
           console.log(error.message);
         }
@@ -133,11 +126,7 @@ export default {
       );
       if (setupRaw) {
         try {
-          setup.controller = keyring.addFromUri(
-            setupRaw.scontroller,
-            {},
-            "ed25519"
-          );
+          setup.controller = encryptor(setupRaw.scontroller);
           setup.admin = setupRaw.owner;
           return;
         } catch (error) {

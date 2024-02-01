@@ -1,4 +1,4 @@
-import { hexToU8a, u8aToString } from "@polkadot/util";
+import { u8aToString } from "@polkadot/util";
 import { utils } from "robonomics-interface";
 
 const clearJson = (string) => {
@@ -24,11 +24,6 @@ export const parseJson = (string) => {
     console.log(string);
   }
   return false;
-};
-
-export const decryptMsg = (encryptMessage, pk, account) => {
-  const decryptMessage = account.decryptMessage(hexToU8a(encryptMessage), pk);
-  return u8aToString(decryptMessage);
 };
 
 export const getLastDatalog = async (robonomics, controller) => {

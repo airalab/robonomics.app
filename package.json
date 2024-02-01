@@ -1,7 +1,9 @@
 {
   "name": "dapp-robonomics.network",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "license": "BSD-3-Clause",
+  "author": "vol4tim <sas@robonomics.network>",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -15,21 +17,21 @@
     "dayjs": "^1.11.9",
     "decimal.js-light": "^2.5.1",
     "ipfs-http-client": "^60.0.0",
-    "robonomics-interface": "^0.3.0",
-    "robonomics-ui-vue": "^0.1.43",
-    "vue": "^3.2.13",
-    "vue-router": "^4.1.6",
+    "robonomics-interface": "^0.3.1",
+    "robonomics-ui-vue": "^0.2.6",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "url": "^0.11.0"
+    "@babel/core": "^7.23.7",
+    "@babel/eslint-parser": "^7.23.3",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "eslint": "^8.56.0",
+    "eslint-plugin-vue": "^9.20.1",
+    "url": "^0.11.3"
   },
   "eslintConfig": {
     "root": true,

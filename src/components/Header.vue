@@ -1,6 +1,6 @@
 <template>
   <robo-layout-header
-    logoIcon="images/logo-white.png"
+    logoIcon="images/logo-white.svg"
     :navigation="navigation"
     :title="title"
     :version="version"
@@ -77,6 +77,11 @@ export default {
             {
               title: "Moonriver",
               link: "https://apps.moonbeam.network/moonriver",
+              type: "external"
+            },
+            {
+              title: "Basilisk",
+              link: "https://app.basilisk.cloud/pools-and-farms",
               type: "external"
             },
             {
