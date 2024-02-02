@@ -18,7 +18,7 @@
     "decimal.js-light": "^2.5.1",
     "ipfs-http-client": "^60.0.0",
     "robonomics-interface": "^0.3.1",
-    "robonomics-ui-vue": "^0.2.6",
+    "robonomics-ui-vue": "^0.2.7",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vuex": "^4.1.0"
