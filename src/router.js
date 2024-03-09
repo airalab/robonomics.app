@@ -5,7 +5,7 @@ import RwsActivate from "./views/RwsActivate.vue";
 import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
 import Services from "./views/Services.vue";
-import Telemetry from "./views/Telemetry.vue";
+import Telemetry from "./views/telemetry/Telemetry.vue";
 
 const routes = [
   {

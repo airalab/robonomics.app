@@ -57,13 +57,12 @@ export function encryptMessage(
   );
   return u8aConcat(nonce, sealed);
 }
-export function getPair(mnemonic) {
+export function createPair(mnemonic) {
   const seed = mnemonicToMiniSecret(mnemonic);
   const pair = ed25519PairFromSeed(seed);
   return pair;
 }
-export function encryptor(mnemonic) {
-  const pair = getPair(mnemonic);
+export function encryptor(pair) {
   return {
     pair,
     address: encodeAddress(pair.publicKey, 32),
@@ -82,3 +81,23 @@ export function encryptor(mnemonic) {
     }
   };
 }
+// export function encryptor(mnemonic) {
+//   const pair = createPair(mnemonic);
+//   return {
+//     pair,
+//     address: encodeAddress(pair.publicKey, 32),
+//     encodeAddress: (ss58Format = 32) => {
+//       return encodeAddress(pair.publicKey, ss58Format);
+//     },
+//     decryptMessage: (encryptedMessageWithNonce, senderPublicKey) => {
+//       return decryptMessage(
+//         encryptedMessageWithNonce,
+//         senderPublicKey,
+//         pair.secretKey
+//       );
+//     },
+//     encryptMessage: (message, recipientPublicKey, nonce) => {
+//       return encryptMessage(message, recipientPublicKey, pair.secretKey, nonce);
+//     }
+//   };
+// }

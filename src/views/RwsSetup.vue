@@ -14,7 +14,7 @@ import { useAccount } from "@/hooks/useAccount";
 import { useDevices } from "@/hooks/useDevices";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
-import { encryptor } from "@/utils/encryptor";
+import { createPair, encryptor } from "@/utils/encryptor";
 import { Keyring } from "@polkadot/api";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
@@ -162,7 +162,7 @@ export default {
         (item) => item.owner === setupOwner.value
       );
 
-      const user = encryptor(userSeed);
+      const user = encryptor(createPair(userSeed));
 
       const passwordForAdmin = user.encryptMessage(
         passToSave,
