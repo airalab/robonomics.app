@@ -8,7 +8,6 @@
       :rwsExpiration="expiredate"
       @on-activate="onActivate"
     />
-    {{ chainInfoStatus }}
   </robo-layout-section>
 </template>
 
