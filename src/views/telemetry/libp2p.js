@@ -85,10 +85,16 @@ export const useData = () => {
       return;
     }
 
-    const response = await request(command.launch);
-    console.log(`response: ${response}`);
+    try {
+      const response = await request(command.launch);
+      console.log(`response: ${response}`);
 
-    setStatusLaunch(store, command, "success");
+      setStatusLaunch(store, command, "success");
+    } catch (error) {
+      console.log(error);
+      notify(store, `Error: Check status of the HomeAssistant.`);
+      setStatusLaunch(store, command, "error");
+    }
   };
 
   return { data, updateTime, run, launch };

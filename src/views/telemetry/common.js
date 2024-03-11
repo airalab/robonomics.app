@@ -2,7 +2,7 @@ import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { createPair, encryptor } from "@/utils/encryptor";
 import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
-import { u8aToString } from "@polkadot/util";
+import { hexToU8a, u8aToString } from "@polkadot/util";
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 
@@ -37,13 +37,13 @@ export const decryptMsgContoller = async (encryptedMsg, controller) => {
   if (encryptedMsg) {
     try {
       const seed = controller.decryptMessage(
-        encryptedMsg[controller.address],
+        hexToU8a(encryptedMsg[controller.address]),
         controller.pair.publicKey
       );
 
       const admin = encryptor(createPair(u8aToString(seed)));
       const data = admin.decryptMessage(
-        encryptedMsg.data,
+        hexToU8a(encryptedMsg.data),
         controller.pair.publicKey
       );
       return parseJson(u8aToString(data));
