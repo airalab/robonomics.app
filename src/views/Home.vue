@@ -3,11 +3,11 @@
     <robo-grid offset="x0" minColumnWidth="200px">
       <robo-section offset="x0">
         <robo-card>
-          <robo-text title="4" align="left">RWS subscription</robo-text>
           <template v-if="rwsactive && rwsactive !== ''">
             <robo-template-rws-active />
           </template>
           <template v-else>
+            <robo-text title="4" align="left">RWS subscription</robo-text>
             <robo-section offset="x1">
               <robo-text size="small" weight="normal-italic">
                 <robo-grid offset="x0" gap="x05" columns="1">
