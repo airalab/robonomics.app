@@ -21,6 +21,6 @@ yarn
 ```
 5. Ready! Now you can launch the UI (assuming you have a local Polkadot Node running), via
 ```
-yarn run serve
+yarn serve
 ```
 6. Access the UI via http://localhost:8080
