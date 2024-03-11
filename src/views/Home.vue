@@ -1,132 +1,218 @@
 <template>
+  <robo-layout-section width="middle-wide">
+    <robo-grid offset="x0" minColumnWidth="200px">
+      <robo-section offset="x0">
+        <robo-card>
+          <robo-text title="4" align="left">RWS subscription</robo-text>
+          <template v-if="rwsactive && rwsactive !== ''">
+            <robo-template-rws-active />
+          </template>
+          <template v-else>
+            <robo-section offset="x1">
+              <robo-text size="small" weight="normal-italic">
+                <robo-grid offset="x0" gap="x05" columns="1">
+                  <robo-grid-item borderbottom>
+                    Price from: <b>~ {{ price }} XRT </b>
+
+                    <robo-details>
+                      <template #summary>
+                        <robo-icon icon="circle-question" />
+                      </template>
+                      <robo-grid offset="x0" gap="x05">
+                        <robo-text weight="bold">Where to buy XRT</robo-text>
+                        <robo-link href="https://app.basilisk.cloud/trade">
+                          Basilisk
+                        </robo-link>
+                        <robo-link
+                          href="https://app.solarbeam.io/exchange/swap"
+                        >
+                          Solarbeam
+                        </robo-link>
+                        <robo-link
+                          href="https://trade.kraken.com/markets/kraken/xrt/usd"
+                        >
+                          Kraken
+                        </robo-link>
+                      </robo-grid>
+                    </robo-details>
+                  </robo-grid-item>
+
+                  <robo-grid-item borderbottom>
+                    Activation time <b>~ 2 min</b>
+                  </robo-grid-item>
+
+                  <robo-grid-item>
+                    Available subscriptions:
+                    <b>{{ freeAuctions }}</b>
+                  </robo-grid-item>
+                </robo-grid>
+              </robo-text>
+            </robo-section>
+
+            <robo-button :router="linkActivate" size="small">
+              <robo-icon icon="wallet" /> Buy a subscription
+            </robo-button>
+          </template>
+        </robo-card>
+      </robo-section>
+
+      <robo-section offset="x0">
+        <robo-text title="4" align="left">What you get with RWS</robo-text>
+        <robo-text size="small" weight="normal-italic">
+          <robo-grid offset="x0" gap="x05" columns="1">
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Brand-independent smart home
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Secured data, only you have access
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Remote control without corporate clouds
+            </robo-grid-item>
+            <robo-grid-item>
+              <robo-icon icon="check" /> Home assistant integration
+            </robo-grid-item>
+          </robo-grid>
+        </robo-text>
+      </robo-section>
+
+      <robo-section offset="x0">
+        <robo-text title="4" align="left">What is RWS</robo-text>
+        <robo-text weight="normal-italic" size="small" offset="x1">
+          Robonomics Web Services (RWS) is a smart home integration that enables
+          secure interaction with smart devices and robots through transactions
+          on the Robonomics parachain, rather than relying on centralized cloud
+          services.
+        </robo-text>
+        <robo-text weight="normal-italic" size="small" offset="x1">
+          An RWS subscription ensures stable transaction processing with every
+          block, making it an ideal choice for those who wish to receive data
+          from devices and remotely manage them.
+        </robo-text>
+        <robo-text weight="normal-italic" size="small" offset="x1">
+          Easy to start for Home Assistant users.
+          <robo-link
+            href="https://wiki.robonomics.network/docs/hass-image-install/#hardware-you-need-for-installation"
+          >
+            Guide to start
+          </robo-link>
+        </robo-text>
+      </robo-section>
+    </robo-grid>
+  </robo-layout-section>
+
   <robo-layout-section>
-    <robo-grid
-      offset="x0"
-      gap="x1"
-      valign="start"
-      galign="start"
-      minColumnWidth="550px"
-      maxColumnWidth="1fr"
-    >
-      <!-- {
-                  src: 'https://static.robonomics.network/dapp/Robonomics-smart-home-intro.webm',
-                  type: 'video/webm'
-                },
-                {
-                  src: 'https://static.robonomics.network/dapp/Robonomics-smart-home-intro.mp4',
-                  type: 'video/mp4'
-                } -->
-
-      <robo-video
-        autoplay
-        loop
-        :sources="[
-          {
-            src: 'https://crustipfs.art/ipfs/QmStCDsEHCYwVYvnDdmZBMnobPmrgZx3iJLm65b8XNzKQa',
-            type: 'video/mp4'
-          }
-        ]"
-        script="<p>Robonomics is a decentralized cloud service that can be used to enhance
-                your smart home system. It addresses two main problems: the lack of
-                control over data shared with vendors or third parties, and the vulnerability of
-                smart homes to centralized cloud server shutdowns.</p>
-                <p>With Robonomics, you can take advantage of its secure,
-                  serverless, and decentralized cloud service to improve the functionality of
-                  your smart home. Plus, you can use it with a wide range of Zigbee smart devices
-                  to automate and control various aspects of your home.</p>
-                <p>Installing Robonomics on top of Home Assistant is easy, and there are
-                   several options to choose from. Simply select the method that works best for you
-                   and your smart home on wiki.robonomics.network.</p>"
-      />
-
-      <robo-grid-item align="stretch">
-        <robo-grid
-          offset="x0"
-          gap="x1"
-          minColumnWidth="270px"
-          maxColumnWidth="1fr"
-        >
-          <robo-card fixedButton>
-            <robo-grid offset="x0" gap="x05" valign="start">
-              <robo-icon icon="current-version" size="big" />
-              <div>
-                <robo-text title="4">Your RWS subscriptions</robo-text>
-              </div>
-            </robo-grid>
-            <robo-button :router="store.state.robonomicsUIvue.rws.links.list">
-              View details
-            </robo-button>
-          </robo-card>
-
-          <robo-card :pale="rws?.length < 1" fixedButton>
-            <robo-grid offset="x0" gap="x05" valign="start">
-              <robo-icon icon="plug" size="big" />
-              <div>
-                <robo-text title="4">Control smart devices</robo-text>
-              </div>
-            </robo-grid>
-            <robo-button
-              :router="store.state.robonomicsUIvue.rws.links.devices"
-              :disabled="rws?.length < 1"
-            >
-              Manage devices
-            </robo-button>
-          </robo-card>
-
-          <robo-card :pale="rws?.length < 1" fixedButton>
-            <robo-grid offset="x0" gap="x05" valign="start">
-              <robo-icon icon="user-group" size="big" />
-              <div>
-                <robo-text title="4">Share your telemetry</robo-text>
-              </div>
-            </robo-grid>
-            <robo-button
-              :router="store.state.robonomicsUIvue.rws.links.users"
-              :disabled="rws?.length < 1"
-            >
-              Manage Users
-            </robo-button>
-          </robo-card>
-
-          <robo-card>
-            <robo-text title="4" offset="x0">Need help?</robo-text>
-            <robo-grid gap="x05" offset="x1">
-              <robo-text size="small" weight="bold">
-                <robo-link href="https://wiki.robonomics.network">
-                  Wiki
-                </robo-link>
-                - Tutorials
-              </robo-text>
-              <robo-text size="small" weight="bold">
-                <robo-link
-                  href="https://github.com/airalab/dapp.robonomics.network"
-                >
-                  Github</robo-link
-                >
-                - Bugs & improvements
-              </robo-text>
-              <robo-text size="small" weight="bold">
-                <robo-link href="https://discord.gg/JpaN2XAmqY">
-                  Discord
-                </robo-link>
-                - Team support
-              </robo-text>
-            </robo-grid>
-          </robo-card>
-        </robo-grid>
-      </robo-grid-item>
+    <robo-grid id="home-links" offset="x0" :columns="3" gap="x05">
+      <robo-link href="https://www.youtube.com/watch?v=onMv_An8h2Q">
+        <span>What is Robonomics</span>
+      </robo-link>
+      <robo-link href="https://wiki.robonomics.network">
+        <span>Step-by-step tutorials</span>
+      </robo-link>
+      <robo-link href="https://robonomics.academy">
+        <span>Advanced cources</span>
+      </robo-link>
     </robo-grid>
   </robo-layout-section>
 </template>
 
-<script setup>
-import { computed } from "vue";
+<script>
+import { useRobonomics } from "@/hooks/useRobonomics";
+import { fromUnit } from "@/utils/tools";
+import { bnToBn } from "@polkadot/util";
+import { computed, onUnmounted, ref } from "vue";
 import { useStore } from "vuex";
 
-// /* + get rws */
-const store = useStore();
-const rws = computed(() => {
-  return store.state.robonomicsUIvue.rws.list;
-});
-/* - get rws */
+export default {
+  setup() {
+    const price = ref(0);
+    const freeAuctions = ref(0);
+    let unsubscribeBlock = null;
+
+    const store = useStore();
+    const rwsactive = computed(() => {
+      return store.state.robonomicsUIvue.rws.active;
+    });
+    const linkActivate = computed(() => {
+      return store.state.robonomicsUIvue.rws.links.activate;
+    });
+
+    const robonomics = useRobonomics();
+
+    (async () => {
+      freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+      unsubscribeBlock = await robonomics.events.onBlock(async () => {
+        freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+      });
+
+      const minimalBid = await robonomics.rws.getMinimalBid();
+      price.value = minimalBid.add(bnToBn(1));
+    })();
+
+    onUnmounted(() => {
+      if (unsubscribeBlock) {
+        unsubscribeBlock();
+      }
+    });
+
+    const priceFormat = computed(() => {
+      return fromUnit(price.value, robonomics.api.registry.chainDecimals[0], 0);
+    });
+
+    return {
+      rwsactive,
+      linkActivate,
+      freeAuctions,
+      price: priceFormat
+    };
+  }
+};
 </script>
+
+<style>
+#home-links .robo-link {
+  position: relative;
+  display: block;
+  background-color: var(--robo-color-blue-80);
+  min-height: 150px;
+  color: var(--robo-color-light);
+  padding: var(--robo-space);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+#home-links .robo-link:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background-color: var(--robo-color-blue);
+  z-index: 1;
+  transition: 0.2s all;
+}
+
+#home-links .robo-link:hover::before {
+  height: 100%;
+}
+
+#home-links .robo-link span {
+  display: block;
+  margin-top: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+#home-links .robo-link:nth-child(2):before {
+  background-color: rgb(14, 22, 26);
+}
+
+#home-links .robo-link:nth-child(3):before {
+  background-color: #fffc00;
+}
+
+#home-links .robo-link:hover:nth-child(3) {
+  color: var(--color-dark);
+}
+</style>
