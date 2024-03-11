@@ -15,15 +15,8 @@
       Libp2p
     </robo-button>
   </div>
-  <template v-if="config">
-    <Libp2p v-if="type === 'libp2p'" :config="config" @error="error" />
-    <Launch v-else :config="config" />
-  </template>
-  <robo-layout-section v-else>
-    <robo-layout-section gcenter>
-      <robo-loader size="2" />
-    </robo-layout-section>
-  </robo-layout-section>
+  <Libp2p v-if="type === 'libp2p'" :config="config" @error="error" />
+  <Launch v-else :config="config" />
 </template>
 
 <script>

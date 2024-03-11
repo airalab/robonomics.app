@@ -19,17 +19,23 @@ export default {
   setup(props, { emit }) {
     const { data, updateTime, run, launch } = useData();
 
-    if (props.config.peer_id) {
-      (async () => {
-        const result = await run(props.config.peer_id);
-        if (!result) {
-          emit("error");
+    watch(
+      () => props.config,
+      () => {
+        if (props.config && props.config.peer_id) {
+          (async () => {
+            const result = await run(props.config.peer_id);
+            if (!result) {
+              emit("error");
+            }
+          })();
+        } else {
+          console.log(`Error: not peer_id`);
+          console.log(props.config);
         }
-      })();
-    } else {
-      console.log(`Error: not peer_id`);
-      console.log(props.config);
-    }
+      },
+      { immediate: true }
+    );
 
     const store = useStore();
 
