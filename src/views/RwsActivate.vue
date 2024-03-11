@@ -4,9 +4,11 @@
       :price="price"
       activationtime="2"
       :available="freeAuctions"
+      :chainInfoUploaded="chainInfoStatus"
       :rwsExpiration="expiredate"
       @on-activate="onActivate"
     />
+    {{ chainInfoStatus }}
   </robo-layout-section>
 </template>
 
@@ -25,6 +27,7 @@ export default {
   setup() {
     const price = ref(0);
     const freeAuctions = ref(0);
+    const chainInfoStatus = ref(false);
     let unsubscribeBlock = null;
 
     const robonomics = useRobonomics();
@@ -41,6 +44,7 @@ export default {
 
       const minimalBid = await robonomics.rws.getMinimalBid();
       price.value = minimalBid.add(bnToBn(1));
+      chainInfoStatus.value = true;
     })();
 
     onUnmounted(() => {
@@ -115,6 +119,7 @@ export default {
       freeAuctions,
       price: priceFormat,
       expiredate: subscription.validUntil,
+      chainInfoStatus,
       onActivate
     };
   }
