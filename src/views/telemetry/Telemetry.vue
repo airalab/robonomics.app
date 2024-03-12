@@ -1,5 +1,5 @@
 <template>
-  <div style="text-align: right">
+  <div class="temp_toggler">
     <robo-button
       @click="type = 'launch'"
       :disabled="type === 'launch'"
@@ -49,3 +49,12 @@ export default {
   components: { Libp2p, Launch }
 };
 </script>
+
+<style scoped>
+.temp_toggler {
+  position: absolute;
+  top: calc(var(--robo-space)*8);
+  right: var(--robo-space);
+  z-index: 10;
+}
+</style>

@@ -203,16 +203,4 @@ export default {
   position: relative;
   z-index: 2;
 }
-
-#home-links .robo-link:nth-child(2):before {
-  background-color: rgb(14, 22, 26);
-}
-
-#home-links .robo-link:nth-child(3):before {
-  background-color: #fffc00;
-}
-
-#home-links .robo-link:hover:nth-child(3) {
-  color: var(--color-dark);
-}
 </style>

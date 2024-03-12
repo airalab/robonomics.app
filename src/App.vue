@@ -1,6 +1,11 @@
 <template>
-  <main-layout v-if="isReady" :title="title">
-    <router-view />
+  <main-layout :title="title">
+    <template v-if="isReady">
+      <router-view />
+    </template>
+    <robo-layout-section v-else gcenter>
+      <robo-loader size="2" />
+    </robo-layout-section>
   </main-layout>
 </template>
 
