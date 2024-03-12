@@ -7688,10 +7688,10 @@ robonomics-interface@^0.3.2:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.2.9.tgz#bd59a6def3bec35ab35393d227775df715d52791"
-  integrity sha512-nr4q2owm548QSRVmvUZPZqNTSiP4PT1PEC7eOUhHM1YNMf+C+s6JGLzD1aOwmcuOcxZNHNobtVY8mlwGanNHgw==
+robonomics-ui-vue@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.3.0.tgz#3324250a845bdff50a1723318a54812ef59183d8"
+  integrity sha512-0GNYkNXuyRixqagKwbOcNP3m83u2pjtLIMmWr/kFwdDGvGNyWCB8v+tDas4iQaO5DD49JpR7C+NbFfYaun7uRQ==
   dependencies:
     "@polkadot/ui-keyring" "^3.6.4"
     "@polkadot/util-crypto" "^12.6.2"

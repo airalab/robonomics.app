@@ -72,26 +72,22 @@ export const catFileController = async (cid, controller, store, ipfs) => {
 };
 
 const loadSetup = (store) => {
-  if (!store.state.robonomicsUIvue.rws.active) {
-    return;
-  }
-  const setupRaw = store.state.robonomicsUIvue.rws.list.find(
-    (item) => item.owner === store.state.robonomicsUIvue.rws.active
-  );
-  if (setupRaw) {
-    try {
-      return {
-        controller: encryptor(createPair(setupRaw.scontroller)),
-        owner: setupRaw.owner
-      };
-    } catch (error) {
-      console.log(error);
+  if (store.state.robonomicsUIvue.rws.active) {
+    const setupRaw = store.state.robonomicsUIvue.rws.list.find(
+      (item) => item.owner === store.state.robonomicsUIvue.rws.active
+    );
+    if (setupRaw) {
+      try {
+        return {
+          controller: encryptor(createPair(setupRaw.scontroller)),
+          owner: setupRaw.owner
+        };
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
-  return {
-    controller: null,
-    owner: null
-  };
+  return false;
 };
 
 export const useSetup = () => {
@@ -104,8 +100,10 @@ export const useSetup = () => {
     () => store.state.robonomicsUIvue.rws.active,
     () => {
       const setup = loadSetup(store);
-      controller.value = setup.controller;
-      owner.value = setup.owner;
+      if (setup) {
+        controller.value = setup.controller;
+        owner.value = setup.owner;
+      }
     },
     { immediate: true }
   );
@@ -139,15 +137,20 @@ export const useLastDatalog = () => {
   const { controller } = useSetup();
 
   (async () => {
-    const datalog = await getLastDatalog(robonomics, controller.value.address);
-    cid.value = datalog.cid;
-    updateTime.value = datalog.timestamp;
-    data.value = await catFileController(
-      cid.value,
-      controller.value,
-      store,
-      ipfs
-    );
+    if (controller.value) {
+      const datalog = await getLastDatalog(
+        robonomics,
+        controller.value.address
+      );
+      cid.value = datalog.cid;
+      updateTime.value = datalog.timestamp;
+      data.value = await catFileController(
+        cid.value,
+        controller.value,
+        store,
+        ipfs
+      );
+    }
   })();
 
   return { cid, updateTime, data };
@@ -163,35 +166,40 @@ export const useConfig = () => {
   const { controller } = useSetup();
 
   (async () => {
-    notify(store, "Find twin id");
-    const datalog = await getLastDatalog(robonomics, controller.value.address);
-    const result = await catFileController(
-      datalog.cid,
-      controller.value,
-      store,
-      ipfs
-    );
-
-    if (result) {
-      const twin_id = result.twin_id;
-      notify(store, `Twin id #${twin_id}`);
-
-      notify(store, `Start load config`);
-      cid.value = await getConfigCid(
+    if (controller.value) {
+      notify(store, "Find twin id");
+      const datalog = await getLastDatalog(
         robonomics,
-        controller.value.address,
-        twin_id
+        controller.value.address
       );
-
-      config.value = await catFileController(
-        cid.value,
+      const result = await catFileController(
+        datalog.cid,
         controller.value,
         store,
         ipfs
       );
-      notify(store, `Config loaded`);
-    } else {
-      notify(store, "Error: not found twin id");
+
+      if (result) {
+        const twin_id = result.twin_id;
+        notify(store, `Twin id #${twin_id}`);
+
+        notify(store, `Start load config`);
+        cid.value = await getConfigCid(
+          robonomics,
+          controller.value.address,
+          twin_id
+        );
+
+        config.value = await catFileController(
+          cid.value,
+          controller.value,
+          store,
+          ipfs
+        );
+        notify(store, `Config loaded`);
+      } else {
+        notify(store, "Error: not found twin id");
+      }
     }
   })();
 

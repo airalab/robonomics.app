@@ -25,7 +25,7 @@
     "ipfs-http-client": "^60.0.0",
     "libp2p": "^1.2.4",
     "robonomics-interface": "^0.3.2",
-    "robonomics-ui-vue": "^0.2.9",
+    "robonomics-ui-vue": "^0.3.0",
     "uuid": "^9.0.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",

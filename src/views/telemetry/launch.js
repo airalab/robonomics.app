@@ -46,7 +46,9 @@ export const useData = () => {
       (results) => {
         const r = results.filter((item) => {
           return (
-            item.success && item.data[0].toHuman() === controller.value.address
+            item.success &&
+            controller.value &&
+            item.data[0].toHuman() === controller.value.address
           );
         });
         for (const item of r) {
@@ -68,9 +70,14 @@ export const useData = () => {
   });
 
   const run = async () => {
-    const datalog = await getLastDatalog(robonomics, controller.value.address);
-    cid.value = datalog.cid;
-    updateTime.value = datalog.timestamp;
+    if (controller.value) {
+      const datalog = await getLastDatalog(
+        robonomics,
+        controller.value.address
+      );
+      cid.value = datalog.cid;
+      updateTime.value = datalog.timestamp;
+    }
     watchDatalog();
   };
 
