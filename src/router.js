@@ -13,7 +13,7 @@ const routes = [
     name: "Home",
     component: Home,
     meta: {
-      title: "Dashboard"
+      title: "Home"
     }
   },
   {
@@ -21,7 +21,7 @@ const routes = [
     name: "rwsActivate",
     component: RwsActivate,
     meta: {
-      title: "RWS activation"
+      title: "Buy a Subscription"
     }
   },
   {
@@ -29,7 +29,7 @@ const routes = [
     name: "rwsSetup",
     component: RwsSetup,
     meta: {
-      title: "RWS setup"
+      title: "Setup a Subscription"
     }
   },
   {
@@ -37,7 +37,7 @@ const routes = [
     name: "rwsSetupNew",
     component: RwsSetupNew,
     meta: {
-      title: "RWS setup new"
+      title: "New Subscription setup"
     }
   },
   {
@@ -45,7 +45,7 @@ const routes = [
     name: "telemetry",
     component: Telemetry,
     meta: {
-      title: "Smart devices"
+      title: "Devices control panel"
     }
   },
   {

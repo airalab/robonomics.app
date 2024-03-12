@@ -1,6 +1,6 @@
 <template>
   <robo-layout>
-    <dapp-header :title="title" />
+    <dapp-header :title="pagetitle" />
     <slot />
   </robo-layout>
 </template>
@@ -15,6 +15,7 @@ export default {
   components: {
     DappHeader
   },
+  props: ['pagetitle'],
   setup() {
     const store = useStore();
     const subscription = useSubscription();
@@ -30,7 +31,7 @@ export default {
     watch(
       [subscription.owner, subscription.validUntil],
       () => {
-        store.commit("rws/setExpiredate", subscription.validUntil.value);
+        store.commit("rws/setExpiredate", subscription.validUntil);
       },
       { immediate: true }
     );

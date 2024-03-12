@@ -1,8 +1,8 @@
 <template>
-  <main-layout v-if="isReady" :title="title">
+  <main-layout v-if="isReady" :pagetitle="title">
     <router-view />
   </main-layout>
-  <loader-layout v-else :title="title">
+  <loader-layout v-else :pagetitle="title">
     <robo-layout-section gcenter>
       <robo-loader size="2" />
     </robo-layout-section>

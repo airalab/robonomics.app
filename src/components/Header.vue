@@ -1,6 +1,6 @@
 <template>
   <robo-layout-header
-    logoIcon="images/logo-white.svg"
+    logoIcon="images/icon_white.svg"
     :navigation="navigation"
     :title="title"
     :version="version"

@@ -1,6 +1,6 @@
 <template>
   <robo-layout>
-    <dapp-header :title="title" />
+    <dapp-header :title="pagetitle" />
     <slot />
   </robo-layout>
 </template>
@@ -11,6 +11,7 @@ import DappHeader from "@/components/Header";
 export default {
   components: {
     DappHeader
-  }
+  },
+  props: ['pagetitle']
 };
 </script>
