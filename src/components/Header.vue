@@ -144,6 +144,9 @@ export default {
   },
   methods: {
     async handlerAccount(address) {
+      if (!this.RobonomicsProvider.isReady.value) {
+        return;
+      }
       if (this.unsubscribeBalance) {
         this.unsubscribeBalance();
       }

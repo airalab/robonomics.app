@@ -1,15 +1,16 @@
 <template>
-  <main-layout :title="title">
-    <template v-if="isReady">
-      <router-view />
-    </template>
-    <robo-layout-section v-else gcenter>
+  <main-layout v-if="isReady" :title="title">
+    <router-view />
+  </main-layout>
+  <loader-layout v-else :title="title">
+    <robo-layout-section gcenter>
       <robo-loader size="2" />
     </robo-layout-section>
-  </main-layout>
+  </loader-layout>
 </template>
 
 <script>
+import LoaderLayout from "@/components/layouts/Loader.vue";
 import MainLayout from "@/components/layouts/Main.vue";
 import { inject, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -18,6 +19,7 @@ import { useStore } from "vuex";
 export default {
   name: "App",
   components: {
+    LoaderLayout,
     MainLayout
   },
   setup() {
