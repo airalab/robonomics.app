@@ -4,6 +4,7 @@
     :navigation="navigation"
     :title="title"
     :version="version"
+    v-if="renderComponent"
   />
 </template>
 
@@ -22,6 +23,7 @@ export default {
   inject: ["RobonomicsProvider"],
   data() {
     return {
+      renderComponent: true,
       navigation: [
         {
           title: "Other",
@@ -121,6 +123,11 @@ export default {
         }
       },
       immediate: true
+    },
+    $route: async function () {
+      this.renderComponent = false;
+      await this.$nextTick();
+      this.renderComponent = true;
     }
   },
   async created() {
