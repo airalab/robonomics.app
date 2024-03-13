@@ -20,15 +20,20 @@ export default {
     const { data, updateTime, run, launch } = useData();
 
     watch(
-      () => props.config,
-      () => {
-        if (props.config && props.config.peer_id) {
-          (async () => {
-            const result = await run(props.config.peer_id);
-            if (!result) {
-              emit("error");
-            }
-          })();
+      () => ({ ...props.config }),
+      (newValue, oldValue) => {
+        if (newValue && newValue.peer_id) {
+          if (
+            !oldValue ||
+            (oldValue.peer_id && newValue.peer_id !== oldValue.peer_id)
+          ) {
+            (async () => {
+              const result = await run(newValue.peer_id);
+              if (!result) {
+                emit("error");
+              }
+            })();
+          }
         } else {
           console.log(`Error: not peer_id`);
           console.log(props.config);

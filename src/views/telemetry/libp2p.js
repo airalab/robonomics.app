@@ -42,22 +42,25 @@ export const useData = () => {
         // `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
       );
       notify(store, `Connected`);
-      node.services.ha.handle("/update", async (dataRow, stream) => {
-        const result = await decryptMsgContoller(
-          JSON.parse(dataRow),
-          controller.value,
-          keyring
-        );
-        if (result) {
-          data.value = result;
-          updateTime.value = Date.now();
-          await node.services.ha.utils.sendResponse(stream, {
-            result: true
-          });
-        } else {
-          notify(store, `Error: decryptMsg`);
-        }
-      });
+      const protocols = node.getProtocols();
+      if (!protocols.includes("/update")) {
+        node.services.ha.handle("/update", async (dataRow, stream) => {
+          const result = await decryptMsgContoller(
+            JSON.parse(dataRow),
+            controller.value,
+            keyring
+          );
+          if (result) {
+            data.value = result;
+            updateTime.value = Date.now();
+            await node.services.ha.utils.sendResponse(stream, {
+              result: true
+            });
+          } else {
+            notify(store, `Error: decryptMsg`);
+          }
+        });
+      }
       return true;
     } catch (error) {
       notify(store, `Error: ${error.message}`);

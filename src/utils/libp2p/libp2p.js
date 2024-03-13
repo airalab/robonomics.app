@@ -46,7 +46,7 @@ let connection = null;
 
 export async function start() {
   if (node) {
-    return;
+    return node;
   }
   node = await createNode();
   await node.start();
@@ -92,8 +92,10 @@ export async function reconnect(addr) {
 }
 
 export async function connect(addr) {
-  const listenerMultiaddr = multiaddr(addr);
-  connection = await node.dial(listenerMultiaddr);
+  if (!connections.includes(addr)) {
+    const listenerMultiaddr = multiaddr(addr);
+    connection = await node.dial(listenerMultiaddr);
+  }
 }
 
 export function request(data) {
