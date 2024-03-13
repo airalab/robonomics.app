@@ -157,7 +157,6 @@ export const useLastDatalog = () => {
 };
 
 export const useConfig = () => {
-  const cid = ref(null);
   const config = ref(null);
 
   const store = useStore();
@@ -167,6 +166,16 @@ export const useConfig = () => {
 
   (async () => {
     if (controller.value) {
+      const haconfig = localStorage.getItem(
+        `haconfig:${controller.value.address}`
+      );
+      if (haconfig) {
+        try {
+          config.value = JSON.parse(haconfig);
+        } catch (error) {
+          console.log(error);
+        }
+      }
       notify(store, "Find twin id");
       const datalog = await getLastDatalog(
         robonomics,
@@ -184,18 +193,24 @@ export const useConfig = () => {
         notify(store, `Twin id #${twin_id}`);
 
         notify(store, `Start load config`);
-        cid.value = await getConfigCid(
+        const cid = await getConfigCid(
           robonomics,
           controller.value.address,
           twin_id
         );
 
         config.value = await catFileController(
-          cid.value,
+          cid,
           controller.value,
           store,
           ipfs
         );
+
+        localStorage.setItem(
+          `haconfig:${controller.value.address}`,
+          JSON.stringify(config.value)
+        );
+
         notify(store, `Config loaded`);
       } else {
         notify(store, "Error: not found twin id");
@@ -203,5 +218,5 @@ export const useConfig = () => {
     }
   })();
 
-  return { config, cid };
+  return { config };
 };

@@ -1,12 +1,12 @@
 import { noise } from "@chainsafe/libp2p-noise";
+import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
+import { identify } from "@libp2p/identify";
 import { mplex } from "@libp2p/mplex";
 import { webRTC } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
 import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
 import { createLibp2p } from "libp2p";
-import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
-import { identify } from "@libp2p/identify";
 import { createHa } from "./ha";
 
 export async function createNode() {
@@ -68,6 +68,7 @@ export async function start() {
     console.log("disconected", event.detail.remoteAddr.toString());
     updateConnectionsList();
     if (
+      connection &&
       event.detail.remoteAddr.toString() === connection.remoteAddr.toString()
     ) {
       reconnect(connection.remoteAddr.toString());
