@@ -37,6 +37,7 @@ export default {
         } else {
           console.log(`Error: not peer_id`);
           console.log(props.config);
+          emit("error");
         }
       },
       { immediate: true }
