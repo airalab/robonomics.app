@@ -26,18 +26,35 @@ export const parseJson = (string) => {
   return false;
 };
 
+const getLastIndex = async (robonomics, address) => {
+  const id = await robonomics.datalog.getLastId(address);
+  return id.id;
+};
 export const getLastDatalog = async (robonomics, controller) => {
   console.log("getLastDatalog");
   if (!controller) {
     return false;
   }
-  const result = await robonomics.datalog.read(controller);
-  if (!result.length) {
-    return false;
+  const lastIndex = await getLastIndex(robonomics, controller);
+  if (lastIndex !== null && lastIndex >= 0) {
+    const last = await robonomics.datalog.readByIndex(controller, lastIndex);
+    return { timestamp: last[0].toNumber(), cid: u8aToString(last[1]) };
   }
-  const last = result[result.length - 1];
-  return { timestamp: last[0].toNumber(), cid: u8aToString(last[1]) };
+  return false;
 };
+
+// export const getLastDatalog = async (robonomics, controller) => {
+//   console.log("getLastDatalog");
+//   if (!controller) {
+//     return false;
+//   }
+//   const result = await robonomics.datalog.read(controller);
+//   if (!result.length) {
+//     return false;
+//   }
+//   const last = result[result.length - 1];
+//   return { timestamp: last[0].toNumber(), cid: u8aToString(last[1]) };
+// };
 
 export const getConfigCid = async (robonomics, controller, twin_id) => {
   console.log("getConfigCid");
