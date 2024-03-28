@@ -1,8 +1,14 @@
 import { useDevices } from "@/hooks/useDevices";
 import { useRobonomics } from "@/hooks/useRobonomics";
-import { connect, request, start } from "@/utils/libp2p/libp2p";
+import {
+  connect,
+  disconnect,
+  getUriPeer,
+  request,
+  start
+} from "@/utils/libp2p/libp2p";
 import { Keyring } from "@polkadot/keyring";
-import { ref, watch } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import {
   chainSS58,
@@ -33,34 +39,37 @@ export const useData = () => {
     ss58Format: chainSS58
   });
 
-  const run = async (peer_id) => {
+  onUnmounted(() => {
+    disconnect();
+  });
+
+  const run = async (peer_id, peer_address) => {
     const node = await start();
     try {
       notify(store, `Connect to peer id ${peer_id}`);
-      await connect(
-        `/dns4/libp2p-relay.robonomics.network/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`
-        // `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
-      );
+      const uriPeer = await getUriPeer(peer_id, peer_address);
+      await connect(uriPeer);
       notify(store, `Connected`);
       const protocols = node.getProtocols();
-      if (!protocols.includes("/update")) {
-        node.services.ha.handle("/update", async (dataRow, stream) => {
-          const result = await decryptMsgContoller(
-            JSON.parse(dataRow),
-            controller.value,
-            keyring
-          );
-          if (result) {
-            data.value = result;
-            updateTime.value = Date.now();
-            await node.services.ha.utils.sendResponse(stream, {
-              result: true
-            });
-          } else {
-            notify(store, `Error: decryptMsg`);
-          }
-        });
+      if (protocols.includes("/update")) {
+        await node.unhandle("/update");
       }
+      node.services.ha.handle("/update", async (dataRow, stream) => {
+        const result = await decryptMsgContoller(
+          JSON.parse(dataRow),
+          controller.value,
+          keyring
+        );
+        if (result) {
+          data.value = result;
+          updateTime.value = Date.now();
+          await node.services.ha.utils.sendResponse(stream, {
+            result: true
+          });
+        } else {
+          notify(store, `Error: decryptMsg`);
+        }
+      });
       return true;
     } catch (error) {
       notify(store, `Error: ${error.message}`);

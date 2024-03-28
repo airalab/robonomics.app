@@ -27,7 +27,7 @@ import { useConfig } from "./common";
 
 export default {
   setup() {
-    const type = ref("launch");
+    const type = ref(localStorage.getItem("typeTelemetry") || "launch");
     const { config } = useConfig();
 
     watch([config, type], () => {
@@ -36,6 +36,10 @@ export default {
         console.log(config.value);
         type.value = "launch";
       }
+    });
+
+    watch(type, () => {
+      localStorage.setItem("typeTelemetry", type.value);
     });
 
     return {
@@ -53,7 +57,7 @@ export default {
 <style scoped>
 .temp_toggler {
   position: absolute;
-  top: calc(var(--robo-space)*8);
+  top: calc(var(--robo-space) * 8);
   right: var(--robo-space);
   z-index: 10;
 }

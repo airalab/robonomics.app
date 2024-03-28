@@ -172,7 +172,6 @@ export const useConfig = () => {
       if (haconfig) {
         try {
           config.value = JSON.parse(haconfig);
-          return;
         } catch (error) {
           console.log(error);
         }
