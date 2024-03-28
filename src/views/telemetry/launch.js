@@ -4,7 +4,7 @@ import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
 import { getLastDatalog } from "@/utils/telemetry";
 import { Keyring } from "@polkadot/keyring";
-import { stringToU8a } from "@polkadot/util";
+import { stringToU8a, u8aToHex } from "@polkadot/util";
 import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import {
@@ -92,6 +92,25 @@ export const useData = () => {
     stop();
   });
 
+  const setAccountController = async () => {
+    const pair = robonomics.accountManager.keyring.keyring.addFromPair(
+      controller.value.pair
+    );
+    await robonomics.accountManager.setSender(pair.address, {
+      type: pair.type,
+      extension: null
+    });
+  };
+  const setAccountFromHeader = async () => {
+    const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
+      (item) => item.address === store.state.robonomicsUIvue.polkadot.address
+    );
+    await robonomics.accountManager.setSender(accountOld.address, {
+      type: accountOld.type,
+      extension: store.state.robonomicsUIvue.polkadot.extensionObj
+    });
+  };
+
   const launch = async (command) => {
     console.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
@@ -101,6 +120,8 @@ export const useData = () => {
     notify(store, `Launch command`);
     console.log(`command ${JSON.stringify(command)}`);
 
+    await setAccountController();
+
     if (
       robonomics.accountManager.account.address !==
         store.state.robonomicsUIvue.rws.active &&
@@ -108,6 +129,7 @@ export const useData = () => {
     ) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
+      await setAccountFromHeader();
       return;
     }
 
@@ -131,6 +153,7 @@ export const useData = () => {
           console.log(error);
           setStatusLaunch(store, command, "error");
         }
+        await setAccountFromHeader();
         return;
       }
       setStatusLaunch(store, command, "approved");
@@ -138,10 +161,16 @@ export const useData = () => {
 
     let commandCid;
     try {
-      commandCid = await ipfs.add(JSON.stringify(command.launch));
+      const cmdString = JSON.stringify(command.launch);
+      const cmdCrypto = controller.value.encryptMessage(
+        cmdString,
+        controller.value.pair.publicKey
+      );
+      commandCid = await ipfs.add(u8aToHex(cmdCrypto));
     } catch (error) {
       setStatusLaunch(store, command, "error");
       notify(store, `Error: ${error.message}`);
+      await setAccountFromHeader();
       return;
     }
     console.log(`launch ipfs file ${commandCid.path}`);
@@ -166,6 +195,7 @@ export const useData = () => {
       setStatusLaunch(store, command, "success");
       notify(store, "Launch sended");
     }
+    await setAccountFromHeader();
   };
 
   return { cid, updateTime, data, run, stop, launch };
