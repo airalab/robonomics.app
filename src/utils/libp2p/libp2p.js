@@ -146,9 +146,9 @@ export async function disconnect() {
   connection = null;
 }
 
-export function request(data) {
+export function request(data, protocol = "/call") {
   if (node && connection) {
-    return node.services.ha.request(connection, "/call", data);
+    return node.services.ha.request(connection, protocol, data);
   }
   throw new Error("error");
 }

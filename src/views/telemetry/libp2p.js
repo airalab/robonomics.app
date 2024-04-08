@@ -8,6 +8,7 @@ import {
   start
 } from "@/utils/libp2p/libp2p";
 import { Keyring } from "@polkadot/keyring";
+import { u8aToHex } from "@polkadot/util";
 import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import {
@@ -54,9 +55,9 @@ export const useData = () => {
       if (protocols.includes("/update")) {
         await node.unhandle("/update");
       }
-      node.services.ha.handle("/update", async (dataRow, stream) => {
+      node.services.ha.handle("/update", async (dataRaw, stream) => {
         const result = await decryptMsgContoller(
-          JSON.parse(dataRow),
+          dataRaw.data,
           controller.value,
           keyring
         );
@@ -78,6 +79,25 @@ export const useData = () => {
     return false;
   };
 
+  const setAccountController = async () => {
+    const pair = robonomics.accountManager.keyring.keyring.addFromPair(
+      controller.value.pair
+    );
+    await robonomics.accountManager.setSender(pair.address, {
+      type: pair.type,
+      extension: null
+    });
+  };
+  const setAccountFromHeader = async () => {
+    const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
+      (item) => item.address === store.state.robonomicsUIvue.polkadot.address
+    );
+    await robonomics.accountManager.setSender(accountOld.address, {
+      type: accountOld.type,
+      extension: store.state.robonomicsUIvue.polkadot.extensionObj
+    });
+  };
+
   const launch = async (command) => {
     console.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
@@ -87,6 +107,8 @@ export const useData = () => {
     notify(store, `Launch command`);
     console.log(`command ${JSON.stringify(command)}`);
 
+    await setAccountController();
+
     if (
       robonomics.accountManager.account.address !==
         store.state.robonomicsUIvue.rws.active &&
@@ -94,12 +116,19 @@ export const useData = () => {
     ) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
+      await setAccountFromHeader();
       return;
     }
 
     try {
-      const response = await request(command.launch);
-      console.log(`response: ${response}`);
+      const cmdString = JSON.stringify(command.launch);
+      const cmdCrypto = controller.value.encryptMessage(
+        cmdString,
+        controller.value.pair.publicKey
+      );
+
+      const response = await request({ data: u8aToHex(cmdCrypto) });
+      console.log(`response:`, response);
 
       setStatusLaunch(store, command, "success");
     } catch (error) {
@@ -107,6 +136,7 @@ export const useData = () => {
       notify(store, `Error: Check status of the HomeAssistant.`);
       setStatusLaunch(store, command, "error");
     }
+    await setAccountFromHeader();
   };
 
   return { data, updateTime, run, launch };
