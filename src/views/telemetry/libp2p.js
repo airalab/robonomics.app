@@ -105,7 +105,6 @@ export const useData = () => {
     }
 
     notify(store, `Launch command`);
-    console.log(`command ${JSON.stringify(command)}`);
 
     await setAccountController();
 

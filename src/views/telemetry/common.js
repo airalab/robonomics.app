@@ -166,16 +166,16 @@ export const useConfig = () => {
 
   (async () => {
     if (controller.value) {
-      const haconfig = localStorage.getItem(
-        `haconfig:${controller.value.address}`
-      );
-      if (haconfig) {
-        try {
-          config.value = JSON.parse(haconfig);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      // const haconfig = localStorage.getItem(
+      //   `haconfig:${controller.value.address}`
+      // );
+      // if (haconfig) {
+      //   try {
+      //     config.value = JSON.parse(haconfig);
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
       notify(store, "Find twin id");
       const datalog = await getLastDatalog(
         robonomics,
