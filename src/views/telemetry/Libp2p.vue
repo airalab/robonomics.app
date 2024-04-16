@@ -25,6 +25,7 @@ export default {
         if (newValue && newValue.peer_id) {
           if (
             !oldValue ||
+            Object.keys(oldValue).length === 0 ||
             (oldValue.peer_id && newValue.peer_id !== oldValue.peer_id)
           ) {
             (async () => {
@@ -37,7 +38,7 @@ export default {
               }
             })();
           }
-        } else {
+        } else if (props.config !== null) {
           console.log(`Error: not peer_id`);
           console.log(props.config);
           emit("error");
