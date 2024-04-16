@@ -61,22 +61,25 @@ function relay(peer_id) {
   return `/dns4/libp2p-relay.robonomics.network/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`;
   // return `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
 }
-export async function getUriPeer(peer_id, peer_address) {
-  if (peer_address) {
-    const localMultiaddr = multiaddr(peer_address);
-    const address = localMultiaddr.nodeAddress();
-    if (localMultiaddr.protoNames().includes("ws")) {
-      const wsUri = `ws://${address.address}:${address.port}`;
-      try {
-        await checkLocalUri(wsUri);
-        return localMultiaddr;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
+export async function getUriPeer(peer_id) {
   return relay(peer_id);
 }
+// export async function getUriPeer(peer_id, peer_address) {
+//   if (peer_address) {
+//     const localMultiaddr = multiaddr(peer_address);
+//     const address = localMultiaddr.nodeAddress();
+//     if (localMultiaddr.protoNames().includes("ws")) {
+//       const wsUri = `ws://${address.address}:${address.port}`;
+//       try {
+//         await checkLocalUri(wsUri);
+//         return localMultiaddr;
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     }
+//   }
+//   return relay(peer_id);
+// }
 
 let node = null;
 let connections = [];
