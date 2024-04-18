@@ -7,9 +7,14 @@
 <script>
 import { Keyring } from "@polkadot/api";
 import { encodeAddress } from "@polkadot/util-crypto";
+import { useSeoMeta } from '@unhead/vue';
 
 export default {
   setup() {
+    useSeoMeta({
+      title: 'New setup'
+    })
+
     let onSave = (rws, setStatus) => {
       if (!rws.owner || !rws.name || !rws.controller || !rws.scontroller) {
         setStatus("error", "All fields are required");

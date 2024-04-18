@@ -20,9 +20,14 @@ import { u8aToHex } from "@polkadot/util";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import { computed, watch } from "vue";
 import { useStore } from "vuex";
+import { useSeoMeta } from '@unhead/vue';
 
 export default {
   setup() {
+    useSeoMeta({
+      title: 'Setup'
+    })
+
     const store = useStore();
 
     const setupOwner = computed(() => {

@@ -2717,6 +2717,39 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@unhead/dom@1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@unhead/dom/-/dom-1.9.5.tgz#c9c8ce775776418b51b940f893d7d8ed2a394553"
+  integrity sha512-t+JvAFX+Qkx+IEZFBQV5rZoj/6SKHd3tqXqxpsER588DWxU0J6dzvAVJrof/vRTMjJ1lM6B8SxKhZppSZ7H2iQ==
+  dependencies:
+    "@unhead/schema" "1.9.5"
+    "@unhead/shared" "1.9.5"
+
+"@unhead/schema@1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@unhead/schema/-/schema-1.9.5.tgz#cf6acd4c8a8091e12e6fb33a2c14cd206cdde4ca"
+  integrity sha512-n0upGPplBn5Y/4PIqKp7/tzOhz7USos5lFjf8UKvMNoOIitEa+avP2u7gRQ9yOhHmOAH9AXDeX7mhSvhO+Tqxw==
+  dependencies:
+    hookable "^5.5.3"
+    zhead "^2.2.4"
+
+"@unhead/shared@1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.9.5.tgz#e1e999a7fbb7514d6890a7009a99fcee1e2b1890"
+  integrity sha512-WN2T8th1wYn4A1bb6o8Z59wNVMPkD6YdNQIlmSbEP9zuSYyVEh3BIxqSdxWM/xl8atN8fNwVW06knaF51VmKXA==
+  dependencies:
+    "@unhead/schema" "1.9.5"
+
+"@unhead/vue@^1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@unhead/vue/-/vue-1.9.5.tgz#259a4124ab3129007b1aad39a0d3ef7f43179114"
+  integrity sha512-L3yDB6Mwm92gJNPqZApMwfGluS0agR0HIizkXCKKz3WkZ+ef/negMwTNGpTtd+uqh/+hSyG73Bl4yySuPsD4nA==
+  dependencies:
+    "@unhead/schema" "1.9.5"
+    "@unhead/shared" "1.9.5"
+    hookable "^5.5.3"
+    unhead "1.9.5"
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.4.0":
   version "1.4.0"
   resolved "https://registry.npmjs.org/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.4.0.tgz"
@@ -5220,6 +5253,11 @@ highlight.js@^10.7.1:
   version "10.7.3"
   resolved "https://registry.npmjs.org/highlight.js/-/highlight.js-10.7.3.tgz"
   integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
+
+hookable@^5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/hookable/-/hookable-5.5.3.tgz#6cfc358984a1ef991e2518cb9ed4a778bbd3215d"
+  integrity sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
@@ -8400,6 +8438,16 @@ undici@^5.12.0:
   dependencies:
     busboy "^1.6.0"
 
+unhead@1.9.5:
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/unhead/-/unhead-1.9.5.tgz#500f46f4673f8dbc55915a2b741c7505b6be4939"
+  integrity sha512-eBKDPO9IMltRze9mHNYIVdosjlqoNFbwJRbykGT/7z/S5uYR2QRCXmIhEsJT4crffy6KQyB5ywLPqjRPx0s57A==
+  dependencies:
+    "@unhead/dom" "1.9.5"
+    "@unhead/schema" "1.9.5"
+    "@unhead/shared" "1.9.5"
+    hookable "^5.5.3"
+
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-2.0.0.tgz"
@@ -8899,3 +8947,8 @@ yorkie@^2.0.0:
     is-ci "^1.0.10"
     normalize-path "^1.0.0"
     strip-indent "^2.0.0"
+
+zhead@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
+  integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==

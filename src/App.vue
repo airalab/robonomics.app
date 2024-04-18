@@ -15,6 +15,7 @@ import MainLayout from "@/components/layouts/Main.vue";
 import { inject, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { useHead, useSeoMeta } from '@unhead/vue';
 
 export default {
   name: "App",
@@ -49,11 +50,37 @@ export default {
     );
     store.commit("ipfs/setGateways", IpfsProvider.gateways);
 
+    const ogtitle = ref((title) => title ? `${title} / Robonomics Dapp` : 'Robonomics Dapp')
+    useHead({
+      titleTemplate: ogtitle.value,
+      meta: [
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "192x192",
+          href: "images/meta/app-icon-192.png"
+        },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "512x512",
+          href: "images/meta/app-icon-512.png"
+        },
+      ],
+    })
+
+    useSeoMeta({
+      ogTitle: ogtitle.value,
+      description: 'Decetralized application for working with Robonomics Parachain, Cloud tools and Smart home',
+      ogDescription: 'Decetralized application for working with Robonomics Parachain, Cloud tools and Smart home',
+      ogImage: 'images/meta/OG-Default.png'
+    })
+
     watch(route, () => {
       title.value = route?.meta?.title;
-      document.title = title.value
-        ? `${title.value} – Robonomics Network dApp`
-        : "Robonomics Network dApp";
+      // document.title = title.value
+      //   ? `${title.value} – Robonomics Network dApp`
+      //   : "Robonomics Network dApp";
     });
 
     return {

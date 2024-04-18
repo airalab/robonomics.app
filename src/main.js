@@ -7,12 +7,14 @@ import robonomics from "./plugins/robonomics";
 import router from "./router";
 import store from "./store";
 import filters from "./utils/filters";
+import { createHead } from '@unhead/vue';
 
 import "robonomics-ui-vue/style.css";
 
 window.Buffer = Buffer;
 
 const app = createApp(App);
+const head = createHead(); // for meta
 
 app
   .use(router)
@@ -34,4 +36,5 @@ app
     ]
   })
   .use(robonomicsUI, { store })
+  .use(head)
   .mount("#app");

@@ -21,9 +21,14 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
 import { computed, onUnmounted, ref, watchEffect } from "vue";
+import { useSeoMeta } from '@unhead/vue';
 
 export default {
   setup() {
+    useSeoMeta({
+      title: 'Buy a subscription'
+    })
+
     const price = ref(0);
     const freeAuctions = ref(0);
     const chainInfoStatus = ref(false);

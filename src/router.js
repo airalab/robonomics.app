@@ -13,7 +13,7 @@ const routes = [
     name: "Home",
     component: Home,
     meta: {
-      title: "Home"
+      title: "Dashboard"
     }
   },
   {
