@@ -21,13 +21,13 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
 import { computed, onUnmounted, ref, watchEffect } from "vue";
-import { useSeoMeta } from '@unhead/vue';
+import { useSeoMeta } from "@unhead/vue";
 
 export default {
   setup() {
     useSeoMeta({
-      title: 'Buy a subscription'
-    })
+      title: "Buy a subscription"
+    });
 
     const price = ref(0);
     const freeAuctions = ref(0);
@@ -65,7 +65,7 @@ export default {
     const onActivate = async (setStatus) => {
       if (
         !balance.value ||
-        bnToBn(balance.value).add(bnToBn(1000000000)).lt(price.value)
+        bnToBn(balance.value).lt(price.value.add(bnToBn(10000000)))
       ) {
         setStatus(
           "error",
