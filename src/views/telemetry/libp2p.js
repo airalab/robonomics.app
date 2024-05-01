@@ -47,8 +47,9 @@ export const useData = () => {
   const run = async (peer_id, peer_address) => {
     const node = await start();
     try {
-      notify(store, `Connect to peer id ${peer_id}`);
+      notify(store, `Connect to peer id ${peer_id} - ${peer_address}`);
       const uriPeer = await getUriPeer(peer_id, peer_address);
+      console.log("Connect", uriPeer);
       await connect(uriPeer);
       notify(store, `Connected`);
       const protocols = node.getProtocols();
