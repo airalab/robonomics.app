@@ -83,15 +83,3 @@
     </robo-grid>
   </robo-layout-section>
 </template>
-
-<script>
-import { useSeoMeta } from '@unhead/vue';
-
-export default {
-  setup() {
-    useSeoMeta({
-      title: 'Services'
-    })
-  }
-}
-</script>

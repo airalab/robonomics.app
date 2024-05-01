@@ -16,14 +16,9 @@ import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
 import { stringToU8a, u8aToString } from "@polkadot/util";
 import { onUnmounted, reactive, ref, watch, watchEffect } from "vue";
 import { useStore } from "vuex";
-import { useSeoMeta } from '@unhead/vue';
 
 export default {
   setup() {
-    useSeoMeta({
-      title: 'Devices'
-    })
-
     const datalog = ref(null);
     const config = ref(null);
     const datalogCid = ref("");
