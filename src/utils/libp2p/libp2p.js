@@ -63,7 +63,7 @@ function relay(peer_id) {
   // return `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
 }
 export async function getUriPeer(peer_id, peer_address) {
-  if (peer_address) {
+  if (peer_address && window.location.protocol !== "https:") {
     const localMultiaddr = multiaddr(peer_address);
     const address = localMultiaddr.nodeAddress();
     if (localMultiaddr.protoNames().includes("ws")) {
@@ -115,7 +115,7 @@ export async function start() {
         console.log("reconnect");
         reconnect(connection.remoteAddr.toString());
       }
-    }, 1000);
+    }, 10000);
   });
 
   return node;
@@ -126,11 +126,11 @@ export async function reconnect(addr) {
     await connect(addr);
   } catch (error) {
     console.log(error);
-    setTimeout(async () => {
-      if (addr && !connections.includes(addr)) {
-        await reconnect(addr);
-      }
-    }, 3000);
+    // setTimeout(async () => {
+    //   if (addr && !connections.includes(addr)) {
+    //     await reconnect(addr);
+    //   }
+    // }, 3000);
   }
 }
 
