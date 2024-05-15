@@ -1,16 +1,31 @@
 import { noise } from "@chainsafe/libp2p-noise";
 import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
 import { identify } from "@libp2p/identify";
+import { keychain } from "@libp2p/keychain";
+import { defaultLogger } from "@libp2p/logger";
 import { mplex } from "@libp2p/mplex";
 import { webRTC } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
 import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
+import { LevelDatastore } from "datastore-level";
+import { Key } from "interface-datastore";
 import { createLibp2p } from "libp2p";
 import { createHa } from "./ha";
 
 export async function createNode() {
+  const selfKey = new Key("/pkcs8/self");
+  const datastore = new LevelDatastore(`libp2p/data`);
+  const chain = keychain()({
+    datastore: datastore,
+    logger: defaultLogger()
+  });
+  let peerId;
+  if (await datastore.has(selfKey)) {
+    peerId = await chain.exportPeerId("self");
+  }
   const node = await createLibp2p({
+    peerId: peerId,
     addresses: {
       listen: ["/webrtc"]
     },
@@ -36,48 +51,85 @@ export async function createNode() {
       minConnections: 0
     }
   });
-
+  if (chain != null && !(await datastore.has(selfKey))) {
+    await chain.importPeer("self", node.peerId);
+  }
   return node;
 }
 
-export function checkLocalUri(uri) {
+export function checkLocalUri(localMultiaddr) {
+  const address = localMultiaddr.nodeAddress();
+  if (address.address === "127.0.0.1") {
+    return Promise.reject(0);
+  }
+  const uri = `ws://${address.address}:${address.port}`;
   return new Promise((res, rej) => {
-    const timeoutId = setTimeout(() => {
-      rej(new Error("timeout"));
-    }, 10000);
     const ws = new WebSocket(uri);
+    const timeoutId = setTimeout(() => {
+      ws.close();
+      rej(new Error(`timeout ${localMultiaddr}`));
+    }, 10000);
     ws.addEventListener("error", () => {
       clearTimeout(timeoutId);
-      rej(new Error("connect"));
+      rej(new Error(`connect ${localMultiaddr}`));
     });
     ws.addEventListener("open", () => {
       ws.close();
       clearTimeout(timeoutId);
-      res();
+      res(localMultiaddr);
     });
   });
 }
 function relay(peer_id) {
+  // return `/ip4/192.168.20.32/tcp/4040/ws/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`;
   return `/dns4/libp2p-relay-1.robonomics.network/tcp/443/wss/p2p/12D3KooWEMFXXvpZUjAuj1eKR11HuzZTCQ5HmYG9MNPtsnqPSERD/p2p-circuit/p2p/${peer_id}`;
   // return `/dns4/libp2p-relay.robonomics.network/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`;
   // return `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
 }
-export async function getUriPeer(peer_id, peer_address) {
-  if (peer_address && window.location.protocol !== "https:") {
-    const localMultiaddr = multiaddr(peer_address);
-    const address = localMultiaddr.nodeAddress();
-    if (localMultiaddr.protoNames().includes("ws")) {
-      const wsUri = `ws://${address.address}:${address.port}`;
+export async function connectMultiaddress(peer_id, peer_multiaddress) {
+  if (peer_multiaddress.length > 0) {
+    const localMultiaddrs = [];
+    const circuit = [];
+    for (const peer_multiaddr of peer_multiaddress) {
+      const localMultiaddr = multiaddr(peer_multiaddr);
+      const protos = localMultiaddr.protoNames();
+      if (protos.includes("ws") || protos.includes("wss")) {
+        if (protos.includes("p2p-circuit")) {
+          circuit.push(peer_multiaddr);
+        } else {
+          localMultiaddrs.push(checkLocalUri(localMultiaddr));
+        }
+      }
+    }
+
+    if (window.location.protocol !== "https:") {
       try {
-        console.log("check wsUri", wsUri);
-        await checkLocalUri(wsUri);
-        return localMultiaddr;
+        const loc = await Promise.any(localMultiaddrs);
+        await connect(loc);
+        return true;
       } catch (error) {
         console.log(error);
       }
     }
+
+    if (circuit.length > 0) {
+      for (const addr of circuit) {
+        try {
+          await connect(addr);
+          return true;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
   }
-  return relay(peer_id);
+  try {
+    await connect(relay(peer_id));
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
+  return false;
 }
 
 let node = null;
@@ -138,6 +190,7 @@ export async function connect(addr) {
   if (!connections.includes(addr)) {
     const listenerMultiaddr = multiaddr(addr);
     connection = await node.dial(listenerMultiaddr);
+    console.log("Connect", listenerMultiaddr.toJSON());
   }
 }
 

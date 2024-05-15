@@ -1,9 +1,8 @@
 import { useDevices } from "@/hooks/useDevices";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import {
-  connect,
+  connectMultiaddress,
   disconnect,
-  getUriPeer,
   request,
   start
 } from "@/utils/libp2p/libp2p";
@@ -44,35 +43,36 @@ export const useData = () => {
     disconnect();
   });
 
-  const run = async (peer_id, peer_address) => {
+  const run = async (peer_id, peer_multiaddress) => {
     const node = await start();
     try {
-      notify(store, `Connect to peer id ${peer_id} - ${peer_address}`);
-      const uriPeer = await getUriPeer(peer_id, peer_address);
-      console.log("Connect", uriPeer);
-      await connect(uriPeer);
-      notify(store, `Connected`);
-      const protocols = node.getProtocols();
-      if (protocols.includes("/update")) {
-        await node.unhandle("/update");
-      }
-      node.services.ha.handle("/update", async (dataRaw, stream) => {
-        const result = await decryptMsgContoller(
-          dataRaw.data,
-          controller.value,
-          keyring
-        );
-        if (result) {
-          data.value = result;
-          updateTime.value = Date.now();
-          await node.services.ha.utils.sendResponse(stream, {
-            result: true
-          });
-        } else {
-          notify(store, `Error: decryptMsg`);
+      notify(store, `Connect to peer id ${peer_id}`);
+      console.log(peer_multiaddress);
+      const connected = await connectMultiaddress(peer_id, peer_multiaddress);
+      if (connected) {
+        notify(store, `Connected`);
+        const protocols = node.getProtocols();
+        if (protocols.includes("/update")) {
+          await node.unhandle("/update");
         }
-      });
-      return true;
+        node.services.ha.handle("/update", async (dataRaw, stream) => {
+          const result = await decryptMsgContoller(
+            dataRaw.data,
+            controller.value,
+            keyring
+          );
+          if (result) {
+            data.value = result;
+            updateTime.value = Date.now();
+            await node.services.ha.utils.sendResponse(stream, {
+              result: true
+            });
+          } else {
+            notify(store, `Error: decryptMsg`);
+          }
+        });
+        return true;
+      }
     } catch (error) {
       notify(store, `Error: ${error.message}`);
       console.log(error);

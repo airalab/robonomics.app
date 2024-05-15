@@ -31,7 +31,7 @@ export default {
             (async () => {
               const result = await run(
                 newValue.peer_id,
-                newValue.local_libp2p_multiaddress
+                newValue.libp2p_multiaddress
               );
               if (!result) {
                 emit("error");
