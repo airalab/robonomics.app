@@ -96,13 +96,16 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
       if (protos.includes("ws") || protos.includes("wss")) {
         if (protos.includes("p2p-circuit")) {
           circuit.push(peer_multiaddr);
-        } else {
+        } else if (
+          window.location.protocol !== "https:" ||
+          protos.includes("wss")
+        ) {
           localMultiaddrs.push(checkLocalUri(localMultiaddr));
         }
       }
     }
 
-    if (window.location.protocol !== "https:") {
+    if (localMultiaddrs.length > 0) {
       try {
         const loc = await Promise.any(localMultiaddrs);
         await connect(loc);
