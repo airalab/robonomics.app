@@ -7888,17 +7888,19 @@ robonomics-interface@^0.3.2:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.3.1.tgz#25e623a5f04dfb31ab2c1d63223b076ac18ddd32"
-  integrity sha512-/wG5Lp9Kd/B1G2rjQEQwHR2CMudzQ+/yqU/ijJeUllvhNQ2S2VMETQ/wNMh3G+ga574kz/S2D7Q+jacgMC0O3A==
+robonomics-ui-vue@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.4.7.tgz#7353b63238ab672e91ff906543b5b29978816dfa"
+  integrity sha512-ARcIH+1azDRYAkt5eaMRhjYXoBObHmKC4Xz5zHf85oqi1FzNtyJYUwJKNHnFnwXJiEcFgxqMxl88Ee0osEk5yg==
   dependencies:
+    "@polkadot/keyring" "^12.6.2"
     "@polkadot/ui-keyring" "^3.6.4"
+    "@polkadot/util" "^12.6.2"
     "@polkadot/util-crypto" "^12.6.2"
     crypto-js "^4.1.1"
     file-saver "^2.0.5"
     vue-router "^4.2.5"
-    vuex "^4.0.2"
+    vuex "^4.1.0"
 
 run-parallel-limit@^1.1.0:
   version "1.1.0"
@@ -8805,7 +8807,7 @@ vue@^3.4.15:
     "@vue/server-renderer" "3.4.15"
     "@vue/shared" "3.4.15"
 
-vuex@^4.0.2, vuex@^4.1.0:
+vuex@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/vuex/-/vuex-4.1.0.tgz"
   integrity sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==

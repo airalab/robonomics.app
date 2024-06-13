@@ -13,13 +13,28 @@ import { useData } from "./launch";
 
 export default {
   props: {
-    config: Object
+    isKey: {
+      default: false,
+      type: Boolean
+    },
+    config: {
+      default: null,
+      type: Object
+    }
   },
-  setup() {
+  setup(props) {
     const { data, updateTime, run, launch } = useData();
     const store = useStore();
 
-    run();
+    watch(
+      () => props.isKey,
+      (value) => {
+        if (value) {
+          run();
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       () => store.state.robonomicsUIvue.rws.launch,

@@ -156,10 +156,12 @@ export default {
       if (!account) {
         return;
       }
-      await this.robonomics.accountManager.setSender(address, {
-        type: account.type,
-        extension: this.$store.state.robonomicsUIvue.polkadot.extensionObj
-      });
+      if (this.$route.name !== "telemetry") {
+        await this.robonomics.accountManager.setSender(address, {
+          type: account.type,
+          extension: this.$store.state.robonomicsUIvue.polkadot.extensionObj
+        });
+      }
       this.unsubscribeBalance = await this.robonomics.account.getBalance(
         address,
         (r) => {

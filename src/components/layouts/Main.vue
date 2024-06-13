@@ -15,7 +15,7 @@ export default {
   components: {
     DappHeader
   },
-  props: ['pagetitle'],
+  props: ["pagetitle"],
   setup() {
     const store = useStore();
     const subscription = useSubscription();
@@ -32,6 +32,14 @@ export default {
       [subscription.owner, subscription.validUntil],
       () => {
         store.commit("rws/setExpiredate", subscription.validUntil);
+      },
+      { immediate: true }
+    );
+
+    watch(
+      subscription.devices,
+      (devices) => {
+        store.commit("rws/setUsers", devices);
       },
       { immediate: true }
     );

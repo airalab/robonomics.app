@@ -3,6 +3,7 @@ import { useRobonomics } from "@/hooks/useRobonomics";
 import { createPair, encryptor } from "@/utils/encryptor";
 import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
 import { hexToU8a, u8aToString } from "@polkadot/util";
+import { decodeAddress } from "@polkadot/util-crypto";
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 
@@ -33,18 +34,18 @@ const catFile = async (store, ipfs, cid) => {
   return false;
 };
 
-export const decryptMsgContoller = async (encryptedMsg, controller) => {
+export const decryptData = async (encryptedMsg, controller, account) => {
   if (encryptedMsg) {
     try {
-      const seed = controller.decryptMessage(
-        hexToU8a(encryptedMsg[controller.address]),
-        controller.pair.publicKey
+      const controllerPublicKey = decodeAddress(controller);
+      const seed = account.decryptMessage(
+        hexToU8a(encryptedMsg[account.address]),
+        controllerPublicKey
       );
-
       const admin = encryptor(createPair(u8aToString(seed)));
       const data = admin.decryptMessage(
         hexToU8a(encryptedMsg.data),
-        controller.pair.publicKey
+        controllerPublicKey
       );
       return parseJson(u8aToString(data));
     } catch (error) {
@@ -54,14 +55,20 @@ export const decryptMsgContoller = async (encryptedMsg, controller) => {
   return false;
 };
 
-export const catFileController = async (cid, controller, store, ipfs) => {
+export const readFileDecrypt = async (
+  cid,
+  controller,
+  account,
+  store,
+  ipfs
+) => {
   if (cid) {
     const data = await catFile(store, ipfs, cid);
     if (!data) {
       console.log(`Error: ${cid} not found in ipfs`);
       return null;
     }
-    const result = await decryptMsgContoller(data, controller);
+    const result = await decryptData(data, controller, account);
     if (result) {
       return result;
     } else {
@@ -79,7 +86,7 @@ const loadSetup = (store) => {
     if (setupRaw) {
       try {
         return {
-          controller: encryptor(createPair(setupRaw.scontroller)),
+          controller: setupRaw.controller,
           owner: setupRaw.owner
         };
       } catch (error) {
@@ -138,15 +145,13 @@ export const useLastDatalog = () => {
 
   (async () => {
     if (controller.value) {
-      const datalog = await getLastDatalog(
-        robonomics,
-        controller.value.address
-      );
+      const datalog = await getLastDatalog(robonomics, controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
-      data.value = await catFileController(
+      data.value = await readFileDecrypt(
         cid.value,
         controller.value,
+        robonomics.accountManager.encryptor(),
         store,
         ipfs
       );
@@ -164,59 +169,50 @@ export const useConfig = () => {
   const robonomics = useRobonomics();
   const { controller } = useSetup();
 
-  (async () => {
-    if (controller.value) {
-      // const haconfig = localStorage.getItem(
-      //   `haconfig:${controller.value.address}`
-      // );
-      // if (haconfig) {
-      //   try {
-      //     config.value = JSON.parse(haconfig);
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
-      notify(store, "Find twin id");
-      const datalog = await getLastDatalog(
-        robonomics,
-        controller.value.address
-      );
-      const result = await catFileController(
-        datalog.cid,
+  const load = async () => {
+    notify(store, "Find twin id");
+
+    if (
+      !controller.value ||
+      !robonomics.accountManager.account ||
+      robonomics.accountManager.account.type !== "ed25519"
+    ) {
+      notify(store, "Error");
+      return;
+    }
+
+    const datalog = await getLastDatalog(robonomics, controller.value);
+    const result = await readFileDecrypt(
+      datalog.cid,
+      controller.value,
+      robonomics.accountManager.encryptor(),
+      store,
+      ipfs
+    );
+
+    if (result) {
+      const twin_id = result.twin_id;
+      notify(store, `Twin id #${twin_id}`);
+
+      notify(store, `Start load config`);
+      const cid = await getConfigCid(robonomics, controller.value, twin_id);
+
+      config.value = await readFileDecrypt(
+        cid,
         controller.value,
+        robonomics.accountManager.encryptor(),
         store,
         ipfs
       );
 
-      if (result) {
-        const twin_id = result.twin_id;
-        notify(store, `Twin id #${twin_id}`);
+      localStorage.setItem(
+        `haconfig:${controller.value}`,
+        JSON.stringify(config.value)
+      );
 
-        notify(store, `Start load config`);
-        const cid = await getConfigCid(
-          robonomics,
-          controller.value.address,
-          twin_id
-        );
-
-        config.value = await catFileController(
-          cid,
-          controller.value,
-          store,
-          ipfs
-        );
-
-        localStorage.setItem(
-          `haconfig:${controller.value.address}`,
-          JSON.stringify(config.value)
-        );
-
-        notify(store, `Config loaded`);
-      } else {
-        notify(store, "Error: not found twin id");
-      }
+      notify(store, `Config loaded`);
     }
-  })();
+  };
 
-  return { config };
+  return { config, load };
 };

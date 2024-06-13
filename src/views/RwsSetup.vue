@@ -18,12 +18,11 @@ import { createPair, encryptor } from "@/utils/encryptor";
 import { Keyring } from "@polkadot/api";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
   setup() {
-
     const store = useStore();
 
     const setupOwner = computed(() => {
@@ -35,13 +34,8 @@ export default {
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
 
-    const fillStorage = () => {
-      store.commit("rws/setUsers", devices.devices.value);
-    };
-    watch(devices.devices, fillStorage);
-
     const rwsUpdateActions = (rws, setStatus) => {
-      if (!rws.owner || !rws.name || !rws.controller || !rws.scontroller) {
+      if (!rws.owner || !rws.name || !rws.controller) {
         setStatus("error", "All fields are required");
         return;
       }
@@ -56,14 +50,6 @@ export default {
         encodeAddress(rws.controller);
       } catch (error) {
         setStatus("error", `Controller: ${error.message}`);
-        return;
-      }
-
-      const k = new Keyring();
-      const accountController = k.addFromUri(rws.scontroller, {}, "ed25519");
-
-      if (encodeAddress(rws.controller) !== accountController.address) {
-        setStatus("error", "Bad seed or type not ed25519");
         return;
       }
 

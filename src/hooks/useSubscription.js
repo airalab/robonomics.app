@@ -61,7 +61,7 @@ export const useSubscription = (initialOwner = null) => {
 
   const validUntil = computed(() => {
     if (dataRaw.value === null) {
-      return "";
+      return null;
     }
     const dataRawObject = toRaw(dataRaw);
     if (dataRawObject.value.kind.isLifetime) {

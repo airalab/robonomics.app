@@ -3,17 +3,11 @@ import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
 import { getLastDatalog } from "@/utils/telemetry";
-import { Keyring } from "@polkadot/keyring";
 import { stringToU8a, u8aToHex } from "@polkadot/util";
+import { decodeAddress } from "@polkadot/util-crypto";
 import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import {
-  catFileController,
-  chainSS58,
-  notify,
-  setStatusLaunch,
-  useSetup
-} from "./common";
+import { notify, readFileDecrypt, setStatusLaunch, useSetup } from "./common";
 
 export const useData = () => {
   const cid = ref(null);
@@ -35,10 +29,6 @@ export const useData = () => {
     { immediate: true }
   );
 
-  const keyring = new Keyring({
-    ss58Format: chainSS58
-  });
-
   let unsubscribeDatalog;
   const watchDatalog = async () => {
     unsubscribeDatalog = await robonomics.datalog.on(
@@ -48,7 +38,7 @@ export const useData = () => {
           return (
             item.success &&
             controller.value &&
-            item.data[0].toHuman() === controller.value.address
+            item.data[0].toHuman() === controller.value
           );
         });
         for (const item of r) {
@@ -60,21 +50,18 @@ export const useData = () => {
   };
 
   watch(cid, async () => {
-    data.value = await catFileController(
+    data.value = await readFileDecrypt(
       cid.value,
       controller.value,
+      robonomics.accountManager.encryptor(),
       store,
-      ipfs,
-      keyring
+      ipfs
     );
   });
 
   const run = async () => {
     if (controller.value) {
-      const datalog = await getLastDatalog(
-        robonomics,
-        controller.value.address
-      );
+      const datalog = await getLastDatalog(robonomics, controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
     }
@@ -92,25 +79,6 @@ export const useData = () => {
     stop();
   });
 
-  const setAccountController = async () => {
-    const pair = robonomics.accountManager.keyring.keyring.addFromPair(
-      controller.value.pair
-    );
-    await robonomics.accountManager.setSender(pair.address, {
-      type: pair.type,
-      extension: null
-    });
-  };
-  const setAccountFromHeader = async () => {
-    const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
-      (item) => item.address === store.state.robonomicsUIvue.polkadot.address
-    );
-    await robonomics.accountManager.setSender(accountOld.address, {
-      type: accountOld.type,
-      extension: store.state.robonomicsUIvue.polkadot.extensionObj
-    });
-  };
-
   const launch = async (command) => {
     console.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
@@ -120,16 +88,11 @@ export const useData = () => {
     notify(store, `Launch command`);
     console.log(`command ${JSON.stringify(command)}`);
 
-    await setAccountController();
-
     if (
-      robonomics.accountManager.account.address !==
-        store.state.robonomicsUIvue.rws.active &&
       !devices.devices.value.includes(robonomics.accountManager.account.address)
     ) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
-      await setAccountFromHeader();
       return;
     }
 
@@ -153,33 +116,31 @@ export const useData = () => {
           console.log(error);
           setStatusLaunch(store, command, "error");
         }
-        await setAccountFromHeader();
         return;
       }
       setStatusLaunch(store, command, "approved");
     }
 
+    const encryptor = robonomics.accountManager.encryptor();
+    const controllerPublicKey = decodeAddress(controller.value);
+
     let commandCid;
     try {
       const cmdString = JSON.stringify(command.launch);
-      const cmdCrypto = controller.value.encryptMessage(
+      const cmdCrypto = encryptor.encryptMessage(
         cmdString,
-        controller.value.pair.publicKey
+        controllerPublicKey
       );
       commandCid = await ipfs.add(u8aToHex(cmdCrypto));
     } catch (error) {
       setStatusLaunch(store, command, "error");
       notify(store, `Error: ${error.message}`);
-      await setAccountFromHeader();
       return;
     }
     console.log(`launch ipfs file ${commandCid.path}`);
 
     notify(store, `Send launch`);
-    const call = robonomics.launch.send(
-      controller.value.address,
-      commandCid.path
-    );
+    const call = robonomics.launch.send(controller.value, commandCid.path);
     const tx = transaction.createTx();
     await transaction.send(tx, call, owner.value);
     if (tx.error.value) {
@@ -195,7 +156,6 @@ export const useData = () => {
       setStatusLaunch(store, command, "success");
       notify(store, "Launch sended");
     }
-    await setAccountFromHeader();
   };
 
   return { cid, updateTime, data, run, stop, launch };

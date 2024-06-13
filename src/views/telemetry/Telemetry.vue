@@ -1,64 +1,69 @@
 <template>
-  <div class="temp_toggler">
-    <robo-button
-      @click="type = 'launch'"
-      :disabled="type === 'launch'"
-      size="small"
-    >
-      Parachain
-    </robo-button>
-    <robo-button
-      @click="type = 'libp2p'"
-      :disabled="type === 'libp2p'"
-      size="small"
-    >
-      Libp2p
-    </robo-button>
-  </div>
-  <Libp2p v-if="type === 'libp2p'" :config="config" @error="error" />
-  <Launch v-else :config="config" />
+  <Libp2p v-if="type === 'libp2p'" :config="config" :isKey @error="error" />
+  <Launch v-else :config="config" :isKey />
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { useRobonomics } from "@/hooks/useRobonomics";
+import { onUnmounted, ref, watch } from "vue";
+import { useStore } from "vuex";
 import Launch from "./Launch.vue";
 import Libp2p from "./Libp2p.vue";
 import { useConfig } from "./common";
 
 export default {
+  components: { Libp2p, Launch },
   setup() {
-    const type = ref(localStorage.getItem("typeTelemetry") || "launch");
-    const { config } = useConfig();
+    const store = useStore();
+    const robonomics = useRobonomics();
+    const { config, load } = useConfig();
+    const isKey = ref(false);
+    const type = ref(store.state.robonomicsUIvue.rws.connection);
 
-    watch([config, type], () => {
-      if (config.value && !config.value.peer_id && type.value === "libp2p") {
-        console.log(`Error: not peer_id`);
-        console.log(config.value);
-        type.value = "launch";
+    onUnmounted(async () => {
+      if (
+        isKey.value &&
+        store.state.robonomicsUIvue.polkadot.address !==
+          robonomics.accountManager.account.address
+      ) {
+        const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
+          (item) =>
+            item.address === store.state.robonomicsUIvue.polkadot.address
+        );
+        if (accountOld) {
+          await robonomics.accountManager.setSender(accountOld.address, {
+            type: accountOld.type,
+            extension: store.state.robonomicsUIvue.polkadot.extensionObj
+          });
+        }
       }
     });
 
-    watch(type, () => {
-      localStorage.setItem("typeTelemetry", type.value);
-    });
+    watch(
+      () => store.state.robonomicsUIvue.rws.user.key,
+      async (value) => {
+        if (value) {
+          await robonomics.accountManager.addPair(value);
+          isKey.value = true;
+          load();
+        } else {
+          console.log("NOT KEY");
+        }
+      }
+    );
+
+    watch(
+      () => store.state.robonomicsUIvue.rws.connection,
+      async (value) => {
+        type.value = value;
+      }
+    );
 
     return {
       type,
-      config,
-      error: () => {
-        type.value = "launch";
-      }
+      isKey,
+      config
     };
-  },
-  components: { Libp2p, Launch }
+  }
 };
 </script>
-
-<style scoped>
-.temp_toggler {
-  position: absolute;
-  top: calc(var(--robo-space) * 8);
-  right: var(--robo-space);
-  z-index: 10;
-}
-</style>
