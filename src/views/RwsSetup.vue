@@ -14,8 +14,6 @@ import { useAccount } from "@/hooks/useAccount";
 import { useDevices } from "@/hooks/useDevices";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { useSend } from "@/hooks/useSend";
-import { createPair, encryptor } from "@/utils/encryptor";
-import { Keyring } from "@polkadot/api";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import { computed } from "vue";
@@ -116,24 +114,18 @@ export default {
       setStatus("ok");
     };
 
-    const saveHapass = async (userAddress, userSeed, passToSave, setStatus) => {
-      if (!userAddress || !userSeed || !passToSave) {
-        setStatus("error", "All fields are required");
-        return;
-      }
+    const saveHapass = async (passToSave, setStatus) => {
+      const userAddress = store.state.robonomicsUIvue.rws.user.account;
+
+      await robonomics.accountManager.addPair(
+        store.state.robonomicsUIvue.rws.user.key
+      );
+      const user = robonomics.accountManager.encryptor();
 
       try {
         encodeAddress(userAddress);
       } catch (error) {
         setStatus("error", error.message);
-        return;
-      }
-
-      const k = new Keyring();
-      const accountUser = k.addFromUri(userSeed, {}, "ed25519");
-
-      if (encodeAddress(userAddress) !== accountUser.address) {
-        setStatus("error", "Bad seed or type not ed25519");
         return;
       }
 
@@ -149,8 +141,6 @@ export default {
         (item) => item.owner === setupOwner.value
       );
 
-      const user = encryptor(createPair(userSeed));
-
       const passwordForAdmin = user.encryptMessage(
         passToSave,
         decodeAddress(setup.controller)
@@ -160,8 +150,6 @@ export default {
         passToSave,
         decodeAddress(userAddress)
       );
-
-      robonomics.accountManager.account = accountUser;
 
       const call = await robonomics.datalog.write(
         JSON.stringify({
@@ -185,10 +173,12 @@ export default {
       const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
         (item) => item.address === store.state.robonomicsUIvue.polkadot.address
       );
-      await robonomics.accountManager.setSender(accountOld.address, {
-        type: accountOld.type,
-        extension: store.state.robonomicsUIvue.polkadot.extensionObj
-      });
+      if (accountOld) {
+        await robonomics.accountManager.setSender(accountOld.address, {
+          type: accountOld.type,
+          extension: store.state.robonomicsUIvue.polkadot.extensionObj
+        });
+      }
 
       setStatus("ok");
     };
