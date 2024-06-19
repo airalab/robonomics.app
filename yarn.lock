@@ -2156,12 +2156,12 @@
     store "^2.0.12"
 
 "@polkadot/ui-keyring@^3.6.4":
-  version "3.6.5"
-  resolved "https://registry.yarnpkg.com/@polkadot/ui-keyring/-/ui-keyring-3.6.5.tgz#b77771c8bc295700a3e7277365bfa939f2d57b5e"
-  integrity sha512-6kPui1rtBIG2pJpTKu/XQBfoB0XIYR+UIgxoQ1C4wIuT000V2lUH3a0RZ9h0Oj31ylP8H3vjJi1QHtFxF+glGg==
+  version "3.6.6"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-keyring/-/ui-keyring-3.6.6.tgz#73cd99dcb45189ca4c959ac71c0f7d0b3c93a1aa"
+  integrity sha512-G9QfT9VJCOjVlF0L5RLxlajYZVMcWEapLGN+0CZofcXSx65AQwgfMl/yR8xVsg9j5bL8akr4J8cSqNgdOuX2yw==
   dependencies:
     "@polkadot/keyring" "^12.6.2"
-    "@polkadot/ui-settings" "3.6.5"
+    "@polkadot/ui-settings" "3.6.6"
     "@polkadot/util" "^12.6.2"
     "@polkadot/util-crypto" "^12.6.2"
     mkdirp "^3.0.1"
@@ -2180,10 +2180,10 @@
     eventemitter3 "^4.0.7"
     store "^2.0.12"
 
-"@polkadot/ui-settings@3.6.5":
-  version "3.6.5"
-  resolved "https://registry.yarnpkg.com/@polkadot/ui-settings/-/ui-settings-3.6.5.tgz#bb6de9f42b7394d056626671aab49c23d8961e31"
-  integrity sha512-pRDwnXAsIrkARanL9BLDvg5u9PG7nnSDQkKmqYJiWbTW6G+ohOgBitlctjBnWASqjYMZLSRBY0MKwYrRrxJgVw==
+"@polkadot/ui-settings@3.6.6":
+  version "3.6.6"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-settings/-/ui-settings-3.6.6.tgz#99091457cde3a8e39880abdb1fb7171387172880"
+  integrity sha512-DoXXnj4KASxZWE+hnBkNXOkm3AX6CbyyZLzPBAPR4ZyyGTqushJNmyaiTiArqMtBh7rYFT2cDStt+qOa/hjyhQ==
   dependencies:
     "@polkadot/networks" "^12.6.2"
     "@polkadot/util" "^12.6.2"
@@ -2511,9 +2511,9 @@
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
 
 "@scure/base@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.5.tgz#1d85d17269fe97694b9c592552dd9e5e33552157"
-  integrity sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.7.tgz#fe973311a5c6267846aa131bc72e96c5d40d2b30"
+  integrity sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==
 
 "@sideway/address@^4.1.3":
   version "4.1.4"
@@ -2575,9 +2575,9 @@
   integrity sha512-NHmOkILimbLRPKvpnR+JGVckc1q4AJjxz9FnzZ3dKAVBL17AKknDy2FxXcwlJbmOXl9u7W3FS3bLDHgfKi4tQw==
 
 "@substrate/ss58-registry@^1.44.0":
-  version "1.46.0"
-  resolved "https://registry.yarnpkg.com/@substrate/ss58-registry/-/ss58-registry-1.46.0.tgz#bfe3e6a30d39929f57ecc178acde4e74a773e2b6"
-  integrity sha512-rBvWnlrBeFTd5LVG7oX3rOHzR16yqyffOFHKmUiVcblpXI3D89CXOvAljW9tWlA1H/2/FegaZnHPhdObPsvi+w==
+  version "1.48.0"
+  resolved "https://registry.yarnpkg.com/@substrate/ss58-registry/-/ss58-registry-1.48.0.tgz#b50b577b491274dbab55711d2e933456637e73d0"
+  integrity sha512-lE9TGgtd93fTEIoHhSdtvSFBoCsvTbqiCvQIMvX4m6BO/hESywzzTzTFMVP1doBwDDMAN4lsMfIM3X3pdmt7kQ==
 
 "@trysound/sax@0.2.0":
   version "0.2.0"
@@ -7888,10 +7888,10 @@ robonomics-interface@^0.3.2:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.4.7.tgz#7353b63238ab672e91ff906543b5b29978816dfa"
-  integrity sha512-ARcIH+1azDRYAkt5eaMRhjYXoBObHmKC4Xz5zHf85oqi1FzNtyJYUwJKNHnFnwXJiEcFgxqMxl88Ee0osEk5yg==
+robonomics-ui-vue@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.4.8.tgz#59b20809371a601dd115d4eb308a617c56a9f98d"
+  integrity sha512-yFaMN6yxTMJYy9Nz4pWsSrh+2FkQnhqK502i+kF3jAxljdZkdON8TIxvXDoGIIE+HP9eP5frrxQE3Qt7McZkdQ==
   dependencies:
     "@polkadot/keyring" "^12.6.2"
     "@polkadot/ui-keyring" "^3.6.4"
@@ -8504,10 +8504,15 @@ truncate-utf8-bytes@^1.0.0:
   dependencies:
     utf8-byte-length "^1.0.1"
 
-tslib@^2.0.3, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.6.1, tslib@^2.6.2:
+tslib@^2.0.3, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.6.1:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+
+tslib@^2.6.2:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
+  integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
