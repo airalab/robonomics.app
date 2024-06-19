@@ -1,5 +1,10 @@
 <template>
-  <Libp2p v-if="type === 'libp2p'" :config="config" :isKey @error="error" />
+  <Libp2p
+    v-if="type === 'libp2p'"
+    :config="config"
+    :isKey
+    @error="handlerError"
+  />
   <Launch v-else :config="config" :isKey />
 </template>
 
@@ -62,7 +67,10 @@ export default {
     return {
       type,
       isKey,
-      config
+      config,
+      handlerError: () => {
+        store.commit("rws/setConnection", "parachain");
+      }
     };
   }
 };
