@@ -26,12 +26,12 @@ export default {
       renderComponent: true,
       navigation: [
         {
-          title: "Other",
+          title: "Services",
           links: [
             {
-              title: "Services",
-              link: this.$router.resolve({ name: "services" }).path,
-              type: "router"
+              title: "Sensors map",
+              link: "https://sensors.robonomics.network",
+              type: "external"
             }
           ]
         },
@@ -40,15 +40,20 @@ export default {
           title: "Tokenomics",
           links: [
             {
+              title: "About XRT",
+              link: "https://robonomics.network/xrt/",
+              type: "external"
+            },
+            {
               title: "Uniswap",
               link: "https://app.uniswap.org/#/swap?inputCurrency=0x7de91b204c1c737bcee6f000aaa6569cf7061cb7&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
               type: "external"
             },
             {
-              title: "About XRT",
-              link: "https://robonomics.network/xrt/",
+              title: "Basilisk",
+              link: "https://app.basilisk.cloud/pools-and-farms",
               type: "external"
-            }
+            },
           ]
         },
 
@@ -72,27 +77,6 @@ export default {
             }
           ]
         },
-
-        {
-          title: "Kusama XCM",
-          links: [
-            {
-              title: "Moonriver",
-              link: "https://apps.moonbeam.network/moonriver",
-              type: "external"
-            },
-            {
-              title: "Basilisk",
-              link: "https://app.basilisk.cloud/pools-and-farms",
-              type: "external"
-            },
-            {
-              title: "Solarbeam",
-              link: "https://analytics.solarbeam.io/pairs/0x5261e0ce96289e6c3a16da45a2e52d1ab1a0e9c3",
-              type: "external"
-            }
-          ]
-        }
       ],
       version: " "
     };
