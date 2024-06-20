@@ -161,14 +161,6 @@ export default {
       );
       const tx = transaction.createTx();
       await transaction.send(tx, call, setup.owner);
-      if (tx.error.value) {
-        if (tx.error.value !== "Cancelled") {
-          setStatus("error", tx.error.value);
-        } else {
-          setStatus("cancel");
-          return;
-        }
-      }
 
       const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
         (item) => item.address === store.state.robonomicsUIvue.polkadot.address
@@ -178,6 +170,15 @@ export default {
           type: accountOld.type,
           extension: store.state.robonomicsUIvue.polkadot.extensionObj
         });
+      }
+
+      if (tx.error.value) {
+        if (tx.error.value !== "Cancelled") {
+          setStatus("error", tx.error.value);
+        } else {
+          setStatus("cancel");
+        }
+        return;
       }
 
       setStatus("ok");
