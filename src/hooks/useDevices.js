@@ -1,5 +1,5 @@
 import { validateAddress } from "@polkadot/util-crypto";
-import { ref, watch } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 import { useRobonomics } from "./useRobonomics";
 
 export const useDevices = (initialOwner = null) => {
@@ -31,6 +31,20 @@ export const useDevices = (initialOwner = null) => {
       immediate: true
     }
   );
+
+  (async () => {
+    const unsubscribe = await robonomics.events.on(
+      { section: "rws", method: "NewDevices" },
+      async (result) => {
+        for (const event of result) {
+          if (event.data[0].toHuman() === owner.value) {
+            await loadDevices();
+          }
+        }
+      }
+    );
+    onUnmounted(unsubscribe);
+  })();
 
   return {
     owner,
