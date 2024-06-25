@@ -140,9 +140,9 @@ export default {
     const robonomics = useRobonomics();
 
     (async () => {
-      freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+      freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
       unsubscribeBlock = await robonomics.events.onBlock(async () => {
-        freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+        freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
       });
 
       const minimalBid = await robonomics.rws.getMinimalBid();

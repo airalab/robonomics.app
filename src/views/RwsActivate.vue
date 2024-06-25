@@ -24,7 +24,6 @@ import { computed, onUnmounted, ref, watchEffect } from "vue";
 
 export default {
   setup() {
-
     const price = ref(0);
     const freeAuctions = ref(0);
     const chainInfoStatus = ref(false);
@@ -37,9 +36,9 @@ export default {
     const devices = useDevices(account);
 
     (async () => {
-      freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+      freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
       unsubscribeBlock = await robonomics.events.onBlock(async () => {
-        freeAuctions.value = (await robonomics.rws.getFreeAuctions()).length;
+        freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
       });
 
       const minimalBid = await robonomics.rws.getMinimalBid();
