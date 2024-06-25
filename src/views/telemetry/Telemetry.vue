@@ -25,6 +25,15 @@ export default {
     const isKey = ref(false);
     const type = ref(store.state.robonomicsUIvue.rws.connection);
 
+    watch(
+      () => store.state.robonomicsUIvue.ipfs.activegateway,
+      (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          window.location.reload();
+        }
+      }
+    );
+
     onUnmounted(async () => {
       if (
         isKey.value &&
