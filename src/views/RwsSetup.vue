@@ -82,6 +82,7 @@ export default {
           await devices.loadDevices();
         }
       }
+      store.commit("rws/setUsers", devices.devices);
       setStatus("ok");
     };
 
@@ -111,6 +112,7 @@ export default {
           await devices.loadDevices();
         }
       }
+      store.commit("rws/setUsers", devices.devices);
       setStatus("ok");
     };
 
