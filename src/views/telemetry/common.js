@@ -196,6 +196,11 @@ export const useConfig = () => {
 
       notify(store, `Start load config`);
       const cid = await getConfigCid(robonomics, controller.value, twin_id);
+      if (!cid) {
+        console.log("Config not found");
+        console.log("controller", controller.value);
+        console.log("twin_id", twin_id);
+      }
 
       config.value = await readFileDecrypt(
         cid,

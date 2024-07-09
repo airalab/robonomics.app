@@ -66,5 +66,8 @@ export const getConfigCid = async (robonomics, controller, twin_id) => {
     return false;
   }
   const configHex = Object.keys(twin).find((key) => twin[key] === controller);
+  if (!configHex) {
+    return false;
+  }
   return utils.hexToCid(configHex);
 };
