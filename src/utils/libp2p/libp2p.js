@@ -1,31 +1,31 @@
 import { noise } from "@chainsafe/libp2p-noise";
 import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
 import { identify } from "@libp2p/identify";
-import { keychain } from "@libp2p/keychain";
-import { defaultLogger } from "@libp2p/logger";
+// import { keychain } from "@libp2p/keychain";
+// import { defaultLogger } from "@libp2p/logger";
 import { mplex } from "@libp2p/mplex";
 import { webRTC } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
 import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
-import { LevelDatastore } from "datastore-level";
-import { Key } from "interface-datastore";
+// import { LevelDatastore } from "datastore-level";
+// import { Key } from "interface-datastore";
 import { createLibp2p } from "libp2p";
 import { createHa } from "./ha";
 
 export async function createNode() {
-  const selfKey = new Key("/pkcs8/self");
-  const datastore = new LevelDatastore(`libp2p/data`);
-  const chain = keychain()({
-    datastore: datastore,
-    logger: defaultLogger()
-  });
-  let peerId;
-  if (await datastore.has(selfKey)) {
-    peerId = await chain.exportPeerId("self");
-  }
+  // const selfKey = new Key("/pkcs8/self");
+  // const datastore = new LevelDatastore(`libp2p/data`);
+  // const chain = keychain()({
+  //   datastore: datastore,
+  //   logger: defaultLogger()
+  // });
+  // let peerId;
+  // if (await datastore.has(selfKey)) {
+  //   peerId = await chain.exportPeerId("self");
+  // }
   const node = await createLibp2p({
-    peerId: peerId,
+    // peerId: peerId,
     addresses: {
       listen: ["/webrtc"]
     },
@@ -51,9 +51,9 @@ export async function createNode() {
       minConnections: 0
     }
   });
-  if (chain != null && !(await datastore.has(selfKey))) {
-    await chain.importPeer("self", node.peerId);
-  }
+  // if (chain != null && !(await datastore.has(selfKey))) {
+  //   await chain.importPeer("self", node.peerId);
+  // }
   return node;
 }
 
