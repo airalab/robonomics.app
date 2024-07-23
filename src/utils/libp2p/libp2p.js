@@ -80,11 +80,10 @@ export function checkLocalUri(localMultiaddr) {
     });
   });
 }
-function relay(peer_id) {
-  // return `/ip4/192.168.20.32/tcp/4040/ws/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`;
-  return `/dns4/libp2p-relay-1.robonomics.network/tcp/443/wss/p2p/12D3KooWEMFXXvpZUjAuj1eKR11HuzZTCQ5HmYG9MNPtsnqPSERD/p2p-circuit/p2p/${peer_id}`;
-  // return `/dns4/libp2p-relay.robonomics.network/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${peer_id}`;
-  // return `/dns4/vol4.work.gd/tcp/443/wss/p2p/12D3KooWEmZfGh3HEy7rQPKZ8DpJRYfFcbULN97t3hGwkB5xPmjn/p2p-circuit/p2p/${result.peer_id}`
+function defaultRelay(peer_id) {
+  return multiaddr(
+    `/dns4/libp2p-relay-1.robonomics.network/tcp/443/wss/p2p/12D3KooWEMFXXvpZUjAuj1eKR11HuzZTCQ5HmYG9MNPtsnqPSERD/p2p-circuit/p2p/${peer_id}`
+  );
 }
 export async function connectMultiaddress(peer_id, peer_multiaddress) {
   if (peer_multiaddress.length > 0) {
@@ -95,7 +94,7 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
       const protos = localMultiaddr.protoNames();
       if (protos.includes("ws") || protos.includes("wss")) {
         if (protos.includes("p2p-circuit")) {
-          circuit.push(peer_multiaddr);
+          circuit.push(localMultiaddr);
         } else if (
           window.location.protocol !== "https:" ||
           protos.includes("wss")
@@ -109,7 +108,7 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
       try {
         const loc = await Promise.any(localMultiaddrs);
         await connect(loc);
-        return true;
+        return loc;
       } catch (error) {
         console.log(error);
       }
@@ -119,7 +118,7 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
       for (const addr of circuit) {
         try {
           await connect(addr);
-          return true;
+          return addr;
         } catch (error) {
           console.log(error);
         }
@@ -127,8 +126,9 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
     }
   }
   try {
-    await connect(relay(peer_id));
-    return true;
+    const addr = defaultRelay(peer_id);
+    await connect(addr);
+    return addr;
   } catch (error) {
     console.log(error);
   }

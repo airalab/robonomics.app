@@ -61,7 +61,7 @@ export const useData = () => {
             notify(store, `Error: decryptMsg`);
           }
         });
-        return true;
+        return connected;
       }
     } catch (error) {
       notify(store, `Error: ${error.message}`);

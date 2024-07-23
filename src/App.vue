@@ -51,10 +51,29 @@ export default {
 
     watch(route, () => {
       title.value = route?.meta?.title;
-      const resulttitle = title.value ? `${title.value} / Robonomics Dapp` : "Robonomics Dapp";
+      const resulttitle = title.value
+        ? `${title.value} / Robonomics Dapp`
+        : "Robonomics Dapp";
       document.title = resulttitle;
-      document.querySelector('meta[property="og:title"]').setAttribute("content", resulttitle);
+      document
+        .querySelector('meta[property="og:title"]')
+        .setAttribute("content", resulttitle);
     });
+
+    watch(
+      [route, RobonomicsProvider.isReady],
+      ([route, isReady]) => {
+        if (route.name !== "telemetry" && isReady) {
+          store.dispatch("app/setlibp2p", {
+            connected: false
+          });
+          store.dispatch("app/setrelay", {
+            connected: false
+          });
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       isReady: RobonomicsProvider.isReady,

@@ -3,6 +3,7 @@
     v-if="type === 'libp2p'"
     :config="config"
     :isKey
+    @connected="handlerConnected"
     @error="handlerError"
   />
   <Launch v-else :config="config" :isKey />
@@ -23,7 +24,7 @@ export default {
     const robonomics = useRobonomics();
     const { config, load } = useConfig();
     const isKey = ref(false);
-    const type = ref(store.state.robonomicsUIvue.rws.connection);
+    const type = ref("libp2p");
 
     watch(
       () => store.state.robonomicsUIvue.ipfs.activegateway,
@@ -63,22 +64,35 @@ export default {
         } else {
           console.log("NOT KEY");
         }
-      }
-    );
-
-    watch(
-      () => store.state.robonomicsUIvue.rws.connection,
-      async (value) => {
-        type.value = value;
-      }
+      },
+      { immediate: true }
     );
 
     return {
       type,
       isKey,
       config,
-      handlerError: () => {
-        store.commit("rws/setConnection", "parachain");
+      handlerConnected: (result) => {
+        store.dispatch("app/setlibp2p", {
+          connected: true
+        });
+        let relay = false;
+        if (result.protoNames().includes("p2p-circuit")) {
+          relay = true;
+        }
+        store.dispatch("app/setrelay", {
+          connected: relay
+        });
+      },
+      handlerError: (e) => {
+        console.log(e);
+        type.value = "parachain";
+        store.dispatch("app/setlibp2p", {
+          connected: false
+        });
+        store.dispatch("app/setrelay", {
+          connected: false
+        });
       }
     };
   }

@@ -22,7 +22,7 @@ export default {
       type: Object
     }
   },
-  emits: ["error"],
+  emits: ["connected", "error"],
   setup(props, { emit }) {
     const { data, updateTime, run, launch } = useData();
     const store = useStore();
@@ -41,10 +41,14 @@ export default {
                 config.peer_id,
                 config.libp2p_multiaddress
               );
-              if (!result) {
-                emit("error");
+              if (result) {
+                emit("connected", result);
+              } else {
+                emit("error", new Error("connect"));
               }
             })();
+          } else {
+            emit("error", new Error("not found peer_id"));
           }
         }
       },
