@@ -23,3 +23,12 @@ export function fromUnit(v, decimals = 0, dp) {
 export function toUnit(v, decimals = 0) {
   return toDecimal(v).mul(new Decimal(10).pow(decimals.toString())).toString();
 }
+
+export function showVersion() {
+  console.log(
+    "Build version:",
+    process.env.VUE_APP_GIT_BRANCH,
+    process.env.VUE_APP_GIT_TAG,
+    process.env.VUE_APP_GIT_SHA
+  );
+}

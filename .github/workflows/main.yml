@@ -11,6 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Find Tag
+        id: tagger
+        uses: jimschubert/query-tag-action@v1
+        with:
+          include: 'v*'
+
+      - name: Set env
+        run: |
+          echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+          echo "git_branch=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
+
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
@@ -31,6 +42,9 @@ jobs:
       - run: yarn build
         env:
           VUE_APP_ROBONOMICS_UI_KEY: ${{ vars.VUE_APP_ROBONOMICS_UI_KEY }}
+          VUE_APP_GIT_BRANCH: ${{ env.git_branch }}
+          VUE_APP_GIT_TAG: ${{ steps.tagger.outputs.tag }}
+          VUE_APP_GIT_SHA: ${{ env.git_hash }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

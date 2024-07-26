@@ -7,10 +7,13 @@ import robonomics from "./plugins/robonomics";
 import router from "./router";
 import store from "./store";
 import filters from "./utils/filters";
+import { showVersion } from "./utils/tools";
 
 import "robonomics-ui-vue/style.css";
 
 window.Buffer = Buffer;
+
+showVersion();
 
 const app = createApp(App);
 
