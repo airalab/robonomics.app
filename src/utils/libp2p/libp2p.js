@@ -56,31 +56,7 @@ export async function createNode() {
   // }
   return node;
 }
-
-export function checkLocalUri(localMultiaddr) {
-  const address = localMultiaddr.nodeAddress();
-  if (address.address === "127.0.0.1") {
-    return Promise.reject(0);
-  }
-  const uri = `ws://${address.address}:${address.port}`;
-  return new Promise((res, rej) => {
-    const ws = new WebSocket(uri);
-    const timeoutId = setTimeout(() => {
-      ws.close();
-      rej(new Error(`timeout ${localMultiaddr}`));
-    }, 10000);
-    ws.addEventListener("error", () => {
-      clearTimeout(timeoutId);
-      rej(new Error(`connect ${localMultiaddr}`));
-    });
-    ws.addEventListener("open", () => {
-      ws.close();
-      clearTimeout(timeoutId);
-      res(localMultiaddr);
-    });
-  });
-}
-function defaultRelay(peer_id) {
+export function defaultRelay(peer_id) {
   return multiaddr(
     `/dns4/libp2p-relay-1.robonomics.network/tcp/443/wss/p2p/12D3KooWEMFXXvpZUjAuj1eKR11HuzZTCQ5HmYG9MNPtsnqPSERD/p2p-circuit/p2p/${peer_id}`
   );
@@ -99,18 +75,19 @@ export async function connectMultiaddress(peer_id, peer_multiaddress) {
           window.location.protocol !== "https:" ||
           protos.includes("wss")
         ) {
-          localMultiaddrs.push(checkLocalUri(localMultiaddr));
+          localMultiaddrs.push(localMultiaddr);
         }
       }
     }
 
     if (localMultiaddrs.length > 0) {
-      try {
-        const loc = await Promise.any(localMultiaddrs);
-        await connect(loc);
-        return loc;
-      } catch (error) {
-        console.log(error);
+      for (const addr of localMultiaddrs) {
+        try {
+          await connect(addr);
+          return addr;
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
 
@@ -188,13 +165,13 @@ export async function reconnect(addr) {
     // }, 3000);
   }
 }
-
 export async function connect(addr) {
+  console.log("connect to", addr.toString());
   if (!connections.includes(addr)) {
     const listenerMultiaddr = multiaddr(addr);
     connection = await node.dial(listenerMultiaddr);
-    console.log("Connect", listenerMultiaddr.toJSON());
   }
+  return addr;
 }
 
 export async function disconnect() {

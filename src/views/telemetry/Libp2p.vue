@@ -43,6 +43,19 @@ export default {
               );
               if (result) {
                 emit("connected", result);
+                if (!result.protoNames().includes("p2p-circuit")) {
+                  const gateway = `http://${
+                    result.nodeAddress().address
+                  }:8080/ipfs/`;
+                  if (
+                    store.state.robonomicsUIvue.ipfs.activegateway !== gateway
+                  ) {
+                    console.log("set local gateway", gateway);
+                    store.commit("ipfs/setActiveGateway", gateway);
+                  }
+                } else {
+                  console.log("relay");
+                }
               } else {
                 emit("error", new Error("connect"));
               }

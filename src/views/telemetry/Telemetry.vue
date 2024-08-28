@@ -26,15 +26,6 @@ export default {
     const isKey = ref(false);
     const type = ref("libp2p");
 
-    watch(
-      () => store.state.robonomicsUIvue.ipfs.activegateway,
-      (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-          window.location.reload();
-        }
-      }
-    );
-
     onUnmounted(async () => {
       if (
         isKey.value &&
@@ -85,7 +76,8 @@ export default {
         });
       },
       handlerError: (e) => {
-        console.log(e);
+        console.log(e.message);
+        console.log("switch to parachain");
         type.value = "parachain";
         store.dispatch("app/setlibp2p", {
           connected: false
