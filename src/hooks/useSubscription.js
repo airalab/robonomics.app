@@ -1,25 +1,86 @@
+import { createType, TypeRegistry } from "@polkadot/types";
 import { validateAddress } from "@polkadot/util-crypto";
-import { computed, reactive, ref, toRaw, watch } from "vue";
+import { computed, ref, shallowRef, watch } from "vue";
 import { useDevices } from "./useDevices";
 import { useRobonomics } from "./useRobonomics";
 
+const getRegistry = () => {
+  const registry = new TypeRegistry();
+  const types = {
+    PalletRobonomicsRwsSubscription: {
+      _enum: {
+        Lifetime: {
+          tps: "Compact<u32>"
+        },
+        Daily: {
+          days: "Compact<u32>"
+        }
+      }
+    },
+    PalletRobonomicsRwsSubscriptionLedger: {
+      freeWeight: "Compact<u64>",
+      issueTime: "Compact<u64>",
+      lastUpdate: "Compact<u64>",
+      kind: {
+        _enum: {
+          Lifetime: {
+            tps: "Compact<u32>"
+          },
+          Daily: {
+            days: "Compact<u32>"
+          }
+        }
+      }
+    }
+  };
+  registry.register(types);
+  return registry;
+};
+
 export const useSubscription = (initialOwner = null) => {
   const owner = ref(initialOwner);
-  const dataRaw = reactive({ value: null });
+  const dataRaw = shallowRef(null);
 
-  const robonomics = useRobonomics();
+  const { isReady, getInstance } = useRobonomics();
   const { devices, loadDevices } = useDevices(owner);
 
   const getReferenceCallWeight = () => {
-    return robonomics.api.consts.rws.referenceCallWeight;
+    return getInstance().api.consts.rws.referenceCallWeight;
   };
 
   const getLedger = async (owner) => {
-    const res = await robonomics.rws.getLedger(owner);
-    if (!res.isEmpty) {
-      return res.value;
+    if (!isReady.value) {
+      const data = localStorage.getItem(`hasubscription:${owner}`);
+      if (data) {
+        try {
+          const parsedData = JSON.parse(data);
+          // if (parsedData.time + DAYS_TO_MS > Date.now()) {
+          const res = createType(
+            getRegistry(),
+            "Option<PalletRobonomicsRwsSubscriptionLedger>",
+            parsedData.value
+          );
+          console.log("getLedger cache");
+          return { data: res.value, cache: true };
+          // }
+        } catch (error) {
+          console.log("hasubscription bad", error);
+        }
+      } else {
+        return { data: undefined, cache: true };
+      }
+    } else {
+      const res = await getInstance().rws.getLedger(owner);
+      if (!res.isEmpty) {
+        localStorage.setItem(
+          `hasubscription:${owner}`,
+          JSON.stringify({ time: Date.now(), value: res.value.toJSON() })
+        );
+        console.log("getLedger chain");
+        return { data: res.value, cache: false };
+      }
     }
-    return;
+    return { data: undefined, cache: false };
   };
 
   const DAYS_TO_MS = 24 * 60 * 60 * 1000;
@@ -63,14 +124,13 @@ export const useSubscription = (initialOwner = null) => {
     if (dataRaw.value === null) {
       return null;
     }
-    const dataRawObject = toRaw(dataRaw);
-    if (dataRawObject.value.kind.isLifetime) {
+    if (dataRaw.value.kind.isLifetime) {
       return null;
     }
-    const issue_time = dataRawObject.value.issueTime.toNumber();
+    const issue_time = dataRaw.value.issueTime.toNumber();
     let days = 0;
-    if (dataRawObject.value.kind.isDaily) {
-      days = dataRawObject.value.kind.value.days.toNumber();
+    if (dataRaw.value.kind.isDaily) {
+      days = dataRaw.value.kind.value.days.toNumber();
     }
     return issue_time + days * DAYS_TO_MS;
   });
@@ -79,10 +139,9 @@ export const useSubscription = (initialOwner = null) => {
     if (dataRaw.value === null) {
       return 0;
     }
-    const dataRawObject = toRaw(dataRaw);
     let days = 0;
-    if (dataRawObject.value.kind.isDaily) {
-      days = dataRawObject.value.kind.value.days.toNumber();
+    if (dataRaw.value.kind.isDaily) {
+      days = dataRaw.value.kind.value.days.toNumber();
     }
     return days / 30;
   });
@@ -105,10 +164,20 @@ export const useSubscription = (initialOwner = null) => {
     if (owner.value) {
       try {
         validateAddress(owner.value);
-        const ledger = await getLedger(owner.value);
-        if (ledger) {
-          dataRaw.value = ledger;
-          return;
+        const result = await getLedger(owner.value);
+        dataRaw.value = result.data;
+        if (result.cache) {
+          const stop = watch(
+            isReady,
+            async () => {
+              if (isReady.value) {
+                const result = await getLedger(owner.value);
+                dataRaw.value = result.data;
+                stop();
+              }
+            },
+            { immediate: true }
+          );
         }
         // eslint-disable-next-line no-empty
       } catch (error) {

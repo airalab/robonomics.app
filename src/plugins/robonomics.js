@@ -1,18 +1,20 @@
 import keyring from "@polkadot/ui-keyring";
 import { Robonomics } from "robonomics-interface";
-import { reactive, ref, toRaw } from "vue";
+import { ref, shallowRef } from "vue";
 import AccountManager from "./robonomicsAccountManager";
 
 export default {
   install: async (app, params) => {
     const isReady = ref(false);
-    const instance = reactive({ value: undefined });
+    const instance = shallowRef();
+    const accountManager = new AccountManager(keyring);
     app.provide("RobonomicsProvider", {
       isReady,
-      instance
+      instance,
+      accountManager
     });
     instance.value = await Robonomics.createInstance(params);
-    toRaw(instance).value.setAccountManager(new AccountManager(keyring));
+    instance.value.setAccountManager(accountManager);
     isReady.value = true;
   }
 };

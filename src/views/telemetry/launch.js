@@ -16,7 +16,7 @@ export const useData = () => {
 
   const store = useStore();
   const ipfs = useIpfs();
-  const robonomics = useRobonomics();
+  const { isReady, getInstance, accountManager } = useRobonomics();
   const transaction = useSend();
   const devices = useDevices();
   const { controller, owner } = useSetup();
@@ -31,7 +31,10 @@ export const useData = () => {
 
   let unsubscribeDatalog;
   const watchDatalog = async () => {
-    unsubscribeDatalog = await robonomics.datalog.on(
+    if (!isReady.value) {
+      return;
+    }
+    unsubscribeDatalog = await getInstance().datalog.on(
       { method: "NewRecord" },
       (results) => {
         const r = results.filter((item) => {
@@ -53,15 +56,15 @@ export const useData = () => {
     data.value = await readFileDecrypt(
       cid.value,
       controller.value,
-      robonomics.accountManager.encryptor(),
+      accountManager.encryptor(),
       store,
       ipfs
     );
   });
 
   const run = async () => {
-    if (controller.value) {
-      const datalog = await getLastDatalog(robonomics, controller.value);
+    if (isReady.value && controller.value) {
+      const datalog = await getLastDatalog(getInstance(), controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
     }
@@ -88,9 +91,7 @@ export const useData = () => {
     notify(store, `Launch command`);
     console.log(`command ${JSON.stringify(command)}`);
 
-    if (
-      !devices.devices.value.includes(robonomics.accountManager.account.address)
-    ) {
+    if (!devices.devices.value.includes(accountManager.account.address)) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
       return;
@@ -100,15 +101,11 @@ export const useData = () => {
       notify(store, `Authorization on ipfs node`);
       try {
         const signature = (
-          await robonomics.accountManager.account.signMsg(
-            stringToU8a(robonomics.accountManager.account.address)
+          await accountManager.account.signMsg(
+            stringToU8a(accountManager.account.address)
           )
         ).toString();
-        ipfs.auth(
-          owner.value,
-          robonomics.accountManager.account.address,
-          signature
-        );
+        ipfs.auth(owner.value, accountManager.account.address, signature);
       } catch (error) {
         if (error.message === "Cancelled") {
           setStatusLaunch(store, command, "declined");
@@ -121,7 +118,7 @@ export const useData = () => {
       setStatusLaunch(store, command, "approved");
     }
 
-    const encryptor = robonomics.accountManager.encryptor();
+    const encryptor = accountManager.encryptor();
     const controllerPublicKey = decodeAddress(controller.value);
 
     let commandCid;
@@ -139,8 +136,14 @@ export const useData = () => {
     }
     console.log(`launch ipfs file ${commandCid.path}`);
 
+    if (!isReady.value) {
+      notify(store, `Error: Robonomics is not ready.`);
+      setStatusLaunch(store, command, "error");
+      return;
+    }
+
     notify(store, `Send launch`);
-    const call = robonomics.launch.send(controller.value, commandCid.path);
+    const call = getInstance().launch.send(controller.value, commandCid.path);
     const tx = transaction.createTx();
     await transaction.send(tx, call, owner.value);
     if (tx.error.value) {

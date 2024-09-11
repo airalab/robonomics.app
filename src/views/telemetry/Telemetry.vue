@@ -21,23 +21,24 @@ export default {
   components: { Libp2p, Launch },
   setup() {
     const store = useStore();
-    const robonomics = useRobonomics();
+    const { isReady, accountManager } = useRobonomics();
     const { config, load } = useConfig();
     const isKey = ref(false);
     const type = ref("libp2p");
 
     onUnmounted(async () => {
       if (
+        isReady.value &&
         isKey.value &&
         store.state.robonomicsUIvue.polkadot.address !==
-          robonomics.accountManager.account.address
+          accountManager.account.address
       ) {
         const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
           (item) =>
             item.address === store.state.robonomicsUIvue.polkadot.address
         );
         if (accountOld) {
-          await robonomics.accountManager.setSender(accountOld.address, {
+          await accountManager.setSender(accountOld.address, {
             type: accountOld.type,
             extension: store.state.robonomicsUIvue.polkadot.extensionObj
           });
@@ -47,9 +48,9 @@ export default {
 
     watch(
       () => store.state.robonomicsUIvue.rws.user.key,
-      async (value) => {
-        if (value) {
-          await robonomics.accountManager.addPair(value);
+      async (key) => {
+        if (key) {
+          await accountManager.addPair(key);
           isKey.value = true;
           load();
         } else {

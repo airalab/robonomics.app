@@ -3,13 +3,13 @@ import { useRobonomics } from "./useRobonomics";
 import { useSubscription } from "./useSubscription";
 
 export const useSend = () => {
-  const robonomics = useRobonomics();
+  const { isReady, getInstance, accountManager } = useRobonomics();
   const { getFreeWeightCalc } = useSubscription();
 
   const getCallWeight = async (tx, signer) => {
     if (!signer) {
-      if (robonomics.accountManager.account) {
-        signer = robonomics.accountManager.account.address;
+      if (accountManager.account) {
+        signer = accountManager.account.address;
       } else {
         throw new Error("Signer required");
       }
@@ -41,6 +41,12 @@ export const useSend = () => {
     tx.result.value = null;
     tx.error.value = null;
     tx.process.value = true;
+    if (!isReady.value) {
+      tx.error.value = "Robonomics is not ready";
+      tx.process.value = false;
+      return;
+    }
+    const robonomics = getInstance();
     try {
       if (subscription) {
         await checkWeight(call, subscription);

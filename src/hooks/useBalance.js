@@ -3,12 +3,16 @@ import { useRobonomics } from "./useRobonomics";
 
 export const useBalance = (account) => {
   const balance = ref(null);
-  const robonomics = useRobonomics();
+  const { isReady, getInstance } = useRobonomics();
   let unsubscribe;
-  watch(account, async () => {
+  watch([account, isReady], async () => {
     if (unsubscribe) {
       unsubscribe();
     }
+    if (!isReady.value) {
+      return;
+    }
+    const robonomics = getInstance();
     unsubscribe = await robonomics.account.getBalance(account.value, (r) => {
       balance.value = r.free.sub(r.feeFrozen).toNumber();
     });

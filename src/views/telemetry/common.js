@@ -140,11 +140,12 @@ export const useLastDatalog = () => {
 
   const store = useStore();
   const ipfs = useIpfs();
-  const robonomics = useRobonomics();
+  const { isReady, getInstance } = useRobonomics();
   const { controller } = useSetup();
 
   (async () => {
-    if (controller.value) {
+    if (isReady.value && controller.value) {
+      const robonomics = getInstance();
       const datalog = await getLastDatalog(robonomics, controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
@@ -166,55 +167,96 @@ export const useConfig = () => {
 
   const store = useStore();
   const ipfs = useIpfs();
-  const robonomics = useRobonomics();
+  const { isReady, getInstance, accountManager } = useRobonomics();
   const { controller } = useSetup();
+
+  const getConfig = async (controller) => {
+    if (!isReady.value) {
+      const data = localStorage.getItem(`haconfig:${controller}`);
+      if (data) {
+        try {
+          const parsedData = JSON.parse(data);
+          console.log("getConfig cache");
+          return { data: parsedData.value, cache: true };
+        } catch (error) {
+          console.log("haconfig bad", error);
+        }
+      } else {
+        return { data: null, cache: true };
+      }
+    } else {
+      const robonomics = getInstance();
+
+      const datalog = await getLastDatalog(robonomics, controller);
+      const result = await readFileDecrypt(
+        datalog.cid,
+        controller,
+        accountManager.encryptor(),
+        store,
+        ipfs
+      );
+
+      if (result) {
+        const twin_id = result.twin_id;
+        notify(store, `Twin id #${twin_id}`);
+
+        notify(store, `Start load config`);
+        const cid = await getConfigCid(robonomics, controller, twin_id);
+        if (!cid) {
+          console.log("Config not found");
+          console.log("controller", controller);
+          console.log("twin_id", twin_id);
+        }
+
+        const config = await readFileDecrypt(
+          cid,
+          controller,
+          accountManager.encryptor(),
+          store,
+          ipfs
+        );
+
+        localStorage.setItem(
+          `haconfig:${controller}`,
+          JSON.stringify({ time: Date.now(), value: config })
+        );
+        console.log("getConfig chain");
+
+        return { data: config, cache: false };
+      }
+    }
+    return { data: null, cache: false };
+  };
 
   const load = async () => {
     notify(store, "Find twin id");
 
     if (
       !controller.value ||
-      !robonomics.accountManager.account ||
-      robonomics.accountManager.account.type !== "ed25519"
+      !accountManager.account ||
+      accountManager.account.type !== "ed25519"
     ) {
       notify(store, "Error");
       return;
     }
 
-    const datalog = await getLastDatalog(robonomics, controller.value);
-    const result = await readFileDecrypt(
-      datalog.cid,
-      controller.value,
-      robonomics.accountManager.encryptor(),
-      store,
-      ipfs
-    );
-
-    if (result) {
-      const twin_id = result.twin_id;
-      notify(store, `Twin id #${twin_id}`);
-
-      notify(store, `Start load config`);
-      const cid = await getConfigCid(robonomics, controller.value, twin_id);
-      if (!cid) {
-        console.log("Config not found");
-        console.log("controller", controller.value);
-        console.log("twin_id", twin_id);
-      }
-
-      config.value = await readFileDecrypt(
-        cid,
-        controller.value,
-        robonomics.accountManager.encryptor(),
-        store,
-        ipfs
+    const result = await getConfig(controller.value);
+    config.value = result.data;
+    if (result.cache) {
+      const stop = watch(
+        isReady,
+        async () => {
+          if (isReady.value) {
+            const result = await getConfig(controller.value);
+            config.value = result.data;
+            stop();
+          }
+        },
+        { immediate: true }
       );
+    }
 
-      localStorage.setItem(
-        `haconfig:${controller.value}`,
-        JSON.stringify(config.value)
-      );
-
+    if (config.value !== null) {
       notify(store, `Config loaded`);
     }
   };

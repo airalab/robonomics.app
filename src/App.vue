@@ -1,16 +1,10 @@
 <template>
-  <main-layout v-if="isReady" :pagetitle="title">
+  <main-layout :pagetitle="title">
     <router-view />
   </main-layout>
-  <loader-layout v-else :pagetitle="title">
-    <robo-layout-section gcenter>
-      <robo-loader size="2" />
-    </robo-layout-section>
-  </loader-layout>
 </template>
 
 <script>
-import LoaderLayout from "@/components/layouts/Loader.vue";
 import MainLayout from "@/components/layouts/Main.vue";
 import { inject, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -19,7 +13,6 @@ import { useStore } from "vuex";
 export default {
   name: "App",
   components: {
-    LoaderLayout,
     MainLayout
   },
   setup() {
@@ -76,7 +69,6 @@ export default {
     );
 
     return {
-      isReady: RobonomicsProvider.isReady,
       title
     };
   }

@@ -20,7 +20,7 @@ import { useSend } from "@/hooks/useSend";
 import { useSubscription } from "@/hooks/useSubscription";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
-import { computed, onUnmounted, ref, watchEffect } from "vue";
+import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
 
 export default {
   setup() {
@@ -29,22 +29,31 @@ export default {
     const chainInfoStatus = ref(false);
     let unsubscribeBlock = null;
 
-    const robonomics = useRobonomics();
+    const { isReady, getInstance } = useRobonomics();
     const { account, unsubscribe: unsubscribeAccount } = useAccount();
     const { balance, unsubscribe: unsubscribeBalance } = useBalance(account);
     const subscription = useSubscription(account);
     const devices = useDevices(account);
 
-    (async () => {
-      freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-      unsubscribeBlock = await robonomics.events.onBlock(async () => {
-        freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-      });
+    watch(
+      isReady,
+      async (isReady) => {
+        if (isReady) {
+          const robonomics = getInstance();
+          freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
+          unsubscribeBlock = await robonomics.events.onBlock(async () => {
+            freeAuctions.value = (
+              await robonomics.rws.getAuctionQueue()
+            ).length;
+          });
 
-      const minimalBid = await robonomics.rws.getMinimalBid();
-      price.value = minimalBid.add(bnToBn(1));
-      chainInfoStatus.value = true;
-    })();
+          const minimalBid = await robonomics.rws.getMinimalBid();
+          price.value = minimalBid.add(bnToBn(1));
+          chainInfoStatus.value = true;
+        }
+      },
+      { immediate: true }
+    );
 
     onUnmounted(() => {
       if (unsubscribeBlock) {
@@ -58,6 +67,10 @@ export default {
 
     const transaction = useSend();
     const onActivate = async (setStatus) => {
+      if (!isReady.value) {
+        setStatus("error", "Parachain is not ready.");
+        return;
+      }
       if (
         !balance.value ||
         bnToBn(balance.value).lt(price.value.add(bnToBn(10000000)))
@@ -77,6 +90,7 @@ export default {
         return;
       }
 
+      const robonomics = getInstance();
       let call = robonomics.rws.bid(
         Number(await robonomics.rws.getFirtsFreeAuction()),
         price.value
@@ -111,7 +125,14 @@ export default {
     };
 
     const priceFormat = computed(() => {
-      return fromUnit(price.value, robonomics.api.registry.chainDecimals[0]);
+      if (isReady.value) {
+        return fromUnit(
+          price.value,
+          getInstance().api.registry.chainDecimals[0],
+          0
+        );
+      }
+      return 0;
     });
 
     return {

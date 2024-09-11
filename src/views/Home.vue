@@ -120,7 +120,7 @@
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -137,17 +137,25 @@ export default {
       return store.state.robonomicsUIvue.rws.links.activate;
     });
 
-    const robonomics = useRobonomics();
+    const { isReady, getInstance } = useRobonomics();
 
-    (async () => {
-      freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-      unsubscribeBlock = await robonomics.events.onBlock(async () => {
-        freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-      });
-
-      const minimalBid = await robonomics.rws.getMinimalBid();
-      price.value = minimalBid.add(bnToBn(1));
-    })();
+    watch(
+      isReady,
+      async (isReady) => {
+        if (isReady) {
+          const robonomics = getInstance();
+          freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
+          unsubscribeBlock = await robonomics.events.onBlock(async () => {
+            freeAuctions.value = (
+              await robonomics.rws.getAuctionQueue()
+            ).length;
+          });
+          const minimalBid = await robonomics.rws.getMinimalBid();
+          price.value = minimalBid.add(bnToBn(1));
+        }
+      },
+      { immediate: true }
+    );
 
     onUnmounted(() => {
       if (unsubscribeBlock) {
@@ -156,7 +164,14 @@ export default {
     });
 
     const priceFormat = computed(() => {
-      return fromUnit(price.value, robonomics.api.registry.chainDecimals[0], 0);
+      if (isReady.value) {
+        return fromUnit(
+          price.value,
+          getInstance().api.registry.chainDecimals[0],
+          0
+        );
+      }
+      return 0;
     });
 
     return {

@@ -27,7 +27,7 @@ export default {
       return store.state.robonomicsUIvue.rws.active;
     });
 
-    const robonomics = useRobonomics();
+    const { isReady, getInstance } = useRobonomics();
     const transaction = useSend();
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
@@ -55,13 +55,17 @@ export default {
     };
 
     const addUser = async (user, setStatus) => {
+      if (!isReady.value) {
+        setStatus("error", "Parachain is not ready.");
+        return;
+      }
       if (setupOwner.value && setupOwner.value !== account.value) {
         setStatus("error", "You do not have access to this action.");
         return;
       }
 
       if (!devices.devices.value.includes(user)) {
-        const call = await robonomics.rws.setDevices([
+        const call = await getInstance().rws.setDevices([
           ...devices.devices.value,
           user
         ]);
@@ -87,12 +91,16 @@ export default {
     };
 
     const removeUser = async (user, setStatus) => {
+      if (!isReady.value) {
+        setStatus("error", "Parachain is not ready.");
+        return;
+      }
       if (setupOwner.value && setupOwner.value !== account.value) {
         setStatus("error", "You do not have access to this action.");
         return;
       }
       if (devices.devices.value.includes(user)) {
-        const call = await robonomics.rws.setDevices(
+        const call = await getInstance().rws.setDevices(
           devices.devices.value.filter((item) => item !== user)
         );
         const tx = transaction.createTx();
@@ -117,7 +125,13 @@ export default {
     };
 
     const saveHapass = async (passToSave, setStatus) => {
+      if (!isReady.value) {
+        setStatus("error", "Parachain is not ready.");
+        return;
+      }
       const userAddress = store.state.robonomicsUIvue.rws.user.account;
+
+      const robonomics = getInstance();
 
       await robonomics.accountManager.addPair(
         store.state.robonomicsUIvue.rws.user.key

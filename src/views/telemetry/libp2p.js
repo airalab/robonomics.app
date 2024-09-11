@@ -17,7 +17,7 @@ export const useData = () => {
   const updateTime = ref(null);
 
   const store = useStore();
-  const robonomics = useRobonomics();
+  const { accountManager } = useRobonomics();
   const devices = useDevices();
   const { controller } = useSetup();
 
@@ -37,7 +37,6 @@ export const useData = () => {
     const node = await start();
     try {
       notify(store, `Connect to peer id ${peer_id}`);
-      console.log(peer_multiaddress);
       const connected = await connectMultiaddress(peer_id, peer_multiaddress);
       if (connected) {
         notify(store, `Connected`);
@@ -49,7 +48,7 @@ export const useData = () => {
           const result = await decryptData(
             dataRaw.data,
             controller.value,
-            robonomics.accountManager.encryptor()
+            accountManager.encryptor()
           );
           if (result) {
             data.value = result;
@@ -78,16 +77,14 @@ export const useData = () => {
 
     notify(store, `Launch command`);
 
-    if (
-      !devices.devices.value.includes(robonomics.accountManager.account.address)
-    ) {
+    if (!devices.devices.value.includes(accountManager.account.address)) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
       return;
     }
 
     try {
-      const encryptor = robonomics.accountManager.encryptor();
+      const encryptor = accountManager.encryptor();
       const controllerPublicKey = decodeAddress(controller.value);
       const cmdString = JSON.stringify(command.launch);
       const cmdCrypto = encryptor.encryptMessage(
@@ -96,7 +93,7 @@ export const useData = () => {
       );
       const response = await request({
         data: {
-          sender: robonomics.accountManager.account.address,
+          sender: accountManager.account.address,
           data: u8aToHex(cmdCrypto)
         }
       });

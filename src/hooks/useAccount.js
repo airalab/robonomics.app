@@ -3,11 +3,11 @@ import { useRobonomics } from "./useRobonomics";
 
 export const useAccount = () => {
   const account = ref(null);
-  const robonomics = useRobonomics();
-  if (robonomics.accountManager.account) {
-    account.value = robonomics.accountManager.account.address;
+  const { accountManager } = useRobonomics();
+  if (accountManager.account) {
+    account.value = accountManager.account.address;
   }
-  const unsubscribe = robonomics.accountManager.onChange((res) => {
+  const unsubscribe = accountManager.onChange((res) => {
     account.value = res.address;
   });
   return { account, unsubscribe };
