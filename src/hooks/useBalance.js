@@ -14,7 +14,7 @@ export const useBalance = (account) => {
     }
     const robonomics = getInstance();
     unsubscribe = await robonomics.account.getBalance(account.value, (r) => {
-      balance.value = r.free.sub(r.feeFrozen).toNumber();
+      balance.value = r.free.sub(r.frozen).toNumber();
     });
   });
   return { balance, unsubscribe };

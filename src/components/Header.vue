@@ -53,7 +53,7 @@ export default {
               title: "Basilisk",
               link: "https://app.basilisk.cloud/pools-and-farms",
               type: "external"
-            },
+            }
           ]
         },
 
@@ -76,7 +76,7 @@ export default {
               type: "external"
             }
           ]
-        },
+        }
       ],
       version: " "
     };
@@ -104,6 +104,16 @@ export default {
           this.$store.state.robonomicsUIvue.polkadot.extensionObj.signer.signRaw
         ) {
           this.handlerAccount(value);
+        }
+      },
+      immediate: true
+    },
+    "RobonomicsProvider.isReady.value": {
+      handler: function (newValue, oldValue) {
+        if (newValue && !oldValue) {
+          this.handlerAccount(
+            this.$store.state.robonomicsUIvue.polkadot.address
+          );
         }
       },
       immediate: true
@@ -149,7 +159,7 @@ export default {
       this.unsubscribeBalance = await this.robonomics.account.getBalance(
         address,
         (r) => {
-          const transferable = r.free.sub(r.feeFrozen);
+          const transferable = r.free.sub(r.frozen);
           this.$store.commit(
             "polkadot/setBalanceXRT",
             round(
