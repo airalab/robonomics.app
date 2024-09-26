@@ -179,6 +179,7 @@ export const useSubscription = (initialOwner = null) => {
             { immediate: true }
           );
         }
+        return;
         // eslint-disable-next-line no-empty
       } catch (error) {
         console.log(error);
