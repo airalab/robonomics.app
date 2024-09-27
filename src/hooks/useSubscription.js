@@ -86,7 +86,7 @@ export const useSubscription = (initialOwner = null) => {
   const DAYS_TO_MS = 24 * 60 * 60 * 1000;
 
   const getFreeWeightCalc = async (owner) => {
-    const ledger = await getLedger(owner);
+    const ledger = (await getLedger(owner)).data;
     if (!ledger) {
       return -1;
     }

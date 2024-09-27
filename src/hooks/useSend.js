@@ -14,7 +14,10 @@ export const useSend = () => {
         throw new Error("Signer required");
       }
     }
-    return (await tx.paymentInfo(signer)).weight.toNumber();
+    if (tx.hasPaymentInfo) {
+      return (await tx.paymentInfo(signer)).weight.toNumber();
+    }
+    return 0;
   };
 
   const checkWeight = async (tx, owner) => {
