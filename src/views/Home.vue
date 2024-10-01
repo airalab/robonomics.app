@@ -92,7 +92,7 @@
         <robo-text weight="normal-italic" size="small" offset="x1">
           Easy to start for Home Assistant users.
           <robo-link
-            href="https://wiki.robonomics.network/docs/hass-image-install/#hardware-you-need-for-installation"
+            href="https://wiki.robonomics.network/docs/install-smart-home/"
           >
             Guide to start
           </robo-link>
