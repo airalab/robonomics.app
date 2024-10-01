@@ -121,7 +121,7 @@ export const useSubscription = (initialOwner = null) => {
   };
 
   const validUntil = computed(() => {
-    if (dataRaw.value === null) {
+    if (!dataRaw.value) {
       return null;
     }
     if (dataRaw.value.kind.isLifetime) {
@@ -136,7 +136,7 @@ export const useSubscription = (initialOwner = null) => {
   });
 
   const countMonth = computed(() => {
-    if (dataRaw.value === null) {
+    if (!dataRaw.value) {
       return 0;
     }
     let days = 0;
@@ -148,7 +148,7 @@ export const useSubscription = (initialOwner = null) => {
 
   const isActive = computed(() => {
     if (
-      dataRaw.value === null ||
+      !dataRaw.value ||
       (validUntil.value !== null && Date.now() > validUntil.value)
     ) {
       return false;
@@ -157,7 +157,7 @@ export const useSubscription = (initialOwner = null) => {
   });
 
   const hasSubscription = computed(() => {
-    return dataRaw.value !== null;
+    return dataRaw.value;
   });
 
   const loadLedger = async () => {
