@@ -1,7 +1,7 @@
 ---
-name: Short Title (2-3) words
+name: Bug Report
 about: Bug Report Template
-title: "[BUG]"
+title: "[BUG] Title of  2-3 words "
 labels: bug
 assignees: ''
 
