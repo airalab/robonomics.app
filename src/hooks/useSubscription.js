@@ -49,8 +49,13 @@ export const useSubscription = (initialOwner = null) => {
   };
 
   const getLedger = async (owner) => {
+    const endpoint =
+      localStorage.getItem("rpc-parachain") ||
+      "wss://kusama.rpc.robonomics.network/";
+    const lsKey = `hasubscription:${endpoint}:${owner}`;
+
     if (!isReady.value) {
-      const data = localStorage.getItem(`hasubscription:${owner}`);
+      const data = localStorage.getItem(lsKey);
       if (data) {
         try {
           const parsedData = JSON.parse(data);
@@ -73,7 +78,7 @@ export const useSubscription = (initialOwner = null) => {
       const res = await getInstance().rws.getLedger(owner);
       if (!res.isEmpty) {
         localStorage.setItem(
-          `hasubscription:${owner}`,
+          lsKey,
           JSON.stringify({ time: Date.now(), value: res.value.toJSON() })
         );
         console.log("getLedger chain");

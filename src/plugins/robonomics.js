@@ -4,7 +4,7 @@ import { ref, shallowRef } from "vue";
 import AccountManager from "./robonomicsAccountManager";
 
 export default {
-  install: async (app, params) => {
+  install: async (app, params = {}) => {
     const isReady = ref(false);
     const instance = shallowRef();
     const accountManager = new AccountManager(keyring);
@@ -13,7 +13,23 @@ export default {
       instance,
       accountManager
     });
-    instance.value = await Robonomics.createInstance(params);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let endpoint = urlParams.get("rpc");
+
+    if (!endpoint) {
+      endpoint =
+        localStorage.getItem("rpc-parachain") ||
+        "wss://kusama.rpc.robonomics.network/";
+    }
+    localStorage.setItem("rpc-parachain", endpoint);
+    const config = {
+      // endpoint: "ws://127.0.0.1:9944"
+      // endpoint: "wss://kusama.rpc.robonomics.network/"
+      endpoint
+    };
+
+    instance.value = await Robonomics.createInstance({ ...config, ...params });
     instance.value.setAccountManager(accountManager);
     isReady.value = true;
   }

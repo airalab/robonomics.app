@@ -8,8 +8,13 @@ export const useDevices = (initialOwner = null) => {
   const devices = ref([]);
 
   const getDevices = async (owner) => {
+    const endpoint =
+      localStorage.getItem("rpc-parachain") ||
+      "wss://kusama.rpc.robonomics.network/";
+    const lsKey = `hadevices:${endpoint}:${owner}`;
+
     if (!isReady.value) {
-      const data = localStorage.getItem(`hadevices:${owner}`);
+      const data = localStorage.getItem(lsKey);
       if (data) {
         try {
           const parsedData = JSON.parse(data);
@@ -28,7 +33,7 @@ export const useDevices = (initialOwner = null) => {
           return item.toHuman();
         });
         localStorage.setItem(
-          `hadevices:${owner}`,
+          lsKey,
           JSON.stringify({ time: Date.now(), value: list })
         );
         console.log("getDevices chain");

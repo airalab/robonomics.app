@@ -171,8 +171,13 @@ export const useConfig = () => {
   const { controller } = useSetup();
 
   const getConfig = async (controller) => {
+    const endpoint =
+      localStorage.getItem("rpc-parachain") ||
+      "wss://kusama.rpc.robonomics.network/";
+    const lsKey = `haconfig:${endpoint}:${controller}`;
+
     if (!isReady.value) {
-      const data = localStorage.getItem(`haconfig:${controller}`);
+      const data = localStorage.getItem(lsKey);
       if (data) {
         try {
           const parsedData = JSON.parse(data);
@@ -217,7 +222,7 @@ export const useConfig = () => {
         );
 
         localStorage.setItem(
-          `haconfig:${controller}`,
+          lsKey,
           JSON.stringify({ time: Date.now(), value: config })
         );
         console.log("getConfig chain");

@@ -21,10 +21,7 @@ app
   .use(router)
   .use(store)
   .use(filters)
-  .use(robonomics, {
-    // endpoint: "ws://127.0.0.1:9944"
-    endpoint: "wss://kusama.rpc.robonomics.network/"
-  })
+  .use(robonomics)
   .use(ipfs, {
     api: { gateway: "https://ipfs.url.today" },
     gateways: [
