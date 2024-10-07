@@ -58,7 +58,7 @@ export const getLastDatalog = async (robonomics, controller) => {
 
 export const getConfigCid = async (robonomics, controller, twin_id) => {
   console.log("getConfigCid");
-  if (!controller || !twin_id) {
+  if (!controller || (!twin_id && twin_id !== 0)) {
     return false;
   }
   const twin = await robonomics.twin.getTwin(twin_id);
