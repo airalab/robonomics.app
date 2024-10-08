@@ -76,6 +76,19 @@ export default {
               type: "external"
             }
           ]
+        },
+        {
+          title: "Robonomics Parachain",
+          links: [
+            {
+              title: "Polkadot",
+              link: "/?rpc=wss%3A%2F%2Fpolkadot.rpc.robonomics.network%2F"
+            },
+            {
+              title: "Kusama",
+              link: "/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F"
+            }
+          ]
         }
       ],
       version: " "
