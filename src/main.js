@@ -26,10 +26,8 @@ app
     api: { gateway: "https://ipfs.url.today" },
     gateways: [
       "https://ipfs.url.today/ipfs/",
-      "https://cf-ipfs.com/ipfs/",
       "https://ipfs.io/ipfs/",
       "https://gateway.pinata.cloud/ipfs/",
-      "https://gateway.ipfs.io/ipfs/",
       "https://aira.mypinata.cloud/ipfs/"
     ]
   })

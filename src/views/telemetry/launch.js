@@ -63,12 +63,21 @@ export const useData = () => {
   });
 
   const run = async () => {
-    if (isReady.value && controller.value) {
-      const datalog = await getLastDatalog(getInstance(), controller.value);
-      cid.value = datalog.cid;
-      updateTime.value = datalog.timestamp;
+    if (controller.value) {
+      if (isReady.value) {
+        const datalog = await getLastDatalog(getInstance(), controller.value);
+        cid.value = datalog.cid;
+        updateTime.value = datalog.timestamp;
+        watchDatalog();
+      } else {
+        const stop = watch(isReady, (isReady) => {
+          if (isReady) {
+            run();
+            stop();
+          }
+        });
+      }
     }
-    watchDatalog();
   };
 
   const stop = () => {

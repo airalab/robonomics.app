@@ -14,22 +14,14 @@ const catFile = async (store, ipfs, cid) => {
     return false;
   }
   try {
-    return await ipfs.catViaGateway(
-      store.state.robonomicsUIvue.ipfs.activegateway,
-      cid,
-      2
-    );
-  } catch (_) {
-    try {
-      const res = await ipfs.catViaGateways(
-        store.state.robonomicsUIvue.ipfs.gateways,
-        cid
+    const res = await ipfs.catViaGateways(
+      store.state.robonomicsUIvue.ipfs.gateways,
+      cid
       );
       store.commit("ipfs/setActiveGateway", res.gateway);
       return res.result;
-    } catch (error) {
-      console.log(error.message);
-    }
+  } catch (error) {
+    console.log(error.message);
   }
   return false;
 };

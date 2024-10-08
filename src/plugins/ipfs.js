@@ -73,7 +73,7 @@ class IpfsApiClient {
     }
     throw new Error("File not available");
   }
-  async catViaGateways(gateways, cid) {
+  async catViaGatewaysRotation(gateways, cid) {
     for (const gateway of gateways) {
       try {
         return {
@@ -85,6 +85,31 @@ class IpfsApiClient {
       }
     }
     throw new Error("File not available");
+  }
+  async catViaGateways(gateways, cid) {
+    const controller = new AbortController();
+    const readFile = async (gateway, cid) => {
+      const response = await axios.get(`${gateway}${cid}`, {
+        signal: controller.signal
+      });
+      controller.abort();
+      return response.data;
+    };
+    const requests = [];
+    for (const gateway of gateways) {
+      requests.push(readFile(gateway, cid));
+    }
+    try {
+      const result = await Promise.any(
+        requests.map((p, i) => p.then((v) => [v, i]))
+      );
+      return {
+        gateway: gateways[result[1]],
+        result: result[0]
+      };
+    } catch (_) {
+      throw new Error("File not available");
+    }
   }
 }
 

@@ -144,6 +144,9 @@ export default {
       if (this.unsubscribeBalance) {
         this.unsubscribeBalance();
       }
+      if (!this.$store.state.robonomicsUIvue.polkadot.accounts) {
+        return;
+      }
       const account = this.$store.state.robonomicsUIvue.polkadot.accounts.find(
         (item) => item.address === address
       );
