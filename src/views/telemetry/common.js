@@ -13,17 +13,12 @@ const catFile = async (store, ipfs, cid) => {
   if (!cid) {
     return false;
   }
-  try {
-    const res = await ipfs.catViaGateways(
-      store.state.robonomicsUIvue.ipfs.gateways,
-      cid
-      );
-      store.commit("ipfs/setActiveGateway", res.gateway);
-      return res.result;
-  } catch (error) {
-    console.log(error.message);
-  }
-  return false;
+  const res = await ipfs.catViaGateways(
+    store.state.robonomicsUIvue.ipfs.gateways,
+    cid
+  );
+  store.commit("ipfs/setActiveGateway", res.gateway);
+  return res.result;
 };
 
 export const decryptData = async (encryptedMsg, controller, account) => {
@@ -58,13 +53,14 @@ export const readFileDecrypt = async (
     const data = await catFile(store, ipfs, cid);
     if (!data) {
       console.log(`Error: ${cid} not found in ipfs`);
-      return null;
+      throw new Error(`${cid} not found in ipfs`);
     }
     const result = await decryptData(data, controller, account);
     if (result) {
       return result;
     } else {
       console.log(`Error: decryptMsg`);
+      throw new Error(`decryptMsg`);
     }
   }
   return null;
@@ -141,13 +137,18 @@ export const useLastDatalog = () => {
       const datalog = await getLastDatalog(robonomics, controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
-      data.value = await readFileDecrypt(
-        cid.value,
-        controller.value,
-        robonomics.accountManager.encryptor(),
-        store,
-        ipfs
-      );
+      try {
+        data.value = await readFileDecrypt(
+          cid.value,
+          controller.value,
+          robonomics.accountManager.encryptor(),
+          store,
+          ipfs
+        );
+      } catch (error) {
+        console.log(error);
+        notify(store, error.message);
+      }
     }
   })();
 
@@ -237,16 +238,29 @@ export const useConfig = () => {
       return;
     }
 
-    const result = await getConfig(controller.value);
+    let result;
+    try {
+      result = await getConfig(controller.value);
+    } catch (error) {
+      console.log(error);
+      notify(store, "Error: " + error.message);
+      return;
+    }
+
     config.value = result.data;
     if (result.cache) {
       const stop = watch(
         isReady,
         async () => {
           if (isReady.value) {
-            const result = await getConfig(controller.value);
-            config.value = result.data;
-            stop();
+            try {
+              const result = await getConfig(controller.value);
+              config.value = result.data;
+              stop();
+            } catch (error) {
+              console.log(error);
+              notify(store, "Error: " + error.message);
+            }
           }
         },
         { immediate: true }

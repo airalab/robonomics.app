@@ -53,13 +53,18 @@ export const useData = () => {
   };
 
   watch(cid, async () => {
-    data.value = await readFileDecrypt(
-      cid.value,
-      controller.value,
-      accountManager.encryptor(),
-      store,
-      ipfs
-    );
+    try {
+      data.value = await readFileDecrypt(
+        cid.value,
+        controller.value,
+        accountManager.encryptor(),
+        store,
+        ipfs
+      );
+    } catch (error) {
+      console.log(error);
+      notify(store, error.message);
+    }
   });
 
   const run = async () => {
