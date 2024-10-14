@@ -63,28 +63,30 @@ export default {
         setStatus("error", "You do not have access to this action.");
         return;
       }
+      if (devices.devices.value.includes(user)) {
+        setStatus("error", "The address is already in the subscription.");
+        return;
+      }
 
-      if (!devices.devices.value.includes(user)) {
-        const call = await getInstance().rws.setDevices([
-          ...devices.devices.value,
-          user
-        ]);
-        const tx = transaction.createTx();
-        if (devices.devices.value.includes(account.value)) {
-          await transaction.send(tx, call, setupOwner.value);
+      const call = await getInstance().rws.setDevices([
+        ...devices.devices.value,
+        user
+      ]);
+      const tx = transaction.createTx();
+      if (devices.devices.value.includes(account.value)) {
+        await transaction.send(tx, call, setupOwner.value);
+      } else {
+        await transaction.send(tx, call);
+      }
+      if (tx.error.value) {
+        if (tx.error.value !== "Cancelled") {
+          setStatus("error", tx.error.value);
         } else {
-          await transaction.send(tx, call);
+          setStatus("cancel");
         }
-        if (tx.error.value) {
-          if (tx.error.value !== "Cancelled") {
-            setStatus("error", tx.error.value);
-          } else {
-            setStatus("cancel");
-          }
-          return;
-        } else {
-          await devices.loadDevices();
-        }
+        return;
+      } else {
+        await devices.loadDevices();
       }
       store.commit("rws/setUsers", devices.devices);
       setStatus("ok");
