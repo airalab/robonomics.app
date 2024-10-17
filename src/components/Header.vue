@@ -150,6 +150,22 @@ export default {
     }
   },
   methods: {
+    setCurrentNetwork() {
+      let network = "kusama";
+      const endpoint = localStorage.getItem("rpc-parachain");
+      if (endpoint) {
+        network = URL.parse(endpoint).host.split(".")[0];
+      }
+      if (network === "polkadot") {
+        this.navigation[3].links[0] = {
+          title: `›Polkadot`
+        };
+      } else {
+        this.navigation[3].links[1] = {
+          title: `›Kusama`
+        };
+      }
+    },
     async handlerAccount(address) {
       if (!this.RobonomicsProvider.isReady.value) {
         return;
@@ -157,6 +173,7 @@ export default {
       if (this.unsubscribeBalance) {
         this.unsubscribeBalance();
       }
+      this.setCurrentNetwork();
       if (!this.$store.state.robonomicsUIvue.polkadot.accounts) {
         return;
       }
