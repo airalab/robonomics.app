@@ -100,20 +100,6 @@
       </robo-section>
     </robo-grid>
   </robo-layout-section>
-
-  <robo-layout-section>
-    <robo-grid id="home-links" offset="x0" :columns="3" gap="x05">
-      <robo-link href="https://www.youtube.com/watch?v=onMv_An8h2Q">
-        <span>What is Robonomics</span>
-      </robo-link>
-      <robo-link href="https://wiki.robonomics.network">
-        <span>Step-by-step tutorials</span>
-      </robo-link>
-      <robo-link href="https://robonomics.academy">
-        <span>Advanced cources</span>
-      </robo-link>
-    </robo-grid>
-  </robo-layout-section>
 </template>
 
 <script>
