@@ -1,3 +1,4 @@
+import configApp from "@/config";
 import keyring from "@polkadot/ui-keyring";
 import { Robonomics } from "robonomics-interface";
 import { ref, shallowRef } from "vue";
@@ -19,8 +20,7 @@ export default {
 
     if (!endpoint) {
       endpoint =
-        localStorage.getItem("rpc-parachain") ||
-        "wss://kusama.rpc.robonomics.network/";
+        localStorage.getItem("rpc-parachain") || configApp.default_rpc_endpoint;
     }
     localStorage.setItem("rpc-parachain", endpoint);
     const config = {

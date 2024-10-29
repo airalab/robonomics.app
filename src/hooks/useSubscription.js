@@ -1,3 +1,4 @@
+import configApp from "@/config";
 import { createType, TypeRegistry } from "@polkadot/types";
 import { validateAddress } from "@polkadot/util-crypto";
 import { computed, ref, shallowRef, watch } from "vue";
@@ -50,8 +51,7 @@ export const useSubscription = (initialOwner = null) => {
 
   const getLedger = async (owner) => {
     const endpoint =
-      localStorage.getItem("rpc-parachain") ||
-      "wss://kusama.rpc.robonomics.network/";
+      localStorage.getItem("rpc-parachain") || configApp.default_rpc_endpoint;
     const lsKey = `hasubscription:${endpoint}:${owner}`;
 
     if (!isReady.value) {

@@ -1,3 +1,4 @@
+import configApp from "@/config";
 import { validateAddress } from "@polkadot/util-crypto";
 import { onUnmounted, ref, watch } from "vue";
 import { useRobonomics } from "./useRobonomics";
@@ -9,8 +10,7 @@ export const useDevices = (initialOwner = null) => {
 
   const getDevices = async (owner) => {
     const endpoint =
-      localStorage.getItem("rpc-parachain") ||
-      "wss://kusama.rpc.robonomics.network/";
+      localStorage.getItem("rpc-parachain") || configApp.default_rpc_endpoint;
     const lsKey = `hadevices:${endpoint}:${owner}`;
 
     if (!isReady.value) {

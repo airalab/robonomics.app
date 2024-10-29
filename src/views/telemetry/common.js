@@ -1,3 +1,4 @@
+import configApp from "@/config";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { createPair, encryptor } from "@/utils/encryptor";
@@ -165,8 +166,7 @@ export const useConfig = () => {
 
   const getConfig = async (controller) => {
     const endpoint =
-      localStorage.getItem("rpc-parachain") ||
-      "wss://kusama.rpc.robonomics.network/";
+      localStorage.getItem("rpc-parachain") || configApp.default_rpc_endpoint;
     const lsKey = `haconfig:${endpoint}:${controller}`;
 
     if (!isReady.value) {
