@@ -6,6 +6,7 @@
   "author": "vol4tim <sas@robonomics.network>",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve-8085": "npx kill-port 8085 && vue-cli-service serve --port 8085",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },

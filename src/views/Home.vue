@@ -1,6 +1,97 @@
 <template>
   <robo-layout-section width="middle-wide">
+
     <robo-grid offset="x0" minColumnWidth="200px">
+
+      <robo-section offset="x0">
+        <robo-card>
+          <robo-text title="4" align="left">Season Pass</robo-text>
+
+          <img src="images/season-pass-24-25.webp" />
+
+          <robo-button router="/hardware/season-pass" size="small" block>
+              Activate
+            </robo-button>
+        </robo-card>
+      </robo-section>
+
+      <robo-section offset="x0">
+        <robo-card>
+          <template v-if="rwsactive && rwsactive !== ''">
+            <robo-template-rws-active />
+          </template>
+          <template v-else>
+            <robo-text title="4" align="left">RWS subscription</robo-text>
+            <robo-section offset="x1">
+              <robo-text size="small" weight="normal-italic">
+                <robo-grid offset="x0" gap="x05" columns="1">
+                  <robo-grid-item borderbottom>
+                    Price from: <b>~ {{ price }} XRT </b>
+
+                    <robo-details>
+                      <template #summary>
+                        <robo-icon icon="circle-question" />
+                      </template>
+                      <robo-grid offset="x0" gap="x05">
+                        <robo-text weight="bold">Where to buy XRT</robo-text>
+                        <robo-link href="https://app.basilisk.cloud/trade">
+                          Basilisk
+                        </robo-link>
+                        <robo-link
+                          href="https://app.solarbeam.io/exchange/swap"
+                        >
+                          Solarbeam
+                        </robo-link>
+                        <robo-link
+                          href="https://trade.kraken.com/markets/kraken/xrt/usd"
+                        >
+                          Kraken
+                        </robo-link>
+                      </robo-grid>
+                    </robo-details>
+                  </robo-grid-item>
+
+                  <robo-grid-item borderbottom>
+                    Activation time <b>~ 2 min</b>
+                  </robo-grid-item>
+
+                  <robo-grid-item>
+                    Available subscriptions:
+                    <b>{{ freeAuctions }}</b>
+                  </robo-grid-item>
+                </robo-grid>
+              </robo-text>
+            </robo-section>
+
+            <robo-button :router="linkActivate" size="small" block>
+              <robo-icon icon="wallet" /> Buy a subscription
+            </robo-button>
+          </template>
+        </robo-card>
+      </robo-section>
+
+      <robo-section offset="x0">
+        <robo-text title="4" align="left">Open-source hardware & web3 cloud</robo-text>
+        <robo-text size="small" weight="normal-italic">
+          <robo-grid offset="x0" gap="x05" columns="1">
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Secured data, only you have an access
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Remote control without any corporate clouds
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <robo-icon icon="check" /> Brand-independent smart home, combine wanted devices
+            </robo-grid-item>
+            <robo-grid-item>
+              <robo-icon icon="check" /> Update your Robonomics devices as you wish with type-c
+            </robo-grid-item>
+          </robo-grid>
+        </robo-text>
+      </robo-section>
+    </robo-grid>
+
+    <!-- <robo-grid offset="x0" minColumnWidth="200px">
       <robo-section offset="x0">
         <robo-card>
           <template v-if="rwsactive && rwsactive !== ''">
@@ -98,7 +189,7 @@
           </robo-link>
         </robo-text>
       </robo-section>
-    </robo-grid>
+    </robo-grid> -->
   </robo-layout-section>
 </template>
 

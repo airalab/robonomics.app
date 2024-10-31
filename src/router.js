@@ -6,6 +6,11 @@ import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
 import Services from "./views/Services.vue";
 import Telemetry from "./views/telemetry/Telemetry.vue";
+import Altruist from "./views/hardware/Altruist.vue";
+import Riscv from "./views/hardware/Riscv.vue";
+import Hikikomori from "./views/hardware/Hikikomori.vue";
+import Smartsafe from "./views/hardware/Smart-safe.vue";
+import SeasonPass from "./views/hardware/Season-pass.vue";
 
 const routes = [
   {
@@ -54,6 +59,46 @@ const routes = [
     component: Services,
     meta: {
       title: "Services"
+    }
+  },
+  {
+    path: "/hardware/altruist",
+    name: "Altruist",
+    component: Altruist,
+    meta: {
+      title: "Altruist"
+    }
+  },
+  {
+    path: "/hardware/riscv",
+    name: "Riscv",
+    component: Riscv,
+    meta: {
+      title: "Riscv"
+    }
+  },
+  {
+    path: "/hardware/hikikomori",
+    name: "Hikikomori",
+    component: Hikikomori,
+    meta: {
+      title: "Hikikomori"
+    }
+  },
+  {
+    path: "/hardware/smart-safe",
+    name: "Smartsafe",
+    component: Smartsafe,
+    meta: {
+      title: "Smart Safe"
+    }
+  },
+  {
+    path: "/hardware/season-pass",
+    name: "SeasonPass",
+    component: SeasonPass,
+    meta: {
+      title: "Season Pass"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }

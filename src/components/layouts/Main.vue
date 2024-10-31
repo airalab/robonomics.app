@@ -11,7 +11,7 @@
 import DappHeader from '@/components/Header';
 import DappFooter from '@/components/Footer';
 import { useSubscription } from "@/hooks/useSubscription";
-import { defineProps, watch } from 'vue'
+import { defineProps, watch } from 'vue';
 import { useStore } from "vuex";
 
 const props = defineProps({
