@@ -25,6 +25,7 @@
     "datastore-level": "^10.1.8",
     "dayjs": "^1.11.9",
     "decimal.js-light": "^2.5.1",
+    "ethers": "^6.13.4",
     "ipfs-http-client": "^60.0.0",
     "libp2p": "^1.2.4",
     "robonomics-interface": "^0.3.2",
