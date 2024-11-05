@@ -34,9 +34,11 @@ export default {
     watch(
       () => store.state.robonomicsUIvue.polkadot.address,
       (address) => {
-        account.value = store.state.robonomicsUIvue.polkadot.accounts.find(
-          (item) => item.address === address
-        );
+        try {
+          account.value = store.state.robonomicsUIvue.polkadot.accounts.find(
+            (item) => item.address === address
+          );
+        } catch (e) { console.error(e); }
       },
       { immediate: true }
     );

@@ -6,7 +6,7 @@
   "author": "vol4tim <sas@robonomics.network>",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve-8085": "npx kill-port 8085 && vue-cli-service serve --port 8085",
+    "serve-8080": "npx kill-port 8080 && vue-cli-service serve --port 8080",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -28,6 +28,7 @@
     "ethers": "^6.13.4",
     "ipfs-http-client": "^60.0.0",
     "libp2p": "^1.2.4",
+    "mipd": "^0.0.7",
     "robonomics-interface": "^0.3.2",
     "robonomics-ui-vue": "beta.2",
     "uuid": "^9.0.1",

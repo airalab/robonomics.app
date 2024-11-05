@@ -35,6 +35,7 @@ export default {
 
     (async () => {
       try {
+        console.log('$web3.state.account', $web3.state.account)
         balance.value = await nftContract.balanceOf($web3.state.account);
       } catch (error) {
         console.log(error);
@@ -45,6 +46,7 @@ export default {
       () => $web3.state.block,
       async () => {
         try {
+          console.log('$web3.state.account', $web3.state.account)
           balance.value = await nftContract.balanceOf($web3.state.account);
         } catch (error) {
           console.log(error);

@@ -11,6 +11,7 @@ import Riscv from "./views/hardware/Riscv.vue";
 import Hikikomori from "./views/hardware/Hikikomori.vue";
 import Smartsafe from "./views/hardware/Smart-safe.vue";
 import SeasonPass from "./views/hardware/Season-pass.vue";
+import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
 
 const routes = [
   {
@@ -99,6 +100,14 @@ const routes = [
     component: SeasonPass,
     meta: {
       title: "Season Pass"
+    }
+  },
+  {
+    path: "/hardware/season-pass-2",
+    name: "SeasonPass2",
+    component: SeasonPass2,
+    meta: {
+      title: "Season Pass 2"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }

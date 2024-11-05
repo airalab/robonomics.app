@@ -1,58 +1,126 @@
 <template>
   <robo-layout-section>
-    Season pass
-    <hr />
-    {{ store.state.robonomicsUIvue.ethereum.activeAccount }}
-    <div>
-      <div v-if="$web3.state.isReady">
-        <nft-info v-if="$web3.state.account" />
-        <div v-else>Not found account</div>
-      </div>
-      <div v-else>...</div>
-      <div v-if="$web3.state.error">
-        {{ $web3.state.error }}
-      </div>
-    </div>
+    <robo-text title="1">Season pass</robo-text>
+
+    {{account}}
+    <hr/>
+    {{provider?.info?.name}}
+    <hr/>
+    {{balance}}
+    <hr/>
+    {{tokens}}
+
   </robo-layout-section>
 </template>
 
 <script setup>
-import NftInfo from "@/components/web3/NftInfo.vue";
-import { $web3 } from "@/plugins/web3";
-import { watch } from "vue";
+import { reactive, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-
 const store = useStore();
 
-const providers = [];
-const handler = (event) => providers.push(event.detail);
+import nft_abi from "../../components/web3/abi/NFT.json";
+import { ethers } from "ethers";
+import { address } from "@/config";
 
-watch(
-  () => store.state.robonomicsUIvue.ethereum.activeProviderUuid,
-  async (value) => {
-    const index = providers.findIndex((item) => {
-      if (item.info.uuid === value) {
-        return true;
-      }
-      return false;
-    });
-    if (index >= 0) {
-      try {
-        await $web3.setProvider(providers[index].provider);
-      } catch (error) {
-        console.log(error);
-      }
+/* + get providers */
+import { createStore } from 'mipd';
+const mipdstore = createStore();
+
+const state = reactive({ 
+    providers: mipdstore.getProviders()
+});
+
+mipdstore.subscribe(providers => {
+    console.log('Providers updated:', providers);
+    state.providers = providers;
+});
+/* - get providers */
+
+const account = computed(() =>{
+    return store.state.robonomicsUIvue.ethereum.activeAccount;
+});
+
+const provider = computed(() =>{
+    return state.providers.find(i => i.info.rdns === store.state.robonomicsUIvue.ethereum.activeProviderRdns)
+});
+
+/* + Get NFT */
+const balance = ref(null);
+const tokens = ref([]);
+let signer;
+let contract;
+let providerethers = new ethers.BrowserProvider(provider.value.provider);
+
+const getNFT = async (blockupdate = false) => {
+
+    if(!blockupdate) { 
+        tokens.value = [];
     }
-  }
-);
 
-watch(
-  () => store.state.robonomicsUIvue.ethereum.activeAccount,
-  async () => {
-    await $web3.setSigner();
-  }
-);
+    if(provider.value){
+        providerethers = new ethers.BrowserProvider(provider.value.provider);
+        signer = await providerethers.getSigner();
+        contract = new ethers.Contract(address.nft, nft_abi, signer);
 
-window.addEventListener("eip6963:announceProvider", handler);
-window.dispatchEvent(new CustomEvent("eip6963:requestProvider"));
+        contract.balanceOf(signer.address)
+            .then(async (r) => {
+                if(blockupdate) {
+                    if(balance.value === parseFloat(r)){
+                        return;
+                    }
+                }
+                balance.value = parseFloat(r);
+                await loadTokens();
+            })
+            .catch((e) => { console.log(e) })
+    }
+}
+
+const loadTokens = async () => {
+
+    if (!balance.value) {
+        return;
+    }
+
+    const ids = [];
+    for (let index = 0; index < balance.value; index++) {
+        try {
+            const tokenId = await contract.tokenOfOwnerByIndex(
+                signer.address,
+                index
+            );
+
+            const uri = await contract.tokenURI(tokenId);
+            const ipfsHash = uri.split("ipfs://").pop();
+            const data = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`);
+            const res = await data.json();
+
+            ids.push({
+                activated: await contract.activatedOf(tokenId),
+                tokenId: tokenId.toString(),
+                name: `${res.name} #${tokenId.toString()}`,
+                image: res.image.split("ipfs://").pop()
+            });
+        } catch (error) { console.log(error); }
+    }
+
+    tokens.value = ids;
+}
+/* - Get NFT */
+
+watch([provider, account], async() => {
+    await getNFT();
+});
+
+onMounted( async () => {
+
+    // const b = await providerethers.getBalance(account.value)
+    // console.log('getBalance', ethers.formatEther(b))
+    await getNFT();
+
+    providerethers.on('block', async () => {
+        await getNFT(true);
+    });
+})
+
 </script>

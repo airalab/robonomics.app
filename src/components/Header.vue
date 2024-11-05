@@ -210,44 +210,47 @@ export default {
     //   }
     // },
     async handlerAccount(address) {
-      if (!this.RobonomicsProvider.isReady.value) {
-        return;
-      }
-      if (this.unsubscribeBalance) {
-        this.unsubscribeBalance();
-      }
-      // this.setCurrentNetwork();
-      if (!this.$store.state.robonomicsUIvue.polkadot.accounts) {
-        return;
-      }
-      const account = this.$store.state.robonomicsUIvue.polkadot.accounts.find(
-        (item) => item.address === address
-      );
-      if (!account) {
-        return;
-      }
-      if (this.$route.name !== "telemetry") {
-        await this.robonomics.accountManager.setSender(address, {
-          type: account.type,
-          extension: this.$store.state.robonomicsUIvue.polkadot.extensionObj
-        });
-      }
-      this.unsubscribeBalance = await this.robonomics.account.getBalance(
-        address,
-        (r) => {
-          const transferable = r.free.sub(r.frozen);
-          this.$store.commit(
-            "polkadot/setBalanceXRT",
-            round(
-              fromUnit(
-                transferable,
-                this.robonomics.api.registry.chainDecimals[0]
-              ),
-              4
-            )
-          );
+      try{
+
+        if (!this.RobonomicsProvider.isReady.value) {
+          return;
         }
-      );
+        if (this.unsubscribeBalance) {
+          this.unsubscribeBalance();
+        }
+        // this.setCurrentNetwork();
+        if (!this.$store.state.robonomicsUIvue.polkadot.accounts) {
+          return;
+        }
+        const account = this.$store.state.robonomicsUIvue.polkadot.accounts.find(
+          (item) => item.address === address
+        );
+        if (!account) {
+          return;
+        }
+        if (this.$route.name !== "telemetry") {
+          await this.robonomics.accountManager.setSender(address, {
+            type: account.type,
+            extension: this.$store.state.robonomicsUIvue.polkadot.extensionObj
+          });
+        }
+        this.unsubscribeBalance = await this.robonomics.account.getBalance(
+          address,
+          (r) => {
+            const transferable = r.free.sub(r.frozen);
+            this.$store.commit(
+              "polkadot/setBalanceXRT",
+              round(
+                fromUnit(
+                  transferable,
+                  this.robonomics.api.registry.chainDecimals[0]
+                ),
+                4
+              )
+            );
+          }
+        );
+      } catch (e) { console.error(e); }
     }
   }
 };
