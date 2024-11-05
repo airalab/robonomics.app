@@ -9,6 +9,8 @@
     {{balance}}
     <hr/>
     {{tokens}}
+    <hr/>
+    {{msg}}
 
   </robo-layout-section>
 </template>
@@ -44,20 +46,47 @@ const provider = computed(() =>{
     return state.providers.find(i => i.info.rdns === store.state.robonomicsUIvue.ethereum.activeProviderRdns)
 });
 
+const isConnected = () => {
+    if(provider?.value) {
+        return provider.value?.provider?._state?.isConnected || provider.value?.provider?.isConnected
+    } else {
+        return false;
+    }
+}
+
 /* + Get NFT */
+const workingchain = 11155111;
 const balance = ref(null);
 const tokens = ref([]);
 let signer;
 let contract;
-let providerethers = new ethers.BrowserProvider(provider.value.provider);
+let providerethers = null;
+const msg = ref('');
+
+try {
+    providerethers = new ethers.BrowserProvider(provider.value.provider);
+} catch (error) { console.log(error); }
 
 const getNFT = async (blockupdate = false) => {
+
+    msg.value = '';
 
     if(!blockupdate) { 
         tokens.value = [];
     }
 
-    if(provider.value){
+    if(!provider.value || !isConnected()) {
+        msg.value = 'Connect an account';
+        return;
+    }
+
+    try {
+        const chain = await provider.value.provider.request({method: 'eth_chainId', params: [{ eth_accounts: {} }]});
+        if(parseInt(chain) !== workingchain) {
+            msg.value = 'Please, switch a network to ' + workingchain;
+            return;
+        }
+
         providerethers = new ethers.BrowserProvider(provider.value.provider);
         signer = await providerethers.getSigner();
         contract = new ethers.Contract(address.nft, nft_abi, signer);
@@ -73,7 +102,7 @@ const getNFT = async (blockupdate = false) => {
                 await loadTokens();
             })
             .catch((e) => { console.log(e) })
-    }
+    } catch (error) { console.log(error); }
 }
 
 const loadTokens = async () => {
@@ -118,9 +147,11 @@ onMounted( async () => {
     // console.log('getBalance', ethers.formatEther(b))
     await getNFT();
 
-    providerethers.on('block', async () => {
-        await getNFT(true);
-    });
+    if(providerethers) {
+        providerethers.on('block', async () => {
+            await getNFT(true);
+        });
+    }
 })
 
 </script>
