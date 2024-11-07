@@ -38,7 +38,8 @@ jobs:
           key: ${{ runner.os }}-website-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-website-
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
+      # - run: yarn install --frozen-lockfile
       - run: yarn build
         env:
           VUE_APP_ROBONOMICS_UI_KEY: ${{ vars.VUE_APP_ROBONOMICS_UI_KEY }}
