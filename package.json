@@ -6,6 +6,7 @@
   "author": "vol4tim <sas@robonomics.network>",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve-8080": "npx kill-port 8080 && vue-cli-service serve --port 8080",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -24,10 +25,12 @@
     "datastore-level": "^10.1.8",
     "dayjs": "^1.11.9",
     "decimal.js-light": "^2.5.1",
+    "ethers": "^6.13.4",
     "ipfs-http-client": "^60.0.0",
     "libp2p": "^1.2.4",
+    "mipd": "^0.0.7",
     "robonomics-interface": "^0.3.2",
-    "robonomics-ui-vue": "^0.5.1",
+    "robonomics-ui-vue": "0.5.2-beta.5",
     "uuid": "^9.0.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",

@@ -33,16 +33,18 @@ export default {
         store.state.robonomicsUIvue.polkadot.address !==
           accountManager.account.address
       ) {
-        const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
+        try {
+          const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
           (item) =>
-            item.address === store.state.robonomicsUIvue.polkadot.address
-        );
-        if (accountOld) {
-          await accountManager.setSender(accountOld.address, {
-            type: accountOld.type,
-            extension: store.state.robonomicsUIvue.polkadot.extensionObj
-          });
-        }
+              item.address === store.state.robonomicsUIvue.polkadot.address
+          );
+          if (accountOld) {
+            await accountManager.setSender(accountOld.address, {
+              type: accountOld.type,
+              extension: store.state.robonomicsUIvue.polkadot.extensionObj
+            });
+          }
+        } catch (e) { console.error(e); }
       }
     });
 

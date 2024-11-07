@@ -180,15 +180,18 @@ export default {
       const tx = transaction.createTx();
       await transaction.send(tx, call, setup.owner);
 
-      const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
-        (item) => item.address === store.state.robonomicsUIvue.polkadot.address
-      );
+      try {
+        const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
+          (item) => item.address === store.state.robonomicsUIvue.polkadot.address
+        );
+      
       if (accountOld) {
         await robonomics.accountManager.setSender(accountOld.address, {
           type: accountOld.type,
           extension: store.state.robonomicsUIvue.polkadot.extensionObj
         });
       }
+      } catch (e) { console.error(e); }
 
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
