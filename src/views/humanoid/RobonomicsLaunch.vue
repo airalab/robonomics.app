@@ -7,7 +7,8 @@
         :options="commands.map((item) => item.name)"
         v-model="parameter"
       />
-      <robo-button @click="send" block :loading="proccess">Send</robo-button>
+      <br />
+      <robo-button @click="send" block :loading="proccess">Pay</robo-button>
       <robo-text weight="bold" v-if="result">{{ result }}</robo-text>
       <robo-text highlight="error" v-if="error">{{ error }}</robo-text>
     </robo-section>
