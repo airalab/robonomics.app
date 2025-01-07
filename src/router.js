@@ -1,17 +1,18 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import Altruist from "./views/hardware/Altruist.vue";
+import Hikikomori from "./views/hardware/Hikikomori.vue";
+import Riscv from "./views/hardware/Riscv.vue";
+import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
+import SeasonPass from "./views/hardware/Season-pass.vue";
+import Smartsafe from "./views/hardware/Smart-safe.vue";
 import Home from "./views/Home.vue";
+import Humanoid from "./views/humanoid/RobonomicsApp.vue";
 import PathNotFound from "./views/PathNotFound.vue";
 import RwsActivate from "./views/RwsActivate.vue";
 import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
 import Services from "./views/Services.vue";
 import Telemetry from "./views/telemetry/Telemetry.vue";
-import Altruist from "./views/hardware/Altruist.vue";
-import Riscv from "./views/hardware/Riscv.vue";
-import Hikikomori from "./views/hardware/Hikikomori.vue";
-import Smartsafe from "./views/hardware/Smart-safe.vue";
-import SeasonPass from "./views/hardware/Season-pass.vue";
-import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
 
 const routes = [
   {
@@ -108,6 +109,14 @@ const routes = [
     component: SeasonPass2,
     meta: {
       title: "Season Pass 2"
+    }
+  },
+  {
+    path: "/humanoid",
+    name: "Humanoid",
+    component: Humanoid,
+    meta: {
+      title: "The-Rise-of-Humanoids"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }
