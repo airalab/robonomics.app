@@ -3,6 +3,7 @@
     <robo-section offset="x2" width="narrow" style="text-align: center">
       <h3>The Rise of Humanoids</h3>
       <img src="./icon_XRT.png" class="logo" />
+      <robo-text weight="bold" style="font-size: 40px">1 XRT</robo-text>
     </robo-section>
 
     <template v-if="RobonomicsProvider.isReady">
