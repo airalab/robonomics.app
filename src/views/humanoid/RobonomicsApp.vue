@@ -1,9 +1,17 @@
 <template>
   <robo-layout-section>
     <robo-section offset="x2" width="narrow" style="text-align: center">
-      <h3>The Rise of Humanoids</h3>
-      <img src="./icon_XRT.png" class="logo" />
-      <robo-text weight="bold" style="font-size: 40px">1 XRT</robo-text>
+      <h2>Pay the robot with cryptocurrency.</h2>
+      <br />
+      <robo-text>
+        Experience this unique demo of the future robot economy on the streets
+        of Las Vegas during CES 2025! Pay one Robonomics token ($XRT) to a
+        humanoid for any basic action.
+      </robo-text>
+      <br />
+      <robo-text weight="bold" style="font-size: 40px">
+        Price: 1<img src="./icon_XRT.png" class="logo" />
+      </robo-text>
     </robo-section>
 
     <template v-if="RobonomicsProvider.isReady">
@@ -22,6 +30,8 @@ const RobonomicsProvider = inject("RobonomicsProvider");
 
 <style scoped>
 .logo {
-  width: 160px;
+  width: 45px;
+  vertical-align: text-top;
+  margin: -2px 5px 0;
 }
 </style>

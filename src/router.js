@@ -116,7 +116,7 @@ const routes = [
     name: "Humanoid",
     component: Humanoid,
     meta: {
-      title: "The-Rise-of-Humanoids"
+      title: "Pay the robot with cryptocurrency"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }
