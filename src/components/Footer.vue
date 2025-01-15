@@ -3,7 +3,7 @@
       <nav>
         <ul v-for="item in navigation" :key="item.title" :data-label="item.title">
             <li v-for="link in item.links" :key="link.title">
-                <router-link :to="link.link" exact>{{link.title}}</router-link>
+                <a :href="link.link" target="_blank">{{link.title}}</a>
             </li>
         </ul>
       </nav>
@@ -62,6 +62,10 @@ const navigation = [
 {
     title: "Help",
     links: [
+    {
+        title: "GitHub",
+        link: "https://github.com/airalab/robonomics.app",
+    },
     {
         title: "Wiki",
         link: "https://wiki.robonomics.network/",
