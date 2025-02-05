@@ -119,6 +119,23 @@ const routes = [
       title: "Pay the robot with cryptocurrency"
     }
   },
+  {
+    path: "/altruist/:address?",
+    props: true,
+    name: "AltruistPage",
+    component: () => import("./views/altruist/Page.vue"),
+    meta: {
+      title: "Altruist"
+    }
+  },
+  {
+    path: "/dtwin",
+    name: "DTwinPage",
+    component: () => import("./views/dtwin/Page.vue"),
+    meta: {
+      title: "Digital Twin"
+    }
+  },
   { path: "/:pathMatch(.*)*", component: PathNotFound }
 ];
 
