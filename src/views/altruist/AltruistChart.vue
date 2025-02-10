@@ -1,8 +1,8 @@
 <template>
   <div v-if="isLaoded">
     <datalog-chart :log="log" />
-    <robo-button @click="showRaw">Raw</robo-button>
-    <datalog-list v-if="isShowRaw" :log="log" />
+    <sensor-info :sensor_id="address" class="block" />
+    <measurements-scalegrid :log="log" class="block" />
   </div>
   <datalog-loader v-else />
 </template>
@@ -11,12 +11,18 @@
 import { ref, toRefs } from "vue";
 import { useDatalog } from "./datalog";
 import DatalogChart from "./DatalogChart.vue";
-import DatalogList from "./DatalogList.vue";
 import DatalogLoader from "./DatalogLoader.vue";
+import MeasurementsScalegrid from "./MeasurementsScalegrid.vue";
+import SensorInfo from "./SensorInfo.vue";
 
 export default {
   props: ["address"],
-  components: { DatalogList, DatalogLoader, DatalogChart },
+  components: {
+    DatalogLoader,
+    DatalogChart,
+    SensorInfo,
+    MeasurementsScalegrid
+  },
   setup(props) {
     const datalog = useDatalog(toRefs(props).address);
 
@@ -34,3 +40,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.block {
+  margin: 15px 0;
+}
+</style>

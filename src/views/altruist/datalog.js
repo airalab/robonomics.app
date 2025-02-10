@@ -1,14 +1,14 @@
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { onUnmounted, ref, watch } from "vue";
 
-const mapName = new Map([
-  ["p1", "PM10"],
-  ["p2", "PM2.5"],
-  ["nm", "Noise Max."],
-  ["na", "Noise Avg."],
-  ["t", "Temperature"],
-  ["p", "Pressure"],
-  ["h", "Humidity"]
+const mapKey = new Map([
+  ["p1", "pm10"],
+  ["p2", "pm25"],
+  ["nm", "noisemax"],
+  ["na", "noiseavg"],
+  ["t", "temperature"],
+  ["p", "pressure"],
+  ["h", "humidity"]
 ]);
 
 /**
@@ -18,8 +18,8 @@ const mapName = new Map([
  * @param {string} key
  * @return {string}
  */
-const getName = (key) => {
-  const name = mapName.get(key);
+const getFullKey = (key) => {
+  const name = mapKey.get(key);
   if (name) {
     return name;
   }
@@ -41,7 +41,7 @@ const parseData = (data) => {
     const [key, value] = item.split(":");
     return {
       key,
-      name: getName(key),
+      fullKey: getFullKey(key),
       value
     };
   });

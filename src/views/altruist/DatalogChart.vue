@@ -5,6 +5,7 @@
 <script>
 import { Chart } from "highcharts-vue";
 import { getCurrentInstance, onMounted, watch } from "vue";
+import measurements from "./measurements";
 
 export default {
   components: { Chart },
@@ -14,14 +15,21 @@ export default {
       const seriesRaw = {};
       for (const row of data) {
         for (const item of row.data) {
-          if (seriesRaw[item.name]) {
-            seriesRaw[item.name].data.push([
+          if (seriesRaw[item.fullKey]) {
+            seriesRaw[item.fullKey].data.push([
               row.moment,
               parseFloat(item.value)
             ]);
           } else {
-            seriesRaw[item.name] = {
-              name: item.name,
+            let name = item.fullKey;
+            if (
+              measurements[item.fullKey] &&
+              measurements[item.fullKey].label
+            ) {
+              name = measurements[item.fullKey].label;
+            }
+            seriesRaw[item.fullKey] = {
+              name: name,
               data: [[row.moment, parseFloat(item.value)]]
             };
           }
@@ -58,6 +66,9 @@ export default {
       chartOptions: {
         lang: {
           locale: "en"
+        },
+        chart: {
+          spacing: [50, 20, 20, 20]
         },
         title: {
           text: ""
