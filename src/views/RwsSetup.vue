@@ -1,10 +1,11 @@
 <template>
   <robo-layout-section>
-    <robo-template-rws-setup
-      :onRwsUpdate="rwsUpdateActions"
+    <robo-rws-setup
       :onUserDelete="removeUser"
       :onUserAdd="addUser"
       :onSaveHapass="saveHapass"
+      :onControllerEdit="controllerEdit"
+      :onControllerRequest="controllerRequest"
     />
   </robo-layout-section>
 </template>
@@ -32,27 +33,32 @@ export default {
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
 
-    const rwsUpdateActions = (rws, setStatus) => {
-      if (!rws.owner || !rws.name || !rws.controller) {
-        setStatus("error", "All fields are required");
-        return;
-      }
+    /* +++ Саша, обнови плз controller к подписке */
+    const controllerEdit = (controller, send) => {
+      /* setTimeout - только для моих тестов */
+      setTimeout(() => {
+        send('ok');
+        // send('error', 'Controller has not been saved');
+      }, 1000);
+    }
 
-      try {
-        encodeAddress(rws.owner);
-      } catch (error) {
-        setStatus("error", `Owner: ${error.message}`);
-        return;
-      }
-      try {
-        encodeAddress(rws.controller);
-      } catch (error) {
-        setStatus("error", `Controller: ${error.message}`);
-        return;
-      }
+    /* +++ а тут по моему запросу отдай плз контроллер для подписки owner */
+    const controllerRequest = (owner, send) => {
+      
+      /* тут пока только для моих тестов */
 
-      setStatus("ok");
-    };
+      var controller = null;
+      
+      if(owner === '4GTfNeggWWv3H1iTwWZCm9omF5eWsNUyrnVY21NQnjjvJt2j' || owner === '4Hd9ahv9X7528S5har385fqyUFSLbNZ2scg7x6ZWEA9e9EBV') {
+        controller = "4DUhWMDPi5miDrXgXSJrytXSLwoDzzEaShJZxjKCWxkUr7N5";
+      }
+      
+      setTimeout(() => {
+        send(controller, 'ok');
+        // send(null, 'error', 'Controller has not been found');
+      }, 1000);
+      
+    }
 
     const addUser = async (user, setStatus) => {
       if (!isReady.value) {
@@ -132,6 +138,8 @@ export default {
         return;
       }
       const userAddress = store.state.robonomicsUIvue.rws.user.account;
+      const userType = store.state.robonomicsUIvue.rws.user.acctype ?? 'ed25519';
+      console.log('userType', userType);
 
       const robonomics = getInstance();
 
@@ -207,9 +215,10 @@ export default {
 
     return {
       saveHapass,
-      rwsUpdateActions,
       addUser,
-      removeUser
+      removeUser,
+      controllerEdit,
+      controllerRequest
     };
   }
 };

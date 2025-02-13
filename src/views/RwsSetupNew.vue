@@ -1,38 +1,35 @@
 <template>
   <robo-layout-section>
-    <robo-template-rws-setup create :onRwsUpdate="onSave" />
+    <robo-rws-setup-new
+      :onRequestSubscription="onRequestSubscription" 
+      :onSetupGenerate="onSetupGenerate" 
+    />
   </robo-layout-section>
 </template>
 
-<script>
-import { encodeAddress } from "@polkadot/util-crypto";
-
-export default {
-  setup() {
-    let onSave = (rws, setStatus) => {
-      if (!rws.owner || !rws.name || !rws.controller) {
-        setStatus("error", "All fields are required");
-        return;
-      }
-
-      try {
-        encodeAddress(rws.owner);
-      } catch (error) {
-        setStatus("error", `Owner: ${error.message}`);
-        return;
-      }
-      try {
-        encodeAddress(rws.controller);
-      } catch (error) {
-        setStatus("error", `Controller: ${error.message}`);
-        return;
-      }
-
-      setStatus("ok");
-    };
-    return {
-      onSave
-    };
+<script setup>
+const onRequestSubscription = (address, send) => {
+  /* мне нужна дата до которой активная подписка для владельца address */
+  try {
+    const subscriptionexpires = 1663236780652;
+    send(subscriptionexpires);
+  } catch(e) {
+    console.log(e);
+    send(null);
   }
-};
+}
+
+const onSetupGenerate = (config, setStatus) => {
+
+  /* нужно добавить контроллер в подписку */
+  /* если конфиг null или ошибка при добавлении, то возвращаем ошибку */
+  try {
+    console.log('owner, controller', config.owner, config.controller);
+    setStatus("ok", "Setup saved");
+  } catch (e) {
+    setStatus("error", e);
+  }
+
+}
+
 </script>

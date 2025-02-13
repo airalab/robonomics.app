@@ -4,7 +4,7 @@ import { identify } from "@libp2p/identify";
 // import { keychain } from "@libp2p/keychain";
 // import { defaultLogger } from "@libp2p/logger";
 import { mplex } from "@libp2p/mplex";
-import { webRTC } from "@libp2p/webrtc";
+// import { webRTC } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
 import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
@@ -26,14 +26,14 @@ export async function createNode() {
   // }
   const node = await createLibp2p({
     // peerId: peerId,
-    addresses: {
-      listen: ["/webrtc"]
-    },
+    // addresses: {
+    //   listen: ["/webrtc"]
+    // },
     transports: [
       webSockets({
         filter: filters.all
       }),
-      webRTC(),
+      // webRTC(),
       circuitRelayTransport()
     ],
     streamMuxers: [mplex()],

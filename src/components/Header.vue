@@ -6,16 +6,9 @@
   >
 
   <template #nav>
-    <robo-section>
-      <robo-text title="3" linemiddle offset="x05"><span>Hardware for Cryptopunks Control & Telemetry</span></robo-text>
+    <!-- <robo-section>
       <nav class="nav-devices">
         <ul>
-          <li>
-            <router-link to="/hardware/season-pass" exact>
-              <img src="images/season-pass-24-25-monkey.webp" />
-              <span>Season pass</span>
-            </router-link>
-          </li>
           <li>
             <router-link to="/hardware/altruist" exact>
               <img src="images/hardware/altruist.webp" />
@@ -34,25 +27,19 @@
               <span>Hikikomori</span>
             </router-link>
           </li>
-          <li>
-            <router-link to="/hardware/smart-safe" exact>
-              <img src="images/hardware/smart-safe.webp" />
-              <span>Smart safe</span>
-            </router-link>
-          </li>
         </ul>
       </nav>
-    </robo-section>
+    </robo-section> -->
 
     <robo-section>
-      <robo-text title="3" linemiddle offset="x05"><span>Robonomics Web Services Control & Telemetry</span></robo-text>
+      <!-- <robo-text title="3" linemiddle offset="x05"><span>Robonomics Web Services Control & Telemetry</span></robo-text> -->
       <nav class="nav-rws">
         <ul>
-          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.activate" exact>Your subscription</router-link></li>
-          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.setupnew" exact>New configuration</router-link></li>
+          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.activate" exact>Buy/renew a subscription</router-link></li>
+          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.setupnew" exact>New setup</router-link></li>
           <!-- <li v-if="$store.state.robonomicsUIvue.rws.list.length > 0"> -->
           <li>
-            <router-link :to="$store.state.robonomicsUIvue.rws.links.setup" exact>Your configuration<template v-if="$store.state.robonomicsUIvue.rws.list.length > 1">s</template></router-link>
+            <router-link :to="$store.state.robonomicsUIvue.rws.links.setup" exact>Your setup<template v-if="$store.state.robonomicsUIvue.rws.list.length > 1">s</template></router-link>
           </li>
           <!-- <li v-if="$store.state.robonomicsUIvue.rws.list.length > 0"> -->
           <li>
@@ -257,21 +244,29 @@ export default {
 </script>
 
 <style scoped>
-  .nav-devices ul, .nav-rws ul {
+  /* .nav-devices ul, .nav-rws ul {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     font-weight: bold;
     gap: calc(var(--robo-space) * 2);
     text-align: center;
-  }
+  } */
 
-  .nav-rws {
+  /* .nav-rws {
     max-width: 720px;
-  }
+  } */
 
   .nav-rws ul {
     text-align: left;
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .nav-rws a {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+    text-transform: uppercase;
   }
 
   .nav-devices a {
@@ -288,16 +283,16 @@ export default {
   }
 
   .nav-devices img {
-    display: block;
+    display: inline-block;
     max-height: 100px;
     object-fit: contain;
     width: auto;
   }
 
   @media screen and (width < 950px) {
-    .nav-devices ul {
+    /* .nav-devices ul {
       grid-template-columns: repeat(3, 1fr);
-    }
+    } */
 
     .nav-rws ul {
       grid-template-columns: repeat(2, 1fr);

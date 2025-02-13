@@ -82,7 +82,7 @@ const navigation = [
 <style scoped>
     footer {
         border-top: 1px solid var(--robo-color-text);
-        margin: var(--robo-layout-padding);
+        margin: calc(var(--robo-layout-padding) * 5);
         padding-top: var(--robo-layout-padding);
     }
 

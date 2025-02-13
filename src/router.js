@@ -4,7 +4,7 @@ import PathNotFound from "./views/PathNotFound.vue";
 import RwsActivate from "./views/RwsActivate.vue";
 import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
-import Services from "./views/Services.vue";
+// import Services from "./views/Services.vue";
 import Telemetry from "./views/telemetry/Telemetry.vue";
 import Altruist from "./views/hardware/Altruist.vue";
 import Riscv from "./views/hardware/Riscv.vue";
@@ -54,14 +54,14 @@ const routes = [
       title: "Devices control panel"
     }
   },
-  {
-    path: "/services",
-    name: "services",
-    component: Services,
-    meta: {
-      title: "Services"
-    }
-  },
+  // {
+  //   path: "/services",
+  //   name: "services",
+  //   component: Services,
+  //   meta: {
+  //     title: "Services"
+  //   }
+  // },
   {
     path: "/hardware/altruist",
     name: "Altruist",

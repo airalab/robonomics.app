@@ -67,24 +67,29 @@ export default {
 
     const transaction = useSend();
     const onActivate = async (setStatus) => {
+
       if (!isReady.value) {
-        setStatus("error", "Parachain is not ready.");
+        setStatus("error", "Parachain is not ready");
         return;
       }
+
       if (
         !balance.value ||
         bnToBn(balance.value).lt(price.value.add(bnToBn(10000000)))
       ) {
+        console.log(balance.value);
         setStatus(
           "error",
           "Subscription can not be activated due to unsuffcicient XRT balance"
         );
         return;
       }
+
       if (freeAuctions.value <= 0) {
         setStatus("error", "There are no available subscriptions");
         return;
       }
+
       if (subscription.hasSubscription.value && subscription.isActive.value) {
         setStatus("error", "You have an active subscription");
         return;
