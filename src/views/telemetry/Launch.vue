@@ -1,5 +1,5 @@
 <template>
-  <robo-template-devices-layout
+  <robo-smarthome-dashboard
     :config="config"
     :datalog="data"
     :updateTime="updateTime"

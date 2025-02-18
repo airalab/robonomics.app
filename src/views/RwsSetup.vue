@@ -5,7 +5,6 @@
       :onUserAdd="addUser"
       :onSaveHapass="saveHapass"
       :onControllerEdit="controllerEdit"
-      :onControllerRequest="controllerRequest"
     />
   </robo-layout-section>
 </template>
@@ -40,24 +39,6 @@ export default {
         send('ok');
         // send('error', 'Controller has not been saved');
       }, 1000);
-    }
-
-    /* +++ а тут по моему запросу отдай плз контроллер для подписки owner */
-    const controllerRequest = (owner, send) => {
-      
-      /* тут пока только для моих тестов */
-
-      var controller = null;
-      
-      if(owner === '4GTfNeggWWv3H1iTwWZCm9omF5eWsNUyrnVY21NQnjjvJt2j' || owner === '4Hd9ahv9X7528S5har385fqyUFSLbNZ2scg7x6ZWEA9e9EBV') {
-        controller = "4DUhWMDPi5miDrXgXSJrytXSLwoDzzEaShJZxjKCWxkUr7N5";
-      }
-      
-      setTimeout(() => {
-        send(controller, 'ok');
-        // send(null, 'error', 'Controller has not been found');
-      }, 1000);
-      
     }
 
     const addUser = async (user, setStatus) => {
@@ -217,8 +198,7 @@ export default {
       saveHapass,
       addUser,
       removeUser,
-      controllerEdit,
-      controllerRequest
+      controllerEdit
     };
   }
 };

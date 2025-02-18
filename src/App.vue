@@ -57,12 +57,8 @@ export default {
       [route, RobonomicsProvider.isReady],
       ([route, isReady]) => {
         if (route.name !== "telemetry" && isReady) {
-          store.dispatch("app/setlibp2p", {
-            connected: false
-          });
-          store.dispatch("app/setrelay", {
-            connected: false
-          });
+          store.commit("polkadot/setConnectionType", "parachain");
+          store.commit("polkadot/setConnectionConnected", true);
         }
       },
       { immediate: true }
