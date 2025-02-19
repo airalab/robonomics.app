@@ -1,4 +1,5 @@
 <template>
+
   <Libp2p
     v-if="type === 'libp2p'"
     :config="config"
@@ -58,7 +59,9 @@ export default {
     });
 
     watch(() => isReady.value, v => {
-      store.commit("polkadot/setConnectionConnected", v);
+      if(type.value === "parachain") {
+        store.commit("polkadot/setConnectionConnected", v);
+      }
     }, {immediate: true});
 
     watch(
@@ -76,6 +79,7 @@ export default {
     );
 
     return {
+      store,
       type,
       isKey,
       config,
@@ -84,6 +88,8 @@ export default {
 
         if (result.protoNames().includes("p2p-circuit")) {
           store.commit("polkadot/setConnectionStatus", "via relay");
+        } else {
+          store.commit("polkadot/setConnectionStatus", null);
         }
 
         store.commit("polkadot/setConnectionConnected", true);
@@ -94,6 +100,7 @@ export default {
 
         store.commit("polkadot/setConnectionType", "parachain");
         store.commit("polkadot/setConnectionConnected", true);
+        store.commit("polkadot/setConnectionStatus", null); /* delete message about relay if it was there */
       }
     };
   }
