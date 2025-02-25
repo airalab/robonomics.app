@@ -1,16 +1,16 @@
-export const price = 1_000_000_000;
+export const price = 500_000_000;
 export const robot = "4GfZP7fbGZBx5GxR4mreLGTm872vHYhDMmaV6d1SEHGtv7AP";
 export const listOfCommands = [
   {
-    name: "Squat",
+    name: "Wave Hand",
     value: "0x3000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    name: "Stand Up",
+    name: "Wave Hand with Turn",
     value: "0x3100000000000000000000000000000000000000000000000000000000000000"
   },
   {
-    name: "Rotate",
+    name: "Shake Hand",
     value: "0x3200000000000000000000000000000000000000000000000000000000000000"
   }
 ];
