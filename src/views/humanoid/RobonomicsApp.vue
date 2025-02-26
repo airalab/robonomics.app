@@ -10,7 +10,7 @@
       </robo-text>
       <br />
       <robo-text weight="bold" style="font-size: 40px">
-        Price: 1<img src="./icon_XRT.png" class="logo" />
+        Price: 0.5<img src="./icon_XRT.png" class="logo" />
       </robo-text>
     </robo-section>
 
