@@ -1,17 +1,17 @@
 <template>
   <robo-layout-section>
     <robo-section offset="x2" width="middle" style="text-align: center">
-      <h2>Altruist</h2>
+      <h2>Energy Monitor</h2>
     </robo-section>
 
     <robo-section offset="x2" width="middle">
       <datalog-loader v-if="isFind" />
-      <robo-status v-else-if="altruistAddress === null" type="warning">
+      <robo-status v-else-if="energyAddress === null" type="warning">
         Not found
       </robo-status>
-      <altruist-chart
-        v-else-if="altruistAddress !== undefined"
-        :address="altruistAddress"
+      <energy-chart
+        v-else-if="energyAddress !== undefined"
+        :address="energyAddress"
       />
     </robo-section>
 
@@ -23,17 +23,17 @@
 
 <script>
 import { watch } from "vue";
-import AltruistChart from "./AltruistChart.vue";
-import DatalogLoader from "./DatalogLoader.vue";
-import NoticeText from "./NoticeText.vue";
-import { useFind } from "./dtwin.js";
+import DatalogLoader from "../altruist/DatalogLoader.vue";
+import NoticeText from "../altruist/NoticeText.vue";
+import { useFind } from "../altruist/dtwin.js";
+import EnergyChart from "./EnergyChart.vue";
 
 export default {
   props: ["address"],
-  components: { AltruistChart, DatalogLoader, NoticeText },
+  components: { EnergyChart, DatalogLoader, NoticeText },
   setup(props) {
     const {
-      address: altruistAddress,
+      address: energyAddress,
       isFind,
       runFind
     } = useFind(
@@ -44,7 +44,7 @@ export default {
       () => props.address,
       (address) => {
         if (address) {
-          altruistAddress.value = address;
+          energyAddress.value = address;
         } else {
           runFind();
         }
@@ -53,7 +53,7 @@ export default {
     );
 
     return {
-      altruistAddress,
+      energyAddress,
       isFind
     };
   }

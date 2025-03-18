@@ -129,6 +129,15 @@ const routes = [
     }
   },
   {
+    path: "/energy-monitor/:address?",
+    props: true,
+    name: "EnergytMonitorPage",
+    component: () => import("./views/energyMonitor/Page.vue"),
+    meta: {
+      title: "Energy"
+    }
+  },
+  {
     path: "/dtwin",
     name: "DTwinPage",
     component: () => import("./views/dtwin/Page.vue"),

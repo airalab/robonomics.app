@@ -2,19 +2,19 @@
   <div v-if="isLaoded">
     <datalog-chart :log="log" />
     <sensor-info :sensor_id="address" class="block" />
-    <measurements-scalegrid :log="log" class="block" />
+    <last-data :data="log[log.length - 1]" class="block" />
   </div>
   <datalog-loader v-else />
 </template>
 
 <script>
 import { ref, toRefs } from "vue";
-import { useDatalog } from "./datalog";
+import DatalogLoader from "../altruist/DatalogLoader.vue";
+import SensorInfo from "../altruist/SensorInfo.vue";
+import { useDatalog } from "../altruist/datalog";
 import DatalogChart from "./DatalogChart.vue";
-import DatalogLoader from "./DatalogLoader.vue";
-import MeasurementsScalegrid from "./MeasurementsScalegrid.vue";
+import LastData from "./LastData.vue";
 import { parser } from "./parser";
-import SensorInfo from "./SensorInfo.vue";
 
 export default {
   props: ["address"],
@@ -22,7 +22,7 @@ export default {
     DatalogLoader,
     DatalogChart,
     SensorInfo,
-    MeasurementsScalegrid
+    LastData
   },
   setup(props) {
     const datalog = useDatalog(toRefs(props).address, parser);

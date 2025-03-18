@@ -4,20 +4,17 @@ import { ref, watch } from "vue";
 import { getCache, getTotal, loadTwins } from "../dtwin/dtwin.js";
 
 /**
- * Find and return the first altruist token address in the list of twins
+ * Find and return the first token address in the list of twins
  *
  * @param {Robonomics} robonomics
  * @param {number[]} twins
  * @return {string|null}
  */
-const findTokenAltruist = async (robonomics, twins) => {
+const findByToken = async (robonomics, twins, lookingToken) => {
   for (const twinId of twins) {
     const twin = await robonomics.twin.getTwin(twinId);
     for (const token in twin) {
-      if (
-        token ===
-        "0x000000000000000000000000000000000000000000000000616c747275697374"
-      ) {
+      if (token === lookingToken) {
         return twin[token];
       }
     }
@@ -26,12 +23,12 @@ const findTokenAltruist = async (robonomics, twins) => {
 };
 
 /**
- * Returns the address of the Altruist digital twin for the given account
+ * Returns the address of digital twin for the given account
  *
  * @param {boolean} [force=false] - if true, will immediately run the query
  * @returns {{ address: Ref<string|null>, isFind: Ref<boolean>, runFind: () => void }}
  */
-export function useFindAltruist(force = false) {
+export function useFind(token, force = false) {
   const { isReady, getInstance } = useRobonomics();
   const { account } = useAccount();
   const address = ref();
@@ -44,14 +41,14 @@ export function useFindAltruist(force = false) {
     if (result.total !== false) {
       const total = await getTotal(robonomics);
       if (total === result.total) {
-        address.value = await findTokenAltruist(robonomics, result.twins);
+        address.value = await findByToken(robonomics, result.twins, token);
         return;
       } else {
         startIndex = result.total;
       }
     }
     const twins = await loadTwins(robonomics, account, startIndex);
-    address.value = await findTokenAltruist(robonomics, twins);
+    address.value = await findByToken(robonomics, twins, token);
   };
 
   const runFind = () => {
