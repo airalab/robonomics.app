@@ -9,9 +9,9 @@
 
 <script>
 import { ref, toRefs } from "vue";
-import DatalogLoader from "../altruist/DatalogLoader.vue";
-import SensorInfo from "../altruist/SensorInfo.vue";
-import { useDatalog } from "../altruist/datalog";
+import DatalogLoader from "../../components/hardware/DatalogLoader.vue";
+import SensorInfo from "../../components/hardware/SensorInfo.vue";
+import { useDatalog } from "../../components/hardware/hooks/datalog";
 import DatalogChart from "./DatalogChart.vue";
 import LastData from "./LastData.vue";
 import { parser } from "./parser";

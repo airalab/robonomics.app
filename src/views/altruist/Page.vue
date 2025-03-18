@@ -23,10 +23,10 @@
 
 <script>
 import { watch } from "vue";
+import DatalogLoader from "../../components/hardware/DatalogLoader.vue";
+import NoticeText from "../../components/hardware/NoticeText.vue";
+import { useFind } from "../../components/hardware/hooks/dtwin.js";
 import AltruistChart from "./AltruistChart.vue";
-import DatalogLoader from "./DatalogLoader.vue";
-import NoticeText from "./NoticeText.vue";
-import { useFind } from "./dtwin.js";
 
 export default {
   props: ["address"],

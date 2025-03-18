@@ -1,7 +1,7 @@
 import { useAccount } from "@/hooks/useAccount";
 import { useRobonomics } from "@/hooks/useRobonomics";
+import { getCache, getTotal, loadTwins } from "@/views/dtwin/dtwin.js";
 import { ref, watch } from "vue";
-import { getCache, getTotal, loadTwins } from "../dtwin/dtwin.js";
 
 /**
  * Find and return the first token address in the list of twins

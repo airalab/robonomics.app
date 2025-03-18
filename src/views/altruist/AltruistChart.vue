@@ -9,12 +9,12 @@
 
 <script>
 import { ref, toRefs } from "vue";
-import { useDatalog } from "./datalog";
+import DatalogLoader from "../../components/hardware/DatalogLoader.vue";
+import { useDatalog } from "../../components/hardware/hooks/datalog";
+import SensorInfo from "../../components/hardware/SensorInfo.vue";
 import DatalogChart from "./DatalogChart.vue";
-import DatalogLoader from "./DatalogLoader.vue";
 import MeasurementsScalegrid from "./MeasurementsScalegrid.vue";
 import { parser } from "./parser";
-import SensorInfo from "./SensorInfo.vue";
 
 export default {
   props: ["address"],

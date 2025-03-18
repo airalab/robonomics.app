@@ -23,9 +23,9 @@
 
 <script>
 import { watch } from "vue";
-import DatalogLoader from "../altruist/DatalogLoader.vue";
-import NoticeText from "../altruist/NoticeText.vue";
-import { useFind } from "../altruist/dtwin.js";
+import DatalogLoader from "../../components/hardware/DatalogLoader.vue";
+import NoticeText from "../../components/hardware/NoticeText.vue";
+import { useFind } from "../../components/hardware/hooks/dtwin.js";
 import EnergyChart from "./EnergyChart.vue";
 
 export default {
