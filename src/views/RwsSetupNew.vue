@@ -9,6 +9,7 @@
 
 <script setup>
 const onRequestSubscription = (address, send) => {
+  /* ПРОВЕРИЛА, НУЖНО */
   /* мне нужна дата до которой активная подписка для владельца address */
   try {
     const subscriptionexpires = 1663236780652;
@@ -20,12 +21,12 @@ const onRequestSubscription = (address, send) => {
 }
 
 const onSetupGenerate = (config, setStatus) => {
-
-  /* нужно добавить контроллер в подписку */
+  /* ПРОВЕРИЛА, НУЖНО */
+  /* нужно добавить контроллер в подписку (в список юзеров) */
   /* если конфиг null или ошибка при добавлении, то возвращаем ошибку */
   try {
     console.log('owner, controller', config.owner, config.controller);
-    setStatus("ok", "Setup saved");
+    setStatus("ok");
   } catch (e) {
     setStatus("error", e);
   }

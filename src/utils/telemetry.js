@@ -31,7 +31,7 @@ const getLastIndex = async (robonomics, address) => {
   return id.id;
 };
 export const getLastDatalog = async (robonomics, controller) => {
-  console.log("getLastDatalog");
+  // console.log("getLastDatalog");
   if (!controller) {
     return false;
   }
@@ -57,7 +57,7 @@ export const getLastDatalog = async (robonomics, controller) => {
 // };
 
 export const getConfigCid = async (robonomics, controller, twin_id) => {
-  console.log("getConfigCid");
+  // console.log("getConfigCid");
   if (!controller || (!twin_id && twin_id !== 0)) {
     return false;
   }

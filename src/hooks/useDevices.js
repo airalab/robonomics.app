@@ -18,7 +18,7 @@ export const useDevices = (initialOwner = null) => {
       if (data) {
         try {
           const parsedData = JSON.parse(data);
-          console.log("getDevices cache");
+          // console.log("getDevices cache");
           return { data: parsedData.value, cache: true };
         } catch (error) {
           console.log("hadevices bad", error);
@@ -36,7 +36,7 @@ export const useDevices = (initialOwner = null) => {
           lsKey,
           JSON.stringify({ time: Date.now(), value: list })
         );
-        console.log("getDevices chain");
+        // console.log("getDevices chain");
         return { data: list, cache: false };
       } catch (error) {
         console.log(error);

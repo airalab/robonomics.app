@@ -4,7 +4,7 @@
       :onUserDelete="removeUser"
       :onUserAdd="addUser"
       :onSaveHapass="saveHapass"
-      :onControllerEdit="controllerEdit"
+      :onControllerEdit="addUser"
     />
   </robo-layout-section>
 </template>
@@ -32,16 +32,8 @@ export default {
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
 
-    /* +++ Саша, обнови плз controller к подписке */
-    const controllerEdit = (controller, send) => {
-      /* setTimeout - только для моих тестов */
-      setTimeout(() => {
-        send('ok');
-        // send('error', 'Controller has not been saved');
-      }, 1000);
-    }
-
     const addUser = async (user, setStatus) => {
+
       if (!isReady.value) {
         setStatus("error", "Parachain is not ready.");
         return;
@@ -197,8 +189,7 @@ export default {
     return {
       saveHapass,
       addUser,
-      removeUser,
-      controllerEdit
+      removeUser
     };
   }
 };

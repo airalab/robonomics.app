@@ -81,9 +81,9 @@ const navigation = [
 
 <style scoped>
     footer {
-        border-top: 1px solid var(--robo-color-text);
-        margin: calc(var(--robo-layout-padding) * 5);
-        padding-top: var(--robo-layout-padding);
+        border-top: 1px dotted var(--robo-color-text);
+        padding: var(--robo-layout-padding);
+        margin-top: calc(var(--robo-space) * 5);
     }
 
     footer nav {
@@ -101,7 +101,7 @@ const navigation = [
 
     @media screen and (width < 700px) {
         footer nav {
-            font-size: 90%;
+            font-size: 80%;
             gap: var(--robo-layout-padding);
         }
     }

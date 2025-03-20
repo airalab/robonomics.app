@@ -65,7 +65,7 @@ export const useSubscription = (initialOwner = null) => {
             "Option<PalletRobonomicsRwsSubscriptionLedger>",
             parsedData.value
           );
-          console.log("getLedger cache");
+          // console.log("getLedger cache");
           return { data: res.value, cache: true };
           // }
         } catch (error) {
@@ -81,7 +81,7 @@ export const useSubscription = (initialOwner = null) => {
           lsKey,
           JSON.stringify({ time: Date.now(), value: res.value.toJSON() })
         );
-        console.log("getLedger chain");
+        // console.log("getLedger chain");
         return { data: res.value, cache: false };
       }
     }
