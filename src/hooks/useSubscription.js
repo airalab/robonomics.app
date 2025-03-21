@@ -38,6 +38,31 @@ const getRegistry = () => {
   return registry;
 };
 
+const DAYS_TO_MS = 24 * 60 * 60 * 1000;
+
+export const getLedger = async (robonomics, owner) => {
+  const res = await robonomics.rws.getLedger(owner);
+  if (!res.isEmpty) {
+    return res.value;
+  }
+  return null;
+};
+
+export const getValidUntil = (ledger) => {
+  if (!ledger) {
+    return null;
+  }
+  if (ledger.kind.isLifetime) {
+    return null;
+  }
+  const issue_time = ledger.issueTime.toNumber();
+  let days = 0;
+  if (ledger.kind.isDaily) {
+    days = ledger.kind.value.days.toNumber();
+  }
+  return issue_time + days * DAYS_TO_MS;
+};
+
 export const useSubscription = (initialOwner = null) => {
   const owner = ref(initialOwner);
   const dataRaw = shallowRef(null);
@@ -87,8 +112,6 @@ export const useSubscription = (initialOwner = null) => {
     }
     return { data: undefined, cache: false };
   };
-
-  const DAYS_TO_MS = 24 * 60 * 60 * 1000;
 
   const getFreeWeightCalc = async (owner) => {
     const ledger = (await getLedger(owner)).data;

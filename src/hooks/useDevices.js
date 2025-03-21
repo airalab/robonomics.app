@@ -3,6 +3,18 @@ import { validateAddress } from "@polkadot/util-crypto";
 import { onUnmounted, ref, watch } from "vue";
 import { useRobonomics } from "./useRobonomics";
 
+export const getDevices = async (robonomics, owner) => {
+  try {
+    const result = await robonomics.rws.getDevices(owner);
+    return result.map((item) => {
+      return item.toHuman();
+    });
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
 export const useDevices = (initialOwner = null) => {
   const { isReady, getInstance } = useRobonomics();
   const owner = ref(initialOwner);
