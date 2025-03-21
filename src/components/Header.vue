@@ -28,25 +28,25 @@
           <li>
             <router-link to="/hardware/altruist" exact>
               <img src="images/hardware/altruist.webp" />
-              <span>Altruist Outdoor Sensor</span>
+              <span>Air Quality Sensor “ALTRUIST“</span>
             </router-link>
           </li>
           <li>
             <router-link to="/hardware/riscv" exact>
               <img src="images/hardware/risc-v.webp" />
-              <span>Risc-V Smart Home</span>
+              <span>Home server with Web3 cloud</span>
             </router-link>
           </li>
           <li>
             <router-link to="/hardware/hikikomori" exact>
               <img src="images/hardware/hikikomori.webp" />
-              <span>Hikikomori</span>
+              <span>Smart Tamagotchi “Hikikomori“</span>
             </router-link>
           </li>
           <li>
             <router-link to="/hardware/energy-monitor" exact>
               <img src="images/hardware/hikikomori.webp" />
-              <span>Energy Monitor</span>
+              <span>Energy monitor with USB-C</span>
             </router-link>
           </li>
         </ul>
