@@ -9,9 +9,9 @@ import Telemetry from "./views/telemetry/Telemetry.vue";
 import Altruist from "./views/hardware/Altruist.vue";
 import Riscv from "./views/hardware/Riscv.vue";
 import Hikikomori from "./views/hardware/Hikikomori.vue";
-import Smartsafe from "./views/hardware/Smart-safe.vue";
 import SeasonPass from "./views/hardware/Season-pass.vue";
 import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
+import EnergyMonitor from "./views/hardware/Energy-monitor.vue";
 
 const routes = [
   {
@@ -87,14 +87,6 @@ const routes = [
     }
   },
   {
-    path: "/hardware/smart-safe",
-    name: "Smartsafe",
-    component: Smartsafe,
-    meta: {
-      title: "Smart Safe"
-    }
-  },
-  {
     path: "/hardware/season-pass",
     name: "SeasonPass",
     component: SeasonPass,
@@ -108,6 +100,14 @@ const routes = [
     component: SeasonPass2,
     meta: {
       title: "Season Pass 2"
+    }
+  },
+  {
+    path: "/hardware/energy-monitor",
+    name: "EnergyMonitor",
+    component: EnergyMonitor,
+    meta: {
+      title: "Energy Monitor"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }

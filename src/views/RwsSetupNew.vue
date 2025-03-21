@@ -37,6 +37,7 @@ const onRequestSubscription = async (address, send) => {
 };
 
 const onSetupGenerate = async (config, setStatus) => {
+  console.log('onSetupGenerate', config)
   watch(
     isReady,
     async (isReady) => {
