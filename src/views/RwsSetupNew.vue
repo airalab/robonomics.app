@@ -1,38 +1,92 @@
 <template>
   <robo-layout-section>
-    <robo-template-rws-setup create :onRwsUpdate="onSave" />
+    <robo-rws-setup-new
+      :onRequestSubscription="onRequestSubscription"
+      :onSetupGenerate="onSetupGenerate"
+    />
   </robo-layout-section>
 </template>
 
-<script>
-import { encodeAddress } from "@polkadot/util-crypto";
+<script setup>
+import { getDevices } from "@/hooks/useDevices";
+import { useRobonomics } from "@/hooks/useRobonomics";
+import { useSend } from "@/hooks/useSend";
+import { getLedger, getValidUntil } from "@/hooks/useSubscription";
+import { nextTick, watch } from "vue";
 
-export default {
-  setup() {
-    let onSave = (rws, setStatus) => {
-      if (!rws.owner || !rws.name || !rws.controller) {
-        setStatus("error", "All fields are required");
-        return;
-      }
+const { isReady, getInstance } = useRobonomics();
+const transaction = useSend();
 
-      try {
-        encodeAddress(rws.owner);
-      } catch (error) {
-        setStatus("error", `Owner: ${error.message}`);
-        return;
+const onRequestSubscription = async (address, send) => {
+  watch(
+    isReady,
+    async (isReady) => {
+      if (isReady) {
+        try {
+          const robonomics = getInstance();
+          const ledger = await getLedger(robonomics, address);
+          send(getValidUntil(ledger));
+        } catch (e) {
+          console.log(e);
+          send(null);
+        }
       }
-      try {
-        encodeAddress(rws.controller);
-      } catch (error) {
-        setStatus("error", `Controller: ${error.message}`);
-        return;
-      }
+    },
+    { immediate: true }
+  );
+};
 
-      setStatus("ok");
-    };
-    return {
-      onSave
-    };
-  }
+const onSetupGenerate = async (config, setStatus) => {
+  console.log('onSetupGenerate', config)
+  watch(
+    isReady,
+    async (isReady) => {
+      if (isReady) {
+        try {
+          const robonomics = getInstance();
+          if (robonomics.accountManager.account.address !== config.owner) {
+            setStatus("error", "owner != signer");
+            return;
+          }
+          const devices = await getDevices(robonomics, config.owner);
+          if (devices.includes(config.controller)) {
+            setStatus("ok", "Setup saved");
+            if (stop) {
+              stop();
+            } else {
+              nextTick(() => {
+                stop();
+              });
+            }
+            return;
+          }
+          const call = await robonomics.rws.setDevices([
+            ...devices,
+            config.controller
+          ]);
+          const tx = transaction.createTx();
+          if (devices.includes(config.owner)) {
+            await transaction.send(tx, call, config.owner);
+          } else {
+            await transaction.send(tx, call);
+          }
+          if (tx.error.value) {
+            if (tx.error.value !== "Cancelled") {
+              setStatus("error", tx.error.value);
+            } else {
+              setStatus("error", 'cancel');
+            }
+            return;
+          } else {
+            setStatus("ok", "Setup saved");
+          }
+        } catch (e) {
+          console.log(e);
+          setStatus("error", e);
+        }
+      }
+    },
+    { immediate: true }
+  );
 };
 </script>

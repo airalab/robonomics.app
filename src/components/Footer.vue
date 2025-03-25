@@ -1,16 +1,22 @@
 <template>
-    <footer>
-      <nav>
-        <ul v-for="item in navigation" :key="item.title" :data-label="item.title">
-            <li v-for="link in item.links" :key="link.title">
-                <a :href="link.link" target="_blank">{{link.title}}</a>
-            </li>
-        </ul>
-      </nav>
+    <footer class="footer-section">
+        <nav>
+            <ul v-for="item in navigation" :key="item.title" :data-label="item.title">
+                <li v-for="link in item.links" :key="link.title">
+                    <a :href="link.link" target="_blank">{{link.title}}</a>
+                </li>
+            </ul>
+        </nav>
+        <robo-text v-if="repoversion" size="small" weight="bold" align="center" class="footer-section">
+            Latest release:
+            <a :href="repoversion.html_url" target="_blank">{{ repoversion.tag_name }} {{ repoversion.name }}</a>
+        </robo-text>
     </footer>
 </template>
 
 <script setup>
+
+import { ref, onMounted } from "vue";
 
 const navigation = [
 {
@@ -18,7 +24,7 @@ const navigation = [
     links: [
     {
         title: "Sensors map",
-        link: "https://sensors.robonomics.network",
+        link: "https://sensors.social",
     }
     ]
 },
@@ -78,16 +84,39 @@ const navigation = [
         title: "Contacts",
         link: "https://robonomics.network/contact/",
     },
+    {
+        title: "Issues",
+        link: "https://github.com/airalab/robonomics.app/issues",
+    },
     ]
 }
 ];
+
+const repoversion = ref(null);
+
+onMounted(async () => {
+    try {
+      const response = await fetch('https://api.github.com/repos/airalab/robonomics.app/releases/latest');
+      const data = await response.json();
+      repoversion.value = data;
+    } catch (error) {
+      repoversion.value = 'Ошибка загрузки';
+      console.error('Ошибка получения версии:', error);
+    }
+});
+
 </script>
 
 <style scoped>
-    footer {
-        border-top: 1px solid var(--robo-color-text);
-        margin: var(--robo-layout-padding);
+    .footer-section {
+        border-top: 1px dotted var(--robo-color-text);
         padding-top: var(--robo-layout-padding);
+        margin-top: var(--robo-layout-padding);
+    }
+    
+    footer {
+        margin-top: calc(var(--robo-space) * 5);
+        padding: var(--robo-layout-padding);
     }
 
     footer nav {
@@ -105,7 +134,7 @@ const navigation = [
 
     @media screen and (width < 700px) {
         footer nav {
-            font-size: 90%;
+            font-size: 80%;
             gap: var(--robo-layout-padding);
         }
     }

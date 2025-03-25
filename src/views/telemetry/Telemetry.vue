@@ -1,4 +1,5 @@
 <template>
+
   <Libp2p
     v-if="type === 'libp2p'"
     :config="config"
@@ -11,7 +12,7 @@
 
 <script>
 import { useRobonomics } from "@/hooks/useRobonomics";
-import { onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import Launch from "./Launch.vue";
 import Libp2p from "./Libp2p.vue";
@@ -24,8 +25,17 @@ export default {
     const { isReady, accountManager } = useRobonomics();
     const { config, load } = useConfig();
     const isKey = ref(false);
-    const type = ref("libp2p");
 
+    const type = computed( () => {
+      /* always has a value, default is 'libp2p' */
+      return store.state.robonomicsUIvue.polkadot.connection.type;
+    });
+
+    onMounted(() => {
+      // store.commit("polkadot/setConnectionConnected", false);
+      store.commit("polkadot/setConnectionStatus", null);
+    });
+    
     onUnmounted(async () => {
       if (
         isReady.value &&
@@ -48,6 +58,12 @@ export default {
       }
     });
 
+    watch(() => isReady.value, v => {
+      if(type.value === "parachain") {
+        store.commit("polkadot/setConnectionConnected", v);
+      }
+    }, {immediate: true});
+
     watch(
       () => store.state.robonomicsUIvue.rws.user.key,
       async (key) => {
@@ -56,38 +72,35 @@ export default {
           isKey.value = true;
           load();
         } else {
-          console.log("NOT KEY");
+          console.log("User key not found");
         }
       },
       { immediate: true }
     );
 
     return {
+      store,
       type,
       isKey,
       config,
       handlerConnected: (result) => {
-        store.dispatch("app/setlibp2p", {
-          connected: true
-        });
-        let relay = false;
+        store.commit("polkadot/setConnectionType", "libp2p");
+
         if (result.protoNames().includes("p2p-circuit")) {
-          relay = true;
+          store.commit("polkadot/setConnectionStatus", "via relay");
+        } else {
+          store.commit("polkadot/setConnectionStatus", null);
         }
-        store.dispatch("app/setrelay", {
-          connected: relay
-        });
+
+        store.commit("polkadot/setConnectionConnected", true);
       },
       handlerError: (e) => {
         console.log(e.message);
-        console.log("switch to parachain");
-        type.value = "parachain";
-        store.dispatch("app/setlibp2p", {
-          connected: false
-        });
-        store.dispatch("app/setrelay", {
-          connected: false
-        });
+        console.log("Switching to parachain");
+
+        store.commit("polkadot/setConnectionType", "parachain");
+        store.commit("polkadot/setConnectionConnected", true);
+        store.commit("polkadot/setConnectionStatus", null); /* delete message about relay if it was there */
       }
     };
   }

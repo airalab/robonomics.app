@@ -1,10 +1,10 @@
 <template>
   <robo-layout-section>
-    <robo-template-rws-setup
-      :onRwsUpdate="rwsUpdateActions"
+    <robo-rws-setup
       :onUserDelete="removeUser"
       :onUserAdd="addUser"
       :onSaveHapass="saveHapass"
+      :onControllerEdit="addUser"
     />
   </robo-layout-section>
 </template>
@@ -32,29 +32,8 @@ export default {
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
 
-    const rwsUpdateActions = (rws, setStatus) => {
-      if (!rws.owner || !rws.name || !rws.controller) {
-        setStatus("error", "All fields are required");
-        return;
-      }
-
-      try {
-        encodeAddress(rws.owner);
-      } catch (error) {
-        setStatus("error", `Owner: ${error.message}`);
-        return;
-      }
-      try {
-        encodeAddress(rws.controller);
-      } catch (error) {
-        setStatus("error", `Controller: ${error.message}`);
-        return;
-      }
-
-      setStatus("ok");
-    };
-
     const addUser = async (user, setStatus) => {
+
       if (!isReady.value) {
         setStatus("error", "Parachain is not ready.");
         return;
@@ -132,6 +111,8 @@ export default {
         return;
       }
       const userAddress = store.state.robonomicsUIvue.rws.user.account;
+      const userType = store.state.robonomicsUIvue.rws.user.acctype ?? 'ed25519';
+      console.log('userType', userType);
 
       const robonomics = getInstance();
 
@@ -207,7 +188,6 @@ export default {
 
     return {
       saveHapass,
-      rwsUpdateActions,
       addUser,
       removeUser
     };

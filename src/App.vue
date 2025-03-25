@@ -24,22 +24,30 @@ export default {
 
     const title = ref();
 
-    store.commit("rws/setKey", process.env.VUE_APP_ROBONOMICS_UI_KEY);
-    store.dispatch("rws/init");
+    // store.commit("rws/setKey", process.env.VUE_APP_ROBONOMICS_UI_KEY);
+    // отказываемся от этой переменной совсем
+    // store.dispatch("rws/init");
 
-    store.commit(
-      "rws/setLinkActivate",
-      router.resolve({ name: "rwsActivate" }).path
-    );
-    store.commit("rws/setLinkSetup", router.resolve({ name: "rwsSetup" }).path);
-    store.commit(
-      "rws/setLinkSetupnew",
-      router.resolve({ name: "rwsSetupNew" }).path
-    );
-    store.commit(
-      "rws/setLinkDevices",
-      router.resolve({ name: "telemetry" }).path
-    );
+    store.commit("rws/setLink", {
+      link: "activate",
+      value: router.resolve({ name: "rwsActivate" }).path
+    });
+
+    store.commit("rws/setLink", {
+      link: "setup",
+      value: router.resolve({ name: "rwsSetup" }).path
+    });
+
+    store.commit("rws/setLink", {
+      link: "setupnew",
+      value: router.resolve({ name: "rwsSetupNew" }).path
+    });
+
+    store.commit("rws/setLink", {
+      link: "devices",
+      value: router.resolve({ name: "telemetry" }).path
+    });
+
     store.commit("ipfs/setGateways", IpfsProvider.gateways);
 
     watch(route, () => {
@@ -57,12 +65,8 @@ export default {
       [route, RobonomicsProvider.isReady],
       ([route, isReady]) => {
         if (route.name !== "telemetry" && isReady) {
-          store.dispatch("app/setlibp2p", {
-            connected: false
-          });
-          store.dispatch("app/setrelay", {
-            connected: false
-          });
+          store.commit("polkadot/setConnectionType", "parachain");
+          store.commit("polkadot/setConnectionConnected", true);
         }
       },
       { immediate: true }

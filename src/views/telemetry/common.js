@@ -112,7 +112,7 @@ export const notify = (store, text, timeout = 3000) => {
     value: text,
     timeout
   });
-  console.log(text);
+  // console.log(text);
 };
 
 export const setStatusLaunch = (store, command, status) => {

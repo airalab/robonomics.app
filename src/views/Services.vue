@@ -1,4 +1,5 @@
 <template>
+  <!-- внимание, устаревший интерфейс -->
   <robo-layout-section>
     <robo-grid offset="x0" gap="x1" galign="start" minColumnWidth="450px">
       <robo-card>

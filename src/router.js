@@ -4,14 +4,14 @@ import Hikikomori from "./views/hardware/Hikikomori.vue";
 import Riscv from "./views/hardware/Riscv.vue";
 import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
 import SeasonPass from "./views/hardware/Season-pass.vue";
-import Smartsafe from "./views/hardware/Smart-safe.vue";
 import Home from "./views/Home.vue";
 import Humanoid from "./views/humanoid/RobonomicsApp.vue";
 import PathNotFound from "./views/PathNotFound.vue";
 import RwsActivate from "./views/RwsActivate.vue";
 import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
-import Services from "./views/Services.vue";
+// import Services from "./views/Services.vue";
+import EnergyMonitor from "./views/hardware/Energy-monitor.vue";
 import Telemetry from "./views/telemetry/Telemetry.vue";
 
 const routes = [
@@ -55,14 +55,14 @@ const routes = [
       title: "Devices control panel"
     }
   },
-  {
-    path: "/services",
-    name: "services",
-    component: Services,
-    meta: {
-      title: "Services"
-    }
-  },
+  // {
+  //   path: "/services",
+  //   name: "services",
+  //   component: Services,
+  //   meta: {
+  //     title: "Services"
+  //   }
+  // },
   {
     path: "/hardware/altruist",
     name: "Altruist",
@@ -88,14 +88,6 @@ const routes = [
     }
   },
   {
-    path: "/hardware/smart-safe",
-    name: "Smartsafe",
-    component: Smartsafe,
-    meta: {
-      title: "Smart Safe"
-    }
-  },
-  {
     path: "/hardware/season-pass",
     name: "SeasonPass",
     component: SeasonPass,
@@ -109,6 +101,14 @@ const routes = [
     component: SeasonPass2,
     meta: {
       title: "Season Pass 2"
+    }
+  },
+  {
+    path: "/hardware/energy-monitor",
+    name: "EnergyMonitor",
+    component: EnergyMonitor,
+    meta: {
+      title: "Energy Monitor"
     }
   },
   {

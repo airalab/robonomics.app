@@ -32,7 +32,7 @@
     "libp2p": "^1.2.4",
     "mipd": "^0.0.7",
     "robonomics-interface": "^0.3.2",
-    "robonomics-ui-vue": "0.5.2-beta.5",
+    "robonomics-ui-vue": "^0.6.2",
     "uuid": "^9.0.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
