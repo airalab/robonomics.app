@@ -56,6 +56,8 @@ export default {
         ? `${title.value} / Robonomics Dapp`
         : "Robonomics Dapp";
       document.title = resulttitle;
+      if(document
+      .querySelector('meta[property="og:title"]'))
       document
         .querySelector('meta[property="og:title"]')
         .setAttribute("content", resulttitle);
