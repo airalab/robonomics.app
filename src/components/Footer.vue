@@ -1,12 +1,20 @@
 <template>
-    <footer class="footer-section">
-        <nav>
-            <ul v-for="item in navigation" :key="item.title" :data-label="item.title">
-                <li v-for="link in item.links" :key="link.title">
-                    <a :href="link.link" target="_blank">{{link.title}}</a>
-                </li>
-            </ul>
-        </nav>
+    <footer>
+        <div class="footer-section">
+            <nav>
+                <ul v-for="item in navigation" :key="item.title" :data-label="item.title">
+                    <li v-for="link in item.links" :key="link.title">
+                        <a :href="link.link" target="_blank">{{link.title}}</a>
+                    </li>
+                </ul>
+            </nav>
+            <robo-text size="small" weight="bold" align="center">
+                <robo-grid id="footer-label" type="flex" gap="x05" valign="center">
+                    <span>Secured by</span>
+                    <img width="100" alt="Polkadot" src="/images/polkadot-new-dot-logo-horizontal.svg" />
+                </robo-grid>
+            </robo-text>
+        </div>
         <robo-text v-if="repoversion" size="small" weight="bold" align="center" class="footer-section">
             Latest release:
             <a :href="repoversion.html_url" target="_blank">{{ repoversion.tag_name }} {{ repoversion.name }}</a>
@@ -16,7 +24,13 @@
 
 <script setup>
 
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+
+const network = computed(() => {
+    return store.state.robonomicsUIvue?.polkadot?.connection?.network || "polkadot";
+});
 
 const navigation = [
 {
@@ -52,7 +66,7 @@ const navigation = [
     links: [
     {
         title: "Substrate Portal",
-        link: "https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.rpc.robonomics.network%2F#/explorer",
+        link: "https://polkadot.js.org/apps/?rpc=wss%3A%2F%2F" + network.value + ".rpc.robonomics.network%2F#/explorer",
     },
     {
         title: "Subscan",
@@ -139,5 +153,12 @@ onMounted(async () => {
         footer nav {
             flex-direction: column;
         }
+    }
+
+    #footer-label {
+        display: inline-flex;
+        width: fit-content;
+        padding-top: var(--robo-space);
+        padding-bottom: var(--robo-space);
     }
 </style>
