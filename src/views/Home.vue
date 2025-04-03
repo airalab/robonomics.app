@@ -72,7 +72,7 @@
               <robo-icon icon="check" /> Brand-independent smart home, combine wanted devices
             </robo-grid-item>
             <robo-grid-item>
-              <robo-icon icon="check" /> Update your Robonomics devices as you wish with type-c
+              <robo-icon icon="check" /> Update your Robonomics devices as you wish with Type-C
             </robo-grid-item>
           </robo-grid>
         </robo-text>

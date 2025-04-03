@@ -45,7 +45,7 @@
           </li>
           <li>
             <router-link to="/hardware/energy-monitor" exact>
-              <img src="images/hardware/hikikomori.webp" />
+              <img src="images/hardware/e-monitor.webp" />
               <span>Energy monitor with USB-C</span>
             </router-link>
           </li>
@@ -198,7 +198,17 @@ export default {
 
   .nav-devices img {
     max-width: 100%;
+    object-fit: contain;
   }
+
+  .nav-devices li:not(:nth-child(2)) img {
+    max-height: 92px;
+  }
+
+  .nav-devices li:nth-child(2) img {
+    min-height: 100px;
+  }
+
 
   @media screen and (width < 950px) {
     .nav-rws ul {
