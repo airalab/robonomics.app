@@ -22,9 +22,9 @@ import { ref } from "vue";
 import { useTwinAction } from "./dtwin";
 
 export default {
-  props: ["id"],
+  props: ["id", "owner"],
   setup(props, { emit }) {
-    const { setSource } = useTwinAction();
+    const { setSource } = useTwinAction(props.owner);
     const topic = ref();
     const source = ref();
     const isProccess = ref(false);

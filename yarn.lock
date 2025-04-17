@@ -901,6 +901,13 @@
   dependencies:
     "@chainsafe/is-ip" "^2.0.1"
 
+"@crustio/type-definitions@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@crustio/type-definitions/-/type-definitions-1.3.0.tgz#c4810da0bcef58d67439491a5cde1d0beb43a03d"
+  integrity sha512-xdW6npZTmWfDzZEVCMjRK7f7wQrU/cgIltGlvnXY2AFD2m9uBW+s6/lx9YHuLbk7y3NrrQwbp3owFuGw4A2hNw==
+  dependencies:
+    "@open-web3/orml-type-definitions" "^0.9.4-7"
+
 "@discoveryjs/json-ext@0.5.7":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
@@ -1529,6 +1536,13 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@open-web3/orml-type-definitions@^0.9.4-7":
+  version "0.9.4-38"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-type-definitions/-/orml-type-definitions-0.9.4-38.tgz#fc7642f6a518da2618ae39fa76fe046ee57c1e80"
+  integrity sha512-kV0++JlRLEf7Z1y+Jm+792zqx6Q7dzpGP73rJJmQrBaeTML5mQzu4veZ24TVtcLV6hsGjUU/ixrJODNj6CCuZQ==
+  dependencies:
+    lodash.merge "^4.6.2"
 
 "@polka/url@^1.0.0-next.24":
   version "1.0.0-next.28"

@@ -3,7 +3,7 @@ import axios from "axios";
 import { create } from "ipfs-http-client";
 import { ref } from "vue";
 
-class IpfsApiClient {
+export class IpfsApiClient {
   constructor(endpoint) {
     this.endpoint = endpoint;
     this.authHeader = null;
@@ -16,13 +16,17 @@ class IpfsApiClient {
     });
   }
   _options() {
-    return {
+    const options = {
       url: this.endpoint,
-      headers: {
-        authorization: `Basic ${this.authHeader}`,
-        robonomics: this.robonomics
-      }
+      headers: {}
     };
+    if (this.authHeader) {
+      options.headers.authorization = `Basic ${this.authHeader}`;
+    }
+    if (this.robonomics) {
+      options.headers.robonomics = this.robonomics;
+    }
+    return options;
   }
   isAuth() {
     return !!this.authHeader && !!this.robonomics;

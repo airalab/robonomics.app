@@ -8,7 +8,7 @@ import {
   hexToCid,
   stringToHex
 } from "robonomics-interface/dist/utils";
-import { ref, watch } from "vue";
+import { ref, toRef, watch } from "vue";
 
 /**
  * Stores the list of digital twin IDs and the total count of digital twins for
@@ -211,18 +211,23 @@ export function useTwins(force = false) {
  *   - `topic`: The topic of the source. Can be a CID or a string.
  *   - `source`: The source of the digital twin.
  */
-export function useTwinAction() {
+export function useTwinAction(subscribe) {
   const { getInstance } = useRobonomics();
   const transaction = useSend();
   const { account } = useAccount();
-  const devices = useDevices(account);
+  if (!subscribe) {
+    subscribe = account;
+  } else {
+    subscribe = toRef(subscribe);
+  }
+  const devices = useDevices(subscribe);
 
   const create = async () => {
     const robonomics = getInstance();
     const call = robonomics.twin.create();
     const tx = transaction.createTx();
     if (devices.devices.value.includes(account.value)) {
-      await transaction.send(tx, call, account.value);
+      await transaction.send(tx, call, subscribe.value);
     } else {
       await transaction.send(tx, call);
     }
@@ -231,16 +236,18 @@ export function useTwinAction() {
 
   const setSource = async (id, topic, source) => {
     const robonomics = getInstance();
-    let hex;
-    try {
-      hex = cidToHex(topic);
-    } catch (_) {
-      hex = stringToHex(topic);
+    let hex = topic;
+    if (!topic.startsWith("0x")) {
+      try {
+        hex = cidToHex(topic);
+      } catch (_) {
+        hex = stringToHex(topic);
+      }
     }
     const call = robonomics.twin.setSource(id, hex, source);
     const tx = transaction.createTx();
     if (devices.devices.value.includes(account.value)) {
-      await transaction.send(tx, call, account.value);
+      await transaction.send(tx, call, subscribe.value);
     } else {
       await transaction.send(tx, call);
     }
