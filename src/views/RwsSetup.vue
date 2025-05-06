@@ -153,7 +153,7 @@ export default {
       const call = await robonomics.datalog.write(
         JSON.stringify({
           subscription: setup.owner,
-          ha: setup.controller,
+          ha: setup.controller.address,
           admin: u8aToHex(passwordForAdmin),
           user: u8aToHex(passwordForRecovery)
         })

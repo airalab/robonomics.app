@@ -49,7 +49,7 @@ const onSetupGenerate = async (config, setStatus) => {
             return;
           }
           const devices = await getDevices(robonomics, config.owner);
-          if (devices.includes(config.controller)) {
+          if (devices.includes(config.controller.address)) {
             setStatus("ok", "Setup saved");
             if (stop) {
               stop();
@@ -62,7 +62,7 @@ const onSetupGenerate = async (config, setStatus) => {
           }
           const call = await robonomics.rws.setDevices([
             ...devices,
-            config.controller
+            config.controller.address
           ]);
           const tx = transaction.createTx();
           if (devices.includes(config.owner)) {

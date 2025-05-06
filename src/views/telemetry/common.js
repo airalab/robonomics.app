@@ -75,7 +75,7 @@ const loadSetup = (store) => {
     if (setupRaw) {
       try {
         return {
-          controller: setupRaw.controller,
+          controller: setupRaw.controller.address,
           owner: setupRaw.owner
         };
       } catch (error) {
