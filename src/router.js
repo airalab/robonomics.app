@@ -12,6 +12,7 @@ import RwsSetup from "./views/RwsSetup.vue";
 import RwsSetupNew from "./views/RwsSetupNew.vue";
 // import Services from "./views/Services.vue";
 import EnergyMonitor from "./views/hardware/Energy-monitor.vue";
+import SaveSetup from "./views/saveSetup/Page.vue";
 import Telemetry from "./views/telemetry/Telemetry.vue";
 
 const routes = [
@@ -143,6 +144,14 @@ const routes = [
     component: () => import("./views/dtwin/Page.vue"),
     meta: {
       title: "Digital Twin"
+    }
+  },
+  {
+    path: "/save-setup",
+    name: "save-setup",
+    component: SaveSetup,
+    meta: {
+      title: "Savesetup"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }

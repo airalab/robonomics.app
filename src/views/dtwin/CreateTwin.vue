@@ -15,9 +15,10 @@ import { ref } from "vue";
 import { useTwinAction } from "./dtwin.js";
 
 export default {
+  props: ["owner"],
   emits: ["change"],
-  setup(_, { emit }) {
-    const { create } = useTwinAction();
+  setup(props, { emit }) {
+    const { create } = useTwinAction(props.owner);
     const isProccess = ref(false);
     const isSuccess = ref(false);
 
