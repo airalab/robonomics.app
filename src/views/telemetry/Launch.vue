@@ -4,12 +4,17 @@
     :datalog="data"
     :updateTime="updateTime"
   />
+
+  <!-- {{data}}, {{dataTest}} -->
 </template>
 
 <script>
 import { watch } from "vue";
 import { useStore } from "vuex";
 import { useData } from "./launch";
+
+import dataTest from "./Lugano.json"
+import configTest from "./Lugano-config.json"
 
 export default {
   props: {
@@ -47,7 +52,7 @@ export default {
       }
     );
 
-    return { data, updateTime };
+    return { data, updateTime, dataTest, configTest };
   }
 };
 </script>
