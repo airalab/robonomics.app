@@ -1490,9 +1490,9 @@
     "@noble/hashes" "1.7.1"
 
 "@noble/curves@^1.3.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.0.tgz#13e0ca8be4a0ce66c113693a94514e5599f40cfc"
-  integrity sha512-7YDlXiNMdO1YZeH6t/kvopHHbIZzlxrCV9WLqCY6QhcXOoXiNCMDqJIglZ9Yjx5+w7Dz30TITFrlTjnRg7sKEg==
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.1.tgz#9654a0bc6c13420ae252ddcf975eaf0f58f0a35c"
+  integrity sha512-k11yZxZg+t+gWvBbIswW0yoJlu8cHOC7dhunwOzoWH/mXGBiYyR4YY6hAEK/3EUs4UpB8la1RfdRpeGsFHkWsA==
   dependencies:
     "@noble/hashes" "1.8.0"
 
@@ -7748,10 +7748,10 @@ robonomics-interface@^0.3.2:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.7.2:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.7.2.tgz#5dc4dd9a15471e387c0e5b4de965c75b77a3e087"
-  integrity sha512-2mCcI11c6q7+Hvoavyfg6y4O7FE6mOG6gFvfvIzCmBXhwgJwvjwGs0MJ1BhayxgkawTNks3B3qRUrFa5e+LsMg==
+robonomics-ui-vue@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.7.3.tgz#afd68006e5075a1a7e8ae1f1a5101ee3ab6dcd5e"
+  integrity sha512-gdlWtjiZY6nvJU9zRbottv1auXCv4i2i6XL62dsRucnVHobfXLR51JwGhJsCVhMvbSVmxFtSxHnEIMXcyBm3Jg==
   dependencies:
     "@polkadot/keyring" "^12.6.2"
     "@polkadot/ui-keyring" "^3.6.4"
