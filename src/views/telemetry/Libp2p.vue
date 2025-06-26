@@ -2,6 +2,7 @@
   <robo-smarthome-dashboard
     :config="config"
     :datalog="data"
+    :cid="cid"
     :updateTime="updateTime"
   />
 </template>
@@ -24,7 +25,7 @@ export default {
   },
   emits: ["connected", "error"],
   setup(props, { emit }) {
-    const { data, updateTime, run, launch } = useData();
+    const { data, updateTime, run, launch, cid } = useData();
     const store = useStore();
 
     const isOnce = props.isKey && props.config !== null;
@@ -43,19 +44,20 @@ export default {
               );
               if (result) {
                 emit("connected", result);
-                if (!result.protoNames().includes("p2p-circuit")) {
-                  const gateway = `http://${
-                    result.nodeAddress().address
-                  }:8080/ipfs/`;
-                  if (
-                    store.state.robonomicsUIvue.ipfs.activegateway !== gateway
-                  ) {
-                    console.log("set local gateway", gateway);
-                    store.commit("ipfs/setActiveGateway", gateway);
-                  }
-                } else {
-                  console.log("relay");
-                }
+                // тут закомментировала потому что activeGateway устанавливаю у себя
+                // if (!result.protoNames().includes("p2p-circuit")) {
+                //   const gateway = `http://${
+                //     result.nodeAddress().address
+                //   }:8080/ipfs/`;
+                //   if (
+                //     store.state.robonomicsUIvue.ipfs.activegateway !== gateway
+                //   ) {
+                //     console.log("set local gateway", gateway);
+                //     store.commit("ipfs/setActiveGateway", gateway);
+                //   }
+                // } else {
+                //   console.log("relay");
+                // }
               } else {
                 emit("error", new Error("connect"));
               }
@@ -79,7 +81,7 @@ export default {
       }
     );
 
-    return { data, updateTime };
+    return { data, updateTime, cid };
   }
 };
 </script>

@@ -2,6 +2,7 @@
   <robo-smarthome-dashboard
     :config="config"
     :datalog="data"
+    :cid="cid"
     :updateTime="updateTime"
   />
 
@@ -13,6 +14,7 @@ import { watch } from "vue";
 import { useStore } from "vuex";
 import { useData } from "./launch";
 
+// это для тестов верстки карточек, когда все остальные тестовые стенды отвалились
 import dataTest from "./Lugano.json"
 import configTest from "./Lugano-config.json"
 
@@ -28,7 +30,7 @@ export default {
     }
   },
   setup(props) {
-    const { data, updateTime, run, launch } = useData();
+    const { data, updateTime, run, launch, cid } = useData();
     const store = useStore();
 
     watch(
@@ -52,7 +54,7 @@ export default {
       }
     );
 
-    return { data, updateTime, dataTest, configTest };
+    return { data, updateTime, cid, dataTest, configTest };
   }
 };
 </script>

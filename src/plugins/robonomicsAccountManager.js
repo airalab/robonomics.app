@@ -5,11 +5,33 @@ import { base64Decode } from "@polkadot/util-crypto";
 import { AccountManager } from "robonomics-interface";
 
 export default class AccountManagerDapp extends AccountManager {
-  constructor(keyring, config = {}, api = null) {
+
+  // проверка не вызывался ли уже keyring.loadAll
+  static async create(
+    keyring,
+    config = { ss58Format: 32, type: "ed25519" },
+    api = null
+  ) {
+    if (typeof keyring.isReady !== 'function' || !keyring.isReady()) {
+      await keyring.loadAll(config);
+    }
+    const instance = new AccountManagerDapp(keyring, api);
+    instance.setReady(true);
+    return instance;
+  }
+
+  // старая версия конструктора
+  // constructor(keyring, config = {}, api = null) {
+  //   super(keyring, api);
+  //   this.extension = null;
+  //   keyring.loadAll(config);
+  //   this.setReady(true);
+  // }
+
+  constructor(keyring, api = null) {
     super(keyring, api);
     this.extension = null;
-    keyring.loadAll(config);
-    this.setReady(true);
+    /* keyring.loadAll() вызывается в фабрике create(), потому что важно проверить не инициирован ли уже keyring.loadAll */
   }
 
   async beforeSetSender(address, { type, extension }) {

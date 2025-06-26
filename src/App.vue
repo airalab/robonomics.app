@@ -17,7 +17,7 @@ export default {
   },
   setup() {
     const RobonomicsProvider = inject("RobonomicsProvider");
-    const IpfsProvider = inject("IpfsProvider");
+    // const IpfsProvider = inject("IpfsProvider");
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
@@ -47,9 +47,7 @@ export default {
       link: "devices",
       value: router.resolve({ name: "telemetry" }).path
     });
-
-    store.commit("ipfs/setGateways", IpfsProvider.gateways);
-
+    
     watch(route, () => {
       title.value = route?.meta?.title;
       const resulttitle = title.value
