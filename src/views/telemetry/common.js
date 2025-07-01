@@ -1,25 +1,49 @@
 import configApp from "@/config";
-import { useIpfs } from "@/hooks/useIpfs";
 import { useRobonomics } from "@/hooks/useRobonomics";
 import { createPair, encryptor } from "@/utils/encryptor";
 import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
 import { hexToU8a, u8aToString } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
+import axios from "axios";
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 
 export const chainSS58 = 32;
 
-const catFile = async (store, ipfs, cid) => {
+const watchIpfsGateway = async (store) => {
+  return new Promise((resolve) => {
+    if (store.state.robonomicsUIvue.ipfs.activeGateway) {
+      resolve(store.state.robonomicsUIvue.ipfs.activeGateway);
+      return;
+    }
+    let stop;
+    stop = watch(
+      () => store.state.robonomicsUIvue.ipfs.activeGateway,
+      async (activeGateway) => {
+        if (activeGateway) {
+          resolve(activeGateway);
+          if (stop) {
+            stop();
+          }
+        }
+      },
+      { immediate: true }
+    );
+  });
+};
+
+const catFile = async (store, cid) => {
   if (!cid) {
     return false;
   }
-  const res = await ipfs.catViaGateways(
-    store.state.robonomicsUIvue.ipfs.gateways,
-    cid
-  );
-  store.commit("ipfs/setActiveGateway", res.gateway);
-  return res.result;
+  try {
+    const activeGateway = await watchIpfsGateway(store);
+    const res = (await axios.get(`${activeGateway}/ipfs/${cid}`)).data;
+    return res;
+  } catch (error) {
+    console.log(error);
+    throw new Error("File not available");
+  }
 };
 
 export const decryptData = async (encryptedMsg, controller, account) => {
@@ -43,15 +67,9 @@ export const decryptData = async (encryptedMsg, controller, account) => {
   return false;
 };
 
-export const readFileDecrypt = async (
-  cid,
-  controller,
-  account,
-  store,
-  ipfs
-) => {
+export const readFileDecrypt = async (cid, controller, account, store) => {
   if (cid) {
-    const data = await catFile(store, ipfs, cid);
+    const data = await catFile(store, cid);
     if (!data) {
       console.log(`Error: ${cid} not found in ipfs`);
       throw new Error(`${cid} not found in ipfs`);
@@ -128,7 +146,6 @@ export const useLastDatalog = () => {
   const data = ref(null);
 
   const store = useStore();
-  const ipfs = useIpfs();
   const { isReady, getInstance } = useRobonomics();
   const { controller } = useSetup();
 
@@ -143,8 +160,7 @@ export const useLastDatalog = () => {
           cid.value,
           controller.value,
           robonomics.accountManager.encryptor(),
-          store,
-          ipfs
+          store
         );
       } catch (error) {
         console.log(error);
@@ -158,9 +174,9 @@ export const useLastDatalog = () => {
 
 export const useConfig = () => {
   const config = ref(null);
+  const cid = ref("");
 
   const store = useStore();
-  const ipfs = useIpfs();
   const { isReady, getInstance, accountManager } = useRobonomics();
   const { controller } = useSetup();
 
@@ -186,12 +202,12 @@ export const useConfig = () => {
       const robonomics = getInstance();
 
       const datalog = await getLastDatalog(robonomics, controller);
+      cid.value = datalog.cid;
       const result = await readFileDecrypt(
         datalog.cid,
         controller,
         accountManager.encryptor(),
-        store,
-        ipfs
+        store
       );
 
       if (result) {
@@ -210,8 +226,7 @@ export const useConfig = () => {
           cid,
           controller,
           accountManager.encryptor(),
-          store,
-          ipfs
+          store
         );
 
         localStorage.setItem(
@@ -272,5 +287,5 @@ export const useConfig = () => {
     }
   };
 
-  return { config, load };
+  return { config, cid, load };
 };

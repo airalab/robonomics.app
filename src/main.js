@@ -25,13 +25,7 @@ app
   .use(robonomics)
   .use(web3)
   .use(ipfs, {
-    api: { gateway: "https://ipfs.url.today" },
-    gateways: [
-      "https://ipfs.url.today/ipfs/",
-      "https://ipfs.io/ipfs/",
-      "https://gateway.pinata.cloud/ipfs/",
-      "https://aira.mypinata.cloud/ipfs/"
-    ]
+    api: { gateway: "https://ipfs.url.today" }
   })
   .use(robonomicsUI, { store })
   .mount("#app");

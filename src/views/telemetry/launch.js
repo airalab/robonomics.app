@@ -58,8 +58,7 @@ export const useData = () => {
         cid.value,
         controller.value,
         accountManager.encryptor(),
-        store,
-        ipfs
+        store
       );
     } catch (error) {
       console.log(error);

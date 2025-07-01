@@ -15,8 +15,8 @@ import { useStore } from "vuex";
 import { useData } from "./launch";
 
 // это для тестов верстки карточек, когда все остальные тестовые стенды отвалились
-import dataTest from "./Lugano.json"
-import configTest from "./Lugano-config.json"
+import configTest from "./Lugano-config.json";
+import dataTest from "./Lugano.json";
 
 export default {
   props: {
@@ -27,10 +27,13 @@ export default {
     config: {
       default: null,
       type: Object
+    },
+    cid: {
+      type: String
     }
   },
   setup(props) {
-    const { data, updateTime, run, launch, cid } = useData();
+    const { data, updateTime, run, launch } = useData();
     const store = useStore();
 
     watch(
@@ -54,7 +57,7 @@ export default {
       }
     );
 
-    return { data, updateTime, cid, dataTest, configTest };
+    return { data, updateTime, dataTest, configTest };
   }
 };
 </script>

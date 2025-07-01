@@ -1,18 +1,18 @@
 <template>
-
   <Libp2p
     v-if="type === 'libp2p'"
     :config="config"
+    :cid="cid"
     :isKey
     @connected="handlerConnected"
     @error="handlerError"
   />
-  <Launch v-else :config="config" :isKey />
+  <Launch v-else :config="config" :cid="cid" :isKey />
 </template>
 
 <script>
 import { useRobonomics } from "@/hooks/useRobonomics";
-import { onMounted, onUnmounted, ref, watch, computed } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Launch from "./Launch.vue";
 import Libp2p from "./Libp2p.vue";
@@ -23,10 +23,10 @@ export default {
   setup() {
     const store = useStore();
     const { isReady, accountManager } = useRobonomics();
-    const { config, load } = useConfig();
+    const { config, cid, load } = useConfig();
     const isKey = ref(false);
 
-    const type = computed( () => {
+    const type = computed(() => {
       /* always has a value, default is 'libp2p' */
       return store.state.robonomicsUIvue.polkadot.connection.type;
     });
@@ -35,7 +35,7 @@ export default {
       // store.commit("polkadot/setConnectionConnected", false);
       store.commit("polkadot/setConnectionStatus", null);
     });
-    
+
     onUnmounted(async () => {
       if (
         isReady.value &&
@@ -45,7 +45,7 @@ export default {
       ) {
         try {
           const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
-          (item) =>
+            (item) =>
               item.address === store.state.robonomicsUIvue.polkadot.address
           );
           if (accountOld) {
@@ -54,15 +54,21 @@ export default {
               extension: store.state.robonomicsUIvue.polkadot.extensionObj
             });
           }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+          console.error(e);
+        }
       }
     });
 
-    watch(() => isReady.value, v => {
-      if(type.value === "parachain") {
-        store.commit("polkadot/setConnectionConnected", v);
-      }
-    }, {immediate: true});
+    watch(
+      () => isReady.value,
+      (v) => {
+        if (type.value === "parachain") {
+          store.commit("polkadot/setConnectionConnected", v);
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       () => store.state.robonomicsUIvue.rws.user.key,
@@ -83,6 +89,7 @@ export default {
       type,
       isKey,
       config,
+      cid,
       handlerConnected: (result) => {
         store.commit("polkadot/setConnectionType", "libp2p");
 
@@ -100,7 +107,10 @@ export default {
 
         store.commit("polkadot/setConnectionType", "parachain");
         store.commit("polkadot/setConnectionConnected", true);
-        store.commit("polkadot/setConnectionStatus", null); /* delete message about relay if it was there */
+        store.commit(
+          "polkadot/setConnectionStatus",
+          null
+        ); /* delete message about relay if it was there */
       }
     };
   }
