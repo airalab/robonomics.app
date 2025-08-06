@@ -22,7 +22,7 @@
       </nav>
     </robo-section>
 
-    <robo-section>
+    <!-- <robo-section>
       <nav class="nav-devices">
         <ul>
           <li>
@@ -51,7 +51,7 @@
           </li>
         </ul>
       </nav>
-    </robo-section>
+    </robo-section> -->
 
   </template>
   </robo-layout-header>
