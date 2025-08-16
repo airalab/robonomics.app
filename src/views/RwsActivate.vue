@@ -68,6 +68,10 @@ export default {
     const transaction = useSend();
     const onActivate = async (setStatus) => {
 
+      /* это для тестов eslint-disable no-unreachable */
+      // setStatus("ok");
+      // return;
+
       if (!isReady.value) {
         setStatus("error", "Parachain is not ready");
         return;
