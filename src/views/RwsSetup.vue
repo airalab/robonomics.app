@@ -1,11 +1,33 @@
 <template>
   <robo-layout-section>
-    <robo-rws-setup
-      :onUserDelete="removeUser"
-      :onUserAdd="addUser"
-      :onSaveHapass="saveHapass"
-      :onControllerEdit="addUser"
-    />
+
+    <robo-section width="narrow" centered>
+        <robo-text title="3" offset="x1">Saved subscription setups</robo-text>
+
+        <robo-tabs v-if="$store.state.robonomicsUIvue.rws.list.length > 1">
+          <robo-tab label="Active subscription">
+            <robo-rws-setup
+              :onUserDelete="removeUser"
+              :onUserAdd="addUser"
+              :onSaveHapass="saveHapass"
+              :onControllerEdit="editController"
+            />
+          </robo-tab>
+          <robo-tab label="All subscriptions">
+            <robo-rws-setups-list />
+          </robo-tab>
+        </robo-tabs>
+
+        <robo-rws-setup
+          v-else
+          :onUserDelete="removeUser"
+          :onUserAdd="addUser"
+          :onSaveHapass="saveHapass"
+          :onControllerEdit="editController"
+        />
+
+    </robo-section>
+
   </robo-layout-section>
 </template>
 
@@ -32,8 +54,7 @@ export default {
     const devices = useDevices(setupOwner);
     const { account } = useAccount();
 
-    const addUser = async (user, setStatus) => {
-
+    const setUser = async (user, setStatus, { skipDuplicateCheck = false } = {}) => {
       if (!isReady.value) {
         setStatus("error", "Parachain is not ready.");
         return;
@@ -43,12 +64,17 @@ export default {
         return;
       }
       if (devices.devices.value.includes(user)) {
-        setStatus("error", "The address is already in the subscription.");
-        return;
+        if(!skipDuplicateCheck) {
+          setStatus("error", "The address is already in the subscription.");
+          return;
+        } else {
+          setStatus("ok");
+          return;
+        }
       }
 
       const call = await getInstance().rws.setDevices([
-        ...devices.devices.value,
+        ...devices.devices.value.filter((addr) => addr !== user),
         user
       ]);
       const tx = transaction.createTx();
@@ -69,6 +95,14 @@ export default {
       }
       store.commit("rws/setUsers", devices.devices);
       setStatus("ok");
+    };
+
+    const addUser = async (user, setStatus) => {
+      return setUser(user, setStatus, { skipDuplicateCheck: false });
+    };
+
+    const editController = async (user, setStatus) => {
+      return setUser(user, setStatus, { skipDuplicateCheck: true });
     };
 
     const removeUser = async (user, setStatus) => {
@@ -189,6 +223,7 @@ export default {
     return {
       saveHapass,
       addUser,
+      editController,
       removeUser
     };
   }

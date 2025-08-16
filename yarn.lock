@@ -7476,10 +7476,10 @@ robonomics-interface@^0.3.2:
     cids "^1.1.9"
     multihashing-async "^2.1.4"
 
-robonomics-ui-vue@^0.9.2:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.9.2.tgz#9f1848daeb37c6a8dca538fd13a995f29356c3b5"
-  integrity sha512-db4TuAF3yhtvS2NYulsR3dRLq0AATt4ovjA+rZd/2XMEjC8b6hQBg7tokrQkwxhxrOxj1gljHF/TMt/FuahMTg==
+robonomics-ui-vue@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/robonomics-ui-vue/-/robonomics-ui-vue-0.9.4.tgz#6bf0a0a02baceb45ef5e15475f4be3d8f63598d3"
+  integrity sha512-uIYqKgn3b8MOyLkejsA+ZX53snMK/7dSBQH3k+/83FWp4ckjri/oKAGK7Sa8nwmzjWd30U3sB7ZhJf6FZlz8bg==
   dependencies:
     date-fns "^4.1.0"
     file-saver "^2.0.5"
