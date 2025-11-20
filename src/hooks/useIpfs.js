@@ -1,4 +1,4 @@
-import { useAccount } from "@/hooks/useAccount";
+import { useAccount } from "robonomics-interface-vue/account";
 import { inject, watch } from "vue";
 
 export function useIpfs() {

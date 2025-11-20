@@ -11,9 +11,11 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import { useAccount } from "robonomics-interface-vue/account";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useAccounts } from "../../hooks/useAccounts";
 import Launch from "./Launch.vue";
 import Libp2p from "./Libp2p.vue";
 import { useConfig } from "./common";
@@ -22,7 +24,9 @@ export default {
   components: { Libp2p, Launch },
   setup() {
     const store = useStore();
-    const { isReady, accountManager } = useRobonomics();
+    const { isConnected: isReady } = usePolkadotApi();
+    const { account } = useAccount();
+    const { setFromPair, setSender } = useAccounts();
     const { config, cid, load } = useConfig();
     const isKey = ref(false);
 
@@ -40,8 +44,7 @@ export default {
       if (
         isReady.value &&
         isKey.value &&
-        store.state.robonomicsUIvue.polkadot.address !==
-          accountManager.account.address
+        store.state.robonomicsUIvue.polkadot.address !== account.value
       ) {
         try {
           const accountOld = store.state.robonomicsUIvue.polkadot.accounts.find(
@@ -49,10 +52,11 @@ export default {
               item.address === store.state.robonomicsUIvue.polkadot.address
           );
           if (accountOld) {
-            await accountManager.setSender(accountOld.address, {
-              type: accountOld.type,
-              extension: store.state.robonomicsUIvue.polkadot.extensionObj
-            });
+            await setSender(
+              accountOld.address,
+              store.state.robonomicsUIvue.polkadot.extensionObj.signer,
+              accountOld.type
+            );
           }
         } catch (e) {
           console.error(e);
@@ -74,7 +78,7 @@ export default {
       () => store.state.robonomicsUIvue.rws.user.key,
       async (key) => {
         if (key) {
-          await accountManager.addPair(key);
+          await setFromPair(key);
           isKey.value = true;
           load();
         } else {

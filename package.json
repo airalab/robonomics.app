@@ -33,7 +33,9 @@
     "ipfs-smart-gateway": "^1.0.11",
     "libp2p": "^1.2.4",
     "mipd": "^0.0.7",
-    "robonomics-interface": "^0.3.2",
+    "multiformats": "^13.4.1",
+    "robonomics-interface": "^0.5.1",
+    "robonomics-interface-vue": "^0.2.2",
     "robonomics-ui-vue": "^0.9.4",
     "uuid": "^9.0.1",
     "vue": "^3.4.15",
@@ -49,6 +51,7 @@
     "@vue/cli-service": "^5.0.8",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.20.1",
+    "robonomics-api-augment": "^0.2.0",
     "url": "^0.11.3"
   },
   "eslintConfig": {

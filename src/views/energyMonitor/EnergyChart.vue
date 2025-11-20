@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import { ref, toRefs } from "vue";
+import { useDatalog } from "robonomics-interface-vue/datalog";
+import { computed, ref, toRefs } from "vue";
 import DatalogLoader from "../../components/hardware/DatalogLoader.vue";
 import SensorInfo from "../../components/hardware/SensorInfo.vue";
-import { useDatalog } from "../../components/hardware/hooks/datalog";
 import DatalogChart from "./DatalogChart.vue";
 import LastData from "./LastData.vue";
 import { parser } from "./parser";
@@ -25,7 +25,22 @@ export default {
     LastData
   },
   setup(props) {
-    const datalog = useDatalog(toRefs(props).address, parser);
+    const { loading, data } = useDatalog(toRefs(props).address);
+
+    const log = computed(() => {
+      if (!data.value) {
+        return [];
+      }
+      const log = [];
+      for (const item of data.value) {
+        log.push({
+          moment: item[0],
+          data: parser(item[1]),
+          raw: item[1]
+        });
+      }
+      return log;
+    });
 
     const isShowRaw = ref(false);
     const showRaw = () => {
@@ -33,8 +48,8 @@ export default {
     };
 
     return {
-      log: datalog.log,
-      isLaoded: datalog.isLaoded,
+      log: log,
+      isLaoded: loading,
       isShowRaw,
       showRaw
     };

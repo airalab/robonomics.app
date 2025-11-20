@@ -3,6 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: "",
   configureWebpack: {
-    resolve: { fallback: { crypto: false } }
+    // resolve: { fallback: { crypto: false } }
   }
 });

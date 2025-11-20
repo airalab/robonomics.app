@@ -1,12 +1,12 @@
 <template>
   <robo-layout-section width="middle-wide">
-
     <robo-grid minColumnWidth="200px" gap="x2">
-
       <robo-section>
         <robo-section card>
           <template v-if="rwsactive && rwsactive !== ''">
-            <robo-rws-setup-active :show="['name', 'owner', 'date', 'userstext', 'link']" />
+            <robo-rws-setup-active
+              :show="['name', 'owner', 'date', 'userstext', 'link']"
+            />
           </template>
           <template v-else>
             <robo-text title="4" align="left">RWS subscription</robo-text>
@@ -59,20 +59,25 @@
       </robo-section>
 
       <robo-section>
-        <robo-text title="4" align="left" offset="x05">Open-source hardware & web3 cloud</robo-text>
+        <robo-text title="4" align="left" offset="x05"
+          >Open-source hardware & web3 cloud</robo-text
+        >
         <robo-text size="small" weight="normal-italic">
           <robo-grid gap="x05" columns="1">
             <robo-grid-item borderbottom>
               <robo-icon icon="check" /> Secured data, only you have an access
             </robo-grid-item>
             <robo-grid-item borderbottom>
-              <robo-icon icon="check" /> Remote control without any corporate clouds
+              <robo-icon icon="check" /> Remote control without any corporate
+              clouds
             </robo-grid-item>
             <robo-grid-item borderbottom>
-              <robo-icon icon="check" /> Brand-independent smart home, combine wanted devices
+              <robo-icon icon="check" /> Brand-independent smart home, combine
+              wanted devices
             </robo-grid-item>
             <robo-grid-item>
-              <robo-icon icon="check" /> Update your Robonomics devices as you wish with Type-C
+              <robo-icon icon="check" /> Update your Robonomics devices as you
+              wish with Type-C
             </robo-grid-item>
           </robo-grid>
         </robo-text>
@@ -82,16 +87,16 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import { useAvailableSubscriptions } from "robonomics-interface-vue/subscription";
 import { computed, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 
 export default {
   setup() {
     const price = ref(0);
-    const freeAuctions = ref(0);
     let unsubscribeBlock = null;
 
     const store = useStore();
@@ -102,20 +107,14 @@ export default {
       return store.state.robonomicsUIvue.rws.links.activate;
     });
 
-    const { isReady, getInstance } = useRobonomics();
+    const { isConnected, instance } = usePolkadotApi();
+    const { data: freeAuctions } = useAvailableSubscriptions();
 
     watch(
-      isReady,
-      async (isReady) => {
-        if (isReady) {
-          const robonomics = getInstance();
-          freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-          unsubscribeBlock = await robonomics.events.onBlock(async () => {
-            freeAuctions.value = (
-              await robonomics.rws.getAuctionQueue()
-            ).length;
-          });
-          const minimalBid = await robonomics.rws.getMinimalBid();
+      isConnected,
+      async (isConnected) => {
+        if (isConnected) {
+          const minimalBid = instance.api.consts.rws.minimalBid;
           price.value = minimalBid.add(bnToBn(1));
         }
       },
@@ -129,12 +128,8 @@ export default {
     });
 
     const priceFormat = computed(() => {
-      if (isReady.value) {
-        return fromUnit(
-          price.value,
-          getInstance().api.registry.chainDecimals[0],
-          0
-        );
+      if (isConnected.value) {
+        return fromUnit(price.value, 9, 0);
       }
       return 0;
     });

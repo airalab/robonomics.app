@@ -1,12 +1,16 @@
 import configApp from "@/config";
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { createPair, encryptor } from "@/utils/encryptor";
-import { getConfigCid, getLastDatalog, parseJson } from "@/utils/telemetry";
+import { hexToCid } from "@/utils/string";
+import { getLastDatalog, parseJson } from "@/utils/telemetry";
 import { hexToU8a, u8aToString } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import axios from "axios";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import { useAccount } from "robonomics-interface-vue/account";
+import { useQuery } from "robonomics-interface-vue/twin";
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useAccounts } from "../../hooks/useAccounts";
 
 export const chainSS58 = 32;
 
@@ -146,20 +150,20 @@ export const useLastDatalog = () => {
   const data = ref(null);
 
   const store = useStore();
-  const { isReady, getInstance } = useRobonomics();
+  const { isConnected: isReady, instance: robonomics } = usePolkadotApi();
+  const { encryptor } = useAccounts();
   const { controller } = useSetup();
 
   (async () => {
     if (isReady.value && controller.value) {
-      const robonomics = getInstance();
-      const datalog = await getLastDatalog(robonomics, controller.value);
+      const datalog = await getLastDatalog(robonomics.api, controller.value);
       cid.value = datalog.cid;
       updateTime.value = datalog.timestamp;
       try {
         data.value = await readFileDecrypt(
           cid.value,
           controller.value,
-          robonomics.accountManager.encryptor(),
+          encryptor(),
           store
         );
       } catch (error) {
@@ -172,13 +176,32 @@ export const useLastDatalog = () => {
   return { cid, updateTime, data };
 };
 
+export const getConfigCid = async (controller, getTwin, twin_id) => {
+  // console.log("getConfigCid");
+  if (!controller || (!twin_id && twin_id !== 0)) {
+    return false;
+  }
+  const twin = await getTwin(twin_id);
+  if (!twin) {
+    return false;
+  }
+  const configHex = Object.keys(twin).find((key) => twin[key] === controller);
+  if (!configHex) {
+    return false;
+  }
+  return hexToCid(configHex);
+};
+
 export const useConfig = () => {
   const config = ref(null);
   const cid = ref("");
 
   const store = useStore();
-  const { isReady, getInstance, accountManager } = useRobonomics();
+  const { isConnected: isReady, instance: robonomics } = usePolkadotApi();
+  const { encryptor } = useAccounts();
   const { controller } = useSetup();
+  const { getTwin } = useQuery();
+  const { pair: sender } = useAccount();
 
   const getConfig = async (controller) => {
     const endpoint =
@@ -199,14 +222,12 @@ export const useConfig = () => {
         return { data: null, cache: true };
       }
     } else {
-      const robonomics = getInstance();
-
-      const datalog = await getLastDatalog(robonomics, controller);
+      const datalog = await getLastDatalog(robonomics.api, controller);
       cid.value = datalog.cid;
       const result = await readFileDecrypt(
         datalog.cid,
         controller,
-        accountManager.encryptor(),
+        encryptor(),
         store
       );
 
@@ -215,7 +236,7 @@ export const useConfig = () => {
         notify(store, `Twin id #${twin_id}`);
 
         notify(store, `Start load config`);
-        const cid = await getConfigCid(robonomics, controller, twin_id);
+        const cid = await getConfigCid(controller, getTwin, twin_id);
         if (!cid) {
           console.log("Config not found");
           console.log("controller", controller);
@@ -225,7 +246,7 @@ export const useConfig = () => {
         const config = await readFileDecrypt(
           cid,
           controller,
-          accountManager.encryptor(),
+          encryptor(),
           store
         );
 
@@ -244,11 +265,7 @@ export const useConfig = () => {
   const load = async () => {
     notify(store, "Find twin id");
 
-    if (
-      !controller.value ||
-      !accountManager.account ||
-      accountManager.account.type !== "ed25519"
-    ) {
+    if (!controller.value || !sender.value || sender.value.type !== "ed25519") {
       notify(store, "Error");
       return;
     }

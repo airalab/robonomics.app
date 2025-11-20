@@ -12,42 +12,48 @@
 </template>
 
 <script>
-import { useAccount } from "@/hooks/useAccount";
-import { useBalance } from "@/hooks/useBalance";
-import { useDevices } from "@/hooks/useDevices";
-import { useRobonomics } from "@/hooks/useRobonomics";
-import { useSend } from "@/hooks/useSend";
-import { useSubscription } from "@/hooks/useSubscription";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
-import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import {
+  useAccount,
+  useBalance,
+  useSend
+} from "robonomics-interface-vue/account";
+import {
+  useAction as useActionDevices,
+  useDevices
+} from "robonomics-interface-vue/devices";
+import {
+  useAction,
+  useAvailableSubscriptions,
+  useSubscription
+} from "robonomics-interface-vue/subscription";
+import { useAction as useActionTools } from "robonomics-interface-vue/tools";
+import { computed, ref, watch, watchEffect } from "vue";
 
 export default {
   setup() {
     const price = ref(0);
-    const freeAuctions = ref(0);
     const chainInfoStatus = ref(false);
-    let unsubscribeBlock = null;
 
-    const { isReady, getInstance } = useRobonomics();
-    const { account, unsubscribe: unsubscribeAccount } = useAccount();
-    const { balance, unsubscribe: unsubscribeBalance } = useBalance(account);
-    const subscription = useSubscription(account);
-    const devices = useDevices(account);
+    const { isConnected, instance } = usePolkadotApi();
+    const { account } = useAccount();
+    const { balance } = useBalance(account);
+    const { data: dataSubscription } = useSubscription(account);
+    const { data: dataDevices } = useDevices(account);
+    const { data: freeAuctions } = useAvailableSubscriptions();
+    const { tx } = useSend();
+    const { batch } = useActionTools();
+    const actionDevices = useActionDevices();
+    const action = useAction();
+    // watch(isConnected, () => isConnected && load());
 
     watch(
-      isReady,
-      async (isReady) => {
-        if (isReady) {
-          const robonomics = getInstance();
-          freeAuctions.value = (await robonomics.rws.getAuctionQueue()).length;
-          unsubscribeBlock = await robonomics.events.onBlock(async () => {
-            freeAuctions.value = (
-              await robonomics.rws.getAuctionQueue()
-            ).length;
-          });
-
-          const minimalBid = await robonomics.rws.getMinimalBid();
+      isConnected,
+      async (isConnected) => {
+        if (isConnected) {
+          const minimalBid = instance.api.consts.rws.minimalBid;
           price.value = minimalBid.add(bnToBn(1));
           chainInfoStatus.value = true;
         }
@@ -55,24 +61,12 @@ export default {
       { immediate: true }
     );
 
-    onUnmounted(() => {
-      if (unsubscribeBlock) {
-        unsubscribeBlock();
-      }
-      if (unsubscribeBalance) {
-        unsubscribeBalance();
-      }
-      unsubscribeAccount();
-    });
-
-    const transaction = useSend();
     const onActivate = async (setStatus) => {
-
       /* это для тестов eslint-disable no-unreachable */
       // setStatus("ok");
       // return;
 
-      if (!isReady.value) {
+      if (!isConnected.value) {
         setStatus("error", "Parachain is not ready");
         return;
       }
@@ -81,7 +75,7 @@ export default {
         !balance.value ||
         bnToBn(balance.value).lt(price.value.add(bnToBn(10000000)))
       ) {
-        console.log(balance.value);
+        console.log(balance.value.toString());
         setStatus(
           "error",
           "Subscription can not be activated due to unsuffcicient XRT balance"
@@ -90,28 +84,25 @@ export default {
       }
 
       if (freeAuctions.value <= 0) {
+        console.log(freeAuctions.value);
         setStatus("error", "There are no available subscriptions");
         return;
       }
 
-      if (subscription.hasSubscription.value && subscription.isActive.value) {
+      if (
+        dataSubscription.value.hasSubscription &&
+        dataSubscription.value.isActive
+      ) {
         setStatus("error", "You have an active subscription");
         return;
       }
 
-      const robonomics = getInstance();
-      let call = robonomics.rws.bid(
-        Number(await robonomics.rws.getFirtsFreeAuction()),
-        price.value
-      );
-      if (!devices.devices.value.includes(account.value)) {
-        call = robonomics.api.tx.utility.batch([
-          call,
-          robonomics.rws.setDevices([...devices.devices.value, account.value])
-        ]);
-      }
-      const tx = transaction.createTx();
-      await transaction.send(tx, call);
+      const calls = [
+        await action.bid(1000000001),
+        actionDevices.add(dataDevices.value, account.value)
+      ];
+
+      await tx.send(() => batch(calls));
       if (tx.error.value) {
         if (tx.error.value !== "Cancelled") {
           setStatus("error", tx.error.value);
@@ -121,33 +112,32 @@ export default {
         return;
       }
 
-      const unsubscribeBlock = await robonomics.events.onBlock(() => {
-        subscription.loadLedger();
-      });
       const stopWatchEffect = watchEffect(() => {
-        if (subscription.hasSubscription.value && subscription.isActive.value) {
+        if (
+          dataSubscription.value.hasSubscription &&
+          dataSubscription.value.isActive
+        ) {
           stopWatchEffect();
-          unsubscribeBlock();
           setStatus("ok");
         }
       });
     };
 
     const priceFormat = computed(() => {
-      if (isReady.value) {
-        return fromUnit(
-          price.value,
-          getInstance().api.registry.chainDecimals[0],
-          0
-        );
+      if (isConnected.value) {
+        return fromUnit(price.value, 9, 0);
       }
       return 0;
+    });
+
+    const expiredate = computed(() => {
+      return dataSubscription.value ? dataSubscription.value.validUntil : null;
     });
 
     return {
       freeAuctions,
       price: priceFormat,
-      expiredate: subscription.validUntil,
+      expiredate,
       chainInfoStatus,
       onActivate
     };

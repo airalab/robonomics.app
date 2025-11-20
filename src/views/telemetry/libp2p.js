@@ -1,5 +1,3 @@
-import { useDevices } from "@/hooks/useDevices";
-import { useRobonomics } from "@/hooks/useRobonomics";
 import {
   connectMultiaddress,
   disconnect,
@@ -8,8 +6,11 @@ import {
 } from "@/utils/libp2p/libp2p";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
+import { useAccount } from "robonomics-interface-vue/account";
+import { useDevices } from "robonomics-interface-vue/devices";
 import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useAccounts } from "../../hooks/useAccounts";
 import { decryptData, notify, setStatusLaunch, useSetup } from "./common";
 
 export const useData = () => {
@@ -17,14 +18,18 @@ export const useData = () => {
   const updateTime = ref(null);
 
   const store = useStore();
-  const { accountManager } = useRobonomics();
-  const devices = useDevices();
+  const { encryptor } = useAccounts();
+  const { account } = useAccount();
+  const subscriptionOwner = ref();
+  const { data: dataDevices } = useDevices(subscriptionOwner, {
+    immediate: false
+  });
   const { controller } = useSetup();
 
   watch(
     () => store.state.robonomicsUIvue.rws.active,
     () => {
-      devices.owner.value = store.state.robonomicsUIvue.rws.active;
+      subscriptionOwner.value = store.state.robonomicsUIvue.rws.active;
     },
     { immediate: true }
   );
@@ -48,7 +53,7 @@ export const useData = () => {
           const result = await decryptData(
             dataRaw.data,
             controller.value,
-            accountManager.encryptor()
+            encryptor()
           );
           if (result) {
             data.value = result;
@@ -77,14 +82,14 @@ export const useData = () => {
 
     notify(store, `Launch command`);
 
-    if (!devices.devices.value.includes(accountManager.account.address)) {
+    if (!dataDevices.value.includes(account.value)) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
       return;
     }
 
     try {
-      const encryptor = accountManager.encryptor();
+      const encryptor = encryptor();
       const controllerPublicKey = decodeAddress(controller.value);
       const cmdString = JSON.stringify(command.launch);
       const cmdCrypto = encryptor.encryptMessage(
@@ -93,7 +98,7 @@ export const useData = () => {
       );
       const response = await request({
         data: {
-          sender: accountManager.account.address,
+          sender: account.value,
           data: u8aToHex(cmdCrypto)
         }
       });

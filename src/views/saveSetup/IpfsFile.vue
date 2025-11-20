@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { Crust } from "@/utils/crust";
+import { hexToCid } from "@/utils/string";
 import { u8aToString } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import axios from "axios";
-import { hexToCid } from "robonomics-interface/dist/utils";
 import { ref } from "vue";
+import { useAccounts } from "../../hooks/useAccounts";
 
 export default {
   name: "IpfsFile",
@@ -27,7 +27,7 @@ export default {
     const info = ref();
     const ipfsHash = hexToCid(props.hex);
 
-    const { getInstance } = useRobonomics();
+    const { encryptor } = useAccounts();
     const crust = new Crust("wss://rpc.crust.network");
 
     function omit(key, obj) {
@@ -46,8 +46,7 @@ export default {
     });
 
     const decrypt = (data) => {
-      const robonomics = getInstance();
-      const user = robonomics.accountManager.encryptor();
+      const user = encryptor();
       const decryptedMessage = user.decryptMessage(
         data,
         decodeAddress(user.address)

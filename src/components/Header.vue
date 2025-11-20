@@ -4,25 +4,50 @@
     :title="title"
     v-if="renderComponent"
   >
+    <template #nav>
+      <robo-section>
+        <nav class="nav-rws">
+          <ul>
+            <li>
+              <router-link
+                :to="$store.state.robonomicsUIvue.rws.links.activate"
+                exact
+              >
+                Buy/renew a subscription
+              </router-link>
+            </li>
+            <li>
+              <router-link
+                :to="$store.state.robonomicsUIvue.rws.links.setupnew"
+                exact
+              >
+                New setup
+              </router-link>
+            </li>
+            <li>
+              <router-link
+                :to="$store.state.robonomicsUIvue.rws.links.setup"
+                exact
+              >
+                Your setup<template
+                  v-if="$store.state.robonomicsUIvue.rws.list.length > 1"
+                  >s
+                </template>
+              </router-link>
+            </li>
+            <li>
+              <router-link
+                :to="$store.state.robonomicsUIvue.rws.links.devices"
+                exact
+              >
+                Devices & Control
+              </router-link>
+            </li>
+          </ul>
+        </nav>
+      </robo-section>
 
-  <template #nav>
-
-    <robo-section>
-      <nav class="nav-rws">
-        <ul>
-          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.activate" exact>Buy/renew a subscription</router-link></li>
-          <li><router-link :to="$store.state.robonomicsUIvue.rws.links.setupnew" exact>New setup</router-link></li>
-          <li>
-            <router-link :to="$store.state.robonomicsUIvue.rws.links.setup" exact>Your setup<template v-if="$store.state.robonomicsUIvue.rws.list.length > 1">s</template></router-link>
-          </li>
-          <li>
-            <router-link :to="$store.state.robonomicsUIvue.rws.links.devices" exact>Devices & Control</router-link>
-          </li>
-        </ul>
-      </nav>
-    </robo-section>
-
-    <!-- <robo-section>
+      <!-- <robo-section>
       <nav class="nav-devices">
         <ul>
           <li>
@@ -52,14 +77,18 @@
         </ul>
       </nav>
     </robo-section> -->
-
-  </template>
+    </template>
   </robo-layout-header>
 </template>
 
 <script>
 import { fromUnit, round } from "@/utils/tools";
-import { toRaw } from "vue";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import { useAccount, useBalance } from "robonomics-interface-vue/account";
+import { nextTick, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+import { useAccounts } from "../hooks/useAccounts";
 
 export default {
   props: {
@@ -68,157 +97,151 @@ export default {
       default: "Robonomics Dapp"
     }
   },
-  inject: ["RobonomicsProvider"],
-  data() {
-    return {
-      renderComponent: true,
-    };
-  },
-  computed: {
-    robonomics: function () {
-      return toRaw(this.RobonomicsProvider.instance.value);
-    }
-  },
-  watch: {
-    "$store.state.robonomicsUIvue.polkadot.extensionObj": function (value) {
-      if (
-        value.signer &&
-        value.signer.signRaw &&
-        this.$store.state.robonomicsUIvue.polkadot.address
-      ) {
-        this.handlerAccount(this.$store.state.robonomicsUIvue.polkadot.address);
-      }
-    },
-    "$store.state.robonomicsUIvue.polkadot.address": {
-      handler: function (value) {
-        if (
-          value &&
-          this.$store.state.robonomicsUIvue.polkadot.extensionObj.signer &&
-          this.$store.state.robonomicsUIvue.polkadot.extensionObj.signer.signRaw
-        ) {
-          this.handlerAccount(value);
-        }
-      },
-      immediate: true
-    },
-    "RobonomicsProvider.isReady.value": {
-      handler: function (newValue, oldValue) {
-        if (newValue && !oldValue) {
-          this.handlerAccount(
-            this.$store.state.robonomicsUIvue.polkadot.address
-          );
-        }
-      },
-      immediate: true
-    },
-    $route: async function () {
-      this.renderComponent = false;
-      await this.$nextTick();
-      this.renderComponent = true;
-    }
-  },
-  methods: {
-    async handlerAccount(address) {
-      try{
+  setup() {
+    const { isConnected } = usePolkadotApi();
+    const store = useStore();
+    const route = useRoute();
+    const { setSender } = useAccounts();
+    const { account } = useAccount();
+    const { balance } = useBalance(account);
 
-        if (!this.RobonomicsProvider.isReady.value) {
+    watch(balance, () => {
+      if (balance.value) {
+        store.commit(
+          "polkadot/setBalanceXRT",
+          round(fromUnit(balance.value, 9), 4)
+        );
+      }
+    });
+
+    const handlerAccount = async (address) => {
+      try {
+        if (!isConnected.value) {
           return;
         }
-        if (this.unsubscribeBalance) {
-          this.unsubscribeBalance();
-        }
-        if (!this.$store.state.robonomicsUIvue.polkadot.accounts) {
+        if (!store.state.robonomicsUIvue.polkadot.accounts) {
           return;
         }
-        const account = this.$store.state.robonomicsUIvue.polkadot.accounts.find(
+        const account = store.state.robonomicsUIvue.polkadot.accounts.find(
           (item) => item.address === address
         );
         if (!account) {
           return;
         }
-        if (this.$route.name !== "telemetry") {
-          await this.robonomics.accountManager.setSender(address, {
-            type: account.type,
-            extension: this.$store.state.robonomicsUIvue.polkadot.extensionObj
-          });
+        if (route.name !== "telemetry") {
+          setSender(
+            address,
+            store.state.robonomicsUIvue.polkadot.extensionObj.signer,
+            account.type
+          );
         }
-        this.unsubscribeBalance = await this.robonomics.account.getBalance(
-          address,
-          (r) => {
-            const transferable = r.free.sub(r.frozen);
-            this.$store.commit(
-              "polkadot/setBalanceXRT",
-              round(
-                fromUnit(
-                  transferable,
-                  this.robonomics.api.registry.chainDecimals[0]
-                ),
-                4
-              )
-            );
-          }
-        );
-      } catch (e) { console.error(e); }
-    }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    watch(
+      () => store.state.robonomicsUIvue.polkadot.extensionObj,
+      (value) => {
+        if (
+          value.signer &&
+          value.signer.signRaw &&
+          store.state.robonomicsUIvue.polkadot.address
+        ) {
+          handlerAccount(store.state.robonomicsUIvue.polkadot.address);
+        }
+      },
+      { immediate: true, deep: true }
+    );
+    watch(
+      () => store.state.robonomicsUIvue.polkadot.address,
+      (value) => {
+        if (
+          value &&
+          store.state.robonomicsUIvue.polkadot.extensionObj.signer &&
+          store.state.robonomicsUIvue.polkadot.extensionObj.signer.signRaw
+        ) {
+          handlerAccount(value);
+        }
+      },
+      { immediate: true }
+    );
+    watch(
+      isConnected,
+      (newValue, oldValue) => {
+        if (newValue && !oldValue) {
+          handlerAccount(store.state.robonomicsUIvue.polkadot.address);
+        }
+      },
+      { immediate: true }
+    );
+
+    const renderComponent = ref(true);
+    watch(route, async () => {
+      renderComponent.value = false;
+      await nextTick();
+      renderComponent.value = true;
+    });
+
+    return { renderComponent };
   }
 };
 </script>
 
 <style scoped>
+.nav-rws ul {
+  text-align: left;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.nav-rws a {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.nav-devices {
+  margin-top: calc(var(--robo-space) * 2);
+}
+
+.nav-devices li {
+  padding: var(--robo-space) 0;
+  border-top: 1px solid var(--robo-color-dark);
+}
+
+.nav-devices a {
+  display: grid;
+  grid-template-columns: 100px auto;
+  align-items: center;
+  gap: var(--robo-space);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.nav-devices img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.nav-devices li:not(:nth-child(2)) img {
+  max-height: 92px;
+}
+
+.nav-devices li:nth-child(2) img {
+  min-height: 100px;
+}
+
+@media screen and (width < 950px) {
   .nav-rws ul {
-    text-align: left;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .nav-rws a {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    white-space: nowrap;
-    text-transform: uppercase;
-  }
-
-  .nav-devices {
-    margin-top: calc(var(--robo-space) * 2);
-  }
-
-  .nav-devices li {
-    padding: var(--robo-space) 0;
-    border-top: 1px solid var(--robo-color-dark);
-  }
-
+@media screen and (width < 560px) {
   .nav-devices a {
-    display: grid;
-    grid-template-columns: 100px auto;
-    align-items: center;
-    gap: var(--robo-space);
-    font-weight: bold;
-    text-transform: uppercase;
+    grid-template-columns: 50px auto;
   }
-
-  .nav-devices img {
-    max-width: 100%;
-    object-fit: contain;
-  }
-
-  .nav-devices li:not(:nth-child(2)) img {
-    max-height: 92px;
-  }
-
-  .nav-devices li:nth-child(2) img {
-    min-height: 100px;
-  }
-
-
-  @media screen and (width < 950px) {
-    .nav-rws ul {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media screen and (width < 560px) {
-    .nav-devices a {
-      grid-template-columns: 50px auto;
-    }
-  }
+}
 </style>

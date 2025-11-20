@@ -7,11 +7,11 @@
 </template>
 
 <script setup>
-
-import DappHeader from '@/components/Header';
-import DappFooter from '@/components/Footer';
-import { useSubscription } from "@/hooks/useSubscription";
-import { defineProps, watch } from 'vue';
+import DappFooter from "@/components/Footer";
+import DappHeader from "@/components/Header";
+import { useDevices } from "robonomics-interface-vue/devices";
+import { useSubscription } from "robonomics-interface-vue/subscription";
+import { defineProps, ref, watch } from "vue";
 import { useStore } from "vuex";
 
 const props = defineProps({
@@ -21,26 +21,30 @@ const props = defineProps({
 });
 
 const store = useStore();
-const subscription = useSubscription();
+const owner = ref();
+const { data: subscription } = useSubscription(owner, { immediate: false });
+const { data: dataDevices } = useDevices(owner, { immediate: false });
 
- watch(
+watch(
   () => store.state.robonomicsUIvue.rws.active,
   (v) => {
-    subscription.owner.value = v;
+    owner.value = v;
   },
   { immediate: true }
 );
 
 watch(
-  [subscription.owner, subscription.validUntil],
+  [owner, subscription],
   () => {
-    store.commit("rws/setExpiredate", subscription.validUntil);
+    if (subscription.value) {
+      store.commit("rws/setExpiredate", subscription.value.validUntil);
+    }
   },
   { immediate: true }
 );
 
 watch(
-  subscription.devices,
+  dataDevices,
   (devices) => {
     store.commit("rws/setUsers", devices);
   },

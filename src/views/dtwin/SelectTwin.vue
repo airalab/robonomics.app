@@ -1,6 +1,6 @@
 <template>
   <robo-select
-    v-if="twins !== undefined && twins.length > 0"
+    v-if="twins && twins.length > 0"
     :options="twins"
     :values="twins"
     v-model="twinId"
@@ -17,13 +17,15 @@
 </template>
 
 <script>
+import { useAccount } from "robonomics-interface-vue/account";
+import { useTwins } from "robonomics-interface-vue/twin";
 import { ref, watch } from "vue";
-import { useTwins } from "./dtwin";
 
 export default {
   emits: ["change"],
   setup(_, { emit }) {
-    const { twins, isLoading } = useTwins(true);
+    const { account } = useAccount();
+    const { loading: isLoading, data: twins } = useTwins(account);
     const twinId = ref();
 
     watch(

@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { ref } from "vue";
+import { useAccounts } from "../../hooks/useAccounts";
 
 export default {
   name: "AccountUnlock",
@@ -16,18 +16,16 @@ export default {
   setup(_, { emit }) {
     const seed = ref("");
 
-    const { getInstance } = useRobonomics();
+    const { setFromUri } = useAccounts();
 
     const unlock = async () => {
-      const robonomics = getInstance();
-
       try {
-        await robonomics.accountManager.addUri(seed.value);
+        await setFromUri(seed.value);
       } catch (error) {
         console.log(error);
         return;
       }
-      console.log(robonomics.accountManager.account.address);
+      // console.log(robonomics.accountManager.account.address);
 
       emit("unlock");
     };

@@ -30,8 +30,30 @@
 </template>
 
 <script>
+import { hexToCid } from "@/utils/string";
 import { ref } from "vue";
-import { tokenToCid, tokenToString } from "../dtwin/dtwin";
+
+/**
+ * Converts a given token (hex-string) to a utf-8 encoded string.
+ * @param {string} token - A token (hex-string).
+ * @returns {string} The utf-8 encoded string.
+ */
+export const tokenToString = (token) => {
+  token = token.replace(/^0x/, "").replace(/^00+/, "");
+  if (token.length % 2 !== 0) {
+    token = "0" + token;
+  }
+  return Buffer.from(token, "hex").toString("utf8");
+};
+
+/**
+ * Converts a given token (hex-string) to a Content-Addressed Identifier (CID).
+ * @param {string} token - A token (hex-string).
+ * @returns {string} The Content-Addressed Identifier (CID).
+ */
+export const tokenToCid = (token) => {
+  return hexToCid(token);
+};
 
 export default {
   props: ["token", "address"],

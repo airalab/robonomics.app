@@ -11,14 +11,17 @@
 </template>
 
 <script>
+import { useSend } from "robonomics-interface-vue/account";
+import { useAction } from "robonomics-interface-vue/twin";
 import { ref } from "vue";
-import { useTwinAction } from "./dtwin.js";
 
 export default {
   props: ["owner"],
   emits: ["change"],
   setup(props, { emit }) {
-    const { create } = useTwinAction(props.owner);
+    const action = useAction();
+    const { tx } = useSend();
+
     const isProccess = ref(false);
     const isSuccess = ref(false);
 
@@ -28,7 +31,8 @@ export default {
       create: async () => {
         isSuccess.value = false;
         isProccess.value = true;
-        const tx = await create();
+        await tx.send(() => action.create(), { subscription: props.owner });
+
         if (tx.error.value) {
           if (tx.error.value !== "Cancelled") {
             console.log(tx.error.value);

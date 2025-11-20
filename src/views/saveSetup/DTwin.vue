@@ -6,10 +6,10 @@
 </template>
 
 <script>
+import { useTwin } from "robonomics-interface-vue/twin";
 import { ref, watch } from "vue";
 import CreateTwin from "../dtwin/CreateTwin.vue";
 import SelectTwin from "../dtwin/SelectTwin.vue";
-import { useTwin } from "../dtwin/dtwin";
 
 export default {
   props: ["address", "owner", "data"],
@@ -19,7 +19,7 @@ export default {
     const twinId = ref();
     const keySelect = ref(0);
     const keyRecords = ref(0);
-    const { twin } = useTwin(twinId);
+    const { data: twin } = useTwin(twinId);
 
     watch(twinId, (twinId) => {
       emit("twinId", twinId);

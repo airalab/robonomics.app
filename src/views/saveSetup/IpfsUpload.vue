@@ -8,9 +8,10 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { stringToU8a } from "@polkadot/util";
+import { useAccount } from "robonomics-interface-vue/account";
 import { ref } from "vue";
+import { useAccounts } from "../../hooks/useAccounts";
 import { IpfsApiClient } from "../../plugins/ipfs";
 
 export default {
@@ -20,20 +21,14 @@ export default {
   setup(props, { emit }) {
     const ipfsGateway = ref("https://ipfs-gw.decloud.foundation");
 
-    const { getInstance } = useRobonomics();
+    const { account } = useAccount();
+    const { signMsg } = useAccounts();
 
     const upload = async () => {
       const ipfs = new IpfsApiClient(ipfsGateway.value);
-
-      const robonomics = getInstance();
-
       try {
-        const signature = (
-          await robonomics.accountManager.account.signMsg(
-            stringToU8a(robonomics.accountManager.account.address)
-          )
-        ).toString();
-        ipfs.auth(null, robonomics.accountManager.account.address, signature);
+        const signature = signMsg(stringToU8a(account.value));
+        ipfs.auth(null, account.value, signature);
         const file = await ipfs.add(props.data);
 
         emit("upload", {

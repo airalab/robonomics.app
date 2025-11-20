@@ -5,8 +5,6 @@
     :cid="cid"
     :updateTime="updateTime"
   />
-
-  <!-- {{data}}, {{dataTest}} -->
 </template>
 
 <script>
@@ -15,8 +13,8 @@ import { useStore } from "vuex";
 import { useData } from "./launch";
 
 // это для тестов верстки карточек, когда все остальные тестовые стенды отвалились
-import configTest from "./Lugano-config.json";
-import dataTest from "./Lugano.json";
+// import configTest from "./Lugano-config.json";
+// import dataTest from "./Lugano.json";
 
 export default {
   props: {
@@ -57,7 +55,7 @@ export default {
       }
     );
 
-    return { data, updateTime, dataTest, configTest };
+    return { data, updateTime };
   }
 };
 </script>

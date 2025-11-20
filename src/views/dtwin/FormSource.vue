@@ -18,13 +18,27 @@
 </template>
 
 <script>
+import { useSend } from "robonomics-interface-vue/account";
+import { useAction } from "robonomics-interface-vue/twin";
 import { ref } from "vue";
-import { useTwinAction } from "./dtwin";
+
+export function stringToHex(str) {
+  const strBuf = Buffer.from(str.toString(), "utf-8");
+  if (strBuf.length > 32) {
+    throw new Error("max 32");
+  }
+  const bag = Buffer.alloc(32);
+  const fill = Buffer.concat([bag, strBuf]);
+  const buf = Buffer.from(fill).slice(fill.length - 32, fill.length);
+  return "0x" + buf.toString("hex");
+}
 
 export default {
   props: ["id", "owner"],
   setup(props, { emit }) {
-    const { setSource } = useTwinAction(props.owner);
+    const action = useAction();
+    const { tx } = useSend();
+
     const topic = ref();
     const source = ref();
     const isProccess = ref(false);
@@ -38,7 +52,11 @@ export default {
       setSource: async () => {
         isSuccess.value = false;
         isProccess.value = true;
-        const tx = await setSource(props.id, topic.value, source.value);
+        await tx.send(
+          () =>
+            action.setSource(props.id, stringToHex(topic.value), source.value),
+          { subscription: props.owner }
+        );
         if (tx.error.value) {
           if (tx.error.value !== "Cancelled") {
             console.log(tx.error.value);

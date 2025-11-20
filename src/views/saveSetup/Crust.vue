@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { Crust } from "@/utils/crust";
+import { useAccount } from "robonomics-interface-vue/account";
 import { computed, ref } from "vue";
 
 export default {
@@ -27,7 +27,7 @@ export default {
   props: ["file"],
   emits: ["store"],
   setup(props, { emit }) {
-    const { getInstance } = useRobonomics();
+    const { account, pair } = useAccount();
     const crust = new Crust("wss://rpc.crust.network");
 
     const balance = ref();
@@ -35,10 +35,7 @@ export default {
     const info = ref();
 
     crust.watch(async () => {
-      const robonomics = getInstance();
-      balance.value = await crust.getBalance(
-        robonomics.accountManager.account.address
-      );
+      balance.value = await crust.getBalance(account.value);
       price.value = await crust.getStorePrice(props.file.size);
       info.value = (await crust.getInfo(props.file.path)).toHuman();
       if (info.value) {
@@ -57,12 +54,8 @@ export default {
       if (canStored.value === false) {
         return;
       }
-      const robonomics = getInstance();
       const tx = crust.storeFile(props.file.path, props.file.size);
-      const res = await crust.signAndSend(
-        robonomics.accountManager.account,
-        tx
-      );
+      const res = await crust.signAndSend(pair.value, tx);
       console.log(res);
       emit("store");
     };

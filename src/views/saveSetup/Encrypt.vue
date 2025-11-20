@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import { useRobonomics } from "@/hooks/useRobonomics";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import { ref } from "vue";
+import { useAccounts } from "../../hooks/useAccounts";
 
 export default {
   name: "EncryptMessage",
@@ -17,11 +17,10 @@ export default {
   setup(_, { emit }) {
     const data = ref('{"name":"blushing cow"}');
 
-    const { getInstance } = useRobonomics();
+    const { encryptor } = useAccounts();
 
     const encrypt = () => {
-      const robonomics = getInstance();
-      const user = robonomics.accountManager.encryptor();
+      const user = encryptor();
       const encryptedMessage = user.encryptMessage(
         data.value,
         decodeAddress(user.address)

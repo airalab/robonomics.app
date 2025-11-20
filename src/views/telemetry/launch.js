@@ -1,12 +1,16 @@
-import { useDevices } from "@/hooks/useDevices";
 import { useIpfs } from "@/hooks/useIpfs";
-import { useRobonomics } from "@/hooks/useRobonomics";
-import { useSend } from "@/hooks/useSend";
+import { cidToHex } from "@/utils/string";
 import { getLastDatalog } from "@/utils/telemetry";
 import { stringToU8a, u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
+import { usePolkadotApi } from "robonomics-interface-vue";
+import { useAccount, useSend } from "robonomics-interface-vue/account";
+import { useQuery } from "robonomics-interface-vue/datalog";
+import { useDevices } from "robonomics-interface-vue/devices";
+import { useAction } from "robonomics-interface-vue/launch";
 import { onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useAccounts } from "../../hooks/useAccounts";
 import { notify, readFileDecrypt, setStatusLaunch, useSetup } from "./common";
 
 export const useData = () => {
@@ -16,48 +20,57 @@ export const useData = () => {
 
   const store = useStore();
   const ipfs = useIpfs();
-  const { isReady, getInstance, accountManager } = useRobonomics();
-  const transaction = useSend();
-  const devices = useDevices();
+  const {
+    isConnected: isReady,
+    instance: robonomics,
+    watchConnect
+  } = usePolkadotApi();
+  const { encryptor, signMsg } = useAccounts();
+  const { pair, account } = useAccount();
+  const { tx } = useSend();
+  const action = useAction();
+  const subscriptionOwner = ref();
+  const { data: devices } = useDevices(subscriptionOwner, {
+    immediate: false
+  });
   const { controller, owner } = useSetup();
+  const { listen } = useQuery();
 
   watch(
     () => store.state.robonomicsUIvue.rws.active,
     () => {
-      devices.owner.value = store.state.robonomicsUIvue.rws.active;
+      subscriptionOwner.value = store.state.robonomicsUIvue.rws.active;
     },
     { immediate: true }
   );
 
   let unsubscribeDatalog;
-  const watchDatalog = async () => {
-    if (!isReady.value) {
-      return;
-    }
-    unsubscribeDatalog = await getInstance().datalog.on(
-      { method: "NewRecord" },
-      (results) => {
-        const r = results.filter((item) => {
-          return (
-            item.success &&
-            controller.value &&
-            item.data[0].toHuman() === controller.value
-          );
-        });
-        for (const item of r) {
-          updateTime.value = item.data[1].toNumber();
-          cid.value = item.data[2].toHuman();
-        }
+  watchConnect(async () => {
+    unsubscribeDatalog = await listen(
+      {
+        method: "NewRecord",
+        sender: controller.value
+      },
+      (r) => {
+        updateTime.value = r.data[0];
+        cid.value = r.data[1];
       }
     );
-  };
+  });
+
+  onUnmounted(() => {
+    console.log("unmount launch");
+    if (unsubscribeDatalog) {
+      unsubscribeDatalog();
+    }
+  });
 
   watch(cid, async () => {
     try {
       data.value = await readFileDecrypt(
         cid.value,
         controller.value,
-        accountManager.encryptor(),
+        encryptor(),
         store
       );
     } catch (error) {
@@ -69,10 +82,9 @@ export const useData = () => {
   const run = async () => {
     if (controller.value) {
       if (isReady.value) {
-        const datalog = await getLastDatalog(getInstance(), controller.value);
+        const datalog = await getLastDatalog(robonomics.api, controller.value);
         cid.value = datalog.cid;
         updateTime.value = datalog.timestamp;
-        watchDatalog();
       } else {
         const stop = watch(isReady, (isReady) => {
           if (isReady) {
@@ -84,17 +96,6 @@ export const useData = () => {
     }
   };
 
-  const stop = () => {
-    if (unsubscribeDatalog) {
-      unsubscribeDatalog();
-    }
-  };
-
-  onUnmounted(() => {
-    console.log("unmount launch");
-    stop();
-  });
-
   const launch = async (command) => {
     console.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
@@ -104,7 +105,7 @@ export const useData = () => {
     notify(store, `Launch command`);
     console.log(`command ${JSON.stringify(command)}`);
 
-    if (!devices.devices.value.includes(accountManager.account.address)) {
+    if (!devices.value || !devices.value.includes(account.value)) {
       notify(store, `Error: You do not have access to device management.`);
       setStatusLaunch(store, command, "error");
       return;
@@ -113,12 +114,8 @@ export const useData = () => {
     if (!ipfs.isAuth()) {
       notify(store, `Authorization on ipfs node`);
       try {
-        const signature = (
-          await accountManager.account.signMsg(
-            stringToU8a(accountManager.account.address)
-          )
-        ).toString();
-        ipfs.auth(owner.value, accountManager.account.address, signature);
+        const signature = signMsg(stringToU8a(pair.value.address));
+        ipfs.auth(owner.value, account.value, signature);
       } catch (error) {
         if (error.message === "Cancelled") {
           setStatusLaunch(store, command, "declined");
@@ -131,13 +128,13 @@ export const useData = () => {
       setStatusLaunch(store, command, "approved");
     }
 
-    const encryptor = accountManager.encryptor();
+    const encryptorObject = encryptor();
     const controllerPublicKey = decodeAddress(controller.value);
 
     let commandCid;
     try {
       const cmdString = JSON.stringify(command.launch);
-      const cmdCrypto = encryptor.encryptMessage(
+      const cmdCrypto = encryptorObject.encryptMessage(
         cmdString,
         controllerPublicKey
       );
@@ -156,9 +153,12 @@ export const useData = () => {
     }
 
     notify(store, `Send launch`);
-    const call = getInstance().launch.send(controller.value, commandCid.path);
-    const tx = transaction.createTx();
-    await transaction.send(tx, call, owner.value);
+    await tx.send(
+      () => action.launch(controller.value, cidToHex(commandCid.path)),
+      {
+        subscription: owner.value
+      }
+    );
     if (tx.error.value) {
       if (tx.error.value !== "Cancelled") {
         setStatusLaunch(store, command, "error");
