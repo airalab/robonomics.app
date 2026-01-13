@@ -97,10 +97,10 @@ export default {
         return;
       }
 
-      const calls = [
-        await action.bid(1000000001),
-        actionDevices.add(dataDevices.value, account.value)
-      ];
+      const calls = [await action.bid(1000000001)];
+      if (!dataDevices.value.includes(account.value)) {
+        calls.push(actionDevices.add(dataDevices.value, account.value));
+      }
 
       await tx.send(() => batch(calls));
       if (tx.error.value) {
