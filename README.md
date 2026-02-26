@@ -6,21 +6,20 @@ dApp on the Robonomics network. Provides a view and interaction layer from a bro
 
 Contributions are welcome!
 
-This repository uses `yarn` to organize the code. As such, after cloning dependencies should be installed via yarn, not via npm.
+This repository uses `npm` to manage dependencies. After cloning, install dependencies via npm.
 [Vue js](https://vuejs.org/) framework is used to create user interfaces.
 
 
 To start -
 
-1. Clone the repo locally, via `git clone https://github.com/airalab/dapp.robonomics.network <optional local path>`
-2. Ensure that you have a recent LTS version of Node.js, for development purposes Node >= 16 is recommended.
-3. Ensure that you have a recent version of Yarn, for development purposes Yarn >= 1.22 is required.
-4. Install the dependencies by running
+1. Clone the repo locally, via `git clone https://github.com/airalab/robonomics.app <optional local path>`
+2. Ensure that you have Node.js 24 (or compatible LTS), for development purposes Node >= 20 is recommended.
+3. Install the dependencies by running
 ```
-yarn
+npm install
 ```
-5. Ready! Now you can launch the UI (assuming you have a local Polkadot Node running), via
+4. Ready! Now you can launch the UI (assuming you have a local Polkadot Node running), via
 ```
-yarn serve
+npm run serve
 ```
-6. Access the UI via http://localhost:8080
+5. Access the UI via http://localhost:8080

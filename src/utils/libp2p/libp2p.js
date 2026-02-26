@@ -6,7 +6,6 @@ import { identify } from "@libp2p/identify";
 import { mplex } from "@libp2p/mplex";
 // import { webRTC } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
-import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
 // import { LevelDatastore } from "datastore-level";
 // import { Key } from "interface-datastore";
@@ -30,9 +29,7 @@ export async function createNode() {
     //   listen: ["/webrtc"]
     // },
     transports: [
-      webSockets({
-        filter: filters.all
-      }),
+      webSockets(),
       // webRTC(),
       circuitRelayTransport()
     ],

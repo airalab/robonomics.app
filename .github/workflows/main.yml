@@ -26,22 +26,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "20.19.4"
+          node-version: "24"
+          cache: 'npm'
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-website-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-website-
-      - run: yarn install
-      # - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: npm ci
+      - run: npm run build
         env:
           VUE_APP_ROBONOMICS_UI_KEY: ${{ vars.VUE_APP_ROBONOMICS_UI_KEY }}
           VUE_APP_GIT_BRANCH: ${{ env.git_branch }}
