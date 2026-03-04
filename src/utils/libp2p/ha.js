@@ -1,26 +1,22 @@
-import { pipe } from "it-pipe";
-import { fromString as uint8ArrayFromString } from "uint8arrays/from-string";
-import { toString as uint8ArrayToString } from "uint8arrays/to-string";
+import { lpStream } from "@libp2p/utils";
 
 export function createHa() {
   return (components) => {
-    async function getRequest(stream) {
-      return pipe(stream, async function (source) {
-        let result = "";
-        for await (const data of source) {
-          result += uint8ArrayToString(data.subarray());
-        }
-        return JSON.parse(result);
-      });
+    async function getRequest({ lp, stream }) {
+      return Promise.resolve()
+        .then(async () => {
+          const req = await lp.read();
+          return JSON.parse(new TextDecoder().decode(req.subarray()));
+        })
+        .catch((error) => {
+          stream.abort(error);
+          return "";
+        });
     }
 
-    async function sendResponse(stream, msg) {
-      return pipe(
-        [uint8ArrayFromString(JSON.stringify(msg))],
-        stream.sink
-      ).finally(() => {
-        stream.close();
-      });
+    async function sendResponse({ lp, stream }, msg) {
+      await lp.write(new TextEncoder().encode(JSON.stringify(msg)));
+      stream.close();
     }
 
     return {
@@ -33,8 +29,9 @@ export function createHa() {
       ) {
         await components.registrar.handle(
           protocol,
-          async ({ stream }) => {
-            handler(await getRequest(stream), stream);
+          async (stream) => {
+            const lp = lpStream(stream);
+            handler(await getRequest({ lp, stream }), { lp, stream });
           },
           options
         );
@@ -51,22 +48,11 @@ export function createHa() {
           return;
         }
         const stream = await connection.newStream([protocol], options);
-        return pipe(
-          [uint8ArrayFromString(JSON.stringify(data))],
-          stream,
-          async function (source) {
-            let result = "";
-            for await (const data of source) {
-              result += uint8ArrayToString(data.subarray());
-            }
-            try {
-              // stream.close();
-              return JSON.parse(result);
-            } catch (error) {
-              return result;
-            }
-          }
-        );
+        const lp = lpStream(stream);
+        await lp.write(new TextEncoder().encode(JSON.stringify(data)));
+        const res = await lp.read();
+        const output = JSON.parse(new TextDecoder().decode(res.subarray()));
+        return output;
       },
       utils: {
         getRequest,

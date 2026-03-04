@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="seasonpass-monkey" aria-hidden="true" v-if="status !== 'TOKENS_FOUND'">
-                <img src="images/season-pass-24-25-monkey.webp" aria-hidden="true"/>
+                <img src="/images/season-pass-24-25-monkey.webp" aria-hidden="true"/>
             </div>
         </div>
     </robo-card>
@@ -70,13 +70,13 @@
 </template>
 
 <script setup>
-import { reactive, computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
 
-import nft_abi from "../../components/web3/abi/NFT.json";
-import { ethers } from "ethers";
 import { address } from "@/config";
+import { ethers } from "ethers";
+import nft_abi from "../../components/web3/abi/NFT.json";
 
 import chains from "../../eth_chains";
 
@@ -84,7 +84,7 @@ import chains from "../../eth_chains";
 import { createStore } from 'mipd';
 const mipdstore = createStore();
 
-const state = reactive({ 
+const state = reactive({
     providers: mipdstore.getProviders()
 });
 
@@ -155,7 +155,7 @@ const getNFT = async (blockupdate = false) => {
                 status.value = 'NO_ETH_ACCOUNT';
                 return;
             }
-            
+
             const chain = await provider.value.provider.request({method: 'eth_chainId', params: [{ eth_accounts: {} }]});
             if(parseInt(chain) !== workingchain) {
                 status.value = 'WRONG_ETH_NETWORK';

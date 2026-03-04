@@ -42,7 +42,7 @@ export const useData = () => {
     const node = await start();
     try {
       notify(store, `Connect to peer id ${peer_id}`);
-      const connected = await connectMultiaddress(peer_id, peer_multiaddress);
+      const connected = await connectMultiaddress(peer_multiaddress);
       if (connected) {
         notify(store, `Connected`);
         const protocols = node.getProtocols();
@@ -89,13 +89,10 @@ export const useData = () => {
     }
 
     try {
-      const encryptor = encryptor();
+      const enc = encryptor();
       const controllerPublicKey = decodeAddress(controller.value);
       const cmdString = JSON.stringify(command.launch);
-      const cmdCrypto = encryptor.encryptMessage(
-        cmdString,
-        controllerPublicKey
-      );
+      const cmdCrypto = enc.encryptMessage(cmdString, controllerPublicKey);
       const response = await request({
         data: {
           sender: account.value,

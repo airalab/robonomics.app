@@ -27,8 +27,8 @@ export function toUnit(v, decimals = 0) {
 export function showVersion() {
   console.log(
     "Build version:",
-    process.env.VUE_APP_GIT_BRANCH,
-    process.env.VUE_APP_GIT_TAG,
-    process.env.VUE_APP_GIT_SHA
+    import.meta.env.VITE_APP_GIT_BRANCH,
+    import.meta.env.VITE_APP_GIT_TAG,
+    import.meta.env.VITE_APP_GIT_SHA
   );
 }

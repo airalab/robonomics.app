@@ -1,43 +1,22 @@
 import { noise } from "@chainsafe/libp2p-noise";
+import { yamux } from "@chainsafe/libp2p-yamux";
 import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
 import { identify } from "@libp2p/identify";
-// import { keychain } from "@libp2p/keychain";
-// import { defaultLogger } from "@libp2p/logger";
-import { mplex } from "@libp2p/mplex";
-// import { webRTC } from "@libp2p/webrtc";
+import { webRTCDirect } from "@libp2p/webrtc";
 import { webSockets } from "@libp2p/websockets";
-import * as filters from "@libp2p/websockets/filters";
 import { multiaddr } from "@multiformats/multiaddr";
-// import { LevelDatastore } from "datastore-level";
-// import { Key } from "interface-datastore";
 import { createLibp2p } from "libp2p";
 import { createHa } from "./ha";
 
-export async function createNode() {
-  // const selfKey = new Key("/pkcs8/self");
-  // const datastore = new LevelDatastore(`libp2p/data`);
-  // const chain = keychain()({
-  //   datastore: datastore,
-  //   logger: defaultLogger()
-  // });
-  // let peerId;
-  // if (await datastore.has(selfKey)) {
-  //   peerId = await chain.exportPeerId("self");
-  // }
+let node = null;
+let connections = [];
+let connection = null;
+
+async function createNode() {
   const node = await createLibp2p({
-    // peerId: peerId,
-    // addresses: {
-    //   listen: ["/webrtc"]
-    // },
-    transports: [
-      webSockets({
-        filter: filters.all
-      }),
-      // webRTC(),
-      circuitRelayTransport()
-    ],
-    streamMuxers: [mplex()],
-    connectionEncryption: [noise()],
+    transports: [webSockets(), webRTCDirect(), circuitRelayTransport()],
+    streamMuxers: [yamux()],
+    connectionEncrypters: [noise()],
     services: {
       identify: identify(),
       ha: createHa()
@@ -51,70 +30,8 @@ export async function createNode() {
       minConnections: 0
     }
   });
-  // if (chain != null && !(await datastore.has(selfKey))) {
-  //   await chain.importPeer("self", node.peerId);
-  // }
   return node;
 }
-export function defaultRelay(peer_id) {
-  return multiaddr(
-    `/dns4/libp2p-relay-1.robonomics.network/tcp/443/wss/p2p/12D3KooWEMFXXvpZUjAuj1eKR11HuzZTCQ5HmYG9MNPtsnqPSERD/p2p-circuit/p2p/${peer_id}`
-  );
-}
-export async function connectMultiaddress(peer_id, peer_multiaddress) {
-  if (peer_multiaddress.length > 0) {
-    const localMultiaddrs = [];
-    const circuit = [];
-    for (const peer_multiaddr of peer_multiaddress) {
-      const localMultiaddr = multiaddr(peer_multiaddr);
-      const protos = localMultiaddr.protoNames();
-      if (protos.includes("ws") || protos.includes("wss")) {
-        if (protos.includes("p2p-circuit")) {
-          circuit.push(localMultiaddr);
-        } else if (
-          window.location.protocol !== "https:" ||
-          protos.includes("wss")
-        ) {
-          localMultiaddrs.push(localMultiaddr);
-        }
-      }
-    }
-
-    if (localMultiaddrs.length > 0) {
-      for (const addr of localMultiaddrs) {
-        try {
-          await connect(addr);
-          return addr;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-
-    if (circuit.length > 0) {
-      for (const addr of circuit) {
-        try {
-          await connect(addr);
-          return addr;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-  }
-  try {
-    const addr = defaultRelay(peer_id);
-    await connect(addr);
-    return addr;
-  } catch (error) {
-    console.log(error);
-  }
-  return false;
-}
-
-let node = null;
-let connections = [];
-let connection = null;
 
 export async function start() {
   if (node) {
@@ -144,8 +61,7 @@ export async function start() {
         connection &&
         event.detail.remoteAddr.toString() === connection.remoteAddr.toString()
       ) {
-        console.log("reconnect");
-        reconnect(connection.remoteAddr.toString());
+        reconnect(connection.remoteAddr);
       }
     }, 10000);
   });
@@ -153,9 +69,39 @@ export async function start() {
   return node;
 }
 
-export async function reconnect(addr) {
+export async function connectMultiaddress(peer_multiaddress) {
+  const direct = [];
+  const circuit = [];
+  peer_multiaddress = peer_multiaddress
+    .filter((item) => item)
+    .map((item) => multiaddr(item));
+  for (const item of peer_multiaddress) {
+    if (item.getComponents().find((item) => item.name === "p2p-circuit")) {
+      circuit.push(item);
+    } else {
+      direct.push(item);
+    }
+  }
+  console.log({
+    direct: direct.map((item) => item.toString()),
+    circuit: circuit.map((item) => item.toString())
+  });
+  const s = () => {};
+  if (direct.length > 0) {
+    console.log("connect to direct");
+    return await connect(direct, 10000);
+  }
+  if (circuit.length > 0) {
+    console.log("connect to circuit");
+    return await connect(circuit, 10000);
+  }
+  return false;
+}
+
+async function reconnect(addr) {
   try {
-    await connect(addr);
+    console.log("reconnect");
+    await connect([addr]);
   } catch (error) {
     console.log(error);
     // setTimeout(async () => {
@@ -165,13 +111,10 @@ export async function reconnect(addr) {
     // }, 3000);
   }
 }
-export async function connect(addr) {
-  console.log("connect to", addr.toString());
-  if (!connections.includes(addr)) {
-    const listenerMultiaddr = multiaddr(addr);
-    connection = await node.dial(listenerMultiaddr);
-  }
-  return addr;
+
+async function connect(addrs, timeout = 30000) {
+  connection = await node.dial(addrs, { signal: AbortSignal.timeout(timeout) });
+  return connection.remoteAddr;
 }
 
 export async function disconnect() {

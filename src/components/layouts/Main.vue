@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import DappFooter from "@/components/Footer";
-import DappHeader from "@/components/Header";
+import DappFooter from "@/components/Footer.vue";
+import DappHeader from "@/components/Header.vue";
 import { useDevices } from "robonomics-interface-vue/devices";
 import { useSubscription } from "robonomics-interface-vue/subscription";
 import { defineProps, ref, watch } from "vue";
