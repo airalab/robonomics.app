@@ -1,6 +1,7 @@
+import { createApp } from "vue";
+
 import { Buffer } from "buffer";
 import { robonomicsUI } from "robonomics-ui-vue";
-import { createApp } from "vue";
 import App from "./App.vue";
 import ipfs from "./plugins/ipfs";
 import robonomics from "./plugins/robonomics";

@@ -1,7 +1,7 @@
 <template>
   <robo-layout-section>
     <robo-section width="narrow" centered>
-      <robo-text title="3" offset="x1">Saved subscription setups</robo-text>
+      <robo-text title="3" offset="x1" v-if="$store.state.robonomicsUIvue.rws.list.length > 1">Saved subscription setups</robo-text>
 
       <robo-tabs v-if="$store.state.robonomicsUIvue.rws.list.length > 1">
         <robo-tab label="Active subscription">

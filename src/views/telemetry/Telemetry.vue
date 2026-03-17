@@ -96,13 +96,16 @@ export default {
       cid,
       handlerConnected: (result) => {
         store.commit("polkadot/setConnectionType", "libp2p");
-
-        if (result.protoNames().includes("p2p-circuit")) {
+        if (
+          result
+            .getComponents()
+            .map(({ name }) => name)
+            .includes("p2p-circuit")
+        ) {
           store.commit("polkadot/setConnectionStatus", "via relay");
         } else {
           store.commit("polkadot/setConnectionStatus", null);
         }
-
         store.commit("polkadot/setConnectionConnected", true);
       },
       handlerError: (e) => {
