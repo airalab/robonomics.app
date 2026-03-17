@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Find Tag
         id: tagger
@@ -23,25 +23,18 @@ jobs:
           echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
           echo "git_branch=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Node.js + cache
+        uses: actions/setup-node@v4
         with:
-          node-version: "20.19.4"
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-website-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-website-
-      - run: yarn install
-      # - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - name: Build project
+        run: npm run build
         env:
           VUE_APP_ROBONOMICS_UI_KEY: ${{ vars.VUE_APP_ROBONOMICS_UI_KEY }}
           VUE_APP_GIT_BRANCH: ${{ env.git_branch }}
@@ -49,7 +42,7 @@ jobs:
           VUE_APP_GIT_SHA: ${{ env.git_hash }}
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
