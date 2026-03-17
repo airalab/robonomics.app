@@ -9,5 +9,18 @@ export default defineConfig({
     alias: {
       "@": "/src"
     }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: "es2020"
+    }
+  },
+  build: {
+    commonjsOptions: {
+      ignore: ["node-fetch", "util"]
+    },
+    rollupOptions: {
+      external: ["node-fetch"]
+    }
   }
 });
