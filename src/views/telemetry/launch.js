@@ -67,6 +67,7 @@ export const useData = () => {
 
   watch(cid, async () => {
     try {
+      console.log("[debug] Data cid:", cid.value);
       data.value = await readFileDecrypt(
         cid.value,
         controller.value,
@@ -82,6 +83,7 @@ export const useData = () => {
   const run = async () => {
     if (controller.value) {
       if (isReady.value) {
+        console.log("[debug] Controller:", controller.value);
         const datalog = await getLastDatalog(robonomics.api, controller.value);
         cid.value = datalog.cid;
         updateTime.value = datalog.timestamp;

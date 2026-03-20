@@ -62,6 +62,14 @@ export default {
     });
 
     watch(
+      [isConnected],
+      ([isConnected]) => {
+        console.log("[info] Parachain connect", isConnected);
+      },
+      { immediate: true }
+    );
+
+    watch(
       [route, isConnected],
       ([route, isConnected]) => {
         if (route.name !== "telemetry" && isConnected) {

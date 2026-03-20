@@ -79,6 +79,7 @@ export default {
       async (key) => {
         if (key) {
           await setFromPair(key);
+          console.log("[debug] User:", account.value);
           isKey.value = true;
           load();
         } else {

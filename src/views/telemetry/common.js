@@ -237,10 +237,10 @@ export const useConfig = () => {
 
         notify(store, `Start load config`);
         const cid = await getConfigCid(controller, getTwin, twin_id);
+        console.log("[debug] Twin id:", twin_id);
+        console.log("[debug] Config cid:", cid);
         if (!cid) {
-          console.log("Config not found");
-          console.log("controller", controller);
-          console.log("twin_id", twin_id);
+          console.log("[warn] Config not found");
         }
 
         const config = await readFileDecrypt(
@@ -278,6 +278,8 @@ export const useConfig = () => {
       notify(store, "Error: " + error.message);
       return;
     }
+
+    console.log("[debug] Config:", result);
 
     config.value = result.data;
     if (result.cache) {
