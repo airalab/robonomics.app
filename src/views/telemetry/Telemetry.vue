@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { useAccount } from "robonomics-interface-vue/account";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
@@ -59,7 +60,7 @@ export default {
             );
           }
         } catch (e) {
-          console.error(e);
+          logger.error(e);
         }
       }
     });
@@ -79,11 +80,11 @@ export default {
       async (key) => {
         if (key) {
           await setFromPair(key);
-          console.log("[debug] User:", account.value);
+          logger.log("User:", account.value);
           isKey.value = true;
           load();
         } else {
-          console.log("User key not found");
+          logger.warn("User: key not found");
         }
       },
       { immediate: true }
@@ -110,8 +111,8 @@ export default {
         store.commit("polkadot/setConnectionConnected", true);
       },
       handlerError: (e) => {
-        console.log(e.message);
-        console.log("Switching to parachain");
+        logger.warn(e);
+        logger.info("Switching to parachain");
 
         store.commit("polkadot/setConnectionType", "parachain");
         store.commit("polkadot/setConnectionConnected", true);

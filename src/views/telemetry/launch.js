@@ -1,4 +1,5 @@
 import { useIpfs } from "@/hooks/useIpfs";
+import { logger } from "@/utils/logger";
 import { cidToHex } from "@/utils/string";
 import { getLastDatalog } from "@/utils/telemetry";
 import { stringToU8a, u8aToHex } from "@polkadot/util";
@@ -59,7 +60,7 @@ export const useData = () => {
   });
 
   onUnmounted(() => {
-    console.log("unmount launch");
+    logger.log("unmount launch");
     if (unsubscribeDatalog) {
       unsubscribeDatalog();
     }
@@ -67,7 +68,7 @@ export const useData = () => {
 
   watch(cid, async () => {
     try {
-      console.log("[debug] Data cid:", cid.value);
+      logger.log("Data cid:", cid.value);
       data.value = await readFileDecrypt(
         cid.value,
         controller.value,
@@ -75,7 +76,7 @@ export const useData = () => {
         store
       );
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       notify(store, error.message);
     }
   });
@@ -83,7 +84,7 @@ export const useData = () => {
   const run = async () => {
     if (controller.value) {
       if (isReady.value) {
-        console.log("[debug] Controller:", controller.value);
+        logger.info("Controller:", controller.value);
         const datalog = await getLastDatalog(robonomics.api, controller.value);
         cid.value = datalog.cid;
         updateTime.value = datalog.timestamp;
@@ -99,13 +100,13 @@ export const useData = () => {
   };
 
   const launch = async (command) => {
-    console.log(command.launch.params.entity_id, command.tx.tx_status);
+    logger.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
       return;
     }
 
     notify(store, `Launch command`);
-    console.log(`command ${JSON.stringify(command)}`);
+    logger.log(`command ${JSON.stringify(command)}`);
 
     if (!devices.value || !devices.value.includes(account.value)) {
       notify(store, `Error: You do not have access to device management.`);
@@ -122,7 +123,7 @@ export const useData = () => {
         if (error.message === "Cancelled") {
           setStatusLaunch(store, command, "declined");
         } else {
-          console.log(error);
+          logger.error(error);
           setStatusLaunch(store, command, "error");
         }
         return;
@@ -146,7 +147,7 @@ export const useData = () => {
       notify(store, `Error: ${error.message}`);
       return;
     }
-    console.log(`launch ipfs file ${commandCid.path}`);
+    logger.log(`launch ipfs file ${commandCid.path}`);
 
     if (!isReady.value) {
       notify(store, `Error: Robonomics is not ready.`);
@@ -170,7 +171,7 @@ export const useData = () => {
         notify(store, "Calcel");
       }
     } else {
-      console.log(command);
+      logger.log(command);
       setStatusLaunch(store, command, "success");
       notify(store, "Launch sended");
     }

@@ -4,6 +4,7 @@ import {
   request,
   start
 } from "@/utils/libp2p/libp2p";
+import { logger } from "@/utils/logger";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import { useAccount } from "robonomics-interface-vue/account";
@@ -69,13 +70,13 @@ export const useData = () => {
       }
     } catch (error) {
       notify(store, `Error: ${error.message}`);
-      console.log(error);
+      logger.error(error);
     }
     return false;
   };
 
   const launch = async (command) => {
-    console.log(command.launch.params.entity_id, command.tx.tx_status);
+    logger.log(command.launch.params.entity_id, command.tx.tx_status);
     if (command.tx.tx_status !== "pending") {
       return;
     }
@@ -99,11 +100,11 @@ export const useData = () => {
           data: u8aToHex(cmdCrypto)
         }
       });
-      console.log(`response:`, response);
+      logger.log(`response:`, response);
 
       setStatusLaunch(store, command, "success");
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       notify(store, `Error: Check status of the HomeAssistant.`);
       setStatusLaunch(store, command, "error");
     }

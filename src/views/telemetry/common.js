@@ -1,5 +1,6 @@
 import configApp from "@/config";
 import { createPair, encryptor } from "@/utils/encryptor";
+import { logger } from "@/utils/logger";
 import { hexToCid } from "@/utils/string";
 import { getLastDatalog, parseJson } from "@/utils/telemetry";
 import { hexToU8a, u8aToString } from "@polkadot/util";
@@ -45,7 +46,7 @@ const catFile = async (store, cid) => {
     const res = (await axios.get(`${activeGateway}/ipfs/${cid}`)).data;
     return res;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new Error("File not available");
   }
 };
@@ -65,7 +66,7 @@ export const decryptData = async (encryptedMsg, controller, account) => {
       );
       return parseJson(u8aToString(data));
     } catch (error) {
-      console.log(error.message);
+      logger.error(error);
     }
   }
   return false;
@@ -75,14 +76,14 @@ export const readFileDecrypt = async (cid, controller, account, store) => {
   if (cid) {
     const data = await catFile(store, cid);
     if (!data) {
-      console.log(`Error: ${cid} not found in ipfs`);
+      logger.warn(`Error: ${cid} not found in ipfs`);
       throw new Error(`${cid} not found in ipfs`);
     }
     const result = await decryptData(data, controller, account);
     if (result) {
       return result;
     } else {
-      console.log(`Error: decryptMsg`);
+      logger.error(`Error: decryptMsg`);
       throw new Error(`decryptMsg`);
     }
   }
@@ -101,7 +102,7 @@ const loadSetup = (store) => {
           owner: setupRaw.owner
         };
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     }
   }
@@ -134,7 +135,6 @@ export const notify = (store, text, timeout = 3000) => {
     value: text,
     timeout
   });
-  // console.log(text);
 };
 
 export const setStatusLaunch = (store, command, status) => {
@@ -167,7 +167,7 @@ export const useLastDatalog = () => {
           store
         );
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         notify(store, error.message);
       }
     }
@@ -177,7 +177,6 @@ export const useLastDatalog = () => {
 };
 
 export const getConfigCid = async (controller, getTwin, twin_id) => {
-  // console.log("getConfigCid");
   if (!controller || (!twin_id && twin_id !== 0)) {
     return false;
   }
@@ -213,10 +212,10 @@ export const useConfig = () => {
       if (data) {
         try {
           const parsedData = JSON.parse(data);
-          console.log("getConfig cache");
+          logger.log("getConfig cache");
           return { data: parsedData.value, cache: true };
         } catch (error) {
-          console.log("haconfig bad", error);
+          logger.warn("haconfig bad", error);
         }
       } else {
         return { data: null, cache: true };
@@ -237,10 +236,10 @@ export const useConfig = () => {
 
         notify(store, `Start load config`);
         const cid = await getConfigCid(controller, getTwin, twin_id);
-        console.log("[debug] Twin id:", twin_id);
-        console.log("[debug] Config cid:", cid);
+        logger.log("Twin id:", twin_id);
+        logger.log("Config cid:", cid);
         if (!cid) {
-          console.log("[warn] Config not found");
+          logger.warn("Config not found");
         }
 
         const config = await readFileDecrypt(
@@ -254,7 +253,7 @@ export const useConfig = () => {
           lsKey,
           JSON.stringify({ time: Date.now(), value: config })
         );
-        console.log("getConfig chain");
+        logger.log("getConfig chain");
 
         return { data: config, cache: false };
       }
@@ -274,12 +273,12 @@ export const useConfig = () => {
     try {
       result = await getConfig(controller.value);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       notify(store, "Error: " + error.message);
       return;
     }
 
-    console.log("[debug] Config:", result);
+    logger.log("Config:", result);
 
     config.value = result.data;
     if (result.cache) {
@@ -292,7 +291,7 @@ export const useConfig = () => {
               config.value = result.data;
               stop();
             } catch (error) {
-              console.log(error);
+              logger.error(error);
               notify(store, "Error: " + error.message);
             }
           }

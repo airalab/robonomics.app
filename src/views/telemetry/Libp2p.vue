@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { watch } from "vue";
 import { useStore } from "vuex";
 import { useData } from "./libp2p";
@@ -65,7 +66,7 @@ export default {
         try {
           launch(JSON.parse(value));
         } catch (error) {
-          console.log(error);
+          logger.error(error);
         }
       }
     );

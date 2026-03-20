@@ -6,6 +6,7 @@
 
 <script>
 import MainLayout from "@/components/layouts/Main.vue";
+import { logger } from "@/utils/logger";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -64,7 +65,7 @@ export default {
     watch(
       [isConnected],
       ([isConnected]) => {
-        console.log("[info] Parachain connect", isConnected);
+        logger.log("Parachain connect", isConnected);
       },
       { immediate: true }
     );

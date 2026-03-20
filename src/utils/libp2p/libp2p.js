@@ -1,3 +1,4 @@
+import { createLogger } from "@/utils/logger";
 import { noise } from "@chainsafe/libp2p-noise";
 import { yamux } from "@chainsafe/libp2p-yamux";
 import { circuitRelayTransport } from "@libp2p/circuit-relay-v2";
@@ -7,6 +8,8 @@ import { webSockets } from "@libp2p/websockets";
 import { multiaddr } from "@multiformats/multiaddr";
 import { createLibp2p } from "libp2p";
 import { createHa } from "./ha";
+
+const logger = createLogger("libp2p");
 
 let node = null;
 let connections = [];
@@ -39,22 +42,22 @@ export async function start() {
   }
   node = await createNode();
   await node.start();
-  console.log(`Node started with id ${node.peerId.toString()}`);
+  logger.info(`Node started with id ${node.peerId.toString()}`);
 
   function updateConnectionsList() {
     connections = node.getConnections().map((item) => {
       return item.remoteAddr.toString();
     });
-    console.log("Update Connections List", connections);
+    logger.log("Update Connections List", connections);
   }
 
   node.addEventListener("connection:open", (event) => {
-    console.log("connected", event.detail.remoteAddr.toString());
+    logger.info("connected", event.detail.remoteAddr.toString());
     updateConnectionsList();
   });
 
   node.addEventListener("connection:close", (event) => {
-    console.log("disconected", event.detail.remoteAddr.toString());
+    logger.info("disconected", event.detail.remoteAddr.toString());
     updateConnectionsList();
     setTimeout(() => {
       if (
@@ -82,17 +85,16 @@ export async function connectMultiaddress(peer_multiaddress) {
       direct.push(item);
     }
   }
-  console.log({
+  logger.log({
     direct: direct.map((item) => item.toString()),
     circuit: circuit.map((item) => item.toString())
   });
-  const s = () => {};
   if (direct.length > 0) {
-    console.log("connect to direct");
+    logger.log("connect to direct");
     return await connect(direct, 10000);
   }
   if (circuit.length > 0) {
-    console.log("connect to circuit");
+    logger.log("connect to circuit");
     return await connect(circuit, 10000);
   }
   return false;
@@ -100,10 +102,10 @@ export async function connectMultiaddress(peer_multiaddress) {
 
 async function reconnect(addr) {
   try {
-    console.log("reconnect");
+    logger.log("reconnect");
     await connect([addr]);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     // setTimeout(async () => {
     //   if (addr && !connections.includes(addr)) {
     //     await reconnect(addr);
