@@ -14,6 +14,7 @@
 <script>
 import { address } from "@/config";
 import { $web3 } from "@/plugins/web3";
+import { logger } from "@/utils/logger";
 import axios from "axios";
 import { ethers } from "ethers";
 import { ref, watch } from "vue";
@@ -35,10 +36,10 @@ export default {
 
     (async () => {
       try {
-        console.log('$web3.state.account', $web3.state.account)
+        logger.log("$web3.state.account", $web3.state.account);
         balance.value = await nftContract.balanceOf($web3.state.account);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     })();
 
@@ -46,10 +47,10 @@ export default {
       () => $web3.state.block,
       async () => {
         try {
-          console.log('$web3.state.account', $web3.state.account)
+          logger.log("$web3.state.account", $web3.state.account);
           balance.value = await nftContract.balanceOf($web3.state.account);
         } catch (error) {
-          console.log(error);
+          logger.error(error);
         }
       }
     );
@@ -77,9 +78,8 @@ export default {
             image: res.data.image.split("ipfs://").pop()
           });
         } catch (error) {
-          console.log(error);
+          logger.error(error);
         }
-        ``;
       }
       tokens.value = ids;
     };

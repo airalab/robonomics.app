@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { fromUnit, round } from "@/utils/tools";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { useAccount, useBalance } from "robonomics-interface-vue/account";
@@ -136,7 +137,7 @@ export default {
           );
         }
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
     };
 

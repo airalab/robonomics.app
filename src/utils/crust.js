@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { typesBundleForPolkadot } from "@crustio/type-definitions";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
@@ -80,7 +81,7 @@ export class Crust {
                   const mod = result.dispatchError.asModule;
                   const { docs, name, section } =
                     mod.registry.findMetaError(mod);
-                  console.log(name, section, docs);
+                  logger.log(name, section, docs);
                   message = docs.join(", ");
                 }
                 return reject(new Error(message));

@@ -8,6 +8,7 @@
 </template>
 
 <script setup>
+import { logger } from "@/utils/logger";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { useQuery as useQuerySubscription } from "robonomics-interface-vue/subscription";
 import { watch } from "vue";
@@ -28,7 +29,7 @@ const onRequestSubscription = async (address, send) => {
             send(null);
           }
         } catch (e) {
-          console.log(e);
+          logger.error(e);
           send(null);
         }
       }

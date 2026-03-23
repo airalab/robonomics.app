@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { stringToU8a } from "@polkadot/util";
 import { useAccount } from "robonomics-interface-vue/account";
 import { ref } from "vue";
@@ -36,7 +37,7 @@ export default {
           size: file.size
         });
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
 

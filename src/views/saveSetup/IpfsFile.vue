@@ -11,6 +11,7 @@
 
 <script>
 import { Crust } from "@/utils/crust";
+import { logger } from "@/utils/logger";
 import { hexToCid } from "@/utils/string";
 import { u8aToString } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
@@ -64,7 +65,7 @@ export default {
           content.value = res.data;
         }
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
     getContentFile();

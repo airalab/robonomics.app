@@ -14,7 +14,7 @@ import { useStore } from "vuex";
 import { useAccounts } from "../../hooks/useAccounts";
 import { notify, readFileDecrypt, setStatusLaunch, useSetup } from "./common";
 
-export const useData = () => {
+export const useDataParachain = () => {
   const cid = ref(null);
   const updateTime = ref(null);
   const data = ref(null);
@@ -168,14 +168,14 @@ export const useData = () => {
         notify(store, `Error: ${tx.error.value}`);
       } else {
         setStatusLaunch(store, command, "declined");
-        notify(store, "Calcel");
+        notify(store, "Cancel");
       }
     } else {
       logger.log(command);
       setStatusLaunch(store, command, "success");
-      notify(store, "Launch sended");
+      notify(store, "Launch sent");
     }
   };
 
-  return { cid, updateTime, data, run, stop, launch };
+  return { cid, updateTime, data, run, launch };
 };

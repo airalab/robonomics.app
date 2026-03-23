@@ -11,7 +11,7 @@
 import { logger } from "@/utils/logger";
 import { watch } from "vue";
 import { useStore } from "vuex";
-import { useData } from "./libp2p";
+import { useDataLibp2p } from "./libp2p";
 
 export default {
   props: {
@@ -29,7 +29,7 @@ export default {
   },
   emits: ["connected", "error"],
   setup(props, { emit }) {
-    const { data, updateTime, run, launch } = useData();
+    const { data, updateTime, run, launch } = useDataLibp2p();
     const store = useStore();
 
     const isOnce = props.isKey && props.config !== null;

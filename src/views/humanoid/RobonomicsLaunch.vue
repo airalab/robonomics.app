@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import { ref, inject } from "vue";
+import { logger } from "@/utils/logger";
+import { inject, ref } from "vue";
 import * as config from "./config";
 
 export default {
@@ -50,10 +51,10 @@ export default {
           await RobonomicsProvider.instance.value.accountManager.signAndSend(
             tx
           );
-        console.log("saved", resultTx);
+        logger.log("saved", resultTx);
         result.value = `${resultTx.blockNumber}-${resultTx.txIndex}`;
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         error.value = error.message;
       }
       proccess.value = false;

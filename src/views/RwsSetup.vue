@@ -1,7 +1,12 @@
 <template>
   <robo-layout-section>
     <robo-section width="narrow" centered>
-      <robo-text title="3" offset="x1" v-if="$store.state.robonomicsUIvue.rws.list.length > 1">Saved subscription setups</robo-text>
+      <robo-text
+        title="3"
+        offset="x1"
+        v-if="$store.state.robonomicsUIvue.rws.list.length > 1"
+        >Saved subscription setups</robo-text
+      >
 
       <robo-tabs v-if="$store.state.robonomicsUIvue.rws.list.length > 1">
         <robo-tab label="Active subscription">
@@ -29,6 +34,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { u8aToHex } from "@polkadot/util";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import { usePolkadotApi } from "robonomics-interface-vue";
@@ -137,7 +143,7 @@ export default {
 
       const userType =
         store.state.robonomicsUIvue.rws.user.acctype ?? "ed25519";
-      console.log("userType", userType);
+      logger.log("userType", userType);
 
       setFromPair(store.state.robonomicsUIvue.rws.user.key);
       const user = encryptor();
@@ -196,7 +202,7 @@ export default {
           );
         }
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
 
       if (tx.error.value) {

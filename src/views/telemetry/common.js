@@ -95,15 +95,11 @@ const loadSetup = (store) => {
     const setupRaw = store.state.robonomicsUIvue.rws.list.find(
       (item) => item.owner === store.state.robonomicsUIvue.rws.active
     );
-    if (setupRaw) {
-      try {
-        return {
-          controller: setupRaw.controller.address,
-          owner: setupRaw.owner
-        };
-      } catch (error) {
-        logger.error(error);
-      }
+    if (setupRaw && setupRaw.controller?.address) {
+      return {
+        controller: setupRaw.controller.address,
+        owner: setupRaw.owner
+      };
     }
   }
   return false;
@@ -235,15 +231,15 @@ export const useConfig = () => {
         notify(store, `Twin id #${twin_id}`);
 
         notify(store, `Start load config`);
-        const cid = await getConfigCid(controller, getTwin, twin_id);
+        const cidConfig = await getConfigCid(controller, getTwin, twin_id);
         logger.log("Twin id:", twin_id);
-        logger.log("Config cid:", cid);
-        if (!cid) {
+        logger.log("Config cid:", cidConfig);
+        if (!cidConfig) {
           logger.warn("Config not found");
         }
 
         const config = await readFileDecrypt(
-          cid,
+          cidConfig,
           controller,
           encryptor(),
           store

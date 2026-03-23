@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { fromUnit } from "@/utils/tools";
 import { bnToBn } from "@polkadot/util";
 import { usePolkadotApi } from "robonomics-interface-vue";
@@ -75,7 +76,7 @@ export default {
         !balance.value ||
         bnToBn(balance.value).lt(price.value.add(bnToBn(10000000)))
       ) {
-        console.log(balance.value.toString());
+        logger.log(balance.value.toString());
         setStatus(
           "error",
           "Subscription can not be activated due to unsuffcicient XRT balance"
@@ -84,7 +85,7 @@ export default {
       }
 
       if (freeAuctions.value <= 0) {
-        console.log(freeAuctions.value);
+        logger.log(freeAuctions.value);
         setStatus("error", "There are no available subscriptions");
         return;
       }

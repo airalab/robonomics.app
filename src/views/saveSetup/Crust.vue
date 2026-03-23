@@ -19,6 +19,7 @@
 
 <script>
 import { Crust } from "@/utils/crust";
+import { logger } from "@/utils/logger";
 import { useAccount } from "robonomics-interface-vue/account";
 import { computed, ref } from "vue";
 
@@ -56,7 +57,7 @@ export default {
       }
       const tx = crust.storeFile(props.file.path, props.file.size);
       const res = await crust.signAndSend(pair.value, tx);
-      console.log(res);
+      logger.log(res);
       emit("store");
     };
 

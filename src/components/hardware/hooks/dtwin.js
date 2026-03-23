@@ -1,4 +1,5 @@
 import configApp from "@/config";
+import { logger } from "@/utils/logger";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { useAccount } from "robonomics-interface-vue/account";
 import { ref, watch } from "vue";
@@ -40,7 +41,7 @@ export const getCache = (account) => {
       return result;
     }
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
   return { total: false, twins: [] };
 };
