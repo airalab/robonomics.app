@@ -130,5 +130,7 @@ export function request(data, protocol = "/call") {
   if (node && connection) {
     return node.services.ha.request(connection, protocol, data);
   }
-  throw new Error("error");
+  throw new Error(
+    "Cannot perform HA request: connection is not established yet"
+  );
 }

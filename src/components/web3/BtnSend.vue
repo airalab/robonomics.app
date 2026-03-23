@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { ref } from "vue";
 
 const STATUS = {
@@ -34,7 +35,7 @@ export default {
         try {
           if (tx) {
             const receipt = await tx.wait();
-            console.log(receipt.hash);
+            logger.log(receipt.hash);
             if (last) {
               status.value = STATUS.READY;
             }

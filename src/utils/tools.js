@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import Decimal from "decimal.js-light";
 
 Decimal.set({
@@ -25,7 +26,7 @@ export function toUnit(v, decimals = 0) {
 }
 
 export function showVersion() {
-  console.log(
+  logger.info(
     "Build version:",
     import.meta.env.VITE_APP_GIT_BRANCH,
     import.meta.env.VITE_APP_GIT_TAG,

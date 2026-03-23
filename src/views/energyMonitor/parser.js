@@ -1,3 +1,5 @@
+import { logger } from "@/utils/logger";
+
 /**
  * Parses a comma-separated string of key-value pairs into an array of objects.
  * Each object contains the original key, its mapped name from the mapName if available,
@@ -22,6 +24,6 @@ export const parser = (data) => {
     }
     return res;
   } catch (error) {
-    console.log(error);
+    logger.warn(error);
   }
 };

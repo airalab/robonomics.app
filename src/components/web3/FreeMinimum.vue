@@ -20,6 +20,7 @@
 
 <script>
 import { $web3 } from "@/plugins/web3";
+import { logger } from "@/utils/logger";
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { checkAvailible, getFreeMinimum } from "./apiNftOracle";
@@ -38,7 +39,9 @@ export default {
           account.value = store.state.robonomicsUIvue.polkadot.accounts.find(
             (item) => item.address === address
           );
-        } catch (e) { console.error(e); }
+        } catch (e) {
+          logger.error(e);
+        }
       },
       { immediate: true }
     );

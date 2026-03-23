@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { ref } from "vue";
 import { useAccounts } from "../../hooks/useAccounts";
 
@@ -22,10 +23,9 @@ export default {
       try {
         await setFromUri(seed.value);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         return;
       }
-      // console.log(robonomics.accountManager.account.address);
 
       emit("unlock");
     };

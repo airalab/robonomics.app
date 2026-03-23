@@ -1,11 +1,11 @@
 <template>
   <robo-layout-section>
     <robo-text title="1">Season pass</robo-text>
-    
+
     <hr />
     {{ store.state.robonomicsUIvue.ethereum.activeAccount }}
-    <hr/>
-    {{store.state.robonomicsUIvue.ethereum.activeProviderRdns}}
+    <hr />
+    {{ store.state.robonomicsUIvue.ethereum.activeProviderRdns }}
     <div>
       <div v-if="$web3.state.isReady">
         <nft-info v-if="$web3.state.account" />
@@ -22,7 +22,8 @@
 <script setup>
 import NftInfo from "@/components/web3/NftInfo.vue";
 import { $web3 } from "@/plugins/web3";
-import { watch, onMounted } from "vue";
+import { logger } from "@/utils/logger";
+import { onMounted, watch } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -43,7 +44,7 @@ watch(
       try {
         await $web3.setProvider(providers[index].provider);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     }
   }
@@ -61,19 +62,21 @@ window.dispatchEvent(new CustomEvent("eip6963:requestProvider"));
 
 onMounted(async () => {
   const index = providers.findIndex((item) => {
-      if (item.info.rdns === store.state.robonomicsUIvue.ethereum.activeProviderRdns) {
-        return true;
-      }
-      return false;
-    });
-    if (index >= 0) {
-      try {
-        await $web3.setProvider(providers[index].provider);
-      } catch (error) {
-        console.log(error);
-      }
+    if (
+      item.info.rdns === store.state.robonomicsUIvue.ethereum.activeProviderRdns
+    ) {
+      return true;
     }
+    return false;
+  });
+  if (index >= 0) {
+    try {
+      await $web3.setProvider(providers[index].provider);
+    } catch (error) {
+      logger.error(error);
+    }
+  }
 
-    await $web3.setSigner();
-})
+  await $web3.setSigner();
+});
 </script>

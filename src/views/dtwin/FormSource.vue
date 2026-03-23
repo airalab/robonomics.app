@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { logger } from "@/utils/logger";
 import { useSend } from "robonomics-interface-vue/account";
 import { useAction } from "robonomics-interface-vue/twin";
 import { ref } from "vue";
@@ -59,9 +60,9 @@ export default {
         );
         if (tx.error.value) {
           if (tx.error.value !== "Cancelled") {
-            console.log(tx.error.value);
+            logger.error(tx.error.value);
           } else {
-            console.log("cancel");
+            logger.log("cancel");
           }
           isProccess.value = false;
           return false;

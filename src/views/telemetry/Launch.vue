@@ -11,7 +11,7 @@
 import { logger } from "@/utils/logger";
 import { watch } from "vue";
 import { useStore } from "vuex";
-import { useData } from "./launch";
+import { useDataParachain } from "./launch";
 
 // это для тестов верстки карточек, когда все остальные тестовые стенды отвалились
 // import configTest from "./Lugano-config.json";
@@ -32,7 +32,7 @@ export default {
     }
   },
   setup(props) {
-    const { data, updateTime, run, launch } = useData();
+    const { data, updateTime, run, launch } = useDataParachain();
     const store = useStore();
 
     watch(

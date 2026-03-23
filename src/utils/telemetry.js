@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { u8aToString } from "@polkadot/util";
 
 const clearJson = (string) => {
@@ -14,13 +15,13 @@ export const parseJson = (string) => {
   try {
     return JSON.parse(string);
   } catch (error) {
-    console.log("error parse 1");
+    logger.warn("error parse step 1");
   }
   try {
     return JSON.parse(clearJson(string));
   } catch (error) {
-    console.log("error parse 2");
-    console.log(string);
+    logger.warn("error parse step 2");
+    logger.warn(string);
   }
   return false;
 };
@@ -59,7 +60,6 @@ async function getLastId(api, address) {
 }
 
 export const getLastDatalog = async (api, controller) => {
-  // console.log("getLastDatalog");
   if (!controller) {
     return false;
   }

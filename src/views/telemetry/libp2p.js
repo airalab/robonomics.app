@@ -14,7 +14,7 @@ import { useStore } from "vuex";
 import { useAccounts } from "../../hooks/useAccounts";
 import { decryptData, notify, setStatusLaunch, useSetup } from "./common";
 
-export const useData = () => {
+export const useDataLibp2p = () => {
   const data = ref(null);
   const updateTime = ref(null);
 

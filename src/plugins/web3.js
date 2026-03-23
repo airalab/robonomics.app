@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { ethers } from "ethers";
 import { reactive } from "vue";
 
@@ -91,7 +92,7 @@ class Provider {
         this.signer = await this.provider.getSigner();
         this.state.account = this.signer.address;
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     }
   }
@@ -117,7 +118,7 @@ class Provider {
         new Extension(provider, (name, data) => this.on(name, data))
       );
     } catch (error) {
-      console.warn(error.message);
+      logger.warn(error.message);
     }
     try {
       if (this.connector) {
