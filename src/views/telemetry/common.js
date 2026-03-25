@@ -9,31 +9,48 @@ import axios from "axios";
 import { usePolkadotApi } from "robonomics-interface-vue";
 import { useAccount } from "robonomics-interface-vue/account";
 import { useQuery } from "robonomics-interface-vue/twin";
-import { ref, watch } from "vue";
+import { onScopeDispose, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useAccounts } from "../../hooks/useAccounts";
 
 export const chainSS58 = 32;
 
+const IPFS_GATEWAY_TIMEOUT = 30000;
+
 const watchIpfsGateway = async (store) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (store.state.robonomicsUIvue.ipfs.activeGateway) {
       resolve(store.state.robonomicsUIvue.ipfs.activeGateway);
       return;
     }
-    let stop;
-    stop = watch(
+
+    const timer = setTimeout(() => {
+      stop();
+      reject(new Error("IPFS gateway timeout"));
+    }, IPFS_GATEWAY_TIMEOUT);
+
+    let stopWatch = null;
+
+    stopWatch = watch(
       () => store.state.robonomicsUIvue.ipfs.activeGateway,
-      async (activeGateway) => {
+      (activeGateway) => {
         if (activeGateway) {
           resolve(activeGateway);
-          if (stop) {
-            stop();
+          clearTimeout(timer);
+          if (stopWatch) {
+            stopWatch();
           }
         }
       },
       { immediate: true }
     );
+
+    onScopeDispose(() => {
+      clearTimeout(timer);
+      if (stopWatch) {
+        stopWatch();
+      }
+    });
   });
 };
 
@@ -140,38 +157,6 @@ export const setStatusLaunch = (store, command, status) => {
   );
 };
 
-export const useLastDatalog = () => {
-  const cid = ref(null);
-  const updateTime = ref(null);
-  const data = ref(null);
-
-  const store = useStore();
-  const { isConnected: isReady, instance: robonomics } = usePolkadotApi();
-  const { encryptor } = useAccounts();
-  const { controller } = useSetup();
-
-  (async () => {
-    if (isReady.value && controller.value) {
-      const datalog = await getLastDatalog(robonomics.api, controller.value);
-      cid.value = datalog.cid;
-      updateTime.value = datalog.timestamp;
-      try {
-        data.value = await readFileDecrypt(
-          cid.value,
-          controller.value,
-          encryptor(),
-          store
-        );
-      } catch (error) {
-        logger.error(error);
-        notify(store, error.message);
-      }
-    }
-  })();
-
-  return { cid, updateTime, data };
-};
-
 export const getConfigCid = async (controller, getTwin, twin_id) => {
   if (!controller || (!twin_id && twin_id !== 0)) {
     return false;
@@ -257,6 +242,14 @@ export const useConfig = () => {
     return { data: null, cache: false };
   };
 
+  let stopCacheWatch = null;
+
+  onScopeDispose(() => {
+    if (stopCacheWatch) {
+      stopCacheWatch();
+    }
+  });
+
   const load = async () => {
     notify(store, "Find twin id");
 
@@ -278,14 +271,14 @@ export const useConfig = () => {
 
     config.value = result.data;
     if (result.cache) {
-      const stop = watch(
+      stopCacheWatch = watch(
         isReady,
-        async () => {
-          if (isReady.value) {
+        async (ready) => {
+          if (ready) {
+            stopCacheWatch = null;
             try {
               const result = await getConfig(controller.value);
               config.value = result.data;
-              stop();
             } catch (error) {
               logger.error(error);
               notify(store, "Error: " + error.message);

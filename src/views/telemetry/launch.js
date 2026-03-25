@@ -37,6 +37,8 @@ export const useDataParachain = () => {
   const { controller, owner } = useSetup();
   const { listen } = useQuery();
 
+  let stopReadyWatch = null;
+
   watch(
     () => store.state.robonomicsUIvue.rws.active,
     () => {
@@ -64,6 +66,9 @@ export const useDataParachain = () => {
     if (unsubscribeDatalog) {
       unsubscribeDatalog();
     }
+    if (stopReadyWatch) {
+      stopReadyWatch();
+    }
   });
 
   watch(cid, async () => {
@@ -81,21 +86,26 @@ export const useDataParachain = () => {
     }
   });
 
+  const loadDatalog = async () => {
+    logger.info("Controller:", controller.value);
+    const datalog = await getLastDatalog(robonomics.api, controller.value);
+    cid.value = datalog.cid;
+    updateTime.value = datalog.timestamp;
+  };
+
   const run = async () => {
-    if (controller.value) {
-      if (isReady.value) {
-        logger.info("Controller:", controller.value);
-        const datalog = await getLastDatalog(robonomics.api, controller.value);
-        cid.value = datalog.cid;
-        updateTime.value = datalog.timestamp;
-      } else {
-        const stop = watch(isReady, (isReady) => {
-          if (isReady) {
-            run();
-            stop();
-          }
-        });
-      }
+    if (!controller.value) {
+      return;
+    }
+    if (isReady.value) {
+      await loadDatalog();
+    } else {
+      stopReadyWatch = watch(isReady, async (ready) => {
+        if (ready) {
+          stopReadyWatch = null;
+          await loadDatalog();
+        }
+      });
     }
   };
 
