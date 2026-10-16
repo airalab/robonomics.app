@@ -90,10 +90,6 @@ const navigation = [
           ".rpc.robonomics.network%2F#/explorer"
       },
       {
-        title: "Subscan",
-        link: "https://robonomics.subscan.io/"
-      },
-      {
         title: "Polkassembly",
         link: "https://robonomics.polkassembly.io/"
       }
