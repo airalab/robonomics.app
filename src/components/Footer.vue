@@ -35,6 +35,11 @@
         >{{ repoversion.tag_name }} {{ repoversion.name }}</a
       >
     </robo-text>
+    <robo-text size="small" align="center" class="footer-section">
+      © 2018–2026 Robonomics Network · operated by Akagi Engineering Co., Ltd.
+      (Japan) ·
+      <a href="mailto:research@robonomics.network">research@robonomics.network</a>
+    </robo-text>
   </footer>
 </template>
 

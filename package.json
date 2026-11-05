@@ -3,7 +3,10 @@
   "version": "0.10.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "author": "vol4tim <sas@robonomics.network>",
+  "author": "Akagi Engineering Co., Ltd. <research@robonomics.network>",
+  "contributors": [
+    "vol4tim <sas@robonomics.network>"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
