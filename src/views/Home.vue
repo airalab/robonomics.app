@@ -22,18 +22,13 @@
                       </template>
                       <robo-grid gap="x05">
                         <robo-text weight="bold">Where to buy XRT</robo-text>
-                        <robo-link href="https://app.basilisk.cloud/trade">
-                          Basilisk
-                        </robo-link>
                         <robo-link
-                          href="https://app.solarbeam.io/exchange/swap"
+                          href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0x1f752250f518e419f2f03804e25728c5c6dff73f"
                         >
-                          Solarbeam
+                          Uniswap
                         </robo-link>
-                        <robo-link
-                          href="https://trade.kraken.com/markets/kraken/xrt/usd"
-                        >
-                          Kraken
+                        <robo-link href="https://robonomics.network/xrt/">
+                          About XRT
                         </robo-link>
                       </robo-grid>
                     </robo-details>

@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Find Tag
         id: tagger
@@ -36,9 +38,9 @@ jobs:
         run: npm run build
         env:
           VUE_APP_ROBONOMICS_UI_KEY: ${{ vars.VUE_APP_ROBONOMICS_UI_KEY }}
-          VUE_APP_GIT_BRANCH: ${{ env.git_branch }}
-          VUE_APP_GIT_TAG: ${{ steps.tagger.outputs.tag }}
-          VUE_APP_GIT_SHA: ${{ env.git_hash }}
+          VITE_APP_GIT_BRANCH: ${{ env.git_branch }}
+          VITE_APP_GIT_TAG: ${{ steps.tagger.outputs.tag }}
+          VITE_APP_GIT_SHA: ${{ env.git_hash }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4

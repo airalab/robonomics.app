@@ -24,7 +24,7 @@
       </robo-text>
     </div>
     <robo-text
-      v-if="repoversion"
+      v-if="repoversion?.tag_name"
       size="small"
       weight="bold"
       align="center"
@@ -55,7 +55,7 @@ const network = computed(() => {
   );
 });
 
-const navigation = [
+const navigation = computed(() => [
   {
     title: "Services",
     links: [
@@ -75,11 +75,7 @@ const navigation = [
       },
       {
         title: "Uniswap",
-        link: "https://app.uniswap.org/#/swap?inputCurrency=0x7de91b204c1c737bcee6f000aaa6569cf7061cb7&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-      },
-      {
-        title: "Basilisk",
-        link: "https://app.basilisk.cloud/pools-and-farms"
+        link: "https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0x1f752250f518e419f2f03804e25728c5c6dff73f"
       }
     ]
   },
@@ -123,10 +119,14 @@ const navigation = [
       {
         title: "Issues",
         link: "https://github.com/airalab/robonomics.app/issues"
+      },
+      {
+        title: "Privacy policy",
+        link: "https://robonomics.network/privacy-policy/"
       }
     ]
   }
-];
+]);
 
 const repoversion = ref(null);
 
@@ -135,11 +135,11 @@ onMounted(async () => {
     const response = await fetch(
       "https://api.github.com/repos/airalab/robonomics.app/releases/latest"
     );
-    const data = await response.json();
-    repoversion.value = data;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    repoversion.value = await response.json();
   } catch (error) {
-    repoversion.value = "Ошибка загрузки";
-    logger.error("Ошибка получения версии:", error);
+    repoversion.value = null;
+    logger.error("Failed to load latest release:", error);
   }
 });
 </script>
