@@ -1,0 +1,1 @@
+import{_ as a,o as n,e as s,w as c,f as _,x as i,r as e}from"./index-BLPeZxwG.js";const l={};function d(x,o){const t=e("robo-loader"),r=e("robo-text");return n(),s(r,{weight:"normal-italic",align:"center"},{default:c(()=>[_(t,{size:"1.5"}),o[0]||(o[0]=i(" Loading ",-1))]),_:1})}const m=a(l,[["render",d]]);export{m as D};
