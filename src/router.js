@@ -62,6 +62,24 @@ const routes = [
     }
   },
   {
+    path: "/device-tree/:node?",
+    props: true,
+    name: "DeviceTree",
+    component: () => import("./views/deviceTree/Page.vue"),
+    meta: {
+      title: "Device tree"
+    }
+  },
+  {
+    path: "/datalog/:address?",
+    props: true,
+    name: "Datalog",
+    component: () => import("./views/datalog/Page.vue"),
+    meta: {
+      title: "Datalog"
+    }
+  },
+  {
     path: "/dtwin",
     name: "DTwinPage",
     component: () => import("./views/dtwin/Page.vue"),

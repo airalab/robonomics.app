@@ -43,6 +43,9 @@
                 Devices & Control
               </router-link>
             </li>
+            <li>
+              <router-link to="/device-tree">Device tree</router-link>
+            </li>
           </ul>
         </nav>
       </robo-section>

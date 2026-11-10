@@ -115,6 +115,12 @@
         <robo-text size="small">
           <robo-grid gap="x05" columns="1">
             <robo-grid-item borderbottom>
+              <router-link to="/device-tree">Device tree</router-link>
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <router-link to="/datalog">Send your first record</router-link>
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
               <router-link to="/altruist">Altruist sensor readings</router-link>
             </robo-grid-item>
             <robo-grid-item borderbottom>
