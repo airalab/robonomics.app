@@ -1,10 +1,16 @@
 <template>
-  <div v-if="isLaoded">
+  <datalog-loader v-if="isLoading" />
+  <robo-status v-else-if="error" type="error">
+    Could not read this sensor's data from the chain
+  </robo-status>
+  <robo-status v-else-if="!log.length" type="warning">
+    No measurements from this sensor yet
+  </robo-status>
+  <div v-else>
     <datalog-chart :log="log" />
     <sensor-info :sensor_id="address" class="block" />
     <measurements-scalegrid :log="log" class="block" />
   </div>
-  <datalog-loader v-else />
 </template>
 
 <script>
@@ -25,7 +31,7 @@ export default {
     MeasurementsScalegrid
   },
   setup(props) {
-    const { loading, data } = useDatalog(toRefs(props).address);
+    const { loading, error, data } = useDatalog(toRefs(props).address);
 
     const log = computed(() => {
       if (!data.value) {
@@ -33,9 +39,20 @@ export default {
       }
       const log = [];
       for (const item of data.value) {
+        const parsed = parser(item[1]);
+        // skip records in other formats (e.g. IPFS hashes): a reading
+        // has at least one numeric value
+        if (
+          !parsed ||
+          !parsed.some(
+            (m) => /^[a-z0-9_]+$/i.test(m.key) && isFinite(parseFloat(m.value))
+          )
+        ) {
+          continue;
+        }
         log.push({
           moment: item[0],
-          data: parser(item[1]),
+          data: parsed,
           raw: item[1]
         });
       }
@@ -49,7 +66,11 @@ export default {
 
     return {
       log: log,
-      isLaoded: loading,
+      // nothing loaded yet counts as loading, so "no data" does not flash first
+      isLoading: computed(
+        () => loading.value || (data.value === null && !error.value)
+      ),
+      error,
       isShowRaw,
       showRaw
     };
