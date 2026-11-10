@@ -3,6 +3,7 @@ import { createApp } from "vue";
 import { Buffer } from "buffer";
 import { robonomicsUI } from "robonomics-ui-vue";
 import App from "./App.vue";
+import HelpLink from "./components/HelpLink.vue";
 import ipfs from "./plugins/ipfs";
 import robonomics from "./plugins/robonomics";
 import router from "./router";
@@ -17,6 +18,7 @@ window.Buffer = Buffer;
 showVersion();
 
 const app = createApp(App);
+app.component("HelpLink", HelpLink);
 
 app
   .use(router)

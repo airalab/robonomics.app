@@ -18,6 +18,7 @@
     <robo-section offset="x2" width="middle">
       <notice-text />
     </robo-section>
+    <help-link page="altruist" text="Readings recorded on chain by an Altruist sensor." />
   </robo-layout-section>
 </template>
 

@@ -8,6 +8,10 @@
       :rwsExpiration="expiredate"
       @on-activate="onActivate"
     />
+    <help-link
+      page="legacy-pallets#how-a-subscription-is-obtained"
+      text="Subscriptions are sold at auction for XRT."
+    />
   </robo-layout-section>
 </template>
 

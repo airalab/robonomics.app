@@ -4,6 +4,10 @@
       :onRequestSubscription="onRequestSubscription"
       :onSetupGenerate="onSetupGenerate"
     />
+    <help-link
+      page="connect-devices#home-assistant"
+      text="The controller account comes from the Home Assistant integration."
+    />
   </robo-layout-section>
 </template>
 

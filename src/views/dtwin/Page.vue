@@ -7,6 +7,10 @@
     <robo-section offset="x2" width="narrow" v-if="isConnected">
       <d-twin />
     </robo-section>
+    <help-link
+      page="legacy-pallets#digitaltwin"
+      text="A digital twin links topics to the accounts that provide data for them."
+    />
   </robo-layout-section>
 </template>
 
