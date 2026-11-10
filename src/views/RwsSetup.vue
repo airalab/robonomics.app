@@ -49,6 +49,7 @@ import {
   useDevices
 } from "robonomics-interface-vue/devices";
 import { computed } from "vue";
+import { sameAccount } from "@/utils/address";
 import { useStore } from "vuex";
 import { useAccounts } from "../hooks/useAccounts";
 
@@ -77,11 +78,11 @@ export default {
         setStatus("error", "Parachain is not ready.");
         return;
       }
-      if (setupOwner.value && setupOwner.value !== account.value) {
+      if (setupOwner.value && !sameAccount(setupOwner.value, account.value)) {
         setStatus("error", "You do not have access to this action.");
         return;
       }
-      if (dataDevices.value.includes(user)) {
+      if (dataDevices.value.some((item) => sameAccount(item, user))) {
         if (!skipDuplicateCheck) {
           setStatus("error", "The address is already in the subscription.");
           return;
@@ -118,11 +119,13 @@ export default {
         setStatus("error", "Parachain is not ready.");
         return;
       }
-      if (setupOwner.value && setupOwner.value !== account.value) {
+      if (setupOwner.value && !sameAccount(setupOwner.value, account.value)) {
         setStatus("error", "You do not have access to this action.");
         return;
       }
-      if (dataDevices.value.includes(user)) {
+      const existing = dataDevices.value.find((item) => sameAccount(item, user));
+      if (existing) {
+        user = existing;
         setSubscription(account.value);
         await tx.send(actionDevices.remove(dataDevices.value, user));
         if (tx.error.value) {
