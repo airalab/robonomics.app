@@ -8,6 +8,10 @@
     @error="handlerError"
   />
   <Launch v-else :config="config" :cid="cid" :isKey />
+  <help-link
+    page="connect-devices#home-assistant"
+    text="Commands and data go between your browser and Home Assistant, encrypted."
+  />
 </template>
 
 <script>

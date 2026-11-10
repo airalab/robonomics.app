@@ -1,55 +1,86 @@
 <template>
   <robo-layout-section width="middle-wide">
-    <robo-grid minColumnWidth="200px" gap="x2">
+    <robo-grid minColumnWidth="260px" gap="x2">
       <robo-section>
-        <robo-section card>
-          <template v-if="rwsactive && rwsactive !== ''">
-            <robo-rws-setup-active
-              :show="['name', 'owner', 'date', 'userstext', 'link']"
-            />
-          </template>
-          <template v-else>
-            <robo-text title="4" align="left">RWS subscription</robo-text>
-            <robo-section offset="x1">
-              <robo-text size="small" weight="normal-italic">
-                <robo-grid gap="x05" columns="1">
-                  <robo-grid-item borderbottom>
-                    Price from: <b>~ {{ price }} XRT </b>
+        <robo-section card v-if="rwsactive && rwsactive !== ''">
+          <robo-rws-setup-active
+            :show="['name', 'owner', 'date', 'userstext', 'link']"
+          />
+          <robo-button :router="linkDevices" size="small" block>
+            <robo-icon icon="house-signal-solid" /> Open devices & control
+          </robo-button>
+        </robo-section>
 
-                    <robo-details>
-                      <template #summary>
-                        <robo-icon icon="circle-question" />
-                      </template>
-                      <robo-grid gap="x05">
-                        <robo-text weight="bold">Where to buy XRT</robo-text>
-                        <robo-link
-                          href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0x1f752250f518e419f2f03804e25728c5c6dff73f"
-                        >
-                          Uniswap
-                        </robo-link>
-                        <robo-link href="https://robonomics.network/xrt/">
-                          About XRT
-                        </robo-link>
-                      </robo-grid>
-                    </robo-details>
-                  </robo-grid-item>
-
-                  <robo-grid-item borderbottom>
-                    Activation time <b>~ 2 min</b>
-                  </robo-grid-item>
-
-                  <robo-grid-item>
-                    Available subscriptions:
-                    <b>{{ freeAuctions }}</b>
-                  </robo-grid-item>
-                </robo-grid>
+        <robo-section card v-else>
+          <robo-text title="4" align="left">Start here</robo-text>
+          <ol class="steps">
+            <li>
+              <robo-text weight="bold">Get XRT</robo-text>
+              <robo-text size="small">
+                The subscription is paid in XRT, the Robonomics token. You
+                need a Polkadot wallet with a little XRT on Robonomics.
               </robo-text>
-            </robo-section>
+              <robo-text size="small">
+                <a :href="uniswap" target="_blank" rel="noopener">Uniswap ↗</a>
+                ·
+                <a
+                  href="https://wiki.robonomics.network/docs/getting-started/#2-get-xrt"
+                  target="_blank"
+                  rel="noopener"
+                  >Other ways to get XRT ↗</a
+                >
+              </robo-text>
+            </li>
 
-            <robo-button :router="linkActivate" size="small" block>
-              <robo-icon icon="wallet" /> Buy a subscription
-            </robo-button>
-          </template>
+            <li>
+              <robo-text weight="bold">Buy a subscription</robo-text>
+              <robo-text size="small">
+                From <b>~{{ price }} XRT</b>, active in about 2 minutes.
+                Available now: <b>{{ freeAuctions ?? "…" }}</b>
+              </robo-text>
+              <robo-status
+                v-if="freeAuctions === 0"
+                type="warning"
+                class="steps-note"
+              >
+                No subscriptions are available right now. New ones open after
+                a governance vote.
+                <a
+                  href="https://wiki.robonomics.network/docs/legacy-pallets/#current-state"
+                  target="_blank"
+                  rel="noopener"
+                  >Why ↗</a
+                >
+              </robo-status>
+              <robo-button
+                v-else
+                :router="linkActivate"
+                size="small"
+                block
+              >
+                <robo-icon icon="wallet" /> Buy a subscription
+              </robo-button>
+            </li>
+
+            <li>
+              <robo-text weight="bold">Connect Home Assistant</robo-text>
+              <robo-text size="small">
+                Install the Robonomics integration in Home Assistant, then add
+                your subscription here to control your home from anywhere.
+              </robo-text>
+              <robo-button :router="linkSetupNew" size="small" block outlined>
+                Add a setup
+              </robo-button>
+              <robo-text size="small">
+                <a
+                  href="https://wiki.robonomics.network/docs/connect-devices/#home-assistant"
+                  target="_blank"
+                  rel="noopener"
+                  >Home Assistant integrations ↗</a
+                >
+              </robo-text>
+            </li>
+          </ol>
         </robo-section>
       </robo-section>
 
@@ -60,19 +91,42 @@
         <robo-text size="small" weight="normal-italic">
           <robo-grid gap="x05" columns="1">
             <robo-grid-item borderbottom>
-              <robo-icon icon="check" /> Secured data, only you have an access
+              <robo-icon icon="check" /> Your data is encrypted, only you can
+              read it
             </robo-grid-item>
             <robo-grid-item borderbottom>
-              <robo-icon icon="check" /> Remote control without any corporate
-              clouds
+              <robo-icon icon="check" /> Remote control without a corporate
+              cloud
             </robo-grid-item>
             <robo-grid-item borderbottom>
-              <robo-icon icon="check" /> Brand-independent smart home, combine
-              wanted devices
+              <robo-icon icon="check" /> One smart home for devices of any
+              brand
             </robo-grid-item>
             <robo-grid-item>
-              <robo-icon icon="check" /> Update your Robonomics devices as you
-              wish with Type-C
+              <robo-icon icon="check" /> Update your Robonomics devices
+              yourself over USB-C
+            </robo-grid-item>
+          </robo-grid>
+        </robo-text>
+
+        <robo-text title="4" align="left" offset="x05" class="also"
+          >Also in the app</robo-text
+        >
+        <robo-text size="small">
+          <robo-grid gap="x05" columns="1">
+            <robo-grid-item borderbottom>
+              <router-link to="/altruist">Altruist sensor readings</router-link>
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <router-link to="/energy-monitor">Energy monitor</router-link>
+            </robo-grid-item>
+            <robo-grid-item borderbottom>
+              <router-link to="/dtwin">Digital twin</router-link>
+            </robo-grid-item>
+            <robo-grid-item>
+              <a href="https://sensors.social" target="_blank" rel="noopener"
+                >Sensors map ↗</a
+              >
             </robo-grid-item>
           </robo-grid>
         </robo-text>
@@ -100,6 +154,12 @@ export default {
     });
     const linkActivate = computed(() => {
       return store.state.robonomicsUIvue.rws.links.activate;
+    });
+    const linkSetupNew = computed(() => {
+      return store.state.robonomicsUIvue.rws.links.setupnew;
+    });
+    const linkDevices = computed(() => {
+      return store.state.robonomicsUIvue.rws.links.devices;
     });
 
     const { isConnected, instance } = usePolkadotApi();
@@ -132,6 +192,10 @@ export default {
     return {
       rwsactive,
       linkActivate,
+      linkSetupNew,
+      linkDevices,
+      uniswap:
+        "https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0x1f752250f518e419f2f03804e25728c5c6dff73f",
       freeAuctions,
       price: priceFormat
     };
@@ -140,6 +204,19 @@ export default {
 </script>
 
 <style>
+.steps {
+  margin: var(--robo-space) 0 0;
+  padding-left: 1.2em;
+}
+.steps li {
+  margin-bottom: calc(var(--robo-space) * 1.5);
+}
+.steps li > * + * {
+  margin-top: calc(var(--robo-space) * 0.5);
+}
+.also {
+  margin-top: calc(var(--robo-space) * 3);
+}
 #home-links .robo-link {
   position: relative;
   display: block;

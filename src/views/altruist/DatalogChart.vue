@@ -15,11 +15,13 @@ export default {
       const seriesRaw = {};
       for (const row of data) {
         for (const item of row.data) {
+          let value = parseFloat(item.value);
+          // Altruist reports pressure in Pa; show hPa like sensors.social
+          if (item.fullKey === "pressure" && value > 2000) {
+            value = value / 100;
+          }
           if (seriesRaw[item.fullKey]) {
-            seriesRaw[item.fullKey].data.push([
-              row.moment,
-              parseFloat(item.value)
-            ]);
+            seriesRaw[item.fullKey].data.push([row.moment, value]);
           } else {
             let name = item.fullKey;
             if (
@@ -30,7 +32,10 @@ export default {
             }
             seriesRaw[item.fullKey] = {
               name: name,
-              data: [[row.moment, parseFloat(item.value)]],
+              data: [[row.moment, value]],
+              // pressure (~1000 hPa) gets its own axis so it does not
+              // flatten the other lines
+              yAxis: item.fullKey === "pressure" ? 1 : 0,
               tooltip: {
                 valueSuffix: ` ${measurements[item.fullKey].unit ?? ""}`
               }
@@ -87,9 +92,10 @@ export default {
             format: "{value: %H:%M }"
           }
         },
-        yAxis: {
-          title: false
-        },
+        yAxis: [
+          { title: false },
+          { title: false, opposite: true, labels: { format: "{value} hPa" } }
+        ],
         tooltip: {
           valueDecimals: 2
         },

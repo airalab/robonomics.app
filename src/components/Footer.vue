@@ -91,6 +91,10 @@ const navigation = computed(() => [
           ".rpc.robonomics.network%2F#/explorer"
       },
       {
+        title: "Block explorer",
+        link: "https://scan.robonomics.network"
+      },
+      {
         title: "Polkassembly",
         link: "https://robonomics.polkassembly.io/"
       }
@@ -103,6 +107,10 @@ const navigation = computed(() => [
       {
         title: "GitHub",
         link: "https://github.com/airalab/robonomics.app"
+      },
+      {
+        title: "Getting started",
+        link: "https://wiki.robonomics.network/docs/getting-started/"
       },
       {
         title: "Wiki",

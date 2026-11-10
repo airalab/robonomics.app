@@ -18,6 +18,7 @@
     <robo-section offset="x2" width="middle">
       <notice-text />
     </robo-section>
+    <help-link page="legacy-pallets#datalog" text="Readings recorded on chain by an energy monitor." />
   </robo-layout-section>
 </template>
 

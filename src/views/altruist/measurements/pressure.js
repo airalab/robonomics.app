@@ -8,5 +8,5 @@ export default {
     en: "Pressure",
     ru: "Давление"
   },
-  unit: "mmHg",
+  unit: "hPa",
 };

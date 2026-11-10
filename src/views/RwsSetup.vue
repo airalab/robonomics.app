@@ -30,6 +30,10 @@
         :onControllerEdit="editController"
       />
     </robo-section>
+    <help-link
+      page="legacy-pallets#rws-subscriptions"
+      text="Users and the controller are the accounts your subscription pays for."
+    />
   </robo-layout-section>
 </template>
 
