@@ -71,6 +71,15 @@ const routes = [
     }
   },
   {
+    path: "/datalog/:address?",
+    props: true,
+    name: "Datalog",
+    component: () => import("./views/datalog/Page.vue"),
+    meta: {
+      title: "Datalog"
+    }
+  },
+  {
     path: "/dtwin",
     name: "DTwinPage",
     component: () => import("./views/dtwin/Page.vue"),
