@@ -1,4 +1,3 @@
-import { create } from "ipfs-http-client";
 import { ref } from "vue";
 
 export class IpfsApiClient {
@@ -9,9 +8,12 @@ export class IpfsApiClient {
     this._create();
   }
   _create() {
-    this.client = create({
-      ...this._options()
-    });
+    // ipfs-http-client is heavy and only the devices panel needs it,
+    // so load it on first use instead of with the app
+    const options = this._options();
+    this.client = import("ipfs-http-client").then(({ create }) =>
+      create(options)
+    );
   }
   _options() {
     const options = {
@@ -42,7 +44,8 @@ export class IpfsApiClient {
   }
   async ls(cid) {
     const files = [];
-    for await (const file of this.client.ls(cid)) {
+    const client = await this.client;
+    for await (const file of client.ls(cid)) {
       if (file.type === "file") {
         files.push(file);
       }
@@ -53,7 +56,8 @@ export class IpfsApiClient {
     const cat = async (cid) => {
       const decoder = new TextDecoder();
       let content = "";
-      for await (const chunk of this.client.cat(cid)) {
+      const client = await this.client;
+      for await (const chunk of client.cat(cid)) {
         content += decoder.decode(chunk, {
           stream: true
         });
@@ -63,7 +67,8 @@ export class IpfsApiClient {
     return await cat(cid);
   }
   async add(data) {
-    return await this.client.add(data);
+    const client = await this.client;
+    return await client.add(data);
   }
 }
 

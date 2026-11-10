@@ -40,8 +40,9 @@ export default {
       const log = [];
       for (const item of data.value) {
         const parsed = parser(item[1]);
-        // skip records in other formats (e.g. IPFS hashes)
-        if (!parsed || !parsed.some((m) => m.value !== undefined)) {
+        // skip records in other formats (e.g. IPFS hashes): a reading
+        // has at least one numeric value
+        if (!parsed || !parsed.some((m) => isFinite(parseFloat(m.value)))) {
           continue;
         }
         log.push({

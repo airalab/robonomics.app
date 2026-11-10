@@ -67,6 +67,10 @@ export const useDataParachain = () => {
   });
 
   watch(cid, async () => {
+    // nothing to decrypt without a setup and a signed-in user
+    if (!cid.value || !controller.value || !account.value) {
+      return;
+    }
     try {
       logger.log("Data cid:", cid.value);
       data.value = await readFileDecrypt(

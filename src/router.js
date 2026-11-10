@@ -1,19 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Altruist from "./views/hardware/Altruist.vue";
-import Hikikomori from "./views/hardware/Hikikomori.vue";
-import Riscv from "./views/hardware/Riscv.vue";
-import SeasonPass2 from "./views/hardware/Season-pass-2.vue";
-import SeasonPass from "./views/hardware/Season-pass.vue";
 import Home from "./views/Home.vue";
-import Humanoid from "./views/humanoid/RobonomicsApp.vue";
 import PathNotFound from "./views/PathNotFound.vue";
-import RwsActivate from "./views/RwsActivate.vue";
-import RwsSetup from "./views/RwsSetup.vue";
-import RwsSetupNew from "./views/RwsSetupNew.vue";
-// import Services from "./views/Services.vue";
-import EnergyMonitor from "./views/hardware/Energy-monitor.vue";
-import SaveSetup from "./views/saveSetup/Page.vue";
-import Telemetry from "./views/telemetry/Telemetry.vue";
 
 const routes = [
   {
@@ -27,7 +14,7 @@ const routes = [
   {
     path: "/rws-buy",
     name: "rwsActivate",
-    component: RwsActivate,
+    component: () => import("./views/RwsActivate.vue"),
     meta: {
       title: "Buy a Subscription"
     }
@@ -35,7 +22,7 @@ const routes = [
   {
     path: "/rws-setup",
     name: "rwsSetup",
-    component: RwsSetup,
+    component: () => import("./views/RwsSetup.vue"),
     meta: {
       title: "Setup a Subscription"
     }
@@ -43,7 +30,7 @@ const routes = [
   {
     path: "/rws-setup-new",
     name: "rwsSetupNew",
-    component: RwsSetupNew,
+    component: () => import("./views/RwsSetupNew.vue"),
     meta: {
       title: "New Subscription setup"
     }
@@ -51,73 +38,9 @@ const routes = [
   {
     path: "/telemetry",
     name: "telemetry",
-    component: Telemetry,
+    component: () => import("./views/telemetry/Telemetry.vue"),
     meta: {
       title: "Devices control panel"
-    }
-  },
-  // {
-  //   path: "/services",
-  //   name: "services",
-  //   component: Services,
-  //   meta: {
-  //     title: "Services"
-  //   }
-  // },
-  {
-    path: "/hardware/altruist",
-    name: "Altruist",
-    component: Altruist,
-    meta: {
-      title: "Altruist"
-    }
-  },
-  {
-    path: "/hardware/riscv",
-    name: "Riscv",
-    component: Riscv,
-    meta: {
-      title: "Riscv"
-    }
-  },
-  {
-    path: "/hardware/hikikomori",
-    name: "Hikikomori",
-    component: Hikikomori,
-    meta: {
-      title: "Hikikomori"
-    }
-  },
-  {
-    path: "/hardware/season-pass",
-    name: "SeasonPass",
-    component: SeasonPass,
-    meta: {
-      title: "Season Pass"
-    }
-  },
-  {
-    path: "/hardware/season-pass-2",
-    name: "SeasonPass2",
-    component: SeasonPass2,
-    meta: {
-      title: "Season Pass 2"
-    }
-  },
-  {
-    path: "/hardware/energy-monitor",
-    name: "EnergyMonitor",
-    component: EnergyMonitor,
-    meta: {
-      title: "Energy Monitor"
-    }
-  },
-  {
-    path: "/humanoid",
-    name: "Humanoid",
-    component: Humanoid,
-    meta: {
-      title: "Pay the robot with cryptocurrency"
     }
   },
   {
@@ -144,14 +67,6 @@ const routes = [
     component: () => import("./views/dtwin/Page.vue"),
     meta: {
       title: "Digital Twin"
-    }
-  },
-  {
-    path: "/save-setup",
-    name: "save-setup",
-    component: SaveSetup,
-    meta: {
-      title: "Savesetup"
     }
   },
   { path: "/:pathMatch(.*)*", component: PathNotFound }
