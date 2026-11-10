@@ -155,8 +155,14 @@ export default {
     let unsubscribeBlock = null;
 
     const store = useStore();
+    // the active setup is remembered in the browser; show it only while it
+    // is still in the saved list, otherwise fall back to "Start here"
     const rwsactive = computed(() => {
-      return store.state.robonomicsUIvue.rws.active;
+      const { active, list } = store.state.robonomicsUIvue.rws;
+      if (!active || !Array.isArray(list)) {
+        return "";
+      }
+      return list.some((item) => item.owner === active) ? active : "";
     });
     const linkActivate = computed(() => {
       return store.state.robonomicsUIvue.rws.links.activate;
