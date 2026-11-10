@@ -62,6 +62,15 @@ const routes = [
     }
   },
   {
+    path: "/device-tree/:node?",
+    props: true,
+    name: "DeviceTree",
+    component: () => import("./views/deviceTree/Page.vue"),
+    meta: {
+      title: "Device tree"
+    }
+  },
+  {
     path: "/dtwin",
     name: "DTwinPage",
     component: () => import("./views/dtwin/Page.vue"),
